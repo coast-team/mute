@@ -1,5 +1,5 @@
 {
-  "name": "angular-quickstart",
+  "name": "mute",
   "version": "1.0.0",
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
@@ -17,13 +17,11 @@
     "webdriver:update": "webdriver-manager update"
   },
   "keywords": [],
-  "author": "",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/angular/angular.io/blob/master/LICENSE"
-    }
+  "contributors": [
+    "Philippe Kalitine <philippe.kalitine@gmail.com> (http://philippe.kalitine.name/)",
+    "Matthieu Nicolas <matthieu.nicolas@inria.fr>"
   ],
+  "license": "AGPL-3.0",
   "dependencies": {
     "@angular/common": "~2.1.1",
     "@angular/compiler": "~2.1.1",
