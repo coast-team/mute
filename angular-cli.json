@@ -1,7 +1,7 @@
 {
   "project": {
     "version": "1.0.0-beta.18",
-    "name": "mute-cli"
+    "name": "mute"
   },
   "apps": [
     {
@@ -15,7 +15,7 @@
       "main": "main.ts",
       "test": "test.ts",
       "tsconfig": "tsconfig.json",
-      "prefix": "app",
+      "prefix": "mute",
       "mobile": false,
       "styles": [
         "styles.css"
