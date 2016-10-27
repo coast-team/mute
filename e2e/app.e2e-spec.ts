@@ -1,16 +1,14 @@
-import { browser, element, by } from 'protractor';
+import { MutePage } from './app.po';
 
-describe('QuickStart E2E Tests', function () {
+describe('mute App', function() {
+  let page: MutePage;
 
-  let expectedMsg = 'My First Angular App';
-
-
-  beforeEach(function () {
-    browser.get('');
+  beforeEach(() => {
+    page = new MutePage();
   });
 
-  it('should display: ' + expectedMsg, function () {
-    expect(element(by.css('h1')).getText()).toEqual(expectedMsg);
+  it('should display message saying app works', () => {
+    page.navigateTo();
+    expect(page.getParagraphText()).toEqual('app works!');
   });
-
 });
