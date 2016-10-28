@@ -18,7 +18,8 @@
       "prefix": "mute",
       "mobile": false,
       "styles": [
-        "styles.css"
+        "styles.css",
+        "../node_modules/codemirror/lib/codemirror.css"
       ],
       "scripts": [],
       "environments": {
