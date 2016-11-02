@@ -7,11 +7,15 @@ import { MaterialModule } from '@angular/material'
 import { AppComponent } from './app.component'
 import { EditorComponent } from './editor/editor.component'
 import { CoreModule } from './core/core.module'
+import { LeftsideComponent } from './leftside/leftside.component'
+import { RightsideComponent } from './rightside/rightside.component'
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditorComponent
+    EditorComponent,
+    LeftsideComponent,
+    RightsideComponent
   ],
   imports: [
     BrowserModule,

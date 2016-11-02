@@ -1,0 +1,15 @@
+<div class="fixed">
+  <div id="top-panel">
+    <button md-icon-button (click)="onClick()">
+      <md-icon class="md-24">menu</md-icon>
+    </button>
+  </div>
+  <div class="sidenav-container">
+    <md-sidenav-layout>
+      <md-sidenav #start mode="push">
+        <span md-prefix><md-icon>face</md-icon></span>
+        <md-input #pseudonym placeholder="Pseudonym" value="Anonymous"></md-input>
+      </md-sidenav>
+    </md-sidenav-layout>
+  </div>
+<div>

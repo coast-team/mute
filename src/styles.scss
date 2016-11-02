@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+html {
+  font-size: 10px;
+
+  &, body {
+    height: 100%;
+  }
+
+  body {
+    font-size: 1.4rem;
+  }
+}

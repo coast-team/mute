@@ -27,7 +27,11 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {lineNumbers: false, mode: {name: 'javascript', globalVars: true}})
+    this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
+      lineNumbers: false,
+      lineWrapping: true,
+      mode: {name: 'javascript', globalVars: true}
+    })
 
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {

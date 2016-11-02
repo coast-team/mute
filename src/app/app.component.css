@@ -1,5 +1,18 @@
 :host {
   display: flex;
   height: 100%;
-  justify-content: center;
+}
+
+mute-leftside {
+  flex: 1 20rem;
+  min-width: 10rem;
+}
+
+mute-editor {
+  width: 760px;
+}
+
+mute-rightside {
+  flex: 1 20rem;
+  min-width: 10rem;
 }
