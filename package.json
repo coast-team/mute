@@ -8,6 +8,7 @@
     "test": "ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
+    "commitmsg": "validate-commit-msg",
     "commit": "git cz"
   },
   "keywords": [],
@@ -54,7 +55,8 @@
     "protractor": "4.0.9",
     "ts-node": "1.2.1",
     "tslint": "^3.15.1",
-    "typescript": "~2.0.3"
+    "typescript": "~2.0.3",
+    "validate-commit-msg": "^2.8.2"
   },
   "repository": {},
   "config": {
