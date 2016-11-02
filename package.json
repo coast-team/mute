@@ -43,6 +43,7 @@
     "codelyzer": "1.0.0-beta.1",
     "commitizen": "^2.8.6",
     "cz-conventional-changelog": "^1.2.0",
+    "husky": "^0.11.9",
     "jasmine-core": "2.4.1",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
