@@ -1,5 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~normalize.css/normalize.css';
 @import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+@import '~material-design-icons/iconfont/material-icons.css';
+@import '~codemirror/lib/codemirror.css';
 
 html {
   font-size: 10px;
@@ -11,4 +14,10 @@ html {
   body {
     font-size: 1.4rem;
   }
+}
+/**
+* CodeMirror style here, because it is not working in the proper Component css.
+*/
+.CodeMirror {
+  height: 100%;
 }

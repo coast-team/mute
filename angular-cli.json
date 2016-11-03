@@ -18,11 +18,7 @@
       "prefix": "mute",
       "mobile": false,
       "styles": [
-        "../node_modules/normalize.css/normalize.css",
-        "styles.scss",
-        "../node_modules/codemirror/lib/codemirror.css",
-        "codemirror.css",
-        "../node_modules/material-design-icons/iconfont/material-icons.css"
+        "styles.scss"
       ],
       "scripts": [],
       "environments": {
