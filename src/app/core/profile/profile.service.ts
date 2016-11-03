@@ -19,6 +19,8 @@ export class ProfileService {
   set pseudonym (value) {
     if (value !== '') {
       this.setItem('pseudonym', value)
+    } else {
+      this.removeItem('pseudonym')
     }
   }
 
@@ -28,6 +30,10 @@ export class ProfileService {
 
   private getItem (key) {
     return localStorage.getItem(this.storagePrefix + key)
+  }
+
+  private removeItem (key) {
+    localStorage.removeItem(this.storagePrefix + key)
   }
 
 }

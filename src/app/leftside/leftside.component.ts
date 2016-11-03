@@ -11,7 +11,7 @@ import { ProfileService } from '../core/profile/profile.service'
 export class LeftsideComponent implements OnInit {
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('pseudonymElm') pseudonymElm
-
+  pseudonym: string
 
   constructor(private profileService: ProfileService) {
   }
@@ -21,11 +21,14 @@ export class LeftsideComponent implements OnInit {
     this.sidenavElm.open()
   }
 
-  onClick() {
+  toggleSidenav() {
     this.sidenavElm.toggle()
   }
 
   updatePseudonym(event) {
     this.profileService.pseudonym = event.target.value
+    if (event.target.value === '') {
+      this.pseudonymElm.value = this.profileService.pseudonym
+    }
   }
 }
