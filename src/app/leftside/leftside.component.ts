@@ -1,23 +1,31 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
+import { ProfileService } from '../core/profile/profile.service'
+
 @Component({
   selector: 'mute-leftside',
   templateUrl: './leftside.component.html',
-  styleUrls: ['./leftside.component.css']
+  styleUrls: ['./leftside.component.css'],
+  providers: [ProfileService]
 })
 export class LeftsideComponent implements OnInit {
-  @ViewChild('start') start
-  @ViewChild('pseudonym') pseudonym
+  @ViewChild('sidenavElm') sidenavElm
+  @ViewChild('pseudonymElm') pseudonymElm
 
-  constructor() { }
+
+  constructor(private profileService: ProfileService) {
+  }
 
   ngOnInit() {
+    this.pseudonymElm.value = this.profileService.pseudonym
+    this.sidenavElm.open()
   }
 
   onClick() {
-    this.start.toggle()
-      .then(() => console.log('clicked'))
-      .catch(() => console.log('error'))
-    this.pseudonym.focus()
+    this.sidenavElm.toggle()
+  }
+
+  updatePseudonym(event) {
+    this.profileService.pseudonym = event.target.value
   }
 }
