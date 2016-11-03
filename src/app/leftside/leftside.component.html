@@ -7,8 +7,10 @@
   <div class="sidenav-container">
     <md-sidenav-layout>
       <md-sidenav #sidenavElm mode="side">
-        <span md-prefix><md-icon>face</md-icon></span>
-        <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
+        <span class="icon-input">
+          <md-icon>face</md-icon>
+          <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
+        </span>
       </md-sidenav>
     </md-sidenav-layout>
   </div>

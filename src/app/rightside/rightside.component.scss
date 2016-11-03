@@ -45,6 +45,16 @@
   align-items: flex-end;
 }
 
+.icon-input {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  md-icon {
+    margin-left: 5px;
+  }
+}
+
 button[md-icon-button] {
   margin: 10px 10px 20px 10px;
   background-color: #FFF;

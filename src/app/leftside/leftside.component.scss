@@ -26,6 +26,15 @@
   padding-left: 10px;
 }
 
+.icon-input {
+  display: flex;
+  align-items: center;
+
+  md-icon {
+    margin-right: 5px;
+  }
+}
+
 #top-panel {
 }
 
