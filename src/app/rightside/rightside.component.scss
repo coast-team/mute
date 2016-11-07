@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  font-size: 1.6rem;
 }
 
 #main-container {
@@ -13,49 +14,35 @@
 
 .fixed {
   position: fixed;
-  top: 0;
   right: 0;
-  width: 50rem;
+  width: 30rem;
   height: 100%;
 
+  md-sidenav-layout {
+    height: 100%;
+    background-color: #FFF;
 
-  .top-panel {
-    position: absolute;
-    right: 0;
+    button[md-icon-button] {
+      margin: 1rem 1rem 0 0;
+    }
+
+    md-sidenav {
+      box-shadow: none;
+      padding-right: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+
+      .input-icon-suffix {
+        margin: 2rem 1rem 0 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        md-icon {
+          margin-left: 5px;
+        }
+      }
+    }
   }
-}
-
-.sidenav-container {
-  width: 100%;
-  height: 100%;
-}
-
-.sidenav-container md-sidenav-layout {
-  width: 100%;
-  height: 70%;
-  margin: 30px 0 0 0;
-  padding-left: 20px;
-  background-color: #FFF;
-}
-
-.sidenav-container md-sidenav-layout md-sidenav {
-  box-shadow: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.icon-input {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-
-  md-icon {
-    margin-left: 5px;
-  }
-}
-
-button[md-icon-button] {
-  margin: 10px 10px 20px 10px;
-  background-color: #FFF;
 }

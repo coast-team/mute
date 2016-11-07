@@ -1,9 +1,11 @@
 :host {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 md-card {
   margin: 20px 0 40px 0;
   flex-basis: 100%;
+  width: 760px;
 }

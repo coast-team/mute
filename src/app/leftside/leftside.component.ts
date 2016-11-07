@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core'
 
 import { ProfileService } from '../core/profile/profile.service'
 
@@ -18,7 +18,6 @@ export class LeftsideComponent implements OnInit {
 
   ngOnInit() {
     this.pseudonymElm.value = this.profileService.pseudonym
-    this.sidenavElm.open()
   }
 
   toggleSidenav() {

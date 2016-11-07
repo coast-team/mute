@@ -1,38 +1,34 @@
 <div class="fixed">
   <div id="main-container">
-    <div id="top-panel">
-      <button md-icon-button (click)="toggleSidenav()">
-        <md-icon class="md-24">menu</md-icon>
+    <md-sidenav-layout>
+      <button md-icon-button (click)="toggleSidenav()" color="primary">
+        <md-icon [textContent]="menuIcon"></md-icon>
       </button>
-    </div>
-    <div class="sidenav-container">
-      <md-sidenav-layout>
-        <md-sidenav #sidenav align="end" mode="side">
-          <span class="icon-input">
-            <md-input #docTitleElm placeholder="Document title"></md-input>
-            <md-icon>insert_drive_file</md-icon>
-          </span>
-          <md-tab-group>
-            <md-tab >
-              <template md-tab-label>
-                Users
-              </template>
-              <template md-tab-content>
-                <p>EARTH</p>
-              </template>
-            </md-tab>
-            <md-tab >
-              <template md-tab-label>
-                Document Info
-              </template>
-              <template md-tab-content>
-                <p>Created: 25 October 2016</p>
-                <p>Size: 5mb</p>
-              </template>
-            </md-tab>
-          </md-tab-group>
-        </md-sidenav>
-      </md-sidenav-layout>
-    </div>
+      <md-sidenav #sidenavElm align="end" mode="side">
+        <span class="input-icon-suffix">
+          <md-input #docTitleElm placeholder="Document title"></md-input>
+          <md-icon>insert_drive_file</md-icon>
+        </span>
+        <md-tab-group>
+          <md-tab >
+            <template md-tab-label>
+              Users
+            </template>
+            <template md-tab-content>
+              <p>EARTH</p>
+            </template>
+          </md-tab>
+          <md-tab >
+            <template md-tab-label>
+              Document Info
+            </template>
+            <template md-tab-content>
+              <p>Created: 25 October 2016</p>
+              <p>Size: 5mb</p>
+            </template>
+          </md-tab>
+        </md-tab-group>
+      </md-sidenav>
+    </md-sidenav-layout>
   </div>
 <div>

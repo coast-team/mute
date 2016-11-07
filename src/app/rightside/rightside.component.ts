@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, AfterContentInit, ViewChild } from '@angular/core'
 
 @Component({
   selector: 'mute-rightside',
@@ -6,15 +6,23 @@ import { Component, OnInit, ViewChild } from '@angular/core'
   styleUrls: ['./rightside.component.scss']
 })
 export class RightsideComponent implements OnInit {
-  @ViewChild('sidenav') sidenav
+  @ViewChild('sidenavElm') sidenavElm
+  menuIcon: string
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  ngAfterContentInit () {
+    this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
+  }
+
   toggleSidenav () {
-    this.sidenav.toggle()
+    this.sidenavElm.toggle()
+      .then(() => {
+        this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
+      })
   }
 
 }

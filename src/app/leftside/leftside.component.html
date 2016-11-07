@@ -1,17 +1,12 @@
-<div class="fixed">
-  <div id="top-panel">
-    <button md-icon-button (click)="toggleSidenav()">
-      <md-icon>menu</md-icon>
-    </button>
-  </div>
-  <div class="sidenav-container">
-    <md-sidenav-layout>
-      <md-sidenav #sidenavElm mode="side">
-        <span class="icon-input">
-          <md-icon>face</md-icon>
-          <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
-        </span>
-      </md-sidenav>
-    </md-sidenav-layout>
-  </div>
-<div>
+<md-sidenav-layout class="fixed">
+  <button md-icon-button (click)="toggleSidenav()" color="primary">
+    <md-icon>menu</md-icon>
+  </button>
+  <md-sidenav #sidenavElm mode="side">
+    <span class="input-icon-prefix">
+      <md-icon>face</md-icon>
+      <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
+    </span>
+    <button md-raised-button color="accent" routerLink="/abcd">New Document</button>
+  </md-sidenav>
+</md-sidenav-layout>
