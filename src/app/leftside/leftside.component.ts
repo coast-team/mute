@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 
@@ -13,18 +14,29 @@ export class LeftsideComponent implements OnInit {
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
-  constructor(private profileService: ProfileService) {
+  constructor (
+    private route: ActivatedRoute,
+    private profileService: ProfileService
+  ) {
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.pseudonymElm.value = this.profileService.pseudonym
+    this.route.url.forEach((urlFrag: UrlSegment[]) => {
+      if (urlFrag[0].path === '') {
+        setTimeout(() => {
+          this.sidenavElm.open()
+        }, 1500)
+      }
+    })
+
   }
 
-  toggleSidenav() {
+  toggleSidenav () {
     this.sidenavElm.toggle()
   }
 
-  updatePseudonym(event) {
+  updatePseudonym (event) {
     this.profileService.pseudonym = event.target.value
     if (event.target.value === '') {
       this.pseudonymElm.value = this.profileService.pseudonym

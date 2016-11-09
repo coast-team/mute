@@ -5,26 +5,14 @@
         <md-icon [textContent]="menuIcon"></md-icon>
       </button>
       <md-sidenav #sidenavElm align="end" mode="side">
-        <span class="input-icon-suffix">
-          <md-input #docTitleElm placeholder="Document title"></md-input>
-          <md-icon>insert_drive_file</md-icon>
-        </span>
+        <md-input class='docTitle' #docTitleElm placeholder="Document title"></md-input>
         <md-tab-group>
           <md-tab >
             <template md-tab-label>
-              Users
+              Collaborators
             </template>
             <template md-tab-content>
-              <p>EARTH</p>
-            </template>
-          </md-tab>
-          <md-tab >
-            <template md-tab-label>
-              Document Info
-            </template>
-            <template md-tab-content>
-              <p>Created: 25 October 2016</p>
-              <p>Size: 5mb</p>
+              <mute-collaborators></mute-collaborators>
             </template>
           </md-tab>
         </md-tab-group>

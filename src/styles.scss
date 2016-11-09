@@ -13,6 +13,7 @@ html {
 
   body {
     font-size: 1.4rem;
+    background-color: #fdfdff;
   }
 }
 /**
@@ -20,4 +21,8 @@ html {
 */
 .CodeMirror {
   height: 100%;
+
+  .CodeMirror-line {
+    line-height: 2.4rem;
+  }
 }

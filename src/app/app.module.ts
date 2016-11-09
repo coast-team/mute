@@ -11,7 +11,8 @@ import { CoreModule } from './core/core.module'
 import { LeftsideComponent } from './leftside/leftside.component'
 import { RightsideComponent } from './rightside/rightside.component'
 import { DocComponent } from './doc/doc.component';
-import { DocsComponent } from './docs/docs.component'
+import { DocsComponent } from './docs/docs.component';
+import { CollaboratorsComponent } from './collaborators/collaborators.component'
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DocsComponent } from './docs/docs.component'
     LeftsideComponent,
     RightsideComponent,
     DocComponent,
-    DocsComponent
+    DocsComponent,
+    CollaboratorsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,7 @@ import { DocsComponent } from './docs/docs.component'
     HttpModule,
     MaterialModule.forRoot(),
     RouterModule.forRoot([
-      {path: ':docTitle', component: DocComponent},
+      {path: ':key', component: DocComponent},
       {path: '', component: DocsComponent}
     ])
   ],

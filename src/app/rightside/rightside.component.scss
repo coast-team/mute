@@ -20,7 +20,7 @@
 
   md-sidenav-layout {
     height: 100%;
-    background-color: #FFF;
+    background-color: #fdfdff;
 
     button[md-icon-button] {
       margin: 1rem 1rem 0 0;
@@ -31,17 +31,17 @@
       padding-right: 10px;
       display: flex;
       flex-direction: column;
+      background-color: #fdfdff;
       align-items: flex-end;
 
-      .input-icon-suffix {
-        margin: 2rem 1rem 0 0;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
+      .docTitle {
+        margin: 2rem 0 0 0;
+        width: 25rem;
+      }
 
-        md-icon {
-          margin-left: 5px;
-        }
+      md-tab-group {
+        margin-top: 5rem;
+        width: 30rem;
       }
     }
   }

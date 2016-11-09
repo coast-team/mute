@@ -12,6 +12,7 @@ export class RightsideComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    this.sidenavElm.open()
   }
 
   ngAfterContentInit () {

@@ -1,8 +1,9 @@
 import { Component, Injectable, OnInit, ViewChild } from '@angular/core'
 import { Observable } from 'rxjs'
+import * as CodeMirror from 'codemirror'
 
 import { LoggerService } from '../core/logger.service'
-import * as CodeMirror from 'codemirror'
+import { NetworkService } from '../core/network/network.service'
 
 @Component({
   selector: 'mute-editor',
@@ -17,12 +18,14 @@ import * as CodeMirror from 'codemirror'
 @Injectable()
 export class EditorComponent implements OnInit {
 
-  private loggerService: LoggerService
   private editor: CodeMirror.Editor
 
   @ViewChild('editorElt') editorElt
 
-  constructor(loggerService: LoggerService) {
+  constructor(
+    private loggerService: LoggerService,
+    private network: NetworkService
+  ) {
     this.loggerService = loggerService
   }
 
@@ -32,6 +35,7 @@ export class EditorComponent implements OnInit {
       lineWrapping: true,
       mode: {name: 'javascript', globalVars: true}
     })
+
 
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
@@ -44,20 +48,24 @@ export class EditorComponent implements OnInit {
         return new ChangeEvent(instance, change)
       })
 
+    operationStream.subscribe((changeEvent: ChangeEvent) => {
+      this.network.send(JSON.stringify(changeEvent.change))
+    })
+
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .bufferTime(1000)
       .filter((changeEvents: ChangeEvent[]) => {
         return changeEvents.length > 0
       })
 
-    multipleOperationsStream.subscribe(
-      (changeEvents: ChangeEvent[]) => {
-        console.log(`${changeEvents.length} operations:`)
-        changeEvents.forEach((changeEvent: ChangeEvent) => {
-          console.log(changeEvent.instance)
-          console.log(changeEvent.change)
-        })
-      })
+    // multipleOperationsStream.subscribe(
+    //   (changeEvents: ChangeEvent[]) => {
+    //     console.log(`${changeEvents.length} operations:`)
+    //     changeEvents.forEach((changeEvent: ChangeEvent) => {
+    //       console.log(changeEvent.instance)
+    //       console.log(changeEvent.change)
+    //     })
+    //   })
   }
 }
 
