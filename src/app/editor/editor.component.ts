@@ -1,6 +1,7 @@
 import { Component, Injectable, OnInit, ViewChild } from '@angular/core'
 import { Observable } from 'rxjs'
 import * as CodeMirror from 'codemirror'
+import * as MuteStructs  from 'mute-structs'
 
 import { LoggerService } from '../core/logger.service'
 import { NetworkService } from '../core/network/network.service'
@@ -58,15 +59,21 @@ export class EditorComponent implements OnInit {
         return new ChangeEvent(instance, change)
       })
 
-    operationStream.subscribe((changeEvent: ChangeEvent) => {
-      this.network.send(JSON.stringify(changeEvent.change))
-    })
-
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .bufferTime(1000)
       .filter((changeEvents: ChangeEvent[]) => {
         return changeEvents.length > 0
       })
+
+    const textOperationsStream: Observable<any[]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
+      return changeEvents.map( (changeEvent: ChangeEvent ) => {
+        return changeEvent.toTextOperation()
+      })
+    })
+
+    textOperationsStream.subscribe( (textOperations: any[]) => {
+      console.log('textOperations: ', textOperations)
+    })
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
@@ -88,5 +95,32 @@ class ChangeEvent {
   constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
     this.instance = instance
     this.change = change
+  }
+
+  toTextOperation(): any[] {
+    const textOperations = []
+    const pos: CodeMirror.Position = this.change.from
+    const index: number = this.instance.getDoc().indexFromPos(pos)
+
+    // Some changes should be translated into a TextDelete and a TextInsert operations
+    // It's especially the case when the changes replace a character
+    if (this.isDeleteOperation()) {
+      const length: number = this.change.removed.join('\n').length
+      textOperations.push(new MuteStructs.TextDelete(index, length))
+    }
+    if (this.isInsertOperation()) {
+      const text: string = this.change.text.join('\n')
+      textOperations.push(new MuteStructs.TextInsert(index, text))
+    }
+
+    return textOperations
+  }
+
+  isInsertOperation(): boolean {
+    return this.change.text.length > 1 || this.change.text[0].length > 0
+  }
+
+  isDeleteOperation(): boolean {
+    return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
 }
