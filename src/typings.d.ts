@@ -3,5 +3,5 @@
 
 declare var System: any
 
-declare module 'netflux';
-declare module 'random-material-color';
+declare module "netflux"
+declare module "random-material-color"
