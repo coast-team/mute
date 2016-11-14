@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core'
 import { Router, ActivatedRoute, Params } from '@angular/router'
 
+import { DocService } from './doc.service'
 import { NetworkService } from '../core/network/network.service'
 
 @Component({
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
+  providers: [DocService],
   styleUrls: ['./doc.component.css']
 })
 export class DocComponent implements OnInit {

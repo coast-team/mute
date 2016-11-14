@@ -3,6 +3,7 @@ import { Observable } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 import * as MuteStructs  from 'mute-structs'
 
+import { DocService } from '../doc/doc.service'
 import { LoggerService } from '../core/logger.service'
 import { NetworkService } from '../core/network/network.service'
 
@@ -20,14 +21,12 @@ import { NetworkService } from '../core/network/network.service'
 export class EditorComponent implements OnInit {
 
   private editor: CodeMirror.Editor
+  private docService: DocService
 
   @ViewChild('editorElt') editorElt
 
-  constructor(
-    private loggerService: LoggerService,
-    private network: NetworkService
-  ) {
-    this.loggerService = loggerService
+  constructor(docService: DocService) {
+    this.docService = docService
   }
 
   ngOnInit() {
@@ -71,9 +70,7 @@ export class EditorComponent implements OnInit {
       })
     })
 
-    textOperationsStream.subscribe( (textOperations: any[]) => {
-      console.log('textOperations: ', textOperations)
-    })
+    this.docService.setTextOperationsStream(textOperationsStream)
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
