@@ -3,5 +3,6 @@
 
 declare var System: any
 
-declare module "netflux"
-declare module "random-material-color"
+declare module 'mute-structs'
+declare module 'netflux'
+declare module 'random-material-color'
