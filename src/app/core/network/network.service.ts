@@ -1,86 +1,88 @@
 import { Injectable } from '@angular/core'
-import  * as netflux  from 'netflux'
-import { Observable } from 'rxjs'
-import { BehaviorSubject, ReplaySubject, AsyncSubject } from "rxjs/Rx"
+import { BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs/Rx'
+import * as netflux  from 'netflux'
 
+const pb = require('./message_pb.js')
 
 @Injectable()
 export class NetworkService {
 
   private webChannel
 
-  private _join: AsyncSubject<null>
-  private _peerJoin: ReplaySubject<number>
-  private _peerLeave: ReplaySubject<number>
-  private _peerPseudo: BehaviorSubject<Object>
-  private _peerCursor: BehaviorSubject<number>
-  private _peerSelection: BehaviorSubject<number>
+  private joinSubject: AsyncSubject<number>
+  private peerJoinSubject: ReplaySubject<number>
+  private peerLeaveSubject: ReplaySubject<number>
+  private peerPseudoSubject: BehaviorSubject<Object>
+  private peerCursorSubject: BehaviorSubject<number>
+  private peerSelectionSubject: BehaviorSubject<number>
 
   constructor() {
-    this._join = new AsyncSubject<null>()
-    this._peerJoin = new ReplaySubject<number>()
-    this._peerLeave = new ReplaySubject<number>()
-    this._peerPseudo = new BehaviorSubject<string>('Anonimous')
+    this.joinSubject = new AsyncSubject<number>()
+    this.peerJoinSubject = new ReplaySubject<number>()
+    this.peerLeaveSubject = new ReplaySubject<number>()
+    this.peerPseudoSubject = new BehaviorSubject<string>('Anonymous')
   }
 
   get onJoin () {
-    return this._join.asObservable()
+    return this.joinSubject.asObservable()
   }
 
-  get peerJoin () {
-    return this._peerJoin.asObservable()
+  get onPeerJoin () {
+    return this.peerJoinSubject.asObservable()
   }
 
-  get peerLeave () {
-    return this._peerLeave.asObservable()
+  get onPeerLeave () {
+    return this.peerLeaveSubject.asObservable()
   }
 
-  get peerPseudo () {
-    return this._peerPseudo.asObservable()
+  get onPeerPseudo () {
+    return this.peerPseudoSubject.asObservable()
   }
 
-  get peerCursor () {
-    return this._peerCursor.asObservable()
+  get onPeerCursor () {
+    return this.peerCursorSubject.asObservable()
   }
 
-  get peerSelection() {
-    return this._peerSelection.asObservable()
+  get onPeerSelection() {
+    return this.peerSelectionSubject.asObservable()
   }
 
-  emitPeerPseudo(pseudo: string, id: number = -1) {
+  sendPeerPseudo (pseudo: string, id: number = -1) {
+    let pseudoMsg = new pb.PeerPseudo()
+    pseudoMsg.setPseudo(pseudo)
+    let msg = new pb.Message()
+    msg.setPeerpseudo(pseudoMsg)
     if (id !== -1) {
-      this.webChannel.sendTo(id, JSON.stringify({
-        type: 1,
-        pseudo
-      }))
+      this.webChannel.sendTo(id, msg.serializeBinary())
     } else {
-      this.webChannel.send(JSON.stringify({
-        type: 1,
-        pseudo
-      }))
+      this.webChannel.send(msg.serializeBinary())
     }
-    this.webChannel.send(JSON.stringify({
-      type: 1,
-      pseudo
-    }))
   }
 
   join (key) {
     this.webChannel = netflux.create()
-    this.webChannel.onMessage = (id, message, isBroadcast) => {
-      let obj = JSON.parse(message)
-      if (obj.type === 1) {
-        console.log('My pseudo ' + obj.pseudo)
-        this._peerPseudo.next({ id, pseudo: obj.pseudo })
+
+    // Peer JOIN event
+    this.webChannel.onPeerJoin = (id) => { this.peerJoinSubject.next(id) }
+
+    // Peer LEAVE event
+    this.webChannel.onPeerLeave = (id) => { this.peerLeaveSubject.next(id) }
+
+    // Message event
+    this.webChannel.onMessage = (id, bytes, isBroadcast) => {
+      let msg = pb.Message.deserializeBinary(bytes)
+      switch (msg.getTypeCase()) {
+        case pb.Message.TypeCase.PEERPSEUDO:
+          this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
+          break
+        case pb.Message.TypeCase.TYPE_NOT_SET:
+          console.error('Protobuf: message type not set')
+          break
       }
-      // let msg = Message.deserializeBinary(bytes)
-      // switch (msg.getType())  {
-      //   case Message.Type.PEER_PSEUDO:
-      //     this._peerPseudo.next({id, pseudo: msg.getConent()})
-      // }
     }
-    this.webChannel.onPeerJoin = id => { this._peerJoin.next(id) }
-    this.webChannel.onPeerLeave = id => { this._peerLeave.next(id) }
+
+    // This is for demo to work out of the box.
+    // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
       .then(() => {
         console.log('Has OPENED')
@@ -89,8 +91,8 @@ export class NetworkService {
         return this.webChannel.join(key)
           .then(() => {
             console.log('Has JOINED')
-            this._join.next(null)
-            this._join.complete()
+            this.joinSubject.next(this.webChannel.myId)
+            this.joinSubject.complete()
           })
       })
   }

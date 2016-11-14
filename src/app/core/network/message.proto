@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+message Message {
+  oneof type {
+    PeerPseudo peerPseudo = 1;
+  }
+}
+
+message PeerPseudo {
+  string pseudo = 1;
+}
