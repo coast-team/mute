@@ -13,6 +13,7 @@ import { RightsideComponent } from './rightside/rightside.component'
 import { DocComponent } from './doc/doc.component'
 import { DocsComponent } from './docs/docs.component'
 import { CollaboratorsComponent } from './collaborators/collaborators.component'
+import { DevlabelComponent } from './devlabel/devlabel.component'
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { CollaboratorsComponent } from './collaborators/collaborators.component'
     RightsideComponent,
     DocComponent,
     DocsComponent,
-    CollaboratorsComponent
+    CollaboratorsComponent,
+    DevlabelComponent
   ],
   imports: [
     BrowserModule,
