@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
 import * as randomMC from 'random-material-color'
 
 import { NetworkService } from '../core/network/network.service'
@@ -10,35 +10,33 @@ import { NetworkService } from '../core/network/network.service'
 })
 export class CollaboratorsComponent implements OnInit {
 
+  private network: NetworkService
   private collaborators: Set<Collaborator> = new Set<Collaborator>()
 
-  constructor(private network: NetworkService) { }
+  constructor(network: NetworkService) {
+    this.network = network
+  }
 
   ngOnInit() {
-    this.network.peerJoin.subscribe(id => {
-      console.log('add id: ' + id)
+    this.network.onPeerJoin.subscribe((id) => {
       this.collaborators.add(
         new Collaborator(id, 'Anonymous', randomMC.getColor({ shades: ['200', '300']}))
       )
     })
 
-    this.network.peerLeave.subscribe(id => {
-      console.log('peer leaving...')
+    this.network.onPeerLeave.subscribe((id) => {
       for (let c of this.collaborators) {
-        // console.log('del id: ' + c.id)
         if (c.id === id) {
-          console.log('deleting...')
           this.collaborators.delete(c)
           break
         }
       }
     })
 
-    this.network.peerPseudo.subscribe((obj: any) => {
+    this.network.onPeerPseudo.subscribe(({id, pseudo}: {id: number, pseudo: string}) => {
       for (let c of this.collaborators) {
-        // console.log('del id: ' + c.id)
-        if (c.id === obj.id) {
-          c.pseudonym = obj.pseudo
+        if (c.id === id) {
+          c.pseudo = pseudo
           break
         }
       }
@@ -49,9 +47,13 @@ export class CollaboratorsComponent implements OnInit {
 
 
 class Collaborator {
-  constructor (
-    public id: number,
-    public pseudonym: string,
-    public color: string
-  ) {}
+  public id: number
+  public pseudo: string
+  public color: string
+
+  constructor (id: number, pseudo: string, color: string) {
+    this.id = id
+    this.pseudo = pseudo
+    this.color = color
+  }
 }

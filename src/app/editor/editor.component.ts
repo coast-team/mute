@@ -36,6 +36,16 @@ export class EditorComponent implements OnInit {
       mode: {name: 'javascript', globalVars: true}
     })
 
+    let peerCursor = document.createElement('span')
+    peerCursor.className = 'peerCursor'
+    setInterval(() => {
+      if (peerCursor.className.includes('clotted')) {
+        peerCursor.className = 'peerCursor'
+      } else {
+        peerCursor.className += ' clotted'
+      }
+    }, 600)
+    this.editor.getDoc().setBookmark({line: 2, ch: 30}, {widget: peerCursor})
 
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {

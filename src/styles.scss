@@ -25,4 +25,28 @@ html {
   .CodeMirror-line {
     line-height: 2.4rem;
   }
+
+  // .CodeMirror-widget {
+  //   display: inline-flex;
+  //   align-items: center;
+  //   height: 1.3em;
+  //   width: 1px;
+  // }
+
+  .peerCursor {
+    display: inline-block;
+    position: absolute;
+    top: .1em;
+    background-color: orange;
+    width: 1px;
+    height: 1.6em;
+    /* top: .5rem; */
+    // vertical-align: text-bottom;
+    transition: all .2s ease;
+
+    &.clotted {
+      height: 0em;
+      margin-top: 0.8em;
+    }
+  }
 }

@@ -1,22 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
 
 import { NetworkService } from '../network/network.service'
 
 @Injectable()
 export class ProfileService {
 
+  private network: NetworkService
+
   private storagePrefix = 'mute'
   private pseudonymDefault = 'Anonymous'
 
-  constructor(private network:NetworkService) {
-    this.network.onJoin.subscribe(() => {
-      console.log('Join event')
-      this.network.emitPeerPseudo(this.pseudonym)
-    })
+  constructor(network: NetworkService) {
+    this.network = network
 
-    this.network.peerJoin.subscribe(id => {
-      console.log('Join event')
-      this.network.emitPeerPseudo(this.pseudonym, id)
+    this.network.onPeerJoin.subscribe((id) => {
+      console.log('Send to joined peer, ID = ' + id)
+      this.network.sendPeerPseudo(this.pseudonym, id)
     })
   }
 
@@ -34,7 +33,7 @@ export class ProfileService {
     } else {
       this.removeItem('pseudonym')
     }
-    this.network.emitPeerPseudo(this.pseudonym)
+    this.network.sendPeerPseudo(this.pseudonym)
   }
 
   private setItem (key, value) {

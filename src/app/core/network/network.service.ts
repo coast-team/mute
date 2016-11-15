@@ -12,7 +12,7 @@ export class NetworkService {
   private joinSubject: AsyncSubject<number>
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
-  private peerPseudoSubject: BehaviorSubject<Object>
+  private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
   private peerCursorSubject: BehaviorSubject<number>
   private peerSelectionSubject: BehaviorSubject<number>
 
@@ -20,7 +20,7 @@ export class NetworkService {
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
-    this.peerPseudoSubject = new BehaviorSubject<string>('Anonymous')
+    this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
   }
 
   get onJoin () {
@@ -63,10 +63,10 @@ export class NetworkService {
     this.webChannel = netflux.create()
 
     // Peer JOIN event
-    this.webChannel.onPeerJoin = (id) => { this.peerJoinSubject.next(id) }
+    this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
 
     // Peer LEAVE event
-    this.webChannel.onPeerLeave = (id) => { this.peerLeaveSubject.next(id) }
+    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
