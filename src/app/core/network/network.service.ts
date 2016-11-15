@@ -49,6 +49,14 @@ export class NetworkService {
           const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
           this.remoteOperationsSubject.next(logootSAdd)
           break
+        case pb.Message.TypeCase.LOGOOTSDEL:
+          const logootSDelMsg: any = msg.getLogootsdel()
+          const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
+            return new MuteStructs.IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
+          })
+          const logootSDel: any = new MuteStructs.LogootSDel(lid)
+          this.remoteOperationsSubject.next(logootSDel)
+          break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           console.error('Protobuf: message type not set')
           break
@@ -108,6 +116,24 @@ export class NetworkService {
 
     const msg = new pb.Message()
     msg.setLogootsadd(logootSAddMsg)
+
+    this.webChannel.send(msg.serializeBinary())
+  }
+
+  sendLogootSDel (logootSDel: any) {
+    const lid: any[] = logootSDel.lid.map( (id: any) => {
+      const identifierInterval: any = new pb.IdentifierInterval()
+      identifierInterval.setBaseList(id.base)
+      identifierInterval.setBegin(id.begin)
+      identifierInterval.setEnd(id.end)
+      return identifierInterval
+    })
+
+    const logootSDelMsg = new pb.LogootSDel()
+    logootSDelMsg.setLidList(lid)
+
+    const msg = new pb.Message()
+    msg.setLogootsdel(logootSDelMsg)
 
     this.webChannel.send(msg.serializeBinary())
   }
