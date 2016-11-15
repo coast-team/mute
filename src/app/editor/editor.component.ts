@@ -80,6 +80,20 @@ export class EditorComponent implements OnInit {
     //       console.log(changeEvent.change)
     //     })
     //   })
+
+    this.docService.getRemoteTextOperationsStream().subscribe( (textOperations: any[]) => {
+      const doc: CodeMirror.Doc = this.editor.getDoc()
+
+      textOperations.forEach( (textOperation: any) => {
+        const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
+        if (textOperation instanceof MuteStructs.TextInsert) {
+          doc.replaceRange(textOperation.content, from)
+        } else if (textOperation instanceof MuteStructs.TextDelete) {
+          const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
+          doc.replaceRange('', from, to)
+        }
+      })
+    })
   }
 }
 
