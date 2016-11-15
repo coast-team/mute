@@ -21,6 +21,27 @@ export class NetworkService {
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
+
+    this.webChannel = netflux.create()
+
+    // Peer JOIN event
+    this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
+
+    // Peer LEAVE event
+    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
+
+    // Message event
+    this.webChannel.onMessage = (id, bytes, isBroadcast) => {
+      let msg = pb.Message.deserializeBinary(bytes)
+      switch (msg.getTypeCase()) {
+        case pb.Message.TypeCase.PEERPSEUDO:
+          this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
+          break
+        case pb.Message.TypeCase.TYPE_NOT_SET:
+          console.error('Protobuf: message type not set')
+          break
+      }
+    }
   }
 
   get onJoin () {
@@ -60,27 +81,6 @@ export class NetworkService {
   }
 
   join (key) {
-    this.webChannel = netflux.create()
-
-    // Peer JOIN event
-    this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
-
-    // Peer LEAVE event
-    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
-
-    // Message event
-    this.webChannel.onMessage = (id, bytes, isBroadcast) => {
-      let msg = pb.Message.deserializeBinary(bytes)
-      switch (msg.getTypeCase()) {
-        case pb.Message.TypeCase.PEERPSEUDO:
-          this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
-          break
-        case pb.Message.TypeCase.TYPE_NOT_SET:
-          console.error('Protobuf: message type not set')
-          break
-      }
-    }
-
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})

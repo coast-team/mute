@@ -6,8 +6,7 @@ import { ProfileService } from '../core/profile/profile.service'
 @Component({
   selector: 'mute-leftside',
   templateUrl: './leftside.component.html',
-  styleUrls: ['./leftside.component.scss'],
-  providers: [ProfileService]
+  styleUrls: ['./leftside.component.scss']
 })
 export class LeftsideComponent implements OnInit {
 
