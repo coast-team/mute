@@ -67,6 +67,8 @@ export class EditorComponent implements OnInit {
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .bufferTime(1000)
       .filter((changeEvents: ChangeEvent[]) => {
+        // From time to time, the buffer returns an empty array
+        // Allow to filter these cases
         return changeEvents.length > 0
       })
 
@@ -119,7 +121,7 @@ class ChangeEvent {
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
 
-    // Some changes should be translated into a TextDelete and a TextInsert operations
+    // Some changes should be translated into both a TextDelete and a TextInsert operations
     // It's especially the case when the changes replace a character
     if (this.isDeleteOperation()) {
       const length: number = this.change.removed.join('\n').length
