@@ -3,9 +3,31 @@ syntax = "proto3";
 message Message {
   oneof type {
     PeerPseudo peerPseudo = 1;
+    LogootSAdd logootSAdd = 2;
+    LogootSDel logootSDel = 3;
   }
 }
 
 message PeerPseudo {
   string pseudo = 1;
+}
+
+message LogootSAdd {
+  Identifier id = 1;
+  string content = 2;
+}
+
+message LogootSDel {
+  repeated IdentifierInterval lid = 1;
+}
+
+message Identifier {
+  repeated double base = 1;
+  int32 last = 2;
+}
+
+message IdentifierInterval {
+  repeated double base = 1;
+  int32 begin = 2;
+  int32 end = 3;
 }
