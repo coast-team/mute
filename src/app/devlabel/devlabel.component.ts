@@ -4,7 +4,7 @@ import 'rxjs/add/operator/toPromise'
 
 @Component({
   selector: 'mute-devlabel',
-  template: `Preview version (Nigtly build: <a [href]='url' target="_blank">{{shortID}}</a>)`,
+  template: `Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)`,
   styles: [`
     :host {
       position: fixed;
