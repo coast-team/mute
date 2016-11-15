@@ -20,7 +20,7 @@ export class DocService {
     })
   }
 
-  setTextOperationsStream(textOperationsStream: Observable<any[]>) {
+  setLocalTextOperationsStream(textOperationsStream: Observable<any[]>) {
     textOperationsStream.subscribe( (array: any[][]) => {
       this.handleTextOperations(array)
     })

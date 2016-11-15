@@ -78,7 +78,7 @@ export class EditorComponent implements OnInit {
       })
     })
 
-    this.docService.setTextOperationsStream(textOperationsStream)
+    this.docService.setLocalTextOperationsStream(textOperationsStream)
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
