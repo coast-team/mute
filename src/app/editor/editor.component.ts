@@ -57,6 +57,12 @@ export class EditorComponent implements OnInit {
       (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => {
         return new ChangeEvent(instance, change)
       })
+      .filter((changeEvent: ChangeEvent) => {
+        // The change's origin indicates the kind of changes performed
+        // When the application updates the editor programatically, this field remains undefined
+        // Allow to filter the changes performed by our application
+        return changeEvent.change.origin !== undefined
+      })
 
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .bufferTime(1000)
