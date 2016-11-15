@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs/Rx'
+
+import * as MuteStructs from 'mute-structs'
 import * as netflux  from 'netflux'
 
 const pb = require('./message_pb.js')
@@ -24,6 +26,8 @@ export class NetworkService {
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
 
+    this.remoteOperationsSubject = new ReplaySubject<any>()
+
     this.webChannel = netflux.create()
 
     // Peer JOIN event
@@ -39,13 +43,17 @@ export class NetworkService {
         case pb.Message.TypeCase.PEERPSEUDO:
           this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
           break
+        case pb.Message.TypeCase.LOGOOTSADD:
+          const logootSAddMsg = msg.getLogootsadd()
+          const identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+          const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
+          this.remoteOperationsSubject.next(logootSAdd)
+          break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           console.error('Protobuf: message type not set')
           break
       }
     }
-
-    this.remoteOperationsSubject = new ReplaySubject<any>()
   }
 
   get onJoin () {
@@ -86,6 +94,22 @@ export class NetworkService {
     } else {
       this.webChannel.send(msg.serializeBinary())
     }
+  }
+
+  sendLogootSAdd (logootSAdd: any) {
+    const identifier = new pb.Identifier()
+
+    identifier.setBaseList(logootSAdd.id.base)
+    identifier.setLast(logootSAdd.id.last)
+
+    const logootSAddMsg = new pb.LogootSAdd()
+    logootSAddMsg.setId(identifier)
+    logootSAddMsg.setContent(logootSAdd.l)
+
+    const msg = new pb.Message()
+    msg.setLogootsadd(logootSAddMsg)
+
+    this.webChannel.send(msg.serializeBinary())
   }
 
   join (key) {
