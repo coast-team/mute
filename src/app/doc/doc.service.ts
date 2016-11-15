@@ -34,6 +34,11 @@ export class DocService {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: any = textOperation.applyTo(this.doc)
+        if (logootSOperation instanceof MuteStructs.LogootSAdd) {
+          this.network.sendLogootSAdd(logootSOperation)
+        } else {
+          this.network.sendLogootSDel(logootSOperation)
+        }
         console.log(logootSOperation)
       })
       console.log('doc: ', this.doc)
