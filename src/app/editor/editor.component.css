@@ -9,3 +9,14 @@ md-card {
   flex-basis: 100%;
   width: 760px;
 }
+
+
+@media only screen and (max-width: 1366px) {
+  :host {
+    align-items: flex-start;
+  }
+
+  md-card {
+    width: 760px;
+  }
+}

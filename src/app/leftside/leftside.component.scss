@@ -35,3 +35,14 @@ md-sidenav-layout {
     }
   }
 }
+
+@media only screen and (max-width: 1366px) {
+  :host {
+    min-width: 20rem;
+  }
+  md-sidenav-layout {
+    md-sidenav {
+      width: 15rem;
+    }
+  }
+}

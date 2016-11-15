@@ -15,7 +15,6 @@
 .fixed {
   position: fixed;
   right: 0;
-  width: 30rem;
   height: 100%;
 
   md-sidenav-layout {
@@ -42,6 +41,29 @@
       md-tab-group {
         margin-top: 5rem;
         width: 30rem;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1366px) {
+  .fixed {
+
+    md-sidenav-layout {
+      md-sidenav {
+        padding-right: 0;
+
+        .docTitle {
+          width: 20rem;
+        }
+
+        md-tab-group {
+          margin-top: 5rem;
+          width: 20rem;
+        }
+      }
+      md-tab-group {
+        width: 20rem;
       }
     }
   }

@@ -11,3 +11,9 @@ mute-editor {
 mute-rightside {
   min-width: 30rem;
 }
+
+@media only screen and (max-width: 1366px) {
+  mute-rightside {
+    min-width: 20rem;
+  }
+}
