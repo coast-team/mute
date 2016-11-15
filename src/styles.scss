@@ -4,6 +4,11 @@
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~codemirror/lib/codemirror.css';
 
+@font-face {
+    font-family: Roboto;
+    src: url(assets/font/Roboto/Roboto-Light.ttf);
+}
+
 html {
   font-size: 10px;
 
@@ -21,6 +26,8 @@ html {
 */
 .CodeMirror {
   height: 100%;
+  font-family: Roboto, serif;
+  font-size: 1.6rem;
 
   .CodeMirror-line {
     line-height: 2.4rem;
@@ -36,9 +43,8 @@ html {
   .peerCursor {
     display: inline-block;
     position: absolute;
-    top: .1em;
     background-color: orange;
-    width: 1px;
+    width: 2px;
     height: 1.6em;
     /* top: .5rem; */
     // vertical-align: text-bottom;
