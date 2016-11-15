@@ -16,6 +16,8 @@ export class NetworkService {
   private peerCursorSubject: BehaviorSubject<number>
   private peerSelectionSubject: BehaviorSubject<number>
 
+  private remoteOperationsSubject: ReplaySubject<any>
+
   constructor() {
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
@@ -42,6 +44,8 @@ export class NetworkService {
           break
       }
     }
+
+    this.remoteOperationsSubject = new ReplaySubject<any>()
   }
 
   get onJoin () {
@@ -66,6 +70,10 @@ export class NetworkService {
 
   get onPeerSelection() {
     return this.peerSelectionSubject.asObservable()
+  }
+
+  get onRemoteOperations() {
+    return this.remoteOperationsSubject.asObservable()
   }
 
   sendPeerPseudo (pseudo: string, id: number = -1) {
