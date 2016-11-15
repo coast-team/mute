@@ -10,8 +10,8 @@ import { EditorComponent } from './editor/editor.component'
 import { CoreModule } from './core/core.module'
 import { LeftsideComponent } from './leftside/leftside.component'
 import { RightsideComponent } from './rightside/rightside.component'
-import { DocComponent } from './doc/doc.component';
-import { DocsComponent } from './docs/docs.component';
+import { DocComponent } from './doc/doc.component'
+import { DocsComponent } from './docs/docs.component'
 import { CollaboratorsComponent } from './collaborators/collaborators.component'
 
 @NgModule({

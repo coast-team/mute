@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
+import { ActivatedRoute, UrlSegment } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 
@@ -10,14 +10,17 @@ import { ProfileService } from '../core/profile/profile.service'
   providers: [ProfileService]
 })
 export class LeftsideComponent implements OnInit {
+
+  private route: ActivatedRoute
+  private profileService: ProfileService
+
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
-  constructor (
-    private route: ActivatedRoute,
-    private profileService: ProfileService
-  ) {
+  constructor (route: ActivatedRoute, profileService: ProfileService) {
+    this.route = route
+    this.profileService = profileService
   }
 
   ngOnInit () {
