@@ -4,8 +4,6 @@ import * as CodeMirror from 'codemirror'
 import * as MuteStructs  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
-import { LoggerService } from '../core/logger.service'
-import { NetworkService } from '../core/network/network.service'
 
 @Component({
   selector: 'mute-editor',

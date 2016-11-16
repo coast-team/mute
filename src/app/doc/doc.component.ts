@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { Router, ActivatedRoute, Params } from '@angular/router'
+import { ActivatedRoute, Params } from '@angular/router'
 
 import { DocService } from './doc.service'
 import { NetworkService } from '../core/network/network.service'
@@ -12,14 +12,17 @@ import { NetworkService } from '../core/network/network.service'
 })
 export class DocComponent implements OnInit {
 
-  constructor(
-    private route: ActivatedRoute,
-    private network: NetworkService
-  ) { }
+  private route: ActivatedRoute
+  private network: NetworkService
+
+  constructor(route: ActivatedRoute, network: NetworkService) {
+    this.route = route
+    this.network = network
+  }
 
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
-      let key = params['key']; // (+) converts string 'id' to a number
+      let key = params['key'] // (+) converts string 'id' to a number
       console.log('Key is: ' + key)
       this.network.join(key)
     })
