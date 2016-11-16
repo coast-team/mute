@@ -65,7 +65,7 @@ export class EditorComponent implements OnInit {
       })
 
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
-      .bufferTime(1000)
+      .bufferTime(1)
       .filter((changeEvents: ChangeEvent[]) => {
         // From time to time, the buffer returns an empty array
         // Allow to filter these cases
