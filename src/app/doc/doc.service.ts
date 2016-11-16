@@ -39,9 +39,7 @@ export class DocService {
         } else {
           this.network.sendLogootSDel(logootSOperation)
         }
-        console.log(logootSOperation)
       })
-      console.log('doc: ', this.doc)
     })
   }
 

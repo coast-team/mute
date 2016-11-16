@@ -47,6 +47,7 @@ export class NetworkService {
           const logootSAddMsg = msg.getLogootsadd()
           const identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
           const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
+          console.log('logootSAdd operation received: ', logootSAdd)
           this.remoteOperationsSubject.next(logootSAdd)
           break
         case pb.Message.TypeCase.LOGOOTSDEL:
@@ -55,6 +56,7 @@ export class NetworkService {
             return new MuteStructs.IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
           })
           const logootSDel: any = new MuteStructs.LogootSDel(lid)
+          console.log('logootSDel operation received: ', logootSDel)
           this.remoteOperationsSubject.next(logootSDel)
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
@@ -117,6 +119,7 @@ export class NetworkService {
     const msg = new pb.Message()
     msg.setLogootsadd(logootSAddMsg)
 
+    console.log('logootSAdd operation send: ', logootSAdd)
     this.webChannel.send(msg.serializeBinary())
   }
 
@@ -135,6 +138,7 @@ export class NetworkService {
     const msg = new pb.Message()
     msg.setLogootsdel(logootSDelMsg)
 
+    console.log('logootSDel operation send: ', logootSDel)
     this.webChannel.send(msg.serializeBinary())
   }
 
