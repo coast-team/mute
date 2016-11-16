@@ -74,7 +74,7 @@ export class EditorComponent implements OnInit {
 
     const textOperationsStream: Observable<any[]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
       return changeEvents.map( (changeEvent: ChangeEvent ) => {
-        return changeEvent.toTextOperation()
+        return changeEvent.toTextOperations()
       })
     })
 
@@ -118,7 +118,7 @@ class ChangeEvent {
     this.change = change
   }
 
-  toTextOperation(): any[] {
+  toTextOperations(): any[] {
     const textOperations = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
