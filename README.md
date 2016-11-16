@@ -1,4 +1,4 @@
-# Mute
+# MUTE
 
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-beta.20-4.
 
@@ -9,7 +9,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app w
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive/pipe/service/class`.
 
-## Build
+## Building
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
@@ -26,6 +26,19 @@ Before running the tests make sure you are serving the app via `ng serve`.
 
 Run `ng github-pages:deploy` to deploy to Github Pages.
 
+
+## Building Docker image
+
+A basic `Dockerfile` is provided. It is based on the official [NGINX](https://hub.docker.com/_/nginx/) container (built on top of [Alpine Linux](https://alpinelinux.org/)) that will serve the packaged angular application.
+
+Run `ng build` to build the application.
+Then, run `docker build -t 'coast-team/mute' .` to build the container image.
+
+You can start a new container using the following command `docker run -it -p 80:80 coast-team/mute`.
+
+
 ## Further help
 
 To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
