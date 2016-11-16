@@ -47,7 +47,19 @@ export class DocService {
 
   handleRemoteOperation(logootSOperation: any) {
     const textOperations: any[] = logootSOperation.execute(this.doc)
+    this.updateDocString(textOperations)
     return textOperations
+  }
+
+  updateDocString(textOperations: any[]) {
+    textOperations.forEach( (textOperation: any) => {
+      const currentStr: string = this.doc.str
+      if (textOperation instanceof MuteStructs.TextInsert) {
+        this.doc.str = currentStr.substring(0, textOperation.offset) + textOperation.content + currentStr.substring(textOperation.offset)
+      } else {
+        this.doc.str = currentStr.substring(0, textOperation.offset) + currentStr.substring(textOperation.offset + textOperation.length)
+      }
+    })
   }
 
 }
