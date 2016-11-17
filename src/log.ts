@@ -33,46 +33,31 @@ class Log {
 
  /**
   * Browser native console.trace. Works in Chrome, but maybe not in other browsers.
-  * If 2 arguments: the first is a group name and the second is message.
-  * If 1 argument then it is a message.
-  * @param {[type]} ...params 1 or 2 arguments
+  * @param {string} msg   message
+  * @param {any}    obj   any javascript object
   */
-  trace (...params): void {
-    if (params.length === 2) {
-      loglevel.trace(this.prefix(params[0]) + params[1])
-    } else {
-      loglevel.trace(this.prefix('TRACE') + params[0])
-    }
+  trace (msg: string, obj?: any): void {
+    loglevel.trace(this.prefix('TRACE') + msg, obj)
   }
 
   /**
    * Browser native console.warn (shows stack trace). Works in Chrome, but maybe
    * not well in other browsers.
-   * If 2 arguments: the first is a group name and the second is a message.
-   * If 1 argument then it is a message.
-   * @param {[type]} ...params 1 or 2 arguments
+   * @param {string} msg   message
+   * @param {any}    obj   any javascript object
    */
-  warn (...params): void {
-    if (params.length === 2) {
-      loglevel.warn(this.prefix('WARN:' + params[0]) + params[1])
-    } else {
-      loglevel.warn(this.prefix('WARN:') + params[0])
-    }
+  warn (msg: string, obj?: any): void {
+    loglevel.warn(this.prefix('WARN') + msg, obj)
   }
 
   /**
    * Browser native console.error (shows stack trace). Works in Chrome, but maybe
    * not well in other browsers.
-   * If 2 arguments: the first is a group name and the second is a message. 
-   * If 1 argument then it is a message.
-   * @param {[type]} ...params 1 or 2 arguments
+   * @param {string} msg   message
+   * @param {any}    obj   any javascript object
    */
-  error (...params): void {
-    if (params.length === 2) {
-      loglevel.error(this.prefix('ERROR:' + params[0]) + params[1])
-    } else {
-      loglevel.error(this.prefix('ERROR:') + params[0])
-    }
+  error (msg: string, obj?: any): void {
+    loglevel.error(this.prefix('ERROR') + msg, obj)
   }
 
   /**

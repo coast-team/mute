@@ -148,8 +148,11 @@ export class NetworkService {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
       })
       .catch((reason) => {
-        log.warn('network', 'Could not open a door with the signaling: '
+        log.warn('Could not open a door with the signaling: '
           + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
+          log.error('Hello world!', this.webChannel)
+        log.error('Hello world! 2')
+        log.trace('Hello world!', this.webChannel)
         return this.webChannel.join(key)
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
