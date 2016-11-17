@@ -25,21 +25,21 @@ export class CollaboratorsComponent implements OnInit {
     })
 
     this.network.onPeerLeave.subscribe((id) => {
-      for (let c of this.collaborators) {
-        if (c.id === id) {
-          this.collaborators.delete(c)
-          break
+      // For of loop was used here instead of forEach, but it seams to be an
+      // old Typescript issue in case when we target es5.
+      this.collaborators.forEach((value) => {
+        if (value.id === id) {
+          this.collaborators.delete(value)
         }
-      }
+      })
     })
 
     this.network.onPeerPseudo.subscribe(({id, pseudo}: {id: number, pseudo: string}) => {
-      for (let c of this.collaborators) {
-        if (c.id === id) {
-          c.pseudo = pseudo
-          break
+      this.collaborators.forEach((value) => {
+        if (value.id === id) {
+          value.pseudo = pseudo
         }
-      }
+      })
     })
   }
 
