@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise'
   styles: [`
     :host {
       position: fixed;
-      font-style: italic;
+      font-size: 1.1rem;
       bottom: 20px;
       right: 20px;
     }
@@ -16,7 +16,7 @@ import 'rxjs/add/operator/toPromise'
 })
 export class DevlabelComponent {
 
-  private url: string = 'https://github.com/coast-team/mute/commit/'
+  private url: string = 'https://github.com/coast-team/mute/tree/'
   private shortID: string
 
   constructor(http: Http) {
