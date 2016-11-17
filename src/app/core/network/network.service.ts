@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs/Rx'
 
 import * as MuteStructs from 'mute-structs'
-import * as netflux  from 'netflux'
+import * as netflux from 'netflux'
 
 const pb = require('./message_pb.js')
 
@@ -27,7 +27,6 @@ export class NetworkService {
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
-
     this.webChannel = netflux.create()
 
     // Peer JOIN event
@@ -47,7 +46,7 @@ export class NetworkService {
           const logootSAddMsg = msg.getLogootsadd()
           const identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
           const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
-          console.log('logootSAdd operation received: ', logootSAdd)
+          log.info('operation:network', 'received insert: ', logootSAdd)
           this.remoteOperationsSubject.next(logootSAdd)
           break
         case pb.Message.TypeCase.LOGOOTSDEL:
@@ -56,11 +55,11 @@ export class NetworkService {
             return new MuteStructs.IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
           })
           const logootSDel: any = new MuteStructs.LogootSDel(lid)
-          console.log('logootSDel operation received: ', logootSDel)
+          log.info('operation:network', 'received delete: ', logootSDel)
           this.remoteOperationsSubject.next(logootSDel)
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
-          console.error('Protobuf: message type not set')
+          log.error('network', 'Protobuf: message type not set')
           break
       }
     }
@@ -119,7 +118,6 @@ export class NetworkService {
     const msg = new pb.Message()
     msg.setLogootsadd(logootSAddMsg)
 
-    console.log('logootSAdd operation send: ', logootSAdd)
     this.webChannel.send(msg.serializeBinary())
   }
 
@@ -138,7 +136,6 @@ export class NetworkService {
     const msg = new pb.Message()
     msg.setLogootsdel(logootSDelMsg)
 
-    console.log('logootSDel operation send: ', logootSDel)
     this.webChannel.send(msg.serializeBinary())
   }
 
@@ -147,14 +144,19 @@ export class NetworkService {
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
       .then(() => {
-        console.log('Has OPENED')
+        log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
       })
-      .catch(() => {
+      .catch((reason) => {
+        log.warn('network', 'Could not open a door with the signaling: '
+          + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
         return this.webChannel.join(key)
           .then(() => {
-            console.log('Has JOINED')
+            log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
             this.joinSubject.next(this.webChannel.myId)
             this.joinSubject.complete()
+          })
+          .catch((reason) => {
+            log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
           })
       })
   }

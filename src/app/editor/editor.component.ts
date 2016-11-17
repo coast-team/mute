@@ -90,7 +90,7 @@ export class EditorComponent implements OnInit {
     this.docService.getRemoteTextOperationsStream().subscribe( (textOperations: any[]) => {
       const doc: CodeMirror.Doc = this.editor.getDoc()
 
-      console.log('textOperations applied: ', textOperations)
+      log.info('operation:editor', 'applied: ', textOperations)
 
       textOperations.forEach( (textOperation: any) => {
         const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
@@ -132,8 +132,7 @@ class ChangeEvent {
       textOperations.push(new MuteStructs.TextInsert(index, text))
     }
 
-    console.log('textOperations generated: ', textOperations)
-
+    log.info('operation:editor', 'generated: ', textOperations)
     return textOperations
   }
 

@@ -15,6 +15,7 @@ import { DocsComponent } from './docs/docs.component'
 import { CollaboratorsComponent } from './collaborators/collaborators.component'
 import { DevlabelComponent } from './devlabel/devlabel.component'
 
+
 @NgModule({
   declarations: [
     AppComponent,

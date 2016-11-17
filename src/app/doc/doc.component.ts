@@ -23,7 +23,6 @@ export class DocComponent implements OnInit {
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
       let key = params['key'] // (+) converts string 'id' to a number
-      console.log('Key is: ' + key)
       this.network.join(key)
     })
   }

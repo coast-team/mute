@@ -3,6 +3,13 @@
 
 declare var System: any
 
+// Logging frameworks global variables
+declare var log: Log
+declare var BRAGI: any
+
+// FIXME: this is for Protobuf in NetworkService
+declare function require(str: string)
+
 declare module 'mute-structs'
 declare module 'netflux'
 declare module 'random-material-color'

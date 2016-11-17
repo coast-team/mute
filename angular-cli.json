@@ -20,7 +20,10 @@
       "styles": [
         "styles.scss"
       ],
-      "scripts": [],
+      "scripts": [
+        "../node_modules/loglevel/dist/loglevel.min.js",
+        "../node_modules/bragi-browser/dist/bragi.min.js"
+      ],
       "environments": {
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",

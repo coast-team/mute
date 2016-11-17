@@ -14,7 +14,6 @@ export class ProfileService {
     this.network = network
 
     this.network.onPeerJoin.subscribe((id) => {
-      console.log('Send to joined peer, ID = ' + id)
       this.network.sendPeerPseudo(this.pseudonym, id)
     })
   }

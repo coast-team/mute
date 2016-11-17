@@ -49,7 +49,7 @@
     "no-inferrable-types": true,
     "no-invalid-this": true,
     "no-require-imports": false,
-    "no-shadowed-variable": true,
+    "no-shadowed-variable": false,
     "no-string-literal": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
