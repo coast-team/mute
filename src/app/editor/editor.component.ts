@@ -63,12 +63,17 @@ export class EditorComponent implements OnInit {
       })
 
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
-      .bufferTime(1)
+      .map((changeEvent: ChangeEvent) => {
+        return [changeEvent]
+      })
+      /*
+      .bufferTime(1000)
       .filter((changeEvents: ChangeEvent[]) => {
         // From time to time, the buffer returns an empty array
         // Allow to filter these cases
         return changeEvents.length > 0
       })
+      */
 
     const textOperationsStream: Observable<any[]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
       return changeEvents.map( (changeEvent: ChangeEvent ) => {
