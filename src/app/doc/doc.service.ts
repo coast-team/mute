@@ -13,8 +13,10 @@ export class DocService {
   private remoteTextOperationsStream: Observable<any[]>
 
   constructor(network: NetworkService) {
-    this.doc = new MuteStructs.LogootSRopes(0)
     this.network = network
+    this.network.onJoin.subscribe( (id: number) => {
+      this.doc = new MuteStructs.LogootSRopes(id)
+    })
     this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
       return this.handleRemoteOperation(logootSOperation)
     })

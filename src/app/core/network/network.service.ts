@@ -146,6 +146,8 @@ export class NetworkService {
     return this.webChannel.open({key})
       .then(() => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
+        this.joinSubject.next(this.webChannel.myId)
+        this.joinSubject.complete()
       })
       .catch((reason) => {
         log.warn('Could not open a door with the signaling: '
