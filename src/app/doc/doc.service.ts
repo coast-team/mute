@@ -43,10 +43,12 @@ export class DocService {
         }
       })
     })
+    log.info('operation:doc', 'updated doc: ', this.doc)
   }
 
   handleRemoteOperation(logootSOperation: any) {
     const textOperations: any[] = logootSOperation.execute(this.doc)
+    log.info('operation:doc', 'updated doc: ', this.doc)
     return textOperations
   }
 
