@@ -30,6 +30,9 @@ export class NetworkService {
     this.remoteOperationsSubject = new ReplaySubject<any>()
     this.webChannel = netflux.create()
 
+    // Leave webChannel before closing tab or browser
+    window.addEventListener('beforeunload', (event) => this.webChannel.leave())
+
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
 
