@@ -7,7 +7,6 @@ declare var System: any
 declare var log: Log
 declare var BRAGI: any
 
-declare module 'mute-structs'
 declare module 'netflux'
 declare module 'random-material-color'
 
