@@ -5,6 +5,7 @@ import { BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs/Rx'
 import * as MuteStructs from 'mute-structs'
 import * as netflux from 'netflux'
 
+import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
 
 @Injectable()
@@ -28,7 +29,7 @@ export class NetworkService {
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
-    this.webChannel = netflux.create()
+    this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
     // Leave webChannel before closing tab or browser
     window.addEventListener('beforeunload', (event) => this.webChannel.leave())
@@ -155,9 +156,6 @@ export class NetworkService {
       .catch((reason) => {
         log.warn('Could not open a door with the signaling: '
           + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
-          log.error('Hello world!', this.webChannel)
-        log.error('Hello world! 2')
-        log.trace('Hello world!', this.webChannel)
         return this.webChannel.join(key)
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
