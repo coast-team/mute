@@ -5,6 +5,7 @@ message Message {
     PeerPseudo peerPseudo = 1;
     LogootSAdd logootSAdd = 2;
     LogootSDel logootSDel = 3;
+    LogootSRopes logootSRopes = 4;
   }
 }
 
@@ -19,6 +20,24 @@ message LogootSAdd {
 
 message LogootSDel {
   repeated IdentifierInterval lid = 1;
+}
+
+message LogootSRopes {
+  RopesNode root = 1;
+  string str = 2;
+}
+
+message RopesNode {
+  LogootSBlock block = 1;
+  RopesNode left = 2;
+  RopesNode right = 3;
+  int32 offset = 4;
+  int32 length = 5;
+}
+
+message LogootSBlock {
+  IdentifierInterval id = 1;
+  int32 nbElement = 2;
 }
 
 message Identifier {
