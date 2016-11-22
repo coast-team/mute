@@ -128,10 +128,7 @@ export class NetworkService {
 
   sendLogootSDel (logootSDel: any) {
     const lid: any[] = logootSDel.lid.map( (id: any) => {
-      const identifierInterval: any = new pb.IdentifierInterval()
-      identifierInterval.setBaseList(id.base)
-      identifierInterval.setBegin(id.begin)
-      identifierInterval.setEnd(id.end)
+      const identifierInterval: any = this.generateIdentifierInterval(id)
       return identifierInterval
     })
 
@@ -143,6 +140,59 @@ export class NetworkService {
 
     this.webChannel.send(msg.serializeBinary())
   }
+
+
+  sendDoc (id: number, doc: MuteStructs.LogootSRopes) {
+    const msg = new pb.Message()
+    msg.setStr(doc.str)
+
+    if(doc.root instanceof MuteStructs.RopesNodes) {
+      const ropesMsg = this.generateRopesNodeMsg(doc.root)
+      msg.setLogootSRopes(ropesMsg)
+    }
+
+    this.webChannel.sendTo(id, msg.serializeBinary())
+  }
+
+  generateRopesNodeMsg (ropesNode: MuteStructs.RopesNodes): any {
+    const ropesNodeMsg = new pb.RopesNodes()
+
+    const blockMsg = this.generateBlockMsg(ropesNode.block)
+    ropesNodeMsg.setBlock(blockMsg)
+
+    if(ropesNode.left instanceof MuteStructs.RopesNodes) {
+      ropesNodeMsg.setLeft(this.generateRopesNodeMsg(ropesNode.left))
+    }
+
+    if(ropesNode.right instanceof MuteStructs.RopesNodes) {
+      ropesNodeMsg.setRight(this.generateRopesNodeMsg(ropesNode.right))
+    }
+
+    ropesNodeMsg.setOffset(ropesNode.offset)
+    ropesNodeMsg.setLength(ropesNode.length)
+
+    return ropesNodeMsg
+  }
+
+  generateBlockMsg (block: MuteStructs.LogootSBlock): any {
+    const blockMsg = new pb.LogootSBlock()
+
+    blockMsg.setId(this.generateIdentifierInterval(block.id))
+    blockMsg.setNbElement(block.nbElement)
+
+    return blockMsg
+  }
+
+  generateIdentifierInterval (id: MuteStructs.IdentifierInterval): any {
+    const identifierInterval = new pb.IdentifierInterval()
+
+    identifierInterval.setBaseList(id.base)
+    identifierInterval.setBegin(id.begin)
+    identifierInterval.setEnd(id.end)
+
+    return identifierInterval
+  }
+
 
   join (key) {
     // This is for demo to work out of the box.
