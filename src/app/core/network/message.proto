@@ -6,6 +6,7 @@ message Message {
     LogootSAdd logootSAdd = 2;
     LogootSDel logootSDel = 3;
     LogootSRopes logootSRopes = 4;
+    QueryDoc queryDoc = 5;
   }
 }
 
@@ -50,3 +51,5 @@ message IdentifierInterval {
   int32 begin = 2;
   int32 end = 3;
 }
+
+message QueryDoc {}
