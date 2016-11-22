@@ -141,6 +141,14 @@ export class NetworkService {
     this.webChannel.send(msg.serializeBinary())
   }
 
+  sendQueryDoc () {
+    const msg = new pb.Message()
+
+    const queryDoc = new pb.QueryDoc()
+    msg.setQuerydoc(queryDoc)
+
+    this.webChannel.send(msg.serializeBinary())
+  }
 
   sendDoc (id: number, doc: MuteStructs.LogootSRopes) {
     const msg = new pb.Message()
@@ -211,6 +219,7 @@ export class NetworkService {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
             this.joinSubject.next(this.webChannel.myId)
             this.joinSubject.complete()
+            this.sendQueryDoc()
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
