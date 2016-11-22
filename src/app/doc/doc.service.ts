@@ -22,6 +22,11 @@ export class DocService {
       this.network.setDocStream(this.docSubject.asObservable())
     })
 
+    this.network.onJoinDoc
+	// Check to filter null values
+    .filter( (doc: MuteStructs.LogootSRopes) => doc instanceof MuteStructs.LogootSRopes )
+    .subscribe( (doc: MuteStructs.LogootSRopes) => {
+      this.doc = doc
     })
     this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
       return this.handleRemoteOperation(logootSOperation)

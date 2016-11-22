@@ -23,6 +23,8 @@ export class NetworkService {
   private remoteOperationsSubject: ReplaySubject<any>
 
   private queryDocSubject: BehaviorSubject<number>
+  private joinDocSubject: BehaviorSubject<MuteStructs.LogootSRopes>
+
   constructor() {
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
@@ -32,6 +34,7 @@ export class NetworkService {
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
     this.queryDocSubject = new BehaviorSubject<number>(0)
+    this.joinDocSubject = new BehaviorSubject<MuteStructs.LogootSRopes>(null)
 
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
@@ -82,6 +85,7 @@ export class NetworkService {
           }
 
           const doc: MuteStructs.LogootSRopes = MuteStructs.LogootSRopes.fromPlain(myId, clock, plainDoc)
+          this.joinDocSubject.next(doc)
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           log.error('network', 'Protobuf: message type not set')
@@ -116,6 +120,10 @@ export class NetworkService {
 
   get onRemoteOperations() {
     return this.remoteOperationsSubject.asObservable()
+  }
+
+  get onJoinDoc() {
+    return this.joinDocSubject.asObservable()
   }
 
   setDocStream (docStream: Observable<MuteStructs.LogootSRopes>) {
