@@ -70,6 +70,19 @@ export class NetworkService {
         case pb.Message.TypeCase.QUERYDOC:
           this.queryDocSubject.next(id)
           break
+        case pb.Message.TypeCase.LOGOOTSROPES:
+          const myId: number = this.webChannel.myId
+          const clock = 0
+
+          const plainDoc: any = msg.toObject().logootsropes
+
+          // Protobuf rename keys like 'base' to 'baseList' because, just because...
+          if (plainDoc.root instanceof Object) {
+            this.renameKeys(plainDoc.root)
+          }
+
+          const doc: MuteStructs.LogootSRopes = MuteStructs.LogootSRopes.fromPlain(myId, clock, plainDoc)
+          break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           log.error('network', 'Protobuf: message type not set')
           break
