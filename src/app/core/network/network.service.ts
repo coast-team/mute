@@ -225,6 +225,17 @@ export class NetworkService {
     return identifierInterval
   }
 
+  // FIXME: Prevent Protobuf from renaming our fields or move this code elsewhere
+  renameKeys (node: {block: {id: any, nbElement?: any, nbelement: number}, right?: any, left?: any}) {
+    node.block.id.base = node.block.id.baseList
+    node.block.nbElement = node.block.nbelement
+    if (node.left) {
+      this.renameKeys(node.left)
+    }
+    if (node.right) {
+      this.renameKeys(node.right)
+    }
+  }
 
   join (key) {
     // This is for demo to work out of the box.
