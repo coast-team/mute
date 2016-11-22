@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs'
+import { BehaviorSubject, Observable } from 'rxjs'
 
 import { NetworkService } from '../core/network/network.service'
 
@@ -11,11 +11,17 @@ export class DocService {
   private doc: any
   private network: NetworkService
   private remoteTextOperationsStream: Observable<any[]>
+  private docSubject: BehaviorSubject<MuteStructs.LogootSRopes>
 
   constructor(network: NetworkService) {
     this.network = network
     this.network.onJoin.subscribe( (id: number) => {
       this.doc = new MuteStructs.LogootSRopes(id)
+      // Emit initial value
+      this.docSubject = new BehaviorSubject<MuteStructs.LogootSRopes>(this.doc)
+      this.network.setDocStream(this.docSubject.asObservable())
+    })
+
     })
     this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
       return this.handleRemoteOperation(logootSOperation)
@@ -44,11 +50,13 @@ export class DocService {
       })
     })
     log.info('operation:doc', 'updated doc: ', this.doc)
+    this.docSubject.next(this.doc)
   }
 
   handleRemoteOperation(logootSOperation: any) {
     const textOperations: any[] = logootSOperation.execute(this.doc)
     log.info('operation:doc', 'updated doc: ', this.doc)
+    this.docSubject.next(this.doc)
     return textOperations
   }
 

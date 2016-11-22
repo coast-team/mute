@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, ReplaySubject, AsyncSubject } from 'rxjs/Rx'
+import { BehaviorSubject, ReplaySubject, AsyncSubject, Observable } from 'rxjs/Rx'
 
 import * as MuteStructs from 'mute-structs'
 import * as netflux from 'netflux'
@@ -22,6 +22,7 @@ export class NetworkService {
 
   private remoteOperationsSubject: ReplaySubject<any>
 
+  private queryDocSubject: BehaviorSubject<number>
   constructor() {
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
@@ -29,6 +30,9 @@ export class NetworkService {
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
+
+    this.queryDocSubject = new BehaviorSubject<number>(0)
+
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
     // Leave webChannel before closing tab or browser
@@ -63,6 +67,9 @@ export class NetworkService {
           log.info('operation:network', 'received delete: ', logootSDel)
           this.remoteOperationsSubject.next(logootSDel)
           break
+        case pb.Message.TypeCase.QUERYDOC:
+          this.queryDocSubject.next(id)
+          break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           log.error('network', 'Protobuf: message type not set')
           break
@@ -96,6 +103,19 @@ export class NetworkService {
 
   get onRemoteOperations() {
     return this.remoteOperationsSubject.asObservable()
+  }
+
+  setDocStream (docStream: Observable<MuteStructs.LogootSRopes>) {
+    this.queryDocSubject
+    .filter( (id: number) => id > 0)
+    .withLatestFrom(
+      docStream,
+      (id: number, doc: MuteStructs.LogootSRopes) => {
+        return new QueryDocEvent(id, doc)
+      }
+    ).subscribe( (queryDocEvent: QueryDocEvent) => {
+      this.sendDoc(queryDocEvent.id, queryDocEvent.doc)
+    })
   }
 
   sendPeerPseudo (pseudo: string, id: number = -1) {
@@ -231,4 +251,13 @@ export class NetworkService {
     this.webChannel(message)
   }
 
+}
+
+class QueryDocEvent {
+  public id: number
+  public doc: MuteStructs.LogootSRopes
+  constructor(id: number, doc: MuteStructs.LogootSRopes) {
+    this.id = id
+    this.doc = doc
+  }
 }
