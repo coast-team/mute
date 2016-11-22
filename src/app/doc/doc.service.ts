@@ -12,9 +12,13 @@ export class DocService {
   private network: NetworkService
   private remoteTextOperationsStream: Observable<any[]>
   private docSubject: BehaviorSubject<MuteStructs.LogootSRopes>
+  private initEditorSubject: BehaviorSubject<string>
 
   constructor(network: NetworkService) {
     this.network = network
+
+    this.initEditorSubject = new BehaviorSubject<string>('')
+
     this.network.onJoin.subscribe( (id: number) => {
       this.doc = new MuteStructs.LogootSRopes(id)
       // Emit initial value
@@ -27,7 +31,9 @@ export class DocService {
     .filter( (doc: MuteStructs.LogootSRopes) => doc instanceof MuteStructs.LogootSRopes )
     .subscribe( (doc: MuteStructs.LogootSRopes) => {
       this.doc = doc
+      this.initEditorSubject.next(doc.str)
     })
+
     this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
       return this.handleRemoteOperation(logootSOperation)
     })
@@ -37,6 +43,10 @@ export class DocService {
     textOperationsStream.subscribe( (array: any[][]) => {
       this.handleTextOperations(array)
     })
+  }
+
+  getInitEditorStream(): Observable<string> {
+    return this.initEditorSubject.asObservable()
   }
 
   getRemoteTextOperationsStream(): Observable<any[]> {

@@ -59,7 +59,7 @@ export class EditorComponent implements OnInit {
         // The change's origin indicates the kind of changes performed
         // When the application updates the editor programatically, this field remains undefined
         // Allow to filter the changes performed by our application
-        return changeEvent.change.origin !== undefined
+        return changeEvent.change.origin !== undefined && changeEvent.change.origin !== 'setValue'
       })
 
     const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
@@ -82,6 +82,10 @@ export class EditorComponent implements OnInit {
     })
 
     this.docService.setLocalTextOperationsStream(textOperationsStream)
+
+    this.docService.getInitEditorStream().subscribe( (str: string) => {
+      this.editor.setValue(str)
+    })
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
