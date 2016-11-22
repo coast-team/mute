@@ -172,27 +172,31 @@ export class NetworkService {
 
   sendDoc (id: number, doc: MuteStructs.LogootSRopes) {
     const msg = new pb.Message()
-    msg.setStr(doc.str)
 
-    if(doc.root instanceof MuteStructs.RopesNodes) {
+    const logootSRopesMsg = new pb.LogootSRopes()
+    logootSRopesMsg.setStr(doc.str)
+
+    if (doc.root instanceof MuteStructs.RopesNodes) {
       const ropesMsg = this.generateRopesNodeMsg(doc.root)
-      msg.setLogootSRopes(ropesMsg)
+      logootSRopesMsg.setRoot(ropesMsg)
     }
+
+    msg.setLogootsropes(logootSRopesMsg)
 
     this.webChannel.sendTo(id, msg.serializeBinary())
   }
 
   generateRopesNodeMsg (ropesNode: MuteStructs.RopesNodes): any {
-    const ropesNodeMsg = new pb.RopesNodes()
+    const ropesNodeMsg = new pb.RopesNode()
 
     const blockMsg = this.generateBlockMsg(ropesNode.block)
     ropesNodeMsg.setBlock(blockMsg)
 
-    if(ropesNode.left instanceof MuteStructs.RopesNodes) {
+    if (ropesNode.left instanceof MuteStructs.RopesNodes) {
       ropesNodeMsg.setLeft(this.generateRopesNodeMsg(ropesNode.left))
     }
 
-    if(ropesNode.right instanceof MuteStructs.RopesNodes) {
+    if (ropesNode.right instanceof MuteStructs.RopesNodes) {
       ropesNodeMsg.setRight(this.generateRopesNodeMsg(ropesNode.right))
     }
 
@@ -206,7 +210,7 @@ export class NetworkService {
     const blockMsg = new pb.LogootSBlock()
 
     blockMsg.setId(this.generateIdentifierInterval(block.id))
-    blockMsg.setNbElement(block.nbElement)
+    blockMsg.setNbelement(block.nbElement)
 
     return blockMsg
   }
