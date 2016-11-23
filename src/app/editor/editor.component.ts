@@ -4,6 +4,7 @@ import * as CodeMirror from 'codemirror'
 import * as MuteStructs  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
+import { CursorService } from './cursor.service'
 
 @Component({
   selector: 'mute-editor',
@@ -12,7 +13,8 @@ import { DocService } from '../doc/doc.service'
     // FIXME: Importing CodeMirror's CSS here doesn't work.
     // Should find a proper way to do it.
     './editor.component.css'
-  ]
+  ],
+  providers: [CursorService]
 })
 
 @Injectable()
@@ -20,11 +22,13 @@ export class EditorComponent implements OnInit {
 
   private editor: CodeMirror.Editor
   private docService: DocService
+  private cursorService: CursorService
 
   @ViewChild('editorElt') editorElt
 
-  constructor(docService: DocService) {
+  constructor(docService: DocService, cursorService: CursorService) {
     this.docService = docService
+    this.cursorService = cursorService
   }
 
   ngOnInit() {
@@ -34,16 +38,9 @@ export class EditorComponent implements OnInit {
       mode: {name: 'javascript', globalVars: true}
     })
 
-    let peerCursor = document.createElement('span')
-    peerCursor.className = 'peerCursor'
-    setInterval(() => {
-      if (peerCursor.className.includes('clotted')) {
-        peerCursor.className = 'peerCursor'
-      } else {
-        peerCursor.className += ' clotted'
-      }
-    }, 600)
-    this.editor.getDoc().setBookmark({line: 2, ch: 30}, {widget: peerCursor})
+    this.cursorService.init(this.editor)
+
+
 
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {

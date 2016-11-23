@@ -17,7 +17,7 @@ export class NetworkService {
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
-  private peerCursorSubject: BehaviorSubject<number>
+  private peerCursorSubject: BehaviorSubject<{id: number, index: number, identifier: MuteStructs.Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
 
   private remoteOperationsSubject: ReplaySubject<any>
@@ -30,6 +30,9 @@ export class NetworkService {
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
+    this.peerCursorSubject = new BehaviorSubject<{id: number, index: number, identifier: MuteStructs.Identifier}>(
+      {id: -1, index: null, identifier: null}
+    )
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
@@ -50,13 +53,19 @@ export class NetworkService {
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
       let msg = pb.Message.deserializeBinary(bytes)
+      let identifier
       switch (msg.getTypeCase()) {
         case pb.Message.TypeCase.PEERPSEUDO:
           this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
           break
+        case pb.Message.TypeCase.PEERCURSOR:
+          const protoIdentifier = msg.getPeercursor().getId()
+          identifier = new MuteStructs.Identifier(protoIdentifier.getBaseList(), protoIdentifier.getLast())
+          this.peerCursorSubject.next({id, identifier, index: msg.getPeercursor().getIndex()})
+          break
         case pb.Message.TypeCase.LOGOOTSADD:
           const logootSAddMsg = msg.getLogootsadd()
-          const identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+          identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
           const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
           log.info('operation:network', 'received insert: ', logootSAdd)
           this.remoteOperationsSubject.next(logootSAdd)
@@ -147,6 +156,24 @@ export class NetworkService {
     if (id !== -1) {
       this.webChannel.sendTo(id, msg.serializeBinary())
     } else {
+      this.webChannel.send(msg.serializeBinary())
+    }
+  }
+
+  sendPeerCursor (cursor: {index: number, last: number, base: number[]}) {
+    if (cursor !== null) {
+      const identifier = new pb.Identifier()
+
+      identifier.setBaseList(cursor.base)
+      identifier.setLast(cursor.last)
+
+      const peerCursor = new pb.PeerCursor()
+      peerCursor.setId(identifier)
+      peerCursor.setIndex(cursor.index)
+
+      const msg = new pb.Message()
+      msg.setPeercursor(peerCursor)
+
       this.webChannel.send(msg.serializeBinary())
     }
   }

@@ -16,6 +16,7 @@ goog.exportSymbol('proto.LogootSBlock', null, global);
 goog.exportSymbol('proto.LogootSDel', null, global);
 goog.exportSymbol('proto.LogootSRopes', null, global);
 goog.exportSymbol('proto.Message', null, global);
+goog.exportSymbol('proto.PeerCursor', null, global);
 goog.exportSymbol('proto.PeerPseudo', null, global);
 goog.exportSymbol('proto.QueryDoc', null, global);
 goog.exportSymbol('proto.RopesNode', null, global);
@@ -45,7 +46,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.Message.oneofGroups_ = [[1,2,3,4,5]];
+proto.Message.oneofGroups_ = [[1,2,3,4,5,6]];
 
 /**
  * @enum {number}
@@ -53,10 +54,11 @@ proto.Message.oneofGroups_ = [[1,2,3,4,5]];
 proto.Message.TypeCase = {
   TYPE_NOT_SET: 0,
   PEERPSEUDO: 1,
-  LOGOOTSADD: 2,
-  LOGOOTSDEL: 3,
-  LOGOOTSROPES: 4,
-  QUERYDOC: 5
+  PEERCURSOR: 2,
+  LOGOOTSADD: 3,
+  LOGOOTSDEL: 4,
+  LOGOOTSROPES: 5,
+  QUERYDOC: 6
 };
 
 /**
@@ -95,6 +97,7 @@ proto.Message.prototype.toObject = function(opt_includeInstance) {
 proto.Message.toObject = function(includeInstance, msg) {
   var f, obj = {
     peerpseudo: (f = msg.getPeerpseudo()) && proto.PeerPseudo.toObject(includeInstance, f),
+    peercursor: (f = msg.getPeercursor()) && proto.PeerCursor.toObject(includeInstance, f),
     logootsadd: (f = msg.getLogootsadd()) && proto.LogootSAdd.toObject(includeInstance, f),
     logootsdel: (f = msg.getLogootsdel()) && proto.LogootSDel.toObject(includeInstance, f),
     logootsropes: (f = msg.getLogootsropes()) && proto.LogootSRopes.toObject(includeInstance, f),
@@ -141,21 +144,26 @@ proto.Message.deserializeBinaryFromReader = function(msg, reader) {
       msg.setPeerpseudo(value);
       break;
     case 2:
+      var value = new proto.PeerCursor;
+      reader.readMessage(value,proto.PeerCursor.deserializeBinaryFromReader);
+      msg.setPeercursor(value);
+      break;
+    case 3:
       var value = new proto.LogootSAdd;
       reader.readMessage(value,proto.LogootSAdd.deserializeBinaryFromReader);
       msg.setLogootsadd(value);
       break;
-    case 3:
+    case 4:
       var value = new proto.LogootSDel;
       reader.readMessage(value,proto.LogootSDel.deserializeBinaryFromReader);
       msg.setLogootsdel(value);
       break;
-    case 4:
+    case 5:
       var value = new proto.LogootSRopes;
       reader.readMessage(value,proto.LogootSRopes.deserializeBinaryFromReader);
       msg.setLogootsropes(value);
       break;
-    case 5:
+    case 6:
       var value = new proto.QueryDoc;
       reader.readMessage(value,proto.QueryDoc.deserializeBinaryFromReader);
       msg.setQuerydoc(value);
@@ -206,10 +214,18 @@ proto.Message.prototype.serializeBinaryToWriter = function (writer) {
       proto.PeerPseudo.serializeBinaryToWriter
     );
   }
-  f = this.getLogootsadd();
+  f = this.getPeercursor();
   if (f != null) {
     writer.writeMessage(
       2,
+      f,
+      proto.PeerCursor.serializeBinaryToWriter
+    );
+  }
+  f = this.getLogootsadd();
+  if (f != null) {
+    writer.writeMessage(
+      3,
       f,
       proto.LogootSAdd.serializeBinaryToWriter
     );
@@ -217,7 +233,7 @@ proto.Message.prototype.serializeBinaryToWriter = function (writer) {
   f = this.getLogootsdel();
   if (f != null) {
     writer.writeMessage(
-      3,
+      4,
       f,
       proto.LogootSDel.serializeBinaryToWriter
     );
@@ -225,7 +241,7 @@ proto.Message.prototype.serializeBinaryToWriter = function (writer) {
   f = this.getLogootsropes();
   if (f != null) {
     writer.writeMessage(
-      4,
+      5,
       f,
       proto.LogootSRopes.serializeBinaryToWriter
     );
@@ -233,7 +249,7 @@ proto.Message.prototype.serializeBinaryToWriter = function (writer) {
   f = this.getQuerydoc();
   if (f != null) {
     writer.writeMessage(
-      5,
+      6,
       f,
       proto.QueryDoc.serializeBinaryToWriter
     );
@@ -272,18 +288,48 @@ proto.Message.prototype.hasPeerpseudo = function() {
 
 
 /**
- * optional LogootSAdd logootSAdd = 2;
+ * optional PeerCursor peerCursor = 2;
+ * @return {?proto.PeerCursor}
+ */
+proto.Message.prototype.getPeercursor = function() {
+  return /** @type{?proto.PeerCursor} */ (
+    jspb.Message.getWrapperField(this, proto.PeerCursor, 2));
+};
+
+
+/** @param {?proto.PeerCursor|undefined} value */
+proto.Message.prototype.setPeercursor = function(value) {
+  jspb.Message.setOneofWrapperField(this, 2, proto.Message.oneofGroups_[0], value);
+};
+
+
+proto.Message.prototype.clearPeercursor = function() {
+  this.setPeercursor(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.Message.prototype.hasPeercursor = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional LogootSAdd logootSAdd = 3;
  * @return {?proto.LogootSAdd}
  */
 proto.Message.prototype.getLogootsadd = function() {
   return /** @type{?proto.LogootSAdd} */ (
-    jspb.Message.getWrapperField(this, proto.LogootSAdd, 2));
+    jspb.Message.getWrapperField(this, proto.LogootSAdd, 3));
 };
 
 
 /** @param {?proto.LogootSAdd|undefined} value */
 proto.Message.prototype.setLogootsadd = function(value) {
-  jspb.Message.setOneofWrapperField(this, 2, proto.Message.oneofGroups_[0], value);
+  jspb.Message.setOneofWrapperField(this, 3, proto.Message.oneofGroups_[0], value);
 };
 
 
@@ -297,23 +343,23 @@ proto.Message.prototype.clearLogootsadd = function() {
  * @return {!boolean}
  */
 proto.Message.prototype.hasLogootsadd = function() {
-  return jspb.Message.getField(this, 2) != null;
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
 /**
- * optional LogootSDel logootSDel = 3;
+ * optional LogootSDel logootSDel = 4;
  * @return {?proto.LogootSDel}
  */
 proto.Message.prototype.getLogootsdel = function() {
   return /** @type{?proto.LogootSDel} */ (
-    jspb.Message.getWrapperField(this, proto.LogootSDel, 3));
+    jspb.Message.getWrapperField(this, proto.LogootSDel, 4));
 };
 
 
 /** @param {?proto.LogootSDel|undefined} value */
 proto.Message.prototype.setLogootsdel = function(value) {
-  jspb.Message.setOneofWrapperField(this, 3, proto.Message.oneofGroups_[0], value);
+  jspb.Message.setOneofWrapperField(this, 4, proto.Message.oneofGroups_[0], value);
 };
 
 
@@ -327,23 +373,23 @@ proto.Message.prototype.clearLogootsdel = function() {
  * @return {!boolean}
  */
 proto.Message.prototype.hasLogootsdel = function() {
-  return jspb.Message.getField(this, 3) != null;
+  return jspb.Message.getField(this, 4) != null;
 };
 
 
 /**
- * optional LogootSRopes logootSRopes = 4;
+ * optional LogootSRopes logootSRopes = 5;
  * @return {?proto.LogootSRopes}
  */
 proto.Message.prototype.getLogootsropes = function() {
   return /** @type{?proto.LogootSRopes} */ (
-    jspb.Message.getWrapperField(this, proto.LogootSRopes, 4));
+    jspb.Message.getWrapperField(this, proto.LogootSRopes, 5));
 };
 
 
 /** @param {?proto.LogootSRopes|undefined} value */
 proto.Message.prototype.setLogootsropes = function(value) {
-  jspb.Message.setOneofWrapperField(this, 4, proto.Message.oneofGroups_[0], value);
+  jspb.Message.setOneofWrapperField(this, 5, proto.Message.oneofGroups_[0], value);
 };
 
 
@@ -357,23 +403,23 @@ proto.Message.prototype.clearLogootsropes = function() {
  * @return {!boolean}
  */
 proto.Message.prototype.hasLogootsropes = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
 /**
- * optional QueryDoc queryDoc = 5;
+ * optional QueryDoc queryDoc = 6;
  * @return {?proto.QueryDoc}
  */
 proto.Message.prototype.getQuerydoc = function() {
   return /** @type{?proto.QueryDoc} */ (
-    jspb.Message.getWrapperField(this, proto.QueryDoc, 5));
+    jspb.Message.getWrapperField(this, proto.QueryDoc, 6));
 };
 
 
 /** @param {?proto.QueryDoc|undefined} value */
 proto.Message.prototype.setQuerydoc = function(value) {
-  jspb.Message.setOneofWrapperField(this, 5, proto.Message.oneofGroups_[0], value);
+  jspb.Message.setOneofWrapperField(this, 6, proto.Message.oneofGroups_[0], value);
 };
 
 
@@ -387,7 +433,7 @@ proto.Message.prototype.clearQuerydoc = function() {
  * @return {!boolean}
  */
 proto.Message.prototype.hasQuerydoc = function() {
-  return jspb.Message.getField(this, 5) != null;
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
@@ -538,6 +584,200 @@ proto.PeerPseudo.prototype.getPseudo = function() {
 /** @param {string} value */
 proto.PeerPseudo.prototype.setPseudo = function(value) {
   jspb.Message.setField(this, 1, value);
+};
+
+
+
+/**
+ * Generated by JsPbCodeGenerator.
+ * @param {Array=} opt_data Optional initial data array, typically from a
+ * server response, or constructed directly in Javascript. The array is used
+ * in place and becomes part of the constructed object. It is not cloned.
+ * If no data is provided, the constructed object will be empty, but still
+ * valid.
+ * @extends {jspb.Message}
+ * @constructor
+ */
+proto.PeerCursor = function(opt_data) {
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+};
+goog.inherits(proto.PeerCursor, jspb.Message);
+if (goog.DEBUG && !COMPILED) {
+  proto.PeerCursor.displayName = 'proto.PeerCursor';
+}
+
+
+if (jspb.Message.GENERATE_TO_OBJECT) {
+/**
+ * Creates an object representation of this proto suitable for use in Soy templates.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     com.google.apps.jspb.JsClassTemplate.JS_RESERVED_WORDS.
+ * @param {boolean=} opt_includeInstance Whether to include the JSPB instance
+ *     for transitional soy proto support: http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.PeerCursor.prototype.toObject = function(opt_includeInstance) {
+  return proto.PeerCursor.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Whether to include the JSPB
+ *     instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.PeerCursor} msg The msg instance to transform.
+ * @return {!Object}
+ */
+proto.PeerCursor.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    id: (f = msg.getId()) && proto.Identifier.toObject(includeInstance, f),
+    index: jspb.Message.getFieldWithDefault(msg, 2, 0)
+  };
+
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
+}
+
+
+/**
+ * Deserializes binary data (in protobuf wire format).
+ * @param {jspb.ByteSource} bytes The bytes to deserialize.
+ * @return {!proto.PeerCursor}
+ */
+proto.PeerCursor.deserializeBinary = function(bytes) {
+  var reader = new jspb.BinaryReader(bytes);
+  var msg = new proto.PeerCursor;
+  return proto.PeerCursor.deserializeBinaryFromReader(msg, reader);
+};
+
+
+/**
+ * Deserializes binary data (in protobuf wire format) from the
+ * given reader into the given message object.
+ * @param {!proto.PeerCursor} msg The message object to deserialize into.
+ * @param {!jspb.BinaryReader} reader The BinaryReader to use.
+ * @return {!proto.PeerCursor}
+ */
+proto.PeerCursor.deserializeBinaryFromReader = function(msg, reader) {
+  while (reader.nextField()) {
+    if (reader.isEndGroup()) {
+      break;
+    }
+    var field = reader.getFieldNumber();
+    switch (field) {
+    case 1:
+      var value = new proto.Identifier;
+      reader.readMessage(value,proto.Identifier.deserializeBinaryFromReader);
+      msg.setId(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setIndex(value);
+      break;
+    default:
+      reader.skipField();
+      break;
+    }
+  }
+  return msg;
+};
+
+
+/**
+ * Class method variant: serializes the given message to binary data
+ * (in protobuf wire format), writing to the given BinaryWriter.
+ * @param {!proto.PeerCursor} message
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.PeerCursor.serializeBinaryToWriter = function(message, writer) {
+  message.serializeBinaryToWriter(writer);
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format).
+ * @return {!Uint8Array}
+ */
+proto.PeerCursor.prototype.serializeBinary = function() {
+  var writer = new jspb.BinaryWriter();
+  this.serializeBinaryToWriter(writer);
+  return writer.getResultBuffer();
+};
+
+
+/**
+ * Serializes the message to binary data (in protobuf wire format),
+ * writing to the given BinaryWriter.
+ * @param {!jspb.BinaryWriter} writer
+ */
+proto.PeerCursor.prototype.serializeBinaryToWriter = function (writer) {
+  var f = undefined;
+  f = this.getId();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      proto.Identifier.serializeBinaryToWriter
+    );
+  }
+  f = this.getIndex();
+  if (f !== 0) {
+    writer.writeInt32(
+      2,
+      f
+    );
+  }
+};
+
+
+/**
+ * optional Identifier id = 1;
+ * @return {?proto.Identifier}
+ */
+proto.PeerCursor.prototype.getId = function() {
+  return /** @type{?proto.Identifier} */ (
+    jspb.Message.getWrapperField(this, proto.Identifier, 1));
+};
+
+
+/** @param {?proto.Identifier|undefined} value */
+proto.PeerCursor.prototype.setId = function(value) {
+  jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+proto.PeerCursor.prototype.clearId = function() {
+  this.setId(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.PeerCursor.prototype.hasId = function() {
+  return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional int32 index = 2;
+ * @return {number}
+ */
+proto.PeerCursor.prototype.getIndex = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+};
+
+
+/** @param {number} value */
+proto.PeerCursor.prototype.setIndex = function(value) {
+  jspb.Message.setField(this, 2, value);
 };
 
 

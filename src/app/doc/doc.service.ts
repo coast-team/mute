@@ -15,6 +15,8 @@ export class DocService {
   private initEditorSubject: BehaviorSubject<string>
 
   constructor(network: NetworkService) {
+    this.doc = new MuteStructs.LogootSRopes(0)
+    log.debug('MUTE STRUCTS: ', this.doc)
     this.network = network
 
     this.initEditorSubject = new BehaviorSubject<string>('')
@@ -75,4 +77,21 @@ export class DocService {
     return textOperations
   }
 
+  idFromIndex (index: number): {index: number, last: number, base: number[]} {
+    let respIntnode = this.doc.searchNode(index)
+    log.debug('coucou: ', respIntnode)
+    if (respIntnode !== null) {
+      return {
+        index: respIntnode.i,
+        last: respIntnode.node.offset + respIntnode.i,
+        base: respIntnode.node.block.id.base
+      }
+    }
+    log.error(`Could not find ResponseIntNode with index: ${index}`)
+    return null
+  }
+
+  indexFromId (id: MuteStructs.Identifier) {
+    return this.doc.searchPos(id, new Array())
+  }
 }

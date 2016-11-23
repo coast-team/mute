@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common'
 
 import { NetworkService } from './network/network.service'
 import { ProfileService } from './profile/profile.service'
+import { CollaboratorsService } from './collaborators/collaborators.service'
 
 @NgModule({
   imports: [
@@ -10,6 +11,6 @@ import { ProfileService } from './profile/profile.service'
   ],
   exports: [],
   declarations: [],
-  providers: [NetworkService, ProfileService]
+  providers: [NetworkService, ProfileService, CollaboratorsService]
 })
 export class CoreModule { }
