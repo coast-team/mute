@@ -188,7 +188,9 @@ export class NetworkService {
     const queryDoc = new pb.QueryDoc()
     msg.setQuerydoc(queryDoc)
 
-    this.webChannel.send(msg.serializeBinary())
+    const peerDoor: number = this.webChannel.members[0]
+
+    this.webChannel.sendTo(peerDoor, msg.serializeBinary())
   }
 
   sendDoc (id: number, doc: MuteStructs.LogootSRopes) {
