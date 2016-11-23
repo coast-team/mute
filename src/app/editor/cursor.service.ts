@@ -48,15 +48,14 @@ export class CursorService {
       .subscribe(({id, index, identifier}: {id: number, index: number, identifier: MuteStructs.Identifier}) => {
         if (id !== -1) {
           let cursor = this.cursors.get(id)
-          if (cursor.cmBookmark !== null) {
+          if (cursor.cmBookmark === null) {
+            cursor.startClotting()
+          } else {
             cursor.restartClotting()
             cursor.cmBookmark.clear()
-          } else {
-            cursor.startClotting()
           }
           if (index === -2) {
             cursor.stopClotting()
-            cursor.cmBookmark.clear()
           } else {
             let pos: any
             if (index === -1) {
@@ -120,5 +119,8 @@ class Cursor {
     this.domElm.className = this.domElm.className.replace(' clotted', '')
     window.clearInterval(this.clotIntervalID)
     window.clearTimeout(this.clotTimeoutID)
+    if (this.cmBookmark !== null) {
+      this.cmBookmark.clear()
+    }
   }
 }

@@ -10,49 +10,24 @@ import { CollaboratorsService } from '../../core/collaborators/collaborators.ser
 export class CollaboratorsComponent implements OnInit {
 
   private collabService: CollaboratorsService
-  private collaborators: Array<Collaborator>
+  private collaborators: Array<Object>
 
   constructor(collabService: CollaboratorsService) {
     this.collabService = collabService
-    this.collaborators = new Array<Collaborator>()
+    this.collaborators = new Array<Object>()
   }
 
   ngOnInit() {
-    this.collabService.onJoin.subscribe(({id, pseudo, color}: {id: number, pseudo: string, color: string}) => {
-      let collab = new Collaborator(id, pseudo, color)
-      this.collaborators[this.collaborators.length] = collab
+    this.collabService.onJoin.subscribe((obj: any) => {
+      this.collaborators = Array.from(this.collabService.getCollaborators().values())
     })
 
-    this.collabService.onLeave.subscribe((id: number) => {
-      for (let i = 0; i < this.collaborators.length; i++) {
-        if (this.collaborators[i].id === id) {
-          this.collaborators.splice(i, 1)
-          break
-        }
-      }
+    this.collabService.onLeave.subscribe((obj: any) => {
+      this.collaborators = Array.from(this.collabService.getCollaborators().values())
     })
 
-    this.collabService.onPseudoChange.subscribe(({id, pseudo}: {id: number, pseudo: string}) => {
-      for (let i = 0; i < this.collaborators.length; i++) {
-        if (this.collaborators[i].id === id) {
-          this.collaborators[i].pseudo = pseudo
-          break
-        }
-      }
+    this.collabService.onPseudoChange.subscribe((obj: any) => {
+      this.collaborators = Array.from(this.collabService.getCollaborators().values())
     })
-  }
-
-}
-
-
-class Collaborator {
-  public id: number
-  public pseudo: string
-  public color: string
-
-  constructor (id: number, pseudo: string, color: string) {
-    this.id = id
-    this.pseudo = pseudo
-    this.color = color
   }
 }

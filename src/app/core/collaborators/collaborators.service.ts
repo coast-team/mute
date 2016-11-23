@@ -10,7 +10,7 @@ import { NetworkService } from '../network/network.service'
 export class CollaboratorsService {
 
   /*
-  * TODO: consider to provide collaborators map as Obsorvable in order
+  * TODO: consider to provide collaborators map as Observable in order
   * to be used with async-pipe.
   * See https://angular.io/docs/ts/latest/guide/pipes.html#!#async-pipe
   */
@@ -36,6 +36,7 @@ export class CollaboratorsService {
 
     this.network.onPeerLeave.subscribe((id) => {
       this.collaborators.delete(id)
+      this.leaveSubject.next(id)
     })
 
     this.network.onPeerPseudo.subscribe(({id, pseudo}: {id: number, pseudo: string}) => {
@@ -49,6 +50,10 @@ export class CollaboratorsService {
         collab.pseudo = pseudo
       }
     })
+  }
+
+  getCollaborators () {
+    return this.collaborators
   }
 
   get onJoin (): Observable<{id: number, pseudo: string, color: string}> {
