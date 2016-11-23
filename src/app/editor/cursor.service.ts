@@ -45,14 +45,15 @@ export class CursorService {
     })
 
     this.networkService.onPeerCursor
-      .subscribe(({id, index, identifier}: {id: number, index: number, identifier: MuteStructs.Identifier}) => {
+      .subscribe(({id, index, identifier}:
+        {id: number, index: number, identifier: MuteStructs.Identifier}) => {
         if (id !== -1) {
           let cursor = this.cursors.get(id)
           if (cursor.cmBookmark === null) {
             cursor.startClotting()
           } else {
             cursor.restartClotting()
-            cursor.cmBookmark.clear()
+            // cursor.cmBookmark.clear()
           }
           if (index === -2) {
             cursor.stopClotting()
@@ -64,7 +65,14 @@ export class CursorService {
             } else {
               pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + index)
             }
-            cursor.cmBookmark = cmDoc.setBookmark(pos, {widget: cursor.domElm})
+            if (cursor.cmBookmark !== null) {
+              let oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
+              let newCoords = this.cmEditor.cursorCoords(pos, 'local')
+              let translateCoords = {x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top}
+              cursor.translate(translateCoords)
+            } else {
+              cursor.cmBookmark = cmDoc.setBookmark(pos, {widget: cursor.domElm})
+            }
           }
         }
     })
@@ -100,6 +108,10 @@ class Cursor {
     this.domElm.style.backgroundColor = color
   }
 
+  translate(coords) {
+    this.domElm.style.transform = `translate(${Math.round(coords.x)}px, ${Math.round(coords.y)}px)`
+  }
+
   startClotting (): void {
     this.clotIntervalID = window.setInterval(() => {
       if (this.domElm.className.includes('clotted')) {
@@ -113,14 +125,15 @@ class Cursor {
   restartClotting (): void {
     this.stopClotting()
     this.clotTimeoutID = window.setTimeout(() => { this.startClotting() }, 400)
+    // window.setTimeout(() => {
+    //   this.domElm.style.transform = 'translate(200px, 300px)'
+    //
+    // }, 7000)
   }
 
   stopClotting (): void {
     this.domElm.className = this.domElm.className.replace(' clotted', '')
     window.clearInterval(this.clotIntervalID)
     window.clearTimeout(this.clotTimeoutID)
-    if (this.cmBookmark !== null) {
-      this.cmBookmark.clear()
-    }
   }
 }
