@@ -17,7 +17,7 @@ export class NetworkService {
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
-  private peerCursorSubject: BehaviorSubject<{id: number, index: number, identifier: MuteStructs.Identifier}>
+  private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
 
   private remoteOperationsSubject: ReplaySubject<any>
@@ -30,8 +30,8 @@ export class NetworkService {
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
-    this.peerCursorSubject = new BehaviorSubject<{id: number, index: number, identifier: MuteStructs.Identifier}>(
-      {id: -1, index: null, identifier: null}
+    this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>(
+      {id: -1}
     )
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
@@ -160,7 +160,7 @@ export class NetworkService {
     }
   }
 
-  sendPeerCursor (cursor: {index: number, last: number, base: number[]}) {
+  sendPeerCursor (cursor: {index: number, last?: number, base?: number[]}) {
     if (cursor !== null) {
       const identifier = new pb.Identifier()
 

@@ -77,9 +77,8 @@ export class DocService {
     return textOperations
   }
 
-  idFromIndex (index: number): {index: number, last: number, base: number[]} {
+  idFromIndex (index: number): {index: number, last: number, base: number[]} | null {
     let respIntnode = this.doc.searchNode(index)
-    log.debug('coucou: ', respIntnode)
     if (respIntnode !== null) {
       return {
         index: respIntnode.i,
@@ -87,7 +86,6 @@ export class DocService {
         base: respIntnode.node.block.id.base
       }
     }
-    log.error(`Could not find ResponseIntNode with index: ${index}`)
     return null
   }
 

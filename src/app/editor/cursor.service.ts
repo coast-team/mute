@@ -48,20 +48,39 @@ export class CursorService {
       .subscribe(({id, index, identifier}: {id: number, index: number, identifier: MuteStructs.Identifier}) => {
         if (id !== -1) {
           let cursor = this.cursors.get(id)
-          let docIndex = this.docService.indexFromId(identifier) + index
           if (cursor.cmBookmark !== null) {
             cursor.restartClotting()
             cursor.cmBookmark.clear()
           } else {
             cursor.startClotting()
           }
-          cursor.cmBookmark = cmDoc.setBookmark(cmDoc.posFromIndex(docIndex), {widget: cursor.domElm})
+          if (index === -2) {
+            cursor.stopClotting()
+            cursor.cmBookmark.clear()
+          } else {
+            let pos: any
+            if (index === -1) {
+              let lastLine = cmDoc.lastLine()
+              pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
+            } else {
+              pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + index)
+            }
+            cursor.cmBookmark = cmDoc.setBookmark(pos, {widget: cursor.domElm})
+          }
         }
     })
 
     CodeMirror.on(cmDoc, 'cursorActivity', () => {
-      let cursor = this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
+      let cursor: {index: number, last?: number, base?: number[]}
+        = this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
+      if (cursor === null) {
+        cursor = {index: -1}
+      }
       this.networkService.sendPeerCursor(cursor)
+    })
+
+    CodeMirror.on(this.cmEditor, 'blur', (event: Event) => {
+      this.networkService.sendPeerCursor({ index: -2 })
     })
   }
 
