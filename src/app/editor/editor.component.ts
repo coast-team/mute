@@ -1,6 +1,11 @@
 import { Component, Injectable, OnInit, ViewChild } from '@angular/core'
 import { Observable } from 'rxjs'
+
 import * as CodeMirror from 'codemirror'
+// FIXME: Find a proper way to import the mode's files
+require('codemirror/mode/gfm/gfm')
+require('codemirror/mode/javascript/javascript')
+
 import * as MuteStructs  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
@@ -35,7 +40,7 @@ export class EditorComponent implements OnInit {
     this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
       lineNumbers: false,
       lineWrapping: true,
-      mode: {name: 'javascript', globalVars: true}
+      mode: {name: 'gfm', globalVars: true}
     })
 
     this.cursorService.init(this.editor)
