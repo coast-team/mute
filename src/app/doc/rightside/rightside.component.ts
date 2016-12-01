@@ -15,10 +15,6 @@ export class RightsideComponent implements OnInit {
     this.sidenavElm.open()
   }
 
-  ngAfterContentInit () {
-    this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
-  }
-
   toggleSidenav () {
     this.sidenavElm.toggle()
       .then(() => {

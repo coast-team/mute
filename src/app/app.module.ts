@@ -9,12 +9,12 @@ import { AppComponent } from './app.component'
 import { EditorComponent } from './editor/editor.component'
 import { CoreModule } from './core/core.module'
 import { LeftsideComponent } from './leftside/leftside.component'
-import { RightsideComponent } from './rightside/rightside.component'
+import { RightsideComponent } from './doc/rightside/rightside.component'
 import { DocComponent } from './doc/doc.component'
 import { DocsComponent } from './docs/docs.component'
-import { CollaboratorsComponent } from './doc/collaborators'
-import { DevlabelComponent } from './devlabel/devlabel.component';
-import { InviteBotComponent } from './rightside/invite-bot/invite-bot.component'
+import { CollaboratorsComponent } from './doc/rightside/collaborators'
+import { DevlabelComponent } from './devlabel/devlabel.component'
+import { InviteBotComponent } from './doc/rightside/invite-bot/invite-bot.component'
 
 
 @NgModule({
