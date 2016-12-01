@@ -35,18 +35,18 @@
     "core-js": "^2.4.1",
     "loglevel": "^1.4.1",
     "material-design-icons": "^3.0.1",
-    "mute-structs": "0.1.2",
+    "mute-structs": "latest",
     "netflux": "latest",
     "normalize.css": "^5.0.0",
     "random-material-color": "^1.0.2",
     "reflect-metadata": "^0.1.8",
-    "rxjs": "5.0.0-beta.12",
+    "rxjs": "5.0.0-rc.4",
     "ts-helpers": "^1.1.1",
-    "zone.js": "^0.6.26"
+    "zone.js": "^0.7.2"
   },
   "devDependencies": {
     "@angular/compiler-cli": "^2.1.0",
-    "@types/codemirror": "^0.0.34",
+    "@types/codemirror": "^0.0.35",
     "@types/jasmine": "^2.2.30",
     "angular-cli": "latest",
     "codelyzer": "1.0.0-beta.3",
@@ -66,7 +66,7 @@
     "tslint": "^3.15.1",
     "typescript": "^2.0.3",
     "validate-commit-msg": "^2.8.2",
-    "webdriver-manager": "10.2.5"
+    "webdriver-manager": "^10.2.5"
   },
   "repository": {},
   "config": {
