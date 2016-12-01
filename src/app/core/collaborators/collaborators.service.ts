@@ -60,7 +60,7 @@ export class CollaboratorsService {
     return this.joinSubject.asObservable()
   }
 
-  get onLeave () {
+  get onLeave (): Observable<number> {
     return this.leaveSubject.asObservable()
   }
 
