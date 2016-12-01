@@ -33,14 +33,21 @@
       background-color: #fdfdff;
       align-items: flex-end;
 
+      mute-invite-bot {
+        margin-top: 5rem;
+      }
+
       .docTitle {
         margin: 2rem 0 0 0;
         width: 25rem;
       }
 
       md-tab-group {
-        margin-top: 5rem;
         width: 30rem;
+
+        .md-tab-label {
+          width: 30rem;
+        }
       }
     }
   }

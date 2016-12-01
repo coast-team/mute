@@ -13,7 +13,8 @@ import { RightsideComponent } from './rightside/rightside.component'
 import { DocComponent } from './doc/doc.component'
 import { DocsComponent } from './docs/docs.component'
 import { CollaboratorsComponent } from './doc/collaborators'
-import { DevlabelComponent } from './devlabel/devlabel.component'
+import { DevlabelComponent } from './devlabel/devlabel.component';
+import { InviteBotComponent } from './rightside/invite-bot/invite-bot.component'
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { DevlabelComponent } from './devlabel/devlabel.component'
     DocComponent,
     DocsComponent,
     CollaboratorsComponent,
-    DevlabelComponent
+    DevlabelComponent,
+    InviteBotComponent
   ],
   imports: [
     BrowserModule,
