@@ -39,7 +39,9 @@ export class CursorService {
 
     this.collaboratorsService.onLeave.subscribe((id: number) => {
       let cursor = this.cursors.get(id)
-      cursor.cmBookmark.clear()
+      if (cursor.cmBookmark !== null) {
+        cursor.cmBookmark.clear()
+      }
       cursor.stopClotting()
       this.cursors.delete(id)
     })
