@@ -8,6 +8,7 @@ message Message {
     LogootSDel logootSDel = 4;
     LogootSRopes logootSRopes = 5;
     QueryDoc queryDoc = 6;
+    Door door = 7;
   }
 }
 
@@ -59,3 +60,9 @@ message IdentifierInterval {
 }
 
 message QueryDoc {}
+
+message Door {
+  string key = 1;
+  bool opened = 2;
+  bool intentionally = 3;
+}

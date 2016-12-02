@@ -12,6 +12,7 @@ const pb = require('./message_pb.js')
 export class NetworkService {
 
   private webChannel
+  private door: {ownerId: number, key: string} // ownerId is a peer id
 
   private joinSubject: AsyncSubject<number>
   private peerJoinSubject: ReplaySubject<number>
@@ -19,6 +20,7 @@ export class NetworkService {
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
   private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
+  private doorSubject: BehaviorSubject<{opened: boolean, intentionally: boolean}>
 
   private remoteOperationsSubject: ReplaySubject<any>
 
@@ -33,6 +35,7 @@ export class NetworkService {
     this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>(
       {id: -1}
     )
+    this.doorSubject = new BehaviorSubject<{opened: boolean, intentionally: boolean}>({opened: true, intentionally: false})
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
@@ -96,11 +99,31 @@ export class NetworkService {
           const doc: MuteStructs.LogootSRopes = MuteStructs.LogootSRopes.fromPlain(myId, clock, plainDoc)
           this.joinDocSubject.next(doc)
           break
+        case pb.Message.TypeCase.DOOR:
+          if (!msg.getDoor().opened) {
+            if (!msg.getDoor().intentionally) {
+              // Reopen door or not
+            } else {
+                this.setDoor(null, null, false, true)
+            }
+          } else {
+            this.setDoor(id, msg.getDoor().key, true, true)
+          }
+          break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           log.error('network', 'Protobuf: message type not set')
           break
       }
     }
+  }
+
+  getDoor (): {ownerId: number, key: string} {
+    return this.door
+  }
+
+  setDoor (ownerId, key, opened, intentionally): void {
+    this.door = {ownerId, key}
+    this.doorSubject.next({opened, intentionally})
   }
 
   get onJoin () {
@@ -125,6 +148,10 @@ export class NetworkService {
 
   get onPeerSelection() {
     return this.peerSelectionSubject.asObservable()
+  }
+
+  get onDoor(): Observable<{opened: boolean, intentionally: boolean}> {
+    return this.doorSubject.asObservable()
   }
 
   get onRemoteOperations() {
@@ -236,6 +263,18 @@ export class NetworkService {
     this.webChannel.sendTo(id, msg.serializeBinary())
   }
 
+  sendDoor (opened, intentionally) {
+    let doorMsg = new pb.Door()
+    if (opened) {
+      doorMsg.setKey(this.webChannel.getOpenData().key)
+    }
+    doorMsg.setOpened(opened)
+    doorMsg.setIntentionally(intentionally)
+    let msg = new pb.Message()
+    msg.setDoor(doorMsg)
+    this.webChannel.send(msg.serializeBinary())
+  }
+
   generateRopesNodeMsg (ropesNode: MuteStructs.RopesNodes): any {
     const ropesNodeMsg = new pb.RopesNode()
 
@@ -291,8 +330,10 @@ export class NetworkService {
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
-      .then(() => {
+      .then((openData) => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
+        this.setDoor(this.webChannel.myId, openData.key, true, true)
+        this.sendDoor(true, true)
         this.joinSubject.next(this.webChannel.myId)
         this.joinSubject.complete()
       })
