@@ -1,0 +1,6 @@
+.git/
+coverage/
+e2e/
+node_modules/
+protoc/
+src/
