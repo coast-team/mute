@@ -1,5 +1,6 @@
 import {
   Component,
+  Injectable,
   OnInit,
   ViewChild,
   trigger,
@@ -7,6 +8,8 @@ import {
   style,
   transition,
   animate } from '@angular/core'
+
+import { NetworkService } from '../../../core/network/network.service'
 
 @Component({
   selector: 'mute-invite-bot',
@@ -27,10 +30,14 @@ import {
     ])
   ]
 })
+
+@Injectable()
 export class InviteBotComponent implements OnInit {
 
-  private regexHostName = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$'
-  private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$'
+  private regexHostName = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])(\:[0-9]{1,5})?$'
+  private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}(\:[0-9]{1,5})?$'
+
+  private network: NetworkService
 
   @ViewChild('ipElm') ipElm
   public btnActive: boolean = true
@@ -38,7 +45,9 @@ export class InviteBotComponent implements OnInit {
   public error: boolean = false
   public errorMessage: string = 'Invalid ip address or host name'
 
-  constructor () { }
+  constructor (network: NetworkService) {
+    this.network = network
+  }
 
   ngOnInit () { }
 
@@ -71,6 +80,9 @@ export class InviteBotComponent implements OnInit {
   }
 
   ok () {
+    if (!this.error) {
+      this.network.inviteBot(this.ipElm.value)
+    }
     this.inputActive = false
   }
 
