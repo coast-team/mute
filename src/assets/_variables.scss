@@ -1,0 +1,20 @@
+@font-face {
+    font-family: Roboto-Light;
+    src: url(assets/font/Roboto/Roboto-Light.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Regular;
+    src: url(assets/font/Roboto/Roboto-Regular.ttf);
+}
+
+@font-face {
+    font-family: Roboto-Medium;
+    src: url(assets/font/Roboto/Roboto-Medium.ttf);
+}
+
+$font-light: Roboto-Light, sans-serif;
+$font-regular: Roboto-Regular, sans-serif;
+$font-medium: Roboto-Medium, sans-serif;
+
+$color-bg: #fdfdff;

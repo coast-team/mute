@@ -1,3 +1,5 @@
+@import '../../../assets/variables';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -19,7 +21,7 @@
 
   md-sidenav-layout {
     height: 100%;
-    background-color: #fdfdff;
+    background-color: $color-bg;
 
     button[md-icon-button] {
       margin: 1rem 1rem 0 0;
@@ -30,8 +32,9 @@
       padding-right: 10px;
       display: flex;
       flex-direction: column;
-      background-color: #fdfdff;
+      background-color: $color-bg;
       align-items: flex-end;
+      overflow: hidden;
 
       mute-invite-bot {
         margin-top: 5rem;

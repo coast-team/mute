@@ -1,13 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~normalize.css/normalize.css';
-@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.scss';
+@import 'assets/theme';
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~codemirror/lib/codemirror.css';
-
-@font-face {
-    font-family: Roboto;
-    src: url(assets/font/Roboto/Roboto-Light.ttf);
-}
+@import 'assets/mute-codemirror.scss';
+@import 'assets/variables';
 
 html {
   font-size: 10px;
@@ -18,41 +15,6 @@ html {
 
   body {
     font-size: 1.4rem;
-    background-color: #fdfdff;
-  }
-}
-/**
-* CodeMirror style here, because it is not working in the proper Component css.
-*/
-.CodeMirror {
-  height: 100%;
-  font-family: Roboto, serif;
-  font-size: 1.6rem;
-
-  .CodeMirror-line {
-    line-height: 2.4rem;
-  }
-
-  // .CodeMirror-widget {
-  //   display: inline-flex;
-  //   align-items: center;
-  //   height: 1.3em;
-  //   width: 1px;
-  // }
-
-  .peerCursor {
-    display: inline-block;
-    position: absolute;
-    background-color: orange;
-    width: 2px;
-    height: 1.6em;
-    /* top: .5rem; */
-    // vertical-align: text-bottom;
-    transition: all .2s ease, transform .2s ease;
-
-    &.clotted {
-      height: 0em;
-      margin-top: 0.8em;
-    }
+    background-color: $color-bg;
   }
 }

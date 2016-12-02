@@ -1,0 +1,28 @@
+@import 'variables';
+
+/**
+* CodeMirror style here, because it is not working in the proper Component css.
+*/
+.CodeMirror {
+  height: 100%;
+  font-family: $font-light, serif;
+  font-size: 1.6rem;
+
+  .CodeMirror-line {
+    line-height: 2.4rem;
+  }
+
+  .peerCursor {
+    display: inline-block;
+    position: absolute;
+    background-color: orange;
+    width: 2px;
+    height: 1.6em;
+    transition: all .2s ease, transform .2s ease;
+
+    &.clotted {
+      height: 0em;
+      margin-top: 0.8em;
+    }
+  }
+}
