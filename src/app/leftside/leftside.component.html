@@ -7,6 +7,9 @@
       <md-icon>face</md-icon>
       <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
     </span>
-    <button md-raised-button color="accent" routerLink="/abcd">New Document</button>
+    <button id="new-doc" md-raised-button color="accent" routerLink="/abcd">New Document</button>
+    <div id="storage-list">
+      <button class="active" md-button>Remote bot storage</button>
+    </div>
   </md-sidenav>
 </md-sidenav-layout>
