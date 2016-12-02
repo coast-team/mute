@@ -12,7 +12,7 @@ const pb = require('./message_pb.js')
 export class NetworkService {
 
   private webChannel
-  private door: {ownerId: number, key: string} // ownerId is a peer id
+  private door: {ownerId: number, key: string} = { ownerId: -1, key: 'default' } // ownerId is a peer id
 
   private joinSubject: AsyncSubject<number>
   private peerJoinSubject: ReplaySubject<number>
