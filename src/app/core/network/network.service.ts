@@ -365,6 +365,9 @@ export class NetworkService {
     this.webChannel(message)
   }
 
+  inviteBot (url: string) {
+    this.webChannel.invite(`ws://${url}`)
+  }
 }
 
 class QueryDocEvent {
