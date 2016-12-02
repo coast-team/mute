@@ -48,7 +48,12 @@ export class NetworkService {
     window.addEventListener('beforeunload', (event) => this.webChannel.leave())
 
     // Peer JOIN event
-    this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
+    this.webChannel.onPeerJoin = (id) => {
+      if (this.door.ownerId === this.webChannel.myId) {
+        this.sendDoor(true, true, id)
+      }
+      this.peerJoinSubject.next(id)
+    }
 
     // Peer LEAVE event
     this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
@@ -263,7 +268,7 @@ export class NetworkService {
     this.webChannel.sendTo(id, msg.serializeBinary())
   }
 
-  sendDoor (opened, intentionally) {
+  sendDoor (opened, intentionally, id?: number) {
     let doorMsg = new pb.Door()
     if (opened) {
       doorMsg.setKey(this.webChannel.getOpenData().key)
@@ -272,7 +277,11 @@ export class NetworkService {
     doorMsg.setIntentionally(intentionally)
     let msg = new pb.Message()
     msg.setDoor(doorMsg)
-    this.webChannel.send(msg.serializeBinary())
+    if (id) {
+      this.webChannel.sendTo(id, msg.serializeBinary())
+    } else {
+      this.webChannel.send(msg.serializeBinary())
+    }
   }
 
   generateRopesNodeMsg (ropesNode: MuteStructs.RopesNodes): any {
@@ -333,7 +342,6 @@ export class NetworkService {
       .then((openData) => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(this.webChannel.myId, openData.key, true, true)
-        this.sendDoor(true, true)
         this.joinSubject.next(this.webChannel.myId)
         this.joinSubject.complete()
       })
