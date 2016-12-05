@@ -2495,7 +2495,8 @@ proto.Door.toObject = function(includeInstance, msg) {
   var f, obj = {
     key: jspb.Message.getFieldWithDefault(msg, 1, ""),
     opened: jspb.Message.getFieldWithDefault(msg, 2, false),
-    intentionally: jspb.Message.getFieldWithDefault(msg, 3, false)
+    intentionally: jspb.Message.getFieldWithDefault(msg, 3, false),
+    mustclose: jspb.Message.getFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -2543,6 +2544,10 @@ proto.Door.deserializeBinaryFromReader = function(msg, reader) {
     case 3:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setIntentionally(value);
+      break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setMustclose(value);
       break;
     default:
       reader.skipField();
@@ -2603,6 +2608,13 @@ proto.Door.prototype.serializeBinaryToWriter = function (writer) {
       f
     );
   }
+  f = this.getMustclose();
+  if (f) {
+    writer.writeBool(
+      4,
+      f
+    );
+  }
 };
 
 
@@ -2652,6 +2664,23 @@ proto.Door.prototype.getIntentionally = function() {
 /** @param {boolean} value */
 proto.Door.prototype.setIntentionally = function(value) {
   jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * optional bool mustClose = 4;
+ * Note that Boolean fields may be set to 0/1 when serialized from a Java server.
+ * You should avoid comparisons like {@code val === true/false} in those cases.
+ * @return {boolean}
+ */
+proto.Door.prototype.getMustclose = function() {
+  return /** @type {boolean} */ (jspb.Message.getFieldWithDefault(this, 4, false));
+};
+
+
+/** @param {boolean} value */
+proto.Door.prototype.setMustclose = function(value) {
+  jspb.Message.setField(this, 4, value);
 };
 
 

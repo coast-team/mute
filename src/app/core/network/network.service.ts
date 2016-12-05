@@ -11,8 +11,9 @@ const pb = require('./message_pb.js')
 @Injectable()
 export class NetworkService {
 
+  private key: string
   private webChannel
-  private door: {ownerId: number, key: string} = { ownerId: -1, key: 'default' } // ownerId is a peer id
+  private doorOwnerId: number // One of the peer id
 
   private joinSubject: AsyncSubject<number>
   private peerJoinSubject: ReplaySubject<number>
@@ -20,7 +21,7 @@ export class NetworkService {
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
   private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
-  private doorSubject: BehaviorSubject<{opened: boolean, intentionally: boolean}>
+  private doorSubject: BehaviorSubject<boolean>
 
   private remoteOperationsSubject: ReplaySubject<any>
 
@@ -28,6 +29,7 @@ export class NetworkService {
   private joinDocSubject: BehaviorSubject<MuteStructs.LogootSRopes>
 
   constructor() {
+    this.doorOwnerId = null
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
@@ -35,7 +37,7 @@ export class NetworkService {
     this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>(
       {id: -1}
     )
-    this.doorSubject = new BehaviorSubject<{opened: boolean, intentionally: boolean}>({opened: true, intentionally: false})
+    this.doorSubject = new BehaviorSubject<boolean>(true)
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
@@ -49,14 +51,17 @@ export class NetworkService {
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => {
-      if (this.door.ownerId === this.webChannel.myId) {
-        this.sendDoor(true, true, id)
+      if (this.doorOwnerId === this.webChannel.myId) {
+        this.sendDoor(true, true, null, id)
       }
       this.peerJoinSubject.next(id)
     }
 
     // Peer LEAVE event
     this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
+
+    // On door closed
+    this.webChannel.onClose = () => this.setDoor(false)
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
@@ -105,14 +110,23 @@ export class NetworkService {
           this.joinDocSubject.next(doc)
           break
         case pb.Message.TypeCase.DOOR:
-          if (!msg.getDoor().opened) {
-            if (!msg.getDoor().intentionally) {
-              // Reopen door or not
-            } else {
-                this.setDoor(null, null, false, true)
-            }
+          let door = msg.getDoor()
+
+          log.debug('ON DOOR MESSAGE: mustclose= ' +  door.getMustclose())
+          log.debug('ON DOOR MESSAGE: opened= ' +  door.getOpened())
+          log.debug('ON DOOR MESSAGE: intentionally= ' +  door.getIntentionally())
+          if (door.getMustclose() !== null && door.getMustclose()) {
+            this.openDoor(false)
           } else {
-            this.setDoor(id, msg.getDoor().key, true, true)
+            if (!door.getOpened()) {
+              if (!door.getIntentionally()) {
+                // Reopen door or not
+              } else {
+                  this.setDoor(false)
+              }
+            } else {
+              this.setDoor(true, id)
+            }
           }
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
@@ -122,13 +136,42 @@ export class NetworkService {
     }
   }
 
-  getDoor (): {ownerId: number, key: string} {
-    return this.door
+  getDoor (): number {
+    return this.doorOwnerId
   }
 
-  setDoor (ownerId, key, opened, intentionally): void {
-    this.door = {ownerId, key}
-    this.doorSubject.next({opened, intentionally})
+  setDoor (opened: boolean, id: number | null = null): void {
+    this.doorOwnerId = id
+    this.doorSubject.next(opened)
+  }
+
+  openDoor (open: boolean) {
+    if (open) {
+      // Opening door only if it closed
+      if (!this.webChannel.isOpen()) {
+        this.webChannel.open({key: this.key})
+          .then((openData) => {
+            log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
+            this.setDoor(true, this.webChannel.myId)
+            this.sendDoor(true, true, null)
+          })
+          .catch((reason) => {
+            log.warn('Could not open a door with the signaling: '
+              + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
+          })
+      }
+    } else {
+      // Closing door
+      if (this.doorOwnerId !== null) {
+        if (this.doorOwnerId === this.webChannel.myId) {
+          log.debug('I\'m closing door')
+          this.webChannel.close()
+          this.sendDoor(false, true, null)
+        } else {
+          this.sendDoor(null, null, true, this.doorOwnerId)
+        }
+      }
+    }
   }
 
   get onJoin () {
@@ -155,7 +198,7 @@ export class NetworkService {
     return this.peerSelectionSubject.asObservable()
   }
 
-  get onDoor(): Observable<{opened: boolean, intentionally: boolean}> {
+  get onDoor(): Observable<boolean> {
     return this.doorSubject.asObservable()
   }
 
@@ -268,13 +311,17 @@ export class NetworkService {
     this.webChannel.sendTo(id, msg.serializeBinary())
   }
 
-  sendDoor (opened, intentionally, id?: number) {
+  sendDoor (opened, intentionally, mustClose, id?: number) {
     let doorMsg = new pb.Door()
-    if (opened) {
-      doorMsg.setKey(this.webChannel.getOpenData().key)
+    if (mustClose === null) {
+      if (opened) {
+        doorMsg.setKey(this.key)
+      }
+      doorMsg.setOpened(opened)
+      doorMsg.setIntentionally(intentionally)
+    } else {
+      doorMsg.setMustclose(mustClose)
     }
-    doorMsg.setOpened(opened)
-    doorMsg.setIntentionally(intentionally)
     let msg = new pb.Message()
     msg.setDoor(doorMsg)
     if (id) {
@@ -336,12 +383,13 @@ export class NetworkService {
   }
 
   join (key) {
+    this.key = key
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
       .then((openData) => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
-        this.setDoor(this.webChannel.myId, openData.key, true, true)
+        this.setDoor(true, this.webChannel.myId)
         this.joinSubject.next(this.webChannel.myId)
         this.joinSubject.complete()
       })

@@ -65,4 +65,5 @@ message Door {
   string key = 1;
   bool opened = 2;
   bool intentionally = 3;
+  bool mustClose = 4;
 }
