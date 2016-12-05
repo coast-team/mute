@@ -33,6 +33,7 @@ export class DocService {
     .filter( (doc: MuteStructs.LogootSRopes) => doc instanceof MuteStructs.LogootSRopes )
     .subscribe( (doc: MuteStructs.LogootSRopes) => {
       this.doc = doc
+      this.docSubject.next(this.doc)
       this.initEditorSubject.next(doc.str)
     })
 
