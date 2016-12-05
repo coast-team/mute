@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { ActivatedRoute, UrlSegment } from '@angular/router'
+import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 
@@ -11,13 +11,15 @@ import { ProfileService } from '../core/profile/profile.service'
 export class LeftsideComponent implements OnInit {
 
   private route: ActivatedRoute
+  private router: Router
   private profileService: ProfileService
 
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
-  constructor (route: ActivatedRoute, profileService: ProfileService) {
+  constructor (router: Router, route: ActivatedRoute, profileService: ProfileService) {
+    this.router = router
     this.route = route
     this.profileService = profileService
   }
@@ -43,5 +45,18 @@ export class LeftsideComponent implements OnInit {
     if (event.target.value === '') {
       this.pseudonymElm.value = this.profileService.pseudonym
     }
+  }
+
+  newDoc () {
+    const MIN_LENGTH = 10
+    const DELTA_LENGTH = 0
+    const MASK = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    let key = ''
+    const length = MIN_LENGTH + Math.round(Math.random() * DELTA_LENGTH)
+
+    for (let i = 0; i < length; i++) {
+      key += MASK[Math.round(Math.random() * (MASK.length - 1))]
+    }
+    this.router.navigate(['/' + key])
   }
 }
