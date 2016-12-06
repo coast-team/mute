@@ -5,6 +5,7 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs/Rx'
 import * as randomMC from 'random-material-color'
 
 import { NetworkService } from '../network/network.service'
+import { Collaborator } from './Collaborator'
 
 @Injectable()
 export class CollaboratorsService {
@@ -30,7 +31,7 @@ export class CollaboratorsService {
     this.pseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: null})
 
     this.network.onPeerJoin.subscribe((id) => {
-      let collab = new Collaborator(randomMC.getColor({ shades: ['200', '300']}))
+      let collab = new Collaborator(id, null, randomMC.getColor({ shades: ['200', '300']}))
       this.collaborators.set(id, collab)
     })
 
@@ -68,14 +69,4 @@ export class CollaboratorsService {
     return this.pseudoSubject.asObservable()
   }
 
-}
-
-class Collaborator {
-  public pseudo: string
-  public color: string
-
-  constructor (color: string) {
-    this.pseudo = null
-    this.color = color
-  }
 }

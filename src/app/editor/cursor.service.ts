@@ -51,29 +51,31 @@ export class CursorService {
         {id: number, index: number, identifier: MuteStructs.Identifier}) => {
         if (id !== -1) {
           let cursor = this.cursors.get(id)
-          if (cursor.cmBookmark === null) {
-            cursor.startClotting()
-          } else {
-            cursor.restartClotting()
-            // cursor.cmBookmark.clear()
-          }
-          if (index === -2) {
-            cursor.stopClotting()
-          } else {
-            let pos: any
-            if (index === -1) {
-              let lastLine = cmDoc.lastLine()
-              pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
+          if (cursor !== undefined) {
+            if (cursor.cmBookmark === null) {
+              cursor.startClotting()
             } else {
-              pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + index)
+              cursor.restartClotting()
+              // cursor.cmBookmark.clear()
             }
-            if (cursor.cmBookmark !== null) {
-              let oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
-              let newCoords = this.cmEditor.cursorCoords(pos, 'local')
-              let translateCoords = {x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top}
-              cursor.translate(translateCoords)
+            if (index === -2) {
+              cursor.stopClotting()
             } else {
-              cursor.cmBookmark = cmDoc.setBookmark(pos, {widget: cursor.domElm})
+              let pos: any
+              if (index === -1) {
+                let lastLine = cmDoc.lastLine()
+                pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
+              } else {
+                pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + index)
+              }
+              if (cursor.cmBookmark !== null) {
+                let oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
+                let newCoords = this.cmEditor.cursorCoords(pos, 'local')
+                let translateCoords = {x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top}
+                cursor.translate(translateCoords)
+              } else {
+                cursor.cmBookmark = cmDoc.setBookmark(pos, {widget: cursor.domElm})
+              }
             }
           }
         }

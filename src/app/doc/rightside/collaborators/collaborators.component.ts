@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 
-import { CollaboratorsService } from '../../../core/collaborators/collaborators.service'
+import { CollaboratorsService, Collaborator } from '../../../core/collaborators'
 
 @Component({
   selector: 'mute-collaborators',
@@ -11,7 +11,8 @@ export class CollaboratorsComponent implements OnInit {
 
   private changeDetectorRef: ChangeDetectorRef
   private collabService: CollaboratorsService
-  private collaborators: Array<Collaborator>
+
+  public collaborators: Array<Collaborator>
 
   // TODO: look at changeDetectorRef. Maybe is not a very efficient way to detect changes
   constructor(collabService: CollaboratorsService, changeDetectorRef: ChangeDetectorRef) {
@@ -45,17 +46,5 @@ export class CollaboratorsComponent implements OnInit {
       }
       this.changeDetectorRef.detectChanges()
     })
-  }
-}
-
-class Collaborator {
-  public id: number
-  public pseudo: string
-  public color: string
-
-  constructor (id, pseudo, color) {
-  this.id = id
-    this.pseudo = pseudo
-    this.color = color
   }
 }

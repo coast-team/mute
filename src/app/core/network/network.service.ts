@@ -2,11 +2,20 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, ReplaySubject, AsyncSubject, Observable } from 'rxjs/Rx'
 
-import * as MuteStructs from 'mute-structs'
+import {
+  LogootSAdd,
+  LogootSDel,
+  LogootSBlock,
+  LogootSRopes,
+  Identifier,
+  IdentifierInterval,
+  RopesNodes
+} from 'mute-structs'
 import * as netflux from 'netflux'
-
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
+
+export { Identifier, LogootSRopes }
 
 @Injectable()
 export class NetworkService {
@@ -19,14 +28,14 @@ export class NetworkService {
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
-  private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>
+  private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
   private doorSubject: BehaviorSubject<boolean>
 
   private remoteOperationsSubject: ReplaySubject<any>
 
   private queryDocSubject: BehaviorSubject<number>
-  private joinDocSubject: BehaviorSubject<MuteStructs.LogootSRopes>
+  private joinDocSubject: BehaviorSubject<LogootSRopes>
 
   constructor() {
     this.doorOwnerId = null
@@ -34,7 +43,7 @@ export class NetworkService {
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
-    this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: MuteStructs.Identifier}>(
+    this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: Identifier}>(
       {id: -1}
     )
     this.doorSubject = new BehaviorSubject<boolean>(true)
@@ -42,7 +51,7 @@ export class NetworkService {
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
     this.queryDocSubject = new BehaviorSubject<number>(0)
-    this.joinDocSubject = new BehaviorSubject<MuteStructs.LogootSRopes>(null)
+    this.joinDocSubject = new BehaviorSubject<LogootSRopes>(null)
 
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
@@ -73,22 +82,22 @@ export class NetworkService {
           break
         case pb.Message.TypeCase.PEERCURSOR:
           const protoIdentifier = msg.getPeercursor().getId()
-          identifier = new MuteStructs.Identifier(protoIdentifier.getBaseList(), protoIdentifier.getLast())
+          identifier = new Identifier(protoIdentifier.getBaseList(), protoIdentifier.getLast())
           this.peerCursorSubject.next({id, identifier, index: msg.getPeercursor().getIndex()})
           break
         case pb.Message.TypeCase.LOGOOTSADD:
           const logootSAddMsg = msg.getLogootsadd()
-          identifier = new MuteStructs.Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
-          const logootSAdd: any = new MuteStructs.LogootSAdd(identifier, logootSAddMsg.getContent())
+          identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+          const logootSAdd: any = new LogootSAdd(identifier, logootSAddMsg.getContent())
           log.info('operation:network', 'received insert: ', logootSAdd)
           this.remoteOperationsSubject.next(logootSAdd)
           break
         case pb.Message.TypeCase.LOGOOTSDEL:
           const logootSDelMsg: any = msg.getLogootsdel()
           const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
-            return new MuteStructs.IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
+            return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
           })
-          const logootSDel: any = new MuteStructs.LogootSDel(lid)
+          const logootSDel: any = new LogootSDel(lid)
           log.info('operation:network', 'received delete: ', logootSDel)
           this.remoteOperationsSubject.next(logootSDel)
           break
@@ -106,7 +115,7 @@ export class NetworkService {
             this.renameKeys(plainDoc.root)
           }
 
-          const doc: MuteStructs.LogootSRopes = MuteStructs.LogootSRopes.fromPlain(myId, clock, plainDoc)
+          const doc: LogootSRopes = LogootSRopes.fromPlain(myId, clock, plainDoc)
           this.joinDocSubject.next(doc)
           break
         case pb.Message.TypeCase.DOOR:
@@ -210,12 +219,12 @@ export class NetworkService {
     return this.joinDocSubject.asObservable()
   }
 
-  setDocStream (docStream: Observable<MuteStructs.LogootSRopes>) {
+  setDocStream (docStream: Observable<LogootSRopes>) {
     this.queryDocSubject
     .filter( (id: number) => id > 0)
     .withLatestFrom(
       docStream,
-      (id: number, doc: MuteStructs.LogootSRopes) => {
+      (id: number, doc: LogootSRopes) => {
         return new QueryDocEvent(id, doc)
       }
     ).subscribe( (queryDocEvent: QueryDocEvent) => {
@@ -295,13 +304,13 @@ export class NetworkService {
     this.webChannel.sendTo(peerDoor, msg.serializeBinary())
   }
 
-  sendDoc (id: number, doc: MuteStructs.LogootSRopes) {
+  sendDoc (id: number, doc: LogootSRopes) {
     const msg = new pb.Message()
 
     const logootSRopesMsg = new pb.LogootSRopes()
     logootSRopesMsg.setStr(doc.str)
 
-    if (doc.root instanceof MuteStructs.RopesNodes) {
+    if (doc.root instanceof RopesNodes) {
       const ropesMsg = this.generateRopesNodeMsg(doc.root)
       logootSRopesMsg.setRoot(ropesMsg)
     }
@@ -331,17 +340,17 @@ export class NetworkService {
     }
   }
 
-  generateRopesNodeMsg (ropesNode: MuteStructs.RopesNodes): any {
+  generateRopesNodeMsg (ropesNode: RopesNodes): any {
     const ropesNodeMsg = new pb.RopesNode()
 
     const blockMsg = this.generateBlockMsg(ropesNode.block)
     ropesNodeMsg.setBlock(blockMsg)
 
-    if (ropesNode.left instanceof MuteStructs.RopesNodes) {
+    if (ropesNode.left instanceof RopesNodes) {
       ropesNodeMsg.setLeft(this.generateRopesNodeMsg(ropesNode.left))
     }
 
-    if (ropesNode.right instanceof MuteStructs.RopesNodes) {
+    if (ropesNode.right instanceof RopesNodes) {
       ropesNodeMsg.setRight(this.generateRopesNodeMsg(ropesNode.right))
     }
 
@@ -351,7 +360,7 @@ export class NetworkService {
     return ropesNodeMsg
   }
 
-  generateBlockMsg (block: MuteStructs.LogootSBlock): any {
+  generateBlockMsg (block: LogootSBlock): any {
     const blockMsg = new pb.LogootSBlock()
 
     blockMsg.setId(this.generateIdentifierInterval(block.id))
@@ -360,7 +369,7 @@ export class NetworkService {
     return blockMsg
   }
 
-  generateIdentifierInterval (id: MuteStructs.IdentifierInterval): any {
+  generateIdentifierInterval (id: IdentifierInterval): any {
     const identifierInterval = new pb.IdentifierInterval()
 
     identifierInterval.setBaseList(id.base)
@@ -420,8 +429,8 @@ export class NetworkService {
 
 class QueryDocEvent {
   public id: number
-  public doc: MuteStructs.LogootSRopes
-  constructor(id: number, doc: MuteStructs.LogootSRopes) {
+  public doc: LogootSRopes
+  constructor(id: number, doc: LogootSRopes) {
     this.id = id
     this.doc = doc
   }
