@@ -10,7 +10,7 @@
             <md-icon *ngIf="doorOpened">lock_open</md-icon>
             <md-icon *ngIf="!doorOpened">lock</md-icon>
           </button>
-          <md-input class='docTitle' #docTitleElm placeholder="Document title"></md-input>
+          <md-input class='docTitle' #docTitleElm placeholder="Document title" (keyup)="updateTitle($event)" [value]="title"></md-input>
         </div>
 
         <mute-invite-bot></mute-invite-bot>

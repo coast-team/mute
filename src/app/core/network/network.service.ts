@@ -31,6 +31,7 @@ export class NetworkService {
   private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
   private doorSubject: BehaviorSubject<boolean>
+  private docTitleSubject: BehaviorSubject<string>
 
   private remoteOperationsSubject: ReplaySubject<any>
 
@@ -47,6 +48,7 @@ export class NetworkService {
       {id: -1}
     )
     this.doorSubject = new BehaviorSubject<boolean>(true)
+    this.docTitleSubject = new BehaviorSubject<string>('')
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
@@ -125,10 +127,6 @@ export class NetworkService {
           break
         case pb.Message.TypeCase.DOOR:
           let door = msg.getDoor()
-
-          log.debug('ON DOOR MESSAGE: mustclose= ' +  door.getMustclose())
-          log.debug('ON DOOR MESSAGE: opened= ' +  door.getOpened())
-          log.debug('ON DOOR MESSAGE: intentionally= ' +  door.getIntentionally())
           if (door.getMustclose() !== null && door.getMustclose()) {
             this.openDoor(false)
           } else {
@@ -142,6 +140,10 @@ export class NetworkService {
               this.setDoor(true, id)
             }
           }
+          break
+        case pb.Message.TypeCase.DOC:
+          log.debug('Dos title received: ' + msg.getDoc().getTitle())
+          this.docTitleSubject.next(msg.getDoc().getTitle())
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
           log.error('network', 'Protobuf: message type not set')
@@ -208,12 +210,24 @@ export class NetworkService {
     return this.peerCursorSubject.asObservable()
   }
 
-  get onPeerSelection() {
+  get onPeerSelection () {
     return this.peerSelectionSubject.asObservable()
   }
 
-  get onDoor(): Observable<boolean> {
+  get onDoor (): Observable<boolean> {
     return this.doorSubject.asObservable()
+  }
+
+  get onDocTitle (): Observable<string> {
+    return this.docTitleSubject.asObservable()
+  }
+
+  sendDocTitle (title: string): void {
+    let docMsg = new pb.Doc()
+    docMsg.setTitle(title)
+    let msg = new pb.Message()
+    msg.setDoc(docMsg)
+    this.webChannel.send(msg.serializeBinary())
   }
 
   get onRemoteOperations() {

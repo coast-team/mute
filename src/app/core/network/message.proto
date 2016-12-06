@@ -9,6 +9,7 @@ message Message {
     LogootSRopes logootSRopes = 5;
     QueryDoc queryDoc = 6;
     Door door = 7;
+    Doc doc = 8;
   }
 }
 
@@ -66,4 +67,8 @@ message Door {
   bool opened = 2;
   bool intentionally = 3;
   bool mustClose = 4;
+}
+
+message Doc {
+  string title = 1;
 }

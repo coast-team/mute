@@ -93,4 +93,9 @@ export class DocService {
   indexFromId (id: MuteStructs.Identifier) {
     return this.doc.searchPos(id, new Array())
   }
+
+  setTitle (title: string): void {
+    log.debug('Sending title: ' + title)
+    this.network.sendDocTitle(title)
+  }
 }
