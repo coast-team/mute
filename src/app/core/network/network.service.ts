@@ -67,7 +67,12 @@ export class NetworkService {
     }
 
     // Peer LEAVE event
-    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
+    this.webChannel.onPeerLeave = (id) => {
+      if (this.doorOwnerId === id) {
+        this.setDoor(false)
+      }
+      this.peerLeaveSubject.next(id)
+    }
 
     // On door closed
     this.webChannel.onClose = () => this.setDoor(false)
