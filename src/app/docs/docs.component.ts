@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { BotStorageService } from '../core/bot-storage/bot-storage.service'
-import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'mute-docs',
@@ -14,9 +13,8 @@ export class DocsComponent implements OnInit {
   private router: Router
   private botStorageService: BotStorageService
   private currentBot: {url: string, key: string} = {url: null, key: null}
-  private botIP: string = '192.168.0.100:8000'
   private docs: Array<Object> = []
-  private hasDocumens: boolean
+  private hasDocuments: boolean
 
   constructor (router: Router, botStorageService: BotStorageService) {
     this.router = router
@@ -24,22 +22,23 @@ export class DocsComponent implements OnInit {
   }
 
   ngOnInit () {
-    this.botStorageService.reachable(environment.botStorageURL)
+    this.botStorageService.reachable()
       .then(() => {
-        this.hasDocumens = true
-        this.botStorageService.getDocuments(environment.botStorageURL)
+        this.hasDocuments = true
+        this.botStorageService.getDocuments()
           .then((docs: any) => {
             this.docs = docs
           })
       })
       .catch(() => {
-        this.hasDocumens = false
+        this.hasDocuments = false
       })
   }
 
-  setBotStorage (key: string) {
-    this.currentBot.url = environment.botStorageURL
+  openDoc (key: string) {
+    this.currentBot.url = this.botStorageService.getURL()
     this.currentBot.key = key
+    this.router.navigate(['/' + key])
   }
 
   newDoc () {

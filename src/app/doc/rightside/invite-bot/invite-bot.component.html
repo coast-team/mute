@@ -12,7 +12,7 @@
   [@inputState]="'active'"
   (@inputState.done)="inputStateDone($event)"
   >
-  <md-input #ipElm placeholder="Bot address" (keyup)="validate($event)">
+  <md-input #ipElm placeholder="Bot address" (keyup)="validate($event)" (keyup.enter)="ok()">
     <md-hint *ngIf="error" [ngStyle]="{'color': 'red'}" align="start">{{errorMessage}}</md-hint>
   </md-input>
   <button md-icon-button (click)="ok()"><md-icon>done</md-icon></button>

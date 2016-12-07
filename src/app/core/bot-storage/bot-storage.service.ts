@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
 
+import { environment } from '../../../environments/environment'
+
 @Injectable()
 export class BotStorageService {
 
@@ -10,27 +12,26 @@ export class BotStorageService {
     this.http = http
   }
 
-  reachable (ipOrUrl: string): Promise<void> {
-    return this.http.get(ipOrUrl + '/ping').toPromise()
+  reachable (): Promise<void> {
+    return this.http.get(`http://${environment.botStorageAPI}/ping`).toPromise()
       .then((response) => {
-        if (typeof response !== 'string' || response !== 'pong') {
-          let msg = 'Wrong bot storage response on ping'
+        if (typeof response.text() !== 'string' || response.text() !== 'pong') {
+          let msg = 'Wrong bot storage response on /ping'
           log.error(msg)
           throw new Error(msg)
         }
       })
   }
 
-  getDocuments (ipOrUrl: string): Promise<void> {
-    return this.http.get(ipOrUrl + '/docs').toPromise()
+  getDocuments (): Promise<void> {
+    return this.http.get(`http://${environment.botStorageAPI}/docs`).toPromise()
       .then((response) => {
-        if (typeof response !== 'string') {
-          let msg = 'Wrong bot storage response on /docs'
-          log.error(msg)
-          throw new Error(msg)
-        } else {
-          return JSON.parse(response)
-        }
+        log.debug('DOCS: ', response.json())
+        return response.json()
       })
+  }
+
+  getURL () {
+    return environment.botStorage
   }
 }

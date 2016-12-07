@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/bot-storage/bot-storage.service'
-import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'mute-leftside',
@@ -44,14 +43,14 @@ export class LeftsideComponent implements OnInit {
         }, 1500)
       }
     })
-    this.botStorageService.reachable(environment.botStorageURL)
+    this.botStorageService.reachable()
       .then(() => {
         this.available = true
-        this.tooltipMsg = `Is available on: ${environment.botStorageURL}`
+        this.tooltipMsg = `Is available on: ${this.botStorageService.getURL()}`
       })
       .catch(() => {
         this.available = false
-        this.tooltipMsg = `${environment.botStorageURL} is not available`
+        this.tooltipMsg = `${this.botStorageService.getURL()} is not available`
       })
   }
 
