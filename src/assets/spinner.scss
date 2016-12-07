@@ -1,3 +1,5 @@
+@import 'theme';
+
 .spinner {
   width: 6rem;
   height: 6rem;
@@ -6,7 +8,7 @@
 }
 
 .double-bounce1 {
-  background-color: #673AB7;
+  background-color: md-color($primary, A400);
 }
 
 .double-bounce1, .double-bounce2 {
@@ -25,7 +27,7 @@
 .double-bounce2 {
   -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
-  background-color: #FFC107;
+  background-color: md-color($accent, A400);
 }
 
 @-webkit-keyframes sk-bounce {

@@ -1,4 +1,4 @@
-@import '../../assets/theme.scss';
+@import '../../assets/theme';
 @import '../../assets/variables';
 
 :host {
@@ -39,7 +39,7 @@ md-sidenav-layout {
       justify-content: center;
 
       .active {
-        border-left: 3px solid md-color($accent, A400);
+        border-left: 3px solid md-color($accent);
         font-family: $font-medium;
       }
     }
