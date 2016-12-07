@@ -9,7 +9,11 @@
     </span>
     <button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
     <div id="storage-list">
-      <button class="active" md-button>Remote bot storage</button>
+      <span [md-tooltip]="tooltipMsg">
+        <button [disabled]="!available" class="active" md-button routerLink="/">
+          Remote bot storage
+        </button>
+      </span>
     </div>
   </md-sidenav>
 </md-sidenav-layout>

@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
+import { BotStorageService } from '../core/bot-storage/bot-storage.service'
+import { environment } from '../../environments/environment'
 
 @Component({
   selector: 'mute-leftside',
@@ -13,14 +15,23 @@ export class LeftsideComponent implements OnInit {
   private route: ActivatedRoute
   private router: Router
   private profileService: ProfileService
+  private botStorageService: BotStorageService
+  private available: boolean
+  private tooltipMsg: string
 
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
-  constructor (router: Router, route: ActivatedRoute, profileService: ProfileService) {
+  constructor (
+    router: Router,
+    route: ActivatedRoute,
+    botStorageService: BotStorageService,
+    profileService: ProfileService
+  ) {
     this.router = router
     this.route = route
+    this.botStorageService = botStorageService
     this.profileService = profileService
   }
 
@@ -33,7 +44,15 @@ export class LeftsideComponent implements OnInit {
         }, 1500)
       }
     })
-
+    this.botStorageService.reachable(environment.botStorageURL)
+      .then(() => {
+        this.available = true
+        this.tooltipMsg = `Is available on: ${environment.botStorageURL}`
+      })
+      .catch(() => {
+        this.available = false
+        this.tooltipMsg = `${environment.botStorageURL} is not available`
+      })
   }
 
   toggleSidenav () {
@@ -45,6 +64,10 @@ export class LeftsideComponent implements OnInit {
     if (event.target.value === '') {
       this.pseudonymElm.value = this.profileService.pseudonym
     }
+  }
+
+  showTooltip () {
+
   }
 
   newDoc () {

@@ -19,7 +19,11 @@ export class RightsideComponent implements OnInit {
   @ViewChild('sidenavElm') sidenavElm
   menuIcon: string
 
-  constructor (networkService: NetworkService, docService: DocService, changeDetectorRef: ChangeDetectorRef) {
+  constructor (
+    networkService: NetworkService,
+    docService: DocService,
+    changeDetectorRef: ChangeDetectorRef
+  ) {
     this.changeDetectorRef = changeDetectorRef
     this.networkService = networkService
     this.docService = docService
