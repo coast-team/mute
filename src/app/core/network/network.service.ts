@@ -452,9 +452,6 @@ export class NetworkService {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
             this.joinSubject.next(this.webChannel.myId)
             this.sendQueryDoc()
-            if (key === this.botStorageService.currentBot.key) {
-              this.inviteBot(this.botStorageService.currentBot.url)
-            }
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
