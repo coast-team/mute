@@ -54,7 +54,7 @@ export class NetworkService {
       {id: -1}
     )
     this.doorSubject = new BehaviorSubject<boolean>(true)
-    this.docTitleSubject = new BehaviorSubject<string>('')
+    this.docTitleSubject = new BehaviorSubject<string>('Untitled document')
 
     this.remoteOperationsSubject = new ReplaySubject<any>()
 
