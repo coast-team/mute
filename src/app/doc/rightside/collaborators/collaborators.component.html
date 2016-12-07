@@ -1,3 +1,3 @@
-<span *ngFor="let collab of collaborators" [style.background-color]="collab.color">
+<span *ngFor="let collab of collabService.getCollaborators()" [style.background-color]="collab.color">
   {{collab.pseudo}}
 </span>
