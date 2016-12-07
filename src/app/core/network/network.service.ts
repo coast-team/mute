@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, ReplaySubject, AsyncSubject, Observable } from 'rxjs/Rx'
+import { BehaviorSubject, ReplaySubject, Observable } from 'rxjs/Rx'
 
 import {
   LogootSAdd,
@@ -28,6 +28,7 @@ export class NetworkService {
   private doorOwnerId: number // One of the peer id
 
   private joinSubject: BehaviorSubject<number>
+  private leaveSubject: BehaviorSubject<number>
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
@@ -45,6 +46,7 @@ export class NetworkService {
     this.botStorageService = botStorageService
     this.doorOwnerId = null
     this.joinSubject = new BehaviorSubject<number>(-1)
+    this.leaveSubject = new BehaviorSubject<number>(-1)
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
@@ -196,6 +198,10 @@ export class NetworkService {
 
   get onJoin () {
     return this.joinSubject.asObservable()
+  }
+
+  get onLeave () {
+    return this.leaveSubject.asObservable()
   }
 
   get onPeerJoin () {
@@ -417,6 +423,7 @@ export class NetworkService {
   join (key) {
     // Leave previous webChannel if existing
     this.webChannel.leave()
+    this.leaveSubject.next(-1)
 
     this.key = key
     // This is for demo to work out of the box.
