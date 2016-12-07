@@ -61,6 +61,10 @@ export class NetworkService {
     this.queryDocSubject = new BehaviorSubject<number>(0)
     this.joinDocSubject = new BehaviorSubject<LogootSRopes>(null)
 
+    this.initWebChannel()
+  }
+
+  initWebChannel () {
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
     // Leave webChannel before closing tab or browser
@@ -425,6 +429,8 @@ export class NetworkService {
     this.webChannel.close()
     this.webChannel.leave()
     this.leaveSubject.next(-1)
+
+    this.initWebChannel()
 
     this.key = key
     // This is for demo to work out of the box.
