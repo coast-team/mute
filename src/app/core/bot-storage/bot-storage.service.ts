@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment'
 export class BotStorageService {
 
   private http: Http
+  public currentBot: {url: string, key: string} = {url: null, key: null}
 
   constructor(http: Http) {
     this.http = http
@@ -29,6 +30,11 @@ export class BotStorageService {
         log.debug('DOCS: ', response.json())
         return response.json()
       })
+  }
+
+  updateCurrent (key) {
+      this.currentBot.url = this.getURL()
+      this.currentBot.key = key
   }
 
   getURL () {

@@ -12,8 +12,8 @@ export class DocsComponent implements OnInit {
 
   private router: Router
   private botStorageService: BotStorageService
-  private currentBot: {url: string, key: string} = {url: null, key: null}
   private docs: Array<Object> = []
+  private url: string
   private hasDocuments: boolean
 
   constructor (router: Router, botStorageService: BotStorageService) {
@@ -25,6 +25,7 @@ export class DocsComponent implements OnInit {
     this.botStorageService.reachable()
       .then(() => {
         this.hasDocuments = true
+        this.url = this.botStorageService.currentBot.url
         this.botStorageService.getDocuments()
           .then((docs: any) => {
             this.docs = docs
@@ -36,8 +37,7 @@ export class DocsComponent implements OnInit {
   }
 
   openDoc (key: string) {
-    this.currentBot.url = this.botStorageService.getURL()
-    this.currentBot.key = key
+    this.botStorageService.updateCurrent(key)
     this.router.navigate(['/' + key])
   }
 

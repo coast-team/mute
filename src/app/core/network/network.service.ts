@@ -12,6 +12,7 @@ import {
   RopesNodes
 } from 'mute-structs'
 import * as netflux from 'netflux'
+import { BotStorageService } from '../bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
 
@@ -19,6 +20,8 @@ export { Identifier, LogootSRopes }
 
 @Injectable()
 export class NetworkService {
+
+  private botStorageService: BotStorageService
 
   private key: string
   private webChannel
@@ -38,7 +41,8 @@ export class NetworkService {
   private queryDocSubject: BehaviorSubject<number>
   private joinDocSubject: BehaviorSubject<LogootSRopes>
 
-  constructor() {
+  constructor (botStorageService: BotStorageService) {
+    this.botStorageService = botStorageService
     this.doorOwnerId = null
     this.joinSubject = new AsyncSubject<number>()
     this.peerJoinSubject = new ReplaySubject<number>()
@@ -420,6 +424,10 @@ export class NetworkService {
         this.setDoor(true, this.webChannel.myId)
         this.joinSubject.next(this.webChannel.myId)
         this.joinSubject.complete()
+        log.debug('KEY: ' + key + ' --- ' + this.botStorageService.currentBot.key)
+        if (key === this.botStorageService.currentBot.key) {
+          this.inviteBot(this.botStorageService.currentBot.url)
+        }
       })
       .catch((reason) => {
         log.warn('Could not open a door with the signaling: '
@@ -430,6 +438,9 @@ export class NetworkService {
             this.joinSubject.next(this.webChannel.myId)
             this.joinSubject.complete()
             this.sendQueryDoc()
+            if (key === this.botStorageService.currentBot.key) {
+              this.inviteBot(this.botStorageService.currentBot.url)
+            }
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
