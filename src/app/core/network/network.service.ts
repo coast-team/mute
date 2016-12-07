@@ -422,6 +422,7 @@ export class NetworkService {
 
   join (key) {
     // Leave previous webChannel if existing
+    this.webChannel.close()
     this.webChannel.leave()
     this.leaveSubject.next(-1)
 
