@@ -25,6 +25,7 @@ export class DocService {
       this.doc = new MuteStructs.LogootSRopes(id)
       // Emit initial value
       this.docSubject = new BehaviorSubject<MuteStructs.LogootSRopes>(this.doc)
+      this.initEditorSubject.next(this.doc.str)
       this.network.setDocStream(this.docSubject.asObservable())
     })
 

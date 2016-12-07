@@ -27,7 +27,7 @@ export class NetworkService {
   private webChannel
   private doorOwnerId: number // One of the peer id
 
-  private joinSubject: AsyncSubject<number>
+  private joinSubject: BehaviorSubject<number>
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
   private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
@@ -44,7 +44,7 @@ export class NetworkService {
   constructor (botStorageService: BotStorageService) {
     this.botStorageService = botStorageService
     this.doorOwnerId = null
-    this.joinSubject = new AsyncSubject<number>()
+    this.joinSubject = new BehaviorSubject<number>(-1)
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
     this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
@@ -415,6 +415,9 @@ export class NetworkService {
   }
 
   join (key) {
+    // Leave previous webChannel if existing
+    this.webChannel.leave()
+
     this.key = key
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
@@ -423,8 +426,6 @@ export class NetworkService {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
         this.joinSubject.next(this.webChannel.myId)
-        this.joinSubject.complete()
-        log.debug('KEY: ' + key + ' --- ' + this.botStorageService.currentBot.key)
         if (key === this.botStorageService.currentBot.key) {
           this.inviteBot(this.botStorageService.currentBot.url)
         }
@@ -436,7 +437,6 @@ export class NetworkService {
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
             this.joinSubject.next(this.webChannel.myId)
-            this.joinSubject.complete()
             this.sendQueryDoc()
             if (key === this.botStorageService.currentBot.key) {
               this.inviteBot(this.botStorageService.currentBot.url)
