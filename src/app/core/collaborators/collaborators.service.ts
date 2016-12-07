@@ -30,6 +30,10 @@ export class CollaboratorsService {
     this.leaveSubject = new ReplaySubject<number>()
     this.pseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: null})
 
+    this.network.onLeave.subscribe(() => {
+      this.collaborators = new Map<number, Collaborator>()
+    })
+
     this.network.onPeerJoin.subscribe((id) => {
       let collab = new Collaborator(id, null, randomMC.getColor({ shades: ['200', '300']}))
       this.collaborators.set(id, collab)
