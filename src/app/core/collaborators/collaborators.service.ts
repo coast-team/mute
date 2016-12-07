@@ -57,8 +57,12 @@ export class CollaboratorsService {
     })
   }
 
-  getCollaborators () {
-    return this.collaborators
+  getCollaborators (): Array<Collaborator> {
+    const result: Array<Collaborator> = new Array<Collaborator>()
+    this.collaborators.forEach((collaborator) => {
+      result.push(collaborator)
+    })
+    return result
   }
 
   get onJoin (): Observable<{id: number, pseudo: string, color: string}> {
