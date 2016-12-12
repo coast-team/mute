@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Observer } from 'rxjs'
 
 import { NetworkService, NetworkMessage } from 'core/network'
 
-import { Identifier, LogootSAdd, LogootSRopes, TextInsert }  from 'mute-structs'
+import { Identifier, IdentifierInterval, LogootSAdd, LogootSDel, LogootSRopes, TextInsert, TextDelete }  from 'mute-structs'
 
 const pb = require('./message_pb.js')
 
@@ -12,8 +12,8 @@ export class DocService {
 
   private doc: any
   private network: NetworkService
-  private remoteTextOperationsStream: Observable<any[]>
-  private remoteOperationsObserver: Observer<TextInsert[]>
+  private remoteTextOperationsStream: Observable<TextInsert[] | TextDelete[]>
+  private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docSubject: BehaviorSubject<LogootSRopes>
   private initEditorSubject: BehaviorSubject<string>
 
@@ -57,6 +57,15 @@ export class DocService {
           console.log('operation:network', 'received insert: ', logootSAdd)
           this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSAdd))
           break
+        case pb.Doc.TypeCase.LOGOOTSDEL:
+          const logootSDelMsg: any = content.getLogootsdel()
+          const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
+            return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
+          })
+          const logootSDel: any = new LogootSDel(lid)
+          log.info('operation:network', 'received delete: ', logootSDel)
+          this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSDel))
+          break
       }
     })
 
@@ -76,14 +85,14 @@ export class DocService {
     return this.remoteTextOperationsStream
   }
 
-  handleTextOperations(array: any[][]) {
+  handleTextOperations(array: any[][]): void {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: any = textOperation.applyTo(this.doc)
         if (logootSOperation instanceof LogootSAdd) {
           this.sendLogootSAdd(logootSOperation)
         } else {
-          this.network.sendLogootSDel(logootSOperation)
+          this.sendLogootSDel(logootSOperation)
         }
       })
     })
@@ -91,8 +100,8 @@ export class DocService {
     this.docSubject.next(this.doc)
   }
 
-  handleRemoteOperation(logootSOperation: any) {
-    const textOperations: any[] = logootSOperation.execute(this.doc)
+  handleRemoteOperation(logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
+    const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
     log.info('operation:doc', 'updated doc: ', this.doc)
     this.docSubject.next(this.doc)
     return textOperations
@@ -133,5 +142,30 @@ export class DocService {
     msg.setLogootsadd(logootSAddMsg)
 
     this.network.newSend(this.constructor.name, msg.serializeBinary())
+  }
+
+  sendLogootSDel (logootSDel: LogootSDel): void {
+    const lid: any[] = logootSDel.lid.map( (id: any) => {
+      const identifierInterval: any = this.generateIdentifierInterval(id)
+      return identifierInterval
+    })
+
+    const logootSDelMsg = new pb.LogootSDel()
+    logootSDelMsg.setLidList(lid)
+
+    const msg = new pb.Doc()
+    msg.setLogootsdel(logootSDelMsg)
+
+    this.network.newSend(this.constructor.name, msg.serializeBinary())
+  }
+
+  generateIdentifierInterval (id: IdentifierInterval): any {
+    const identifierInterval = new pb.IdentifierInterval()
+
+    identifierInterval.setBaseList(id.base)
+    identifierInterval.setBegin(id.begin)
+    identifierInterval.setEnd(id.end)
+
+    return identifierInterval
   }
 }

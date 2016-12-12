@@ -3,7 +3,13 @@ syntax = "proto3";
 message Doc {
   oneof type {
     LogootSAdd logootSAdd = 1;
+    LogootSDel logootSDel = 2;
   }
+}
+
+message LogootSAdd {
+  Identifier id = 1;
+  string content = 2;
 }
 
 message Identifier {
@@ -11,7 +17,12 @@ message Identifier {
   int32 last = 2;
 }
 
-message LogootSAdd {
-  Identifier id = 1;
-  string content = 2;
+message LogootSDel {
+  repeated IdentifierInterval lid = 1;
+}
+
+message IdentifierInterval {
+  repeated int32 base = 1;
+  int32 begin = 2;
+  int32 end = 3;
 }
