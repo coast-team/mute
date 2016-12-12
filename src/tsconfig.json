@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "",
+    "baseUrl": "app",
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
