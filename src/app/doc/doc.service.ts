@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs'
 
 import { NetworkService } from '../core/network/network.service'
 
-import * as MuteStructs  from 'mute-structs'
+import { Identifier, LogootSAdd, LogootSRopes, TextInsert }  from 'mute-structs'
 
 @Injectable()
 export class DocService {
@@ -11,28 +11,28 @@ export class DocService {
   private doc: any
   private network: NetworkService
   private remoteTextOperationsStream: Observable<any[]>
-  private docSubject: BehaviorSubject<MuteStructs.LogootSRopes>
+  private docSubject: BehaviorSubject<LogootSRopes>
   private initEditorSubject: BehaviorSubject<string>
 
   constructor(network: NetworkService) {
-    this.doc = new MuteStructs.LogootSRopes(0)
+    this.doc = new LogootSRopes(0)
     log.debug('MUTE STRUCTS: ', this.doc)
     this.network = network
 
     this.initEditorSubject = new BehaviorSubject<string>('')
 
     this.network.onJoin.subscribe( (id: number) => {
-      this.doc = new MuteStructs.LogootSRopes(id)
+      this.doc = new LogootSRopes(id)
       // Emit initial value
-      this.docSubject = new BehaviorSubject<MuteStructs.LogootSRopes>(this.doc)
+      this.docSubject = new BehaviorSubject<LogootSRopes>(this.doc)
       this.initEditorSubject.next(this.doc.str)
       this.network.setDocStream(this.docSubject.asObservable())
     })
 
     this.network.onJoinDoc
 	// Check to filter null values
-    .filter( (doc: MuteStructs.LogootSRopes) => doc instanceof MuteStructs.LogootSRopes )
-    .subscribe( (doc: MuteStructs.LogootSRopes) => {
+    .filter( (doc: LogootSRopes) => doc instanceof LogootSRopes )
+    .subscribe( (doc: LogootSRopes) => {
       this.doc = doc
       this.docSubject.next(this.doc)
       this.initEditorSubject.next(doc.str)
@@ -61,7 +61,7 @@ export class DocService {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: any = textOperation.applyTo(this.doc)
-        if (logootSOperation instanceof MuteStructs.LogootSAdd) {
+        if (logootSOperation instanceof LogootSAdd) {
           this.network.sendLogootSAdd(logootSOperation)
         } else {
           this.network.sendLogootSDel(logootSOperation)
