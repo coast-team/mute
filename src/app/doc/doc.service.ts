@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject, Observable, Observer } from 'rxjs'
 
 import { NetworkService, NetworkMessage } from 'core/network'
 
@@ -13,6 +13,7 @@ export class DocService {
   private doc: any
   private network: NetworkService
   private remoteTextOperationsStream: Observable<any[]>
+  private remoteOperationsObserver: Observer<TextInsert[]>
   private docSubject: BehaviorSubject<LogootSRopes>
   private initEditorSubject: BehaviorSubject<string>
 
@@ -40,8 +41,8 @@ export class DocService {
       this.initEditorSubject.next(doc.str)
     })
 
-    this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
-      return this.handleRemoteOperation(logootSOperation)
+    this.remoteTextOperationsStream = Observable.create((observer) => {
+      this.remoteOperationsObserver = observer
     })
 
     this.network.onMessage
@@ -54,6 +55,7 @@ export class DocService {
           const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
           const logootSAdd: LogootSAdd = new LogootSAdd(identifier, logootSAddMsg.getContent())
           console.log('operation:network', 'received insert: ', logootSAdd)
+          this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSAdd))
           break
       }
     })
