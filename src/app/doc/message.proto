@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message Doc {
+  oneof type {
+    LogootSAdd logootSAdd = 1;
+  }
+}
+
+message Identifier {
+  repeated int32 base = 1;
+  int32 last = 2;
+}
+
+message LogootSAdd {
+  Identifier id = 1;
+  string content = 2;
+}
