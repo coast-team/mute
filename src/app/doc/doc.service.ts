@@ -43,6 +43,21 @@ export class DocService {
     this.remoteTextOperationsStream = this.network.onRemoteOperations.map( (logootSOperation: any) => {
       return this.handleRemoteOperation(logootSOperation)
     })
+
+    this.network.onMessage
+    .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
+    .subscribe((msg: NetworkMessage) => {
+      const content = new pb.Doc.deserializeBinary(msg.content)
+      switch (content.getTypeCase()) {
+        case pb.Doc.TypeCase.LOGOOTSADD:
+          const logootSAddMsg = content.getLogootsadd()
+          const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+          const logootSAdd: LogootSAdd = new LogootSAdd(identifier, logootSAddMsg.getContent())
+          console.log('operation:network', 'received insert: ', logootSAdd)
+          break
+      }
+    })
+
   }
 
   setLocalTextOperationsStream(textOperationsStream: Observable<any[]>) {
