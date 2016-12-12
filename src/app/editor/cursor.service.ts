@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import * as CodeMirror from 'codemirror'
 
 import { NetworkService } from '../core/network/network.service'
-import { CollaboratorsService } from '../core/collaborators/collaborators.service'
+import { CollaboratorsService, Collaborator } from 'core/collaborators'
 import { DocService } from '../doc/doc.service'
 import * as MuteStructs  from 'mute-structs'
 
@@ -33,17 +33,17 @@ export class CursorService {
     let cmDoc: CodeMirror.Doc = cmEditor.getDoc()
 
     this.collaboratorsService.onJoin
-      .subscribe(({id, pseudo, color}: {id: number, pseudo: string, color: string}) => {
-        this.cursors.set(id, new Cursor(color))
+      .subscribe((collab: Collaborator) => {
+        this.cursors.set(collab.id, new Cursor(collab.color))
     })
 
-    this.collaboratorsService.onLeave.subscribe((id: number) => {
-      let cursor = this.cursors.get(id)
+    this.collaboratorsService.onLeave.subscribe((collab: Collaborator) => {
+      let cursor = this.cursors.get(collab.id)
       if (cursor.cmBookmark !== null) {
         cursor.cmBookmark.clear()
       }
       cursor.stopClotting()
-      this.cursors.delete(id)
+      this.cursors.delete(collab.id)
     })
 
     this.networkService.onPeerCursor

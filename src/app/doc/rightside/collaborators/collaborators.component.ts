@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 
-import { CollaboratorsService, Collaborator } from '../../../core/collaborators'
+import { CollaboratorsService } from '../../../core/collaborators'
 
 @Component({
   selector: 'mute-collaborators',
@@ -9,13 +9,23 @@ import { CollaboratorsService, Collaborator } from '../../../core/collaborators'
 })
 export class CollaboratorsComponent implements OnInit {
 
-  private collabService: CollaboratorsService
-
-  public collaborators: Array<Collaborator>
-
-  constructor(collabService: CollaboratorsService) {
-    this.collabService = collabService
+  constructor(
+    private collabService: CollaboratorsService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.collabService.onJoin.subscribe(() => {
+      this.changeDetectorRef.detectChanges()
+    })
+
+    this.collabService.onLeave.subscribe(() => {
+      this.changeDetectorRef.detectChanges()
+    })
+
+    this.collabService.onUpdate.subscribe(() => {
+      this.changeDetectorRef.detectChanges()
+    })
+  }
 }

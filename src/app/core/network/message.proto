@@ -10,7 +10,13 @@ message Message {
     QueryDoc queryDoc = 6;
     Door door = 7;
     Doc doc = 8;
+    Newmessage msg = 9;
   }
+}
+
+message Newmessage {
+  string service = 1;
+  bytes content = 2;
 }
 
 message PeerPseudo {

@@ -3,9 +3,8 @@ export class Collaborator {
   public pseudo: string
   public color: string
 
-  constructor (id, pseudo, color) {
+  constructor (id, color) {
     this.id = id
-    this.pseudo = pseudo
     this.color = color
   }
 }

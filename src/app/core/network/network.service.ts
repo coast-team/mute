@@ -12,6 +12,8 @@ import {
   RopesNodes
 } from 'mute-structs'
 import * as netflux from 'netflux'
+
+import { NetworkMessage } from 'core/network'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
@@ -29,9 +31,9 @@ export class NetworkService {
 
   private joinSubject: BehaviorSubject<number>
   private leaveSubject: BehaviorSubject<number>
+  private messageSubject: ReplaySubject<NetworkMessage>
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
-  private peerPseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
   private peerCursorSubject: BehaviorSubject<{id: number, index?: number, identifier?: Identifier}>
   private peerSelectionSubject: BehaviorSubject<number>
   private doorSubject: BehaviorSubject<boolean>
@@ -45,11 +47,11 @@ export class NetworkService {
   constructor (botStorageService: BotStorageService) {
     this.botStorageService = botStorageService
     this.doorOwnerId = null
+    this.messageSubject = new ReplaySubject<NetworkMessage>()
     this.joinSubject = new BehaviorSubject<number>(-1)
     this.leaveSubject = new BehaviorSubject<number>(-1)
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
-    this.peerPseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: ''})
     this.peerCursorSubject = new BehaviorSubject<{id: number, index?: number, identifier?: Identifier}>(
       {id: -1}
     )
@@ -94,8 +96,9 @@ export class NetworkService {
       let msg = pb.Message.deserializeBinary(bytes)
       let identifier
       switch (msg.getTypeCase()) {
-        case pb.Message.TypeCase.PEERPSEUDO:
-          this.peerPseudoSubject.next({ id, pseudo: msg.getPeerpseudo().getPseudo() })
+        case pb.Message.TypeCase.MSG:
+          let newMsg = msg.getMsg()
+          this.messageSubject.next(new NetworkMessage(newMsg.getService(), id, isBroadcast, newMsg.getContent()))
           break
         case pb.Message.TypeCase.PEERCURSOR:
           const protoIdentifier = msg.getPeercursor().getId()
@@ -162,6 +165,19 @@ export class NetworkService {
     }
   }
 
+  newSend (service: string, content: ArrayBuffer, id?: number) {
+    let msg = new pb.Message()
+    let newmsg = new pb.Newmessage()
+    newmsg.setService(service)
+    newmsg.setContent(content)
+    msg.setMsg(newmsg)
+    if (id) {
+      this.webChannel.sendTo(id, msg.serializeBinary())
+    } else {
+      this.webChannel.send(msg.serializeBinary())
+    }
+  }
+
   getDoor (): number {
     return this.doorOwnerId
   }
@@ -200,6 +216,10 @@ export class NetworkService {
     }
   }
 
+  get onMessage (): Observable<NetworkMessage> {
+    return this.messageSubject.asObservable()
+  }
+
   get onJoin () {
     return this.joinSubject.asObservable()
   }
@@ -214,10 +234,6 @@ export class NetworkService {
 
   get onPeerLeave () {
     return this.peerLeaveSubject.asObservable()
-  }
-
-  get onPeerPseudo () {
-    return this.peerPseudoSubject.asObservable()
   }
 
   get onPeerCursor () {
@@ -263,18 +279,6 @@ export class NetworkService {
     ).subscribe( (queryDocEvent: QueryDocEvent) => {
       this.sendDoc(queryDocEvent.id, queryDocEvent.doc)
     })
-  }
-
-  sendPeerPseudo (pseudo: string, id: number = -1) {
-    let pseudoMsg = new pb.PeerPseudo()
-    pseudoMsg.setPseudo(pseudo)
-    let msg = new pb.Message()
-    msg.setPeerpseudo(pseudoMsg)
-    if (id !== -1) {
-      this.webChannel.sendTo(id, msg.serializeBinary())
-    } else {
-      this.webChannel.send(msg.serializeBinary())
-    }
   }
 
   sendPeerCursor (cursor: {index: number, last?: number, base?: number[]}) {

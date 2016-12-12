@@ -4,8 +4,9 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs/Rx'
 
 import * as randomMC from 'random-material-color'
 
-import { NetworkService } from '../network/network.service'
-import { Collaborator } from './Collaborator'
+import { NetworkService, NetworkMessage } from 'core/network'
+import { Collaborator } from 'core/collaborators/Collaborator'
+const pb = require('./message_pb.js')
 
 @Injectable()
 export class CollaboratorsService {
@@ -16,65 +17,80 @@ export class CollaboratorsService {
   * See https://angular.io/docs/ts/latest/guide/pipes.html#!#async-pipe
   */
 
-  private network: NetworkService
-  private collaborators: Map<number, Collaborator>
+  private joinSubject: ReplaySubject<Collaborator>
+  private leaveSubject: ReplaySubject<Collaborator>
+  private updateSubject: BehaviorSubject<Collaborator>
 
-  private joinSubject: ReplaySubject<{id: number, pseudo: string, color: string}>
-  private leaveSubject: ReplaySubject<number>
-  private pseudoSubject: BehaviorSubject<{id: number, pseudo: string}>
+  public collaborators: Set<Collaborator>
 
-  constructor(network: NetworkService) {
-    this.network = network
-    this.collaborators = new Map<number, Collaborator>()
-    this.joinSubject = new ReplaySubject<{id: number, pseudo: string, color: string}>()
-    this.leaveSubject = new ReplaySubject<number>()
-    this.pseudoSubject = new BehaviorSubject<{id: number, pseudo: string}>({id: -1, pseudo: null})
+  constructor(
+    private network: NetworkService
+  ) {
+    this.collaborators = new Set<Collaborator>()
+    this.joinSubject = new ReplaySubject<Collaborator>()
+    this.leaveSubject = new ReplaySubject<Collaborator>()
+    this.updateSubject = new BehaviorSubject<Collaborator>(null)
 
     this.network.onLeave.subscribe(() => {
-      this.collaborators = new Map<number, Collaborator>()
+      this.collaborators = new Set<Collaborator>()
     })
 
     this.network.onPeerJoin.subscribe((id) => {
-      let collab = new Collaborator(id, null, randomMC.getColor({ shades: ['200', '300']}))
-      this.collaborators.set(id, collab)
+      const collab = new Collaborator(id, randomMC.getColor({ shades: ['200', '300']}))
+      this.collaborators.add(collab)
+      this.joinSubject.next(collab)
     })
 
     this.network.onPeerLeave.subscribe((id) => {
-      this.collaborators.delete(id)
-      this.leaveSubject.next(id)
+      const collab = this.getCollaborator(id)
+      if (this.collaborators.delete(collab)) {
+        this.leaveSubject.next(collab)
+      }
     })
 
-    this.network.onPeerPseudo.subscribe(({id, pseudo}: {id: number, pseudo: string}) => {
-      let collab = this.collaborators.get(id)
-      if (collab !== undefined) {
-        if (collab.pseudo === null) {
-          this.joinSubject.next({id, pseudo, color: collab.color})
-        } else {
-          this.pseudoSubject.next({id, pseudo})
+    this.network.onMessage.subscribe((msg: NetworkMessage) => {
+      log.debug('SERVICE: ' + msg.service)
+      if (msg.service === this.constructor.name) {
+        const collab = this.getCollaborator(msg.id)
+        if (collab !== null) {
+          const oldPseudo = collab.pseudo
+          collab.pseudo = new pb.Collaborator.deserializeBinary(msg.content).getPseudo()
+          if (oldPseudo === null) {
+            this.joinSubject.next(collab)
+          } else {
+            this.updateSubject.next(collab)
+          }
         }
-        collab.pseudo = pseudo
       }
     })
   }
 
-  getCollaborators (): Array<Collaborator> {
-    const result: Array<Collaborator> = new Array<Collaborator>()
-    this.collaborators.forEach((collaborator) => {
-      result.push(collaborator)
-    })
-    return result
-  }
-
-  get onJoin (): Observable<{id: number, pseudo: string, color: string}> {
+  get onJoin (): Observable<Collaborator> {
     return this.joinSubject.asObservable()
   }
 
-  get onLeave (): Observable<number> {
+  get onLeave (): Observable<Collaborator> {
     return this.leaveSubject.asObservable()
   }
 
-  get onPseudoChange (): Observable<{id: number, pseudo: string}> {
-    return this.pseudoSubject.asObservable()
+  get onUpdate (): Observable<Collaborator> {
+    return this.updateSubject.asObservable()
+  }
+
+  update (pseudo: string, id?: number) {
+    let collabMsg = new pb.Collaborator()
+    collabMsg.setPseudo(pseudo)
+    this.network.newSend(this.constructor.name, collabMsg.serializeBinary(), id)
+  }
+
+  getCollaborator (id: number): Collaborator | null {
+    let collab: Collaborator = null
+    this.collaborators.forEach((value) => {
+      if (value.id === id) {
+        collab = value
+      }
+    })
+    return collab
   }
 
 }
