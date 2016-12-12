@@ -33,7 +33,7 @@ export class DocService {
     })
 
     this.network.onJoinDoc
-	// Check to filter null values
+    // Check to filter null values
     .filter( (doc: LogootSRopes) => doc instanceof LogootSRopes )
     .subscribe( (doc: LogootSRopes) => {
       this.doc = doc
@@ -110,7 +110,7 @@ export class DocService {
     return null
   }
 
-  indexFromId (id: MuteStructs.Identifier) {
+  indexFromId (id: Identifier): number {
     return this.doc.searchPos(id, new Array())
   }
 
