@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs'
 
-import { NetworkService } from '../core/network/network.service'
+import { NetworkService, NetworkMessage } from 'core/network'
 
 import { Identifier, LogootSAdd, LogootSRopes, TextInsert }  from 'mute-structs'
+
+const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
@@ -62,7 +64,7 @@ export class DocService {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: any = textOperation.applyTo(this.doc)
         if (logootSOperation instanceof LogootSAdd) {
-          this.network.sendLogootSAdd(logootSOperation)
+          this.sendLogootSAdd(logootSOperation)
         } else {
           this.network.sendLogootSDel(logootSOperation)
         }
@@ -98,5 +100,21 @@ export class DocService {
   setTitle (title: string): void {
     log.debug('Sending title: ' + title)
     this.network.sendDocTitle(title)
+  }
+
+  sendLogootSAdd (logootSAdd: LogootSAdd): void {
+    const identifier = new pb.Identifier()
+
+    identifier.setBaseList(logootSAdd.id.base)
+    identifier.setLast(logootSAdd.id.last)
+
+    const logootSAddMsg = new pb.LogootSAdd()
+    logootSAddMsg.setId(identifier)
+    logootSAddMsg.setContent(logootSAdd.l)
+
+    const msg = new pb.Doc()
+    msg.setLogootsadd(logootSAddMsg)
+
+    this.network.newSend(this.constructor.name, msg.serializeBinary())
   }
 }
