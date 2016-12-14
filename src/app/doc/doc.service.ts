@@ -20,7 +20,7 @@ const pb = require('./message_pb.js')
 @Injectable()
 export class DocService {
 
-  private doc: any
+  private doc: LogootSRopes
   private network: NetworkService
   private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
@@ -28,7 +28,6 @@ export class DocService {
   private docValueObserver: Observer<string>
 
   constructor(network: NetworkService) {
-    this.doc = new LogootSRopes(0)
     this.network = network
 
     this.docValueObservable = Observable.create((observer) => {
@@ -36,10 +35,11 @@ export class DocService {
     })
 
     this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
-      this.doc = new LogootSRopes(joinEvent.id)
       if (!joinEvent.created) {
+        // Have to retrieve the document from another peer
         this.sendQueryDoc()
       } else {
+        this.doc = new LogootSRopes(joinEvent.id)
         // Emit initial value
         this.docValueObserver.next(this.doc.str)
       }
@@ -109,7 +109,7 @@ export class DocService {
   handleTextOperations(array: any[][]): void {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
-        const logootSOperation: any = textOperation.applyTo(this.doc)
+        const logootSOperation: LogootSAdd | LogootSDel = textOperation.applyTo(this.doc)
         if (logootSOperation instanceof LogootSAdd) {
           this.sendLogootSAdd(logootSOperation)
         } else {
@@ -178,7 +178,7 @@ export class DocService {
     this.network.newSend(this.constructor.name, msg.serializeBinary())
   }
 
-  sendDoc (id: number) {
+  sendDoc (id: number): void {
     const msg = new pb.Doc()
 
     const logootSRopesMsg = new pb.LogootSRopes()
@@ -243,7 +243,7 @@ export class DocService {
   }
 
   // FIXME: Prevent Protobuf from renaming our fields or move this code elsewhere
-  renameKeys (node: {block: {id: any, nbElement?: any, nbelement: number}, right?: any, left?: any}) {
+  renameKeys (node: {block: {id: any, nbElement?: any, nbelement: number}, right?: any, left?: any}): void {
     node.block.id.base = node.block.id.baseList
     node.block.nbElement = node.block.nbelement
     if (node.left) {
