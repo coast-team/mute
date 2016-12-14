@@ -4,6 +4,8 @@ message Doc {
   oneof type {
     LogootSAdd logootSAdd = 1;
     LogootSDel logootSDel = 2;
+    LogootSRopes logootSRopes = 3;
+    QueryDoc queryDoc = 4;
   }
 }
 
@@ -26,3 +28,23 @@ message IdentifierInterval {
   int32 begin = 2;
   int32 end = 3;
 }
+
+message LogootSRopes {
+  RopesNode root = 1;
+  string str = 2;
+}
+
+message RopesNode {
+  LogootSBlock block = 1;
+  RopesNode left = 2;
+  RopesNode right = 3;
+  int32 offset = 4;
+  int32 length = 5;
+}
+
+message LogootSBlock {
+  IdentifierInterval id = 1;
+  int32 nbElement = 2;
+}
+
+message QueryDoc {}

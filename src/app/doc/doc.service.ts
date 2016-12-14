@@ -6,9 +6,11 @@ import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
 import {
   LogootSAdd,
   LogootSDel,
+  LogootSBlock,
   LogootSRopes,
   Identifier,
   IdentifierInterval,
+  RopesNodes,
   TextInsert,
   TextDelete
 } from 'mute-structs'
@@ -34,6 +36,7 @@ export class DocService {
     this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
       this.doc = new LogootSRopes(joinEvent.id)
       if (!joinEvent.created) {
+        this.sendQueryDoc()
       } else {
         // Emit initial value
         this.initEditorSubject.next(this.doc.str)
@@ -64,6 +67,23 @@ export class DocService {
           const logootSDel: any = new LogootSDel(lid)
           log.info('operation:network', 'received delete: ', logootSDel)
           this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSDel))
+          break
+        case pb.Doc.TypeCase.LOGOOTSROPES:
+          const myId: number = this.network.myId
+          const clock = 0
+
+          const plainDoc: any = content.toObject().logootsropes
+
+          // Protobuf rename keys like 'base' to 'baseList' because, just because...
+          if (plainDoc.root instanceof Object) {
+            this.renameKeys(plainDoc.root)
+          }
+
+          this.doc = LogootSRopes.fromPlain(myId, clock, plainDoc)
+          this.initEditorSubject.next(this.doc.str)
+          break
+        case pb.Doc.TypeCase.QUERYDOC:
+          this.sendDoc(msg.id)
           break
       }
     })
@@ -158,6 +178,60 @@ export class DocService {
     this.network.newSend(this.constructor.name, msg.serializeBinary())
   }
 
+  sendDoc (id: number) {
+    const msg = new pb.Doc()
+
+    const logootSRopesMsg = new pb.LogootSRopes()
+    logootSRopesMsg.setStr(this.doc.str)
+
+    if (this.doc.root instanceof RopesNodes) {
+      const ropesMsg = this.generateRopesNodeMsg(this.doc.root)
+      logootSRopesMsg.setRoot(ropesMsg)
+    }
+    msg.setLogootsropes(logootSRopesMsg)
+
+    this.network.newSend(this.constructor.name, msg.serializeBinary(), id)
+  }
+
+  sendQueryDoc (): void {
+    const msg = new pb.Doc()
+
+    const queryDoc = new pb.QueryDoc()
+    msg.setQuerydoc(queryDoc)
+
+    const peerDoor: number = this.network.members[0]
+    this.network.newSend(this.constructor.name, msg.serializeBinary(), peerDoor)
+  }
+
+  generateRopesNodeMsg (ropesNode: RopesNodes): any {
+    const ropesNodeMsg = new pb.RopesNode()
+
+    const blockMsg = this.generateBlockMsg(ropesNode.block)
+    ropesNodeMsg.setBlock(blockMsg)
+
+    if (ropesNode.left instanceof RopesNodes) {
+      ropesNodeMsg.setLeft(this.generateRopesNodeMsg(ropesNode.left))
+    }
+
+    if (ropesNode.right instanceof RopesNodes) {
+      ropesNodeMsg.setRight(this.generateRopesNodeMsg(ropesNode.right))
+    }
+
+    ropesNodeMsg.setOffset(ropesNode.offset)
+    ropesNodeMsg.setLength(ropesNode.length)
+
+    return ropesNodeMsg
+  }
+
+  generateBlockMsg (block: LogootSBlock): any {
+    const blockMsg = new pb.LogootSBlock()
+
+    blockMsg.setId(this.generateIdentifierInterval(block.id))
+    blockMsg.setNbelement(block.nbElement)
+
+    return blockMsg
+  }
+
   generateIdentifierInterval (id: IdentifierInterval): any {
     const identifierInterval = new pb.IdentifierInterval()
 
@@ -166,5 +240,17 @@ export class DocService {
     identifierInterval.setEnd(id.end)
 
     return identifierInterval
+  }
+
+  // FIXME: Prevent Protobuf from renaming our fields or move this code elsewhere
+  renameKeys (node: {block: {id: any, nbElement?: any, nbelement: number}, right?: any, left?: any}) {
+    node.block.id.base = node.block.id.baseList
+    node.block.nbElement = node.block.nbelement
+    if (node.left) {
+      this.renameKeys(node.left)
+    }
+    if (node.right) {
+      this.renameKeys(node.right)
+    }
   }
 }
