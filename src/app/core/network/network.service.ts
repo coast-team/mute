@@ -219,6 +219,14 @@ export class NetworkService {
     }
   }
 
+  get myId (): number {
+    return this.webChannel.myId
+  }
+
+  get members (): number[] {
+    return this.webChannel.members
+  }
+
   get onMessage (): Observable<NetworkMessage> {
     return this.messageSubject.asObservable()
   }
