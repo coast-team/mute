@@ -45,8 +45,6 @@ export class EditorComponent implements OnInit {
 
     this.cursorService.init(this.editor)
 
-
-
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
         this.editor.on('change', h)
@@ -85,7 +83,7 @@ export class EditorComponent implements OnInit {
 
     this.docService.setLocalTextOperationsStream(textOperationsStream)
 
-    this.docService.getInitEditorStream().subscribe( (str: string) => {
+    this.docService.onDocValue.subscribe( (str: string) => {
       this.editor.setValue(str)
     })
 

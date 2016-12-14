@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable, Observer } from 'rxjs'
+import { Observable, Observer } from 'rxjs'
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
 
@@ -24,13 +24,16 @@ export class DocService {
   private network: NetworkService
   private remoteTextOperationsStream: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
-  private initEditorSubject: BehaviorSubject<string>
+  private docValueObservable: Observable<string>
+  private docValueObserver: Observer<string>
 
   constructor(network: NetworkService) {
     this.doc = new LogootSRopes(0)
     this.network = network
 
-    this.initEditorSubject = new BehaviorSubject<string>('')
+    this.docValueObservable = Observable.create((observer) => {
+      this.docValueObserver = observer
+    })
 
     this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
       this.doc = new LogootSRopes(joinEvent.id)
@@ -38,7 +41,7 @@ export class DocService {
         this.sendQueryDoc()
       } else {
         // Emit initial value
-        this.initEditorSubject.next(this.doc.str)
+        this.docValueObserver.next(this.doc.str)
       }
     })
 
@@ -79,7 +82,7 @@ export class DocService {
           }
 
           this.doc = LogootSRopes.fromPlain(myId, clock, plainDoc)
-          this.initEditorSubject.next(this.doc.str)
+          this.docValueObserver.next(this.doc.str)
           break
         case pb.Doc.TypeCase.QUERYDOC:
           this.sendDoc(msg.id)
@@ -95,8 +98,8 @@ export class DocService {
     })
   }
 
-  getInitEditorStream(): Observable<string> {
-    return this.initEditorSubject.asObservable()
+  get onDocValue(): Observable<string> {
+    return this.docValueObservable
   }
 
   getRemoteTextOperationsStream(): Observable<any[]> {
