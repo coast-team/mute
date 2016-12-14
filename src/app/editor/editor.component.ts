@@ -96,7 +96,7 @@ export class EditorComponent implements OnInit {
     //     })
     //   })
 
-    this.docService.getRemoteTextOperationsStream().subscribe( (textOperations: any[]) => {
+    this.docService.onRemoteOperations.subscribe( (textOperations: any[]) => {
       const doc: CodeMirror.Doc = this.editor.getDoc()
 
       log.info('operation:editor', 'applied: ', textOperations)

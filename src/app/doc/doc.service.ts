@@ -22,7 +22,7 @@ export class DocService {
 
   private doc: any
   private network: NetworkService
-  private remoteTextOperationsStream: Observable<TextInsert[] | TextDelete[]>
+  private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docValueObservable: Observable<string>
   private docValueObserver: Observer<string>
@@ -45,7 +45,7 @@ export class DocService {
       }
     })
 
-    this.remoteTextOperationsStream = Observable.create((observer) => {
+    this.remoteOperationsObservable = Observable.create((observer) => {
       this.remoteOperationsObserver = observer
     })
 
@@ -102,8 +102,8 @@ export class DocService {
     return this.docValueObservable
   }
 
-  getRemoteTextOperationsStream(): Observable<any[]> {
-    return this.remoteTextOperationsStream
+  get onRemoteOperations(): Observable<TextInsert[] | TextDelete[]> {
+    return this.remoteOperationsObservable
   }
 
   handleTextOperations(array: any[][]): void {
