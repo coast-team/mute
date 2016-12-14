@@ -13,7 +13,7 @@ import {
 } from 'mute-structs'
 import * as netflux from 'netflux'
 
-import { NetworkMessage } from 'core/network'
+import { JoinEvent, NetworkMessage } from 'core/network'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
@@ -29,7 +29,8 @@ export class NetworkService {
   private webChannel
   private doorOwnerId: number // One of the peer id
 
-  private joinSubject: BehaviorSubject<number>
+  private joinObservable: Observable<JoinEvent>
+  private joinObserver: Observer<JoinEvent>
   private leaveSubject: BehaviorSubject<number>
   private messageSubject: ReplaySubject<NetworkMessage>
   private peerJoinSubject: ReplaySubject<number>
@@ -48,7 +49,9 @@ export class NetworkService {
     this.botStorageService = botStorageService
     this.doorOwnerId = null
     this.messageSubject = new ReplaySubject<NetworkMessage>()
-    this.joinSubject = new BehaviorSubject<number>(-1)
+    this.joinObservable = Observable.create((observer) => {
+      this.joinObserver = observer
+    })
     this.leaveSubject = new BehaviorSubject<number>(-1)
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
@@ -155,7 +158,7 @@ export class NetworkService {
           }
           break
         case pb.Message.TypeCase.DOC:
-          log.debug('Dos title received: ' + msg.getDoc().getTitle())
+          log.debug('Doc title received: ' + msg.getDoc().getTitle())
           this.docTitleSubject.next(msg.getDoc().getTitle())
           break
         case pb.Message.TypeCase.TYPE_NOT_SET:
@@ -220,8 +223,8 @@ export class NetworkService {
     return this.messageSubject.asObservable()
   }
 
-  get onJoin () {
-    return this.joinSubject.asObservable()
+  get onJoin (): Observable<JoinEvent> {
+    return this.joinObservable
   }
 
   get onLeave () {
@@ -443,7 +446,7 @@ export class NetworkService {
       .then((openData) => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
-        this.joinSubject.next(this.webChannel.myId)
+        this.joinObserver.next(new JoinEvent(this.webChannel.myId, true))
         if (key === this.botStorageService.currentBot.key) {
           this.inviteBot(this.botStorageService.currentBot.url)
         }
@@ -454,8 +457,7 @@ export class NetworkService {
         return this.webChannel.join(key)
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
-            this.joinSubject.next(this.webChannel.myId)
-            this.sendQueryDoc()
+            this.joinObserver.next(new JoinEvent(this.webChannel.myId, false))
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)

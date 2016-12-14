@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable, Observer } from 'rxjs'
 
-import { NetworkService, NetworkMessage } from 'core/network'
+import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
 
-import { Identifier, IdentifierInterval, LogootSAdd, LogootSDel, LogootSRopes, TextInsert, TextDelete }  from 'mute-structs'
+import {
+  LogootSAdd,
+  LogootSDel,
+  LogootSRopes,
+  Identifier,
+  IdentifierInterval,
+  TextInsert,
+  TextDelete
+} from 'mute-structs'
 
 const pb = require('./message_pb.js')
 
@@ -19,26 +27,17 @@ export class DocService {
 
   constructor(network: NetworkService) {
     this.doc = new LogootSRopes(0)
-    log.debug('MUTE STRUCTS: ', this.doc)
     this.network = network
 
     this.initEditorSubject = new BehaviorSubject<string>('')
 
-    this.network.onJoin.subscribe( (id: number) => {
-      this.doc = new LogootSRopes(id)
-      // Emit initial value
-      this.docSubject = new BehaviorSubject<LogootSRopes>(this.doc)
-      this.initEditorSubject.next(this.doc.str)
-      this.network.setDocStream(this.docSubject.asObservable())
-    })
-
-    this.network.onJoinDoc
-    // Check to filter null values
-    .filter( (doc: LogootSRopes) => doc instanceof LogootSRopes )
-    .subscribe( (doc: LogootSRopes) => {
-      this.doc = doc
-      this.docSubject.next(this.doc)
-      this.initEditorSubject.next(doc.str)
+    this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
+      this.doc = new LogootSRopes(joinEvent.id)
+      if (!joinEvent.created) {
+      } else {
+        // Emit initial value
+        this.initEditorSubject.next(this.doc.str)
+      }
     })
 
     this.remoteTextOperationsStream = Observable.create((observer) => {
@@ -54,7 +53,7 @@ export class DocService {
           const logootSAddMsg = content.getLogootsadd()
           const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
           const logootSAdd: LogootSAdd = new LogootSAdd(identifier, logootSAddMsg.getContent())
-          console.log('operation:network', 'received insert: ', logootSAdd)
+          log.info('operation:network', 'received insert: ', logootSAdd)
           this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSAdd))
           break
         case pb.Doc.TypeCase.LOGOOTSDEL:
