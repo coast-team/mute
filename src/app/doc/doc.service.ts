@@ -24,7 +24,6 @@ export class DocService {
   private network: NetworkService
   private remoteTextOperationsStream: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
-  private docSubject: BehaviorSubject<LogootSRopes>
   private initEditorSubject: BehaviorSubject<string>
 
   constructor(network: NetworkService) {
@@ -116,13 +115,11 @@ export class DocService {
       })
     })
     log.info('operation:doc', 'updated doc: ', this.doc)
-    this.docSubject.next(this.doc)
   }
 
   handleRemoteOperation(logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
     const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
     log.info('operation:doc', 'updated doc: ', this.doc)
-    this.docSubject.next(this.doc)
     return textOperations
   }
 
