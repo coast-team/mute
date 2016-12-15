@@ -126,7 +126,7 @@ class ChangeEvent {
   }
 
   toTextOperations(): any[] {
-    const textOperations = []
+    const textOperations: (TextDelete | TextInsert)[] = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
 
