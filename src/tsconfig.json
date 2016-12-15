@@ -10,7 +10,7 @@
     "moduleResolution": "node",
     "outDir": "../dist/out-tsc",
     "sourceMap": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "target": "es5",
     "typeRoots": [
       "../node_modules/@types"
