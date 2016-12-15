@@ -84,8 +84,6 @@ export class EditorComponent implements OnInit {
       })
     })
 
-    this.docService.setLocalTextOperationsStream(textOperationsStream)
-
     textOperationsStream.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.editorService.emitLocalTextOperations(textOperations)
     })

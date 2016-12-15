@@ -15,19 +15,23 @@ import {
   TextDelete
 } from 'mute-structs'
 
+import { EditorService } from 'editor/editor.service'
+
 const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
 
   private doc: LogootSRopes
+  private editorService: EditorService
   private network: NetworkService
   private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docValueObservable: Observable<string>
   private docValueObserver: Observer<string>
 
-  constructor(network: NetworkService) {
+  constructor(editorService: EditorService, network: NetworkService) {
+    this.editorService = editorService
     this.network = network
 
     this.docValueObservable = Observable.create((observer) => {
@@ -96,11 +100,8 @@ export class DocService {
       }
     })
 
-  }
-
-  setLocalTextOperationsStream(textOperationsStream: Observable<any[]>) {
-    textOperationsStream.subscribe( (array: any[][]) => {
-      this.handleTextOperations(array)
+    this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
+      this.handleTextOperations(textOperations)
     })
   }
 
