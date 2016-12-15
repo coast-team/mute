@@ -81,8 +81,14 @@ export class DocService {
             this.renameKeys(plainDoc.root)
           }
 
-          this.doc = LogootSRopes.fromPlain(myId, clock, plainDoc)
-          this.docValueObserver.next(this.doc.str)
+          const doc: LogootSRopes | null = LogootSRopes.fromPlain(myId, clock, plainDoc)
+
+          if (doc instanceof LogootSRopes) {
+            this.doc = doc
+            this.docValueObserver.next(this.doc.str)
+          } else {
+            log.error('logootsropes:doc', 'received invalid document')
+          }
           break
         case pb.Doc.TypeCase.QUERYDOC:
           this.sendDoc(msg.id)
