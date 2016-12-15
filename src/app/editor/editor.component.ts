@@ -10,6 +10,7 @@ import { TextDelete, TextInsert }  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
 import { CursorService } from './cursor.service'
+import { EditorService } from './editor.service'
 
 @Component({
   selector: 'mute-editor',
@@ -28,12 +29,14 @@ export class EditorComponent implements OnInit {
   private editor: CodeMirror.Editor
   private docService: DocService
   private cursorService: CursorService
+  private editorService: EditorService
 
   @ViewChild('editorElt') editorElt
 
-  constructor(docService: DocService, cursorService: CursorService) {
+  constructor(docService: DocService, cursorService: CursorService, editorService: EditorService) {
     this.docService = docService
     this.cursorService = cursorService
+    this.editorService = editorService
   }
 
   ngOnInit() {
@@ -75,13 +78,17 @@ export class EditorComponent implements OnInit {
       })
       */
 
-    const textOperationsStream: Observable<any[]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
+    const textOperationsStream: Observable<(TextDelete | TextInsert)[][]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
       return changeEvents.map( (changeEvent: ChangeEvent ) => {
         return changeEvent.toTextOperations()
       })
     })
 
     this.docService.setLocalTextOperationsStream(textOperationsStream)
+
+    textOperationsStream.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
+      this.editorService.emitLocalTextOperations(textOperations)
+    })
 
     this.docService.onDocValue.subscribe( (str: string) => {
       this.editor.setValue(str)
@@ -125,7 +132,7 @@ class ChangeEvent {
     this.change = change
   }
 
-  toTextOperations(): any[] {
+  toTextOperations(): (TextDelete | TextInsert)[] {
     const textOperations: (TextDelete | TextInsert)[] = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
