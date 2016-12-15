@@ -6,7 +6,7 @@ import * as CodeMirror from 'codemirror'
 require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
 
-import * as MuteStructs  from 'mute-structs'
+import { TextDelete, TextInsert }  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
 import { CursorService } from './cursor.service'
@@ -103,9 +103,9 @@ export class EditorComponent implements OnInit {
 
       textOperations.forEach( (textOperation: any) => {
         const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
-        if (textOperation instanceof MuteStructs.TextInsert) {
+        if (textOperation instanceof TextInsert) {
           doc.replaceRange(textOperation.content, from)
-        } else if (textOperation instanceof MuteStructs.TextDelete) {
+        } else if (textOperation instanceof TextDelete) {
           const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
           doc.replaceRange('', from, to)
         }
@@ -134,11 +134,11 @@ class ChangeEvent {
     // It's especially the case when the changes replace a character
     if (this.isDeleteOperation()) {
       const length: number = this.change.removed.join('\n').length
-      textOperations.push(new MuteStructs.TextDelete(index, length))
+      textOperations.push(new TextDelete(index, length))
     }
     if (this.isInsertOperation()) {
       const text: string = this.change.text.join('\n')
-      textOperations.push(new MuteStructs.TextInsert(index, text))
+      textOperations.push(new TextInsert(index, text))
     }
 
     log.info('operation:editor', 'generated: ', textOperations)
