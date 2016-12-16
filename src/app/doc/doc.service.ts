@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable, Observer } from 'rxjs'
+import { Observable, Observer, Subscription } from 'rxjs'
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
 
@@ -30,6 +30,10 @@ export class DocService {
   private docValueObservable: Observable<string>
   private docValueObserver: Observer<string>
 
+  private joinSubscription: Subscription
+  private localOperationsSubscription: Subscription
+  private messageSubscription: Subscription
+
   constructor(editorService: EditorService, network: NetworkService) {
     this.editorService = editorService
     this.network = network
@@ -38,7 +42,7 @@ export class DocService {
       this.docValueObserver = observer
     })
 
-    this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
+    this.joinSubscription = this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
       if (!joinEvent.created) {
         // Have to retrieve the document from another peer
         this.sendQueryDoc()
@@ -53,7 +57,7 @@ export class DocService {
       this.remoteOperationsObserver = observer
     })
 
-    this.network.onMessage
+    this.messageSubscription = this.network.onMessage
     .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
     .subscribe((msg: NetworkMessage) => {
       const content = new pb.Doc.deserializeBinary(msg.content)
@@ -100,9 +104,15 @@ export class DocService {
       }
     })
 
-    this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
+    this.localOperationsSubscription = this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.handleTextOperations(textOperations)
     })
+  }
+
+  clean () {
+    this.joinSubscription.unsubscribe()
+    this.localOperationsSubscription.unsubscribe()
+    this.messageSubscription.unsubscribe()
   }
 
   get onDocValue(): Observable<string> {

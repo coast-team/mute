@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, Injectable, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
 import { DocService } from './doc.service'
@@ -11,21 +11,28 @@ import { NetworkService } from '../core/network/network.service'
   providers: [DocService, EditorService],
   styleUrls: ['./doc.component.css']
 })
-export class DocComponent implements OnInit {
+@Injectable()
+export class DocComponent implements OnDestroy, OnInit {
 
+  private docService: DocService
   private route: ActivatedRoute
   private network: NetworkService
 
-  constructor(route: ActivatedRoute, network: NetworkService) {
+  constructor(route: ActivatedRoute, network: NetworkService, docService: DocService) {
     this.route = route
     this.network = network
+    this.docService = docService
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.route.params.forEach((params: Params) => {
       let key = params['key'] // (+) converts string 'id' to a number
       this.network.join(key)
     })
+  }
+
+  ngOnDestroy () {
+    this.docService.clean()
   }
 
 }
