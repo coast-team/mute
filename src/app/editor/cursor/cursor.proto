@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message Cursor {
+  oneof content {
+    Position position = 1;
+    /**
+     * If false then the cursor is not visible in the editor (no focus).
+     * Otherwise it is visible and it is at the end of the document.
+     */
+    bool visible = 2;
+  }
+}
+
+// Cursor is visible in the editor and is not at the end of the document
+message Position {
+  repeated double base = 2;
+  int32 last = 3;
+  int32 index = 4;
+}

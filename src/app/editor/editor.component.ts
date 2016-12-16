@@ -9,7 +9,7 @@ require('codemirror/mode/javascript/javascript')
 import { TextDelete, TextInsert }  from 'mute-structs'
 
 import { DocService } from '../doc/doc.service'
-import { CursorService } from './cursor.service'
+import { CursorService } from 'editor/cursor'
 import { EditorService } from './editor.service'
 
 @Component({

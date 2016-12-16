@@ -24,7 +24,7 @@ export class CollaboratorsComponent implements OnInit {
       this.changeDetectorRef.detectChanges()
     })
 
-    this.collabService.onUpdate.subscribe(() => {
+    this.collabService.onPseudo.subscribe(() => {
       this.changeDetectorRef.detectChanges()
     })
   }

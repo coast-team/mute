@@ -12,7 +12,7 @@ export class ProfileService {
     private collaborators: CollaboratorsService
   ) {
     this.collaborators.onJoin.subscribe((collab: Collaborator) => {
-      this.collaborators.update(this.pseudonym, collab.id)
+      this.collaborators.updatePseudo(this.pseudonym, collab.id)
     })
   }
 
@@ -30,7 +30,7 @@ export class ProfileService {
     } else {
       this.removeItem('pseudonym')
     }
-    this.collaborators.update(this.pseudonym)
+    this.collaborators.updatePseudo(this.pseudonym)
   }
 
   private setItem (key, value) {
