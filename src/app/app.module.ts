@@ -13,7 +13,7 @@ import { RightsideComponent } from './doc/rightside/rightside.component'
 import { DocComponent } from './doc/doc.component'
 import { DocsComponent } from './docs/docs.component'
 import { CollaboratorsComponent } from './doc/rightside/collaborators'
-import { DevlabelComponent } from './devlabel/devlabel.component'
+import { DevLabelComponent } from 'dev-label'
 import { InviteBotComponent } from './doc/rightside/invite-bot/invite-bot.component'
 
 
@@ -26,7 +26,7 @@ import { InviteBotComponent } from './doc/rightside/invite-bot/invite-bot.compon
     DocComponent,
     DocsComponent,
     CollaboratorsComponent,
-    DevlabelComponent,
+    DevLabelComponent,
     InviteBotComponent
   ],
   imports: [

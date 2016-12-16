@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  ghdeploy: false,
+  devLabel: false,
   signalingURL: 'wss://sigver-coastteam.rhcloud.com:8443',
   botStorageAPI: 'localhost:8080',
   botStorage: 'localhost:9000'

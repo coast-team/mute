@@ -3,7 +3,7 @@ import { Http } from '@angular/http'
 import 'rxjs/add/operator/toPromise'
 
 @Component({
-  selector: 'mute-devlabel',
+  selector: 'mute-dev-label',
   template: `Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)`,
   styles: [`
     :host {
@@ -14,10 +14,10 @@ import 'rxjs/add/operator/toPromise'
     }
   `]
 })
-export class DevlabelComponent {
+export class DevLabelComponent {
 
-  private url: string = 'https://github.com/coast-team/mute/tree/'
-  private shortID: string
+  url: string = 'https://github.com/coast-team/mute/tree/'
+  shortID: string
 
   constructor(http: Http) {
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')

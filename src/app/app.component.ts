@@ -9,9 +9,9 @@ import { environment } from '../environments/environment'
 })
 export class AppComponent {
 
-  public ghdeploy: boolean
+  public visible: boolean
 
   constructor () {
-    this.ghdeploy = environment.ghdeploy
+    this.visible = environment.devLabel
   }
 }
