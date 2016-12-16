@@ -1,5 +1,5 @@
-import { Component, Injectable, OnInit, ViewChild } from '@angular/core'
-import { Observable } from 'rxjs'
+import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Observable, Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
 // FIXME: Find a proper way to import the mode's files
@@ -24,12 +24,16 @@ import { EditorService } from './editor.service'
 })
 
 @Injectable()
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnDestroy, OnInit {
 
   private editor: CodeMirror.Editor
   private docService: DocService
   private cursorService: CursorService
   private editorService: EditorService
+
+  private docValueSubscription: Subscription
+  private remoteOperationsSubscription: Subscription
+  private localOperationsSubscription: Subscription
 
   @ViewChild('editorElt') editorElt
 
@@ -84,11 +88,11 @@ export class EditorComponent implements OnInit {
       })
     })
 
-    textOperationsStream.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
+    this.localOperationsSubscription = textOperationsStream.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.editorService.emitLocalTextOperations(textOperations)
     })
 
-    this.docService.onDocValue.subscribe( (str: string) => {
+    this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
       this.editor.setValue(str)
     })
 
@@ -101,7 +105,7 @@ export class EditorComponent implements OnInit {
     //     })
     //   })
 
-    this.docService.onRemoteOperations.subscribe( (textOperations: any[]) => {
+    this.remoteOperationsSubscription = this.docService.onRemoteOperations.subscribe( (textOperations: any[]) => {
       const doc: CodeMirror.Doc = this.editor.getDoc()
 
       log.info('operation:editor', 'applied: ', textOperations)
@@ -117,6 +121,13 @@ export class EditorComponent implements OnInit {
       })
     })
   }
+
+  ngOnDestroy () {
+    this.docValueSubscription.unsubscribe()
+    this.localOperationsSubscription.unsubscribe()
+    this.remoteOperationsSubscription.unsubscribe()
+  }
+
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
