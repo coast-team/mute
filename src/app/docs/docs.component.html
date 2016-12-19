@@ -1,7 +1,7 @@
 <md-card *ngIf='hasDocuments'>
   <md-list>
     <h2 md-subheader>Documents stored at: {{url}}</h2>
-     <md-list-item md-button *ngFor="let doc of docs" [routerLink]="'/' + doc.id" (click) = "openDoc(doc.id)">
+     <md-list-item md-button *ngFor="let doc of docs" [routerLink]="'doc/' + doc.id" (click) = "openDoc(doc.id)">
        <md-icon md-list-avatar>note</md-icon>
        <h3 md-line>{{doc.title}}</h3>
        <p md-line>Key: {{doc.id}}</p>

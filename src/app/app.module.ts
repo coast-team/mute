@@ -1,44 +1,34 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
-import { FormsModule } from '@angular/forms'
 import { HttpModule } from '@angular/http'
 import { MaterialModule } from '@angular/material'
-import { RouterModule } from '@angular/router'
 
+/* App Root */
 import { AppComponent } from './app.component'
-import { EditorComponent } from './editor/editor.component'
-import { CoreModule } from './core/core.module'
-import { LeftsideComponent } from './leftside/leftside.component'
-import { RightsideComponent } from './doc/rightside/rightside.component'
-import { DocComponent } from './doc/doc.component'
-import { DocsComponent } from './docs/docs.component'
-import { CollaboratorsComponent } from './doc/rightside/collaborators'
+import { AppRoutingModule } from './app-routing.module'
+import { LeftsideComponent } from 'leftside'
 import { DevLabelComponent } from 'dev-label'
-import { InviteBotComponent } from './doc/rightside/invite-bot/invite-bot.component'
+
+/* Module imports */
+import { CoreModule } from './core/core.module'
+import { DocModule } from 'doc'
+import { DocsModule } from 'docs'
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditorComponent,
     LeftsideComponent,
-    RightsideComponent,
-    DocComponent,
-    DocsComponent,
-    CollaboratorsComponent,
-    DevLabelComponent,
-    InviteBotComponent
+    DevLabelComponent
   ],
   imports: [
     BrowserModule,
     CoreModule,
-    FormsModule,
+    DocModule,
+    DocsModule,
     HttpModule,
     MaterialModule.forRoot(),
-    RouterModule.forRoot([
-      {path: ':key', component: DocComponent},
-      {path: '', component: DocsComponent}
-    ])
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -79,6 +79,6 @@ export class LeftsideComponent implements OnInit {
     for (let i = 0; i < length; i++) {
       key += MASK[Math.round(Math.random() * (MASK.length - 1))]
     }
-    this.router.navigate(['/' + key])
+    this.router.navigate(['doc/' + key])
   }
 }
