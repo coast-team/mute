@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core'
+import { Http } from '@angular/http'
 import { CommonModule } from '@angular/common'
 
 import { NetworkService } from './network/network.service'
@@ -12,6 +13,12 @@ import { CollaboratorsService } from './collaborators/collaborators.service'
   ],
   exports: [],
   declarations: [],
-  providers: [NetworkService, BotStorageService, ProfileService, CollaboratorsService]
+  providers: [
+    Http,
+    NetworkService,
+    BotStorageService,
+    ProfileService,
+    CollaboratorsService
+  ]
 })
 export class CoreModule { }

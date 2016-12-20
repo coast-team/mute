@@ -3,21 +3,22 @@ import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
 import { MaterialModule } from '@angular/material'
 
-import { EditorComponent } from 'editor/editor.component'
-import { RightsideComponent } from 'doc/rightside'
-import { CollaboratorsComponent } from 'doc/rightside/collaborators'
-import { InviteBotComponent } from 'doc/rightside/invite-bot'
-import { DocComponent } from './doc.component'
 import { DocService } from './doc.service'
+import { DocComponent } from './doc.component'
+import { EditorComponent } from './editor/editor.component'
+import { EditorService } from './editor/editor.service'
+import { RightsideComponent } from './rightside/rightside.component'
+import { CollaboratorsComponent } from './rightside/collaborators/collaborators.component'
+import { InviteBotComponent } from './rightside/invite-bot/invite-bot.component'
 
 
 @NgModule({
   declarations: [
-    EditorComponent,
     RightsideComponent,
     DocComponent,
     CollaboratorsComponent,
-    InviteBotComponent
+    InviteBotComponent,
+    EditorComponent
   ],
   imports: [
     CommonModule,
@@ -26,6 +27,6 @@ import { DocService } from './doc.service'
       {path: 'doc/:key', component: DocComponent}
     ])
   ],
-  providers: [ DocService ]
+  providers: [ DocService, EditorService ]
 })
 export class DocModule { }

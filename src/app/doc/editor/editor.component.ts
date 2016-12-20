@@ -1,16 +1,14 @@
 import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
-
 import * as CodeMirror from 'codemirror'
 // FIXME: Find a proper way to import the mode's files
 require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
-
 import { TextDelete, TextInsert }  from 'mute-structs'
 
-import { DocService } from '../doc/doc.service'
-import { CursorService } from 'editor/cursor'
 import { EditorService } from './editor.service'
+import { DocService } from 'doc/doc.service'
+import { CursorService } from './cursor/cursor.service'
 
 @Component({
   selector: 'mute-editor',
@@ -20,16 +18,13 @@ import { EditorService } from './editor.service'
     // Should find a proper way to do it.
     './editor.component.css'
   ],
-  providers: [CursorService]
+  providers: [ CursorService ]
 })
 
 @Injectable()
 export class EditorComponent implements OnDestroy, OnInit {
 
   private editor: CodeMirror.Editor
-  private docService: DocService
-  private cursorService: CursorService
-  private editorService: EditorService
 
   private docValueSubscription: Subscription
   private remoteOperationsSubscription: Subscription
@@ -37,13 +32,13 @@ export class EditorComponent implements OnDestroy, OnInit {
 
   @ViewChild('editorElt') editorElt
 
-  constructor(docService: DocService, cursorService: CursorService, editorService: EditorService) {
-    this.docService = docService
-    this.cursorService = cursorService
-    this.editorService = editorService
-  }
+  constructor (
+    private editorService: EditorService,
+    private docService: DocService,
+    private cursorService: CursorService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit () {
     this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
       lineNumbers: false,
       lineWrapping: true,
@@ -127,7 +122,6 @@ export class EditorComponent implements OnDestroy, OnInit {
     this.localOperationsSubscription.unsubscribe()
     this.remoteOperationsSubscription.unsubscribe()
   }
-
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
@@ -136,12 +130,12 @@ class ChangeEvent {
   instance: CodeMirror.Editor
   change: CodeMirror.EditorChange
 
-  constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
+  constructor (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
     this.instance = instance
     this.change = change
   }
 
-  toTextOperations(): (TextDelete | TextInsert)[] {
+  toTextOperations (): (TextDelete | TextInsert)[] {
     const textOperations: (TextDelete | TextInsert)[] = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
@@ -161,11 +155,11 @@ class ChangeEvent {
     return textOperations
   }
 
-  isInsertOperation(): boolean {
+  isInsertOperation (): boolean {
     return this.change.text.length > 1 || this.change.text[0].length > 0
   }
 
-  isDeleteOperation(): boolean {
+  isDeleteOperation (): boolean {
     return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
 }

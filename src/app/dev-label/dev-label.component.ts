@@ -19,15 +19,14 @@ export class DevLabelComponent {
   url: string = 'https://github.com/coast-team/mute/tree/'
   shortID: string
 
-  constructor(http: Http) {
+  constructor (http: Http) {
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
       .toPromise()
       .then((response) => {
         this.url += response.json().commit.commit.message
         this.shortID = response.json().commit.commit.message.substr(0, 7)
       })
-      .catch((err) => console.log('DevlabelComponent error: ', err))
-
+      .catch((err) => console.log('DevLabelComponent could not fetch commit number: ', err))
   }
 
 }

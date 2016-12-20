@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core'
 import { Observable, Observer, Subscription } from 'rxjs'
-
-import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
-
 import {
   LogootSAdd,
   LogootSDel,
@@ -15,16 +12,14 @@ import {
   TextDelete
 } from 'mute-structs'
 
-import { EditorService } from 'editor/editor.service'
-
+import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
+import { EditorService } from 'doc/editor/editor.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
 
   private doc: LogootSRopes
-  private editorService: EditorService
-  private network: NetworkService
   private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docValueObservable: Observable<string>
@@ -34,9 +29,10 @@ export class DocService {
   private localOperationsSubscription: Subscription
   private messageSubscription: Subscription
 
-  constructor(editorService: EditorService, network: NetworkService) {
-    this.editorService = editorService
-    this.network = network
+  constructor (
+    private editorService: EditorService,
+    private network: NetworkService
+  ) {
 
     this.docValueObservable = Observable.create((observer) => {
       this.docValueObserver = observer
@@ -115,15 +111,15 @@ export class DocService {
     this.messageSubscription.unsubscribe()
   }
 
-  get onDocValue(): Observable<string> {
+  get onDocValue (): Observable<string> {
     return this.docValueObservable
   }
 
-  get onRemoteOperations(): Observable<TextInsert[] | TextDelete[]> {
+  get onRemoteOperations (): Observable<TextInsert[] | TextDelete[]> {
     return this.remoteOperationsObservable
   }
 
-  handleTextOperations(array: any[][]): void {
+  handleTextOperations (array: any[][]): void {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: LogootSAdd | LogootSDel = textOperation.applyTo(this.doc)
@@ -137,7 +133,7 @@ export class DocService {
     log.info('operation:doc', 'updated doc: ', this.doc)
   }
 
-  handleRemoteOperation(logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
+  handleRemoteOperation (logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
     const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
     log.info('operation:doc', 'updated doc: ', this.doc)
     return textOperations

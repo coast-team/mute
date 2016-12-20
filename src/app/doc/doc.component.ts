@@ -1,27 +1,25 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
+// import { EditorService } from 'doc/editor'
 import { DocService } from './doc.service'
-import { EditorService } from 'editor/editor.service'
-import { NetworkService } from '../core/network/network.service'
+import { NetworkService } from 'core/network'
 
 @Component({
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
-  providers: [DocService, EditorService],
-  styleUrls: ['./doc.component.css']
+  styleUrls: ['./doc.component.css'],
+  providers: [ ]
 })
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
-  private docService: DocService
-  private route: ActivatedRoute
-  private network: NetworkService
-
-  constructor(route: ActivatedRoute, network: NetworkService, docService: DocService) {
-    this.route = route
-    this.network = network
-    this.docService = docService
+  constructor (
+    private route: ActivatedRoute,
+    private network: NetworkService,
+    private doc: DocService
+  ) {
+    log.debug('Hello wolrd!')
   }
 
   ngOnInit () {
@@ -32,7 +30,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy () {
-    this.docService.clean()
+    this.doc.clean()
   }
 
 }

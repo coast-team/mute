@@ -8,7 +8,7 @@ export class EditorService {
   private localOperationsObservable: Observable<(TextInsert | TextDelete)[][]>
   private localOperationsObserver: Observer<(TextInsert | TextDelete)[][]>
 
-  constructor() {
+  constructor () {
     this.localOperationsObservable = Observable.create((observer) => {
       this.localOperationsObserver = observer
     })

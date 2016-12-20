@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core'
 
-import { NetworkService } from '../../core/network/network.service'
-import { DocService } from '../doc.service'
+import { NetworkService } from 'core/network'
+import { DocService } from 'doc/doc.service'
 
 @Component({
   selector: 'mute-rightside',
@@ -10,9 +10,6 @@ import { DocService } from '../doc.service'
 })
 export class RightsideComponent implements OnInit {
 
-  private changeDetectorRef: ChangeDetectorRef
-  private networkService: NetworkService
-  private docService: DocService
   private doorOpened: boolean = false
   private title: string = ''
 
@@ -20,15 +17,10 @@ export class RightsideComponent implements OnInit {
   menuIcon: string
 
   constructor (
-    networkService: NetworkService,
-    docService: DocService,
-    changeDetectorRef: ChangeDetectorRef
-  ) {
-    this.changeDetectorRef = changeDetectorRef
-    this.networkService = networkService
-    this.docService = docService
-
-  }
+    private networkService: NetworkService,
+    private docService: DocService,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit () {
       this.networkService.onDoor.subscribe((opened) => {

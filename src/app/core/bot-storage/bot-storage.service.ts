@@ -6,12 +6,9 @@ import { environment } from '../../../environments/environment'
 @Injectable()
 export class BotStorageService {
 
-  private http: Http
   public currentBot: {url: string, key: string} = {url: null, key: null}
 
-  constructor(http: Http) {
-    this.http = http
-  }
+  constructor(private http: Http) {}
 
   reachable (): Promise<void> {
     return this.http.get(`http://${environment.botStorageAPI}/ping`).toPromise()

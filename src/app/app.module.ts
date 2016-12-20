@@ -1,15 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
-import { HttpModule } from '@angular/http'
 import { MaterialModule } from '@angular/material'
 
 /* App Root */
-import { AppComponent } from './app.component'
 import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
 import { LeftsideComponent } from 'leftside'
 import { DevLabelComponent } from 'dev-label'
 
-/* Module imports */
+/* Modules */
 import { CoreModule } from './core/core.module'
 import { DocModule } from 'doc'
 import { DocsModule } from 'docs'
@@ -26,7 +25,6 @@ import { DocsModule } from 'docs'
     CoreModule,
     DocModule,
     DocsModule,
-    HttpModule,
     MaterialModule.forRoot(),
     AppRoutingModule
   ],
