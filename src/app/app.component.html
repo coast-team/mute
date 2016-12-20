@@ -1,3 +1,7 @@
-<mute-nav></mute-nav>
-<router-outlet></router-outlet>
+<md-sidenav-layout>
+  <md-sidenav #sidenavElm mode="over">
+    <mute-nav></mute-nav>
+  </md-sidenav>
+  <router-outlet></router-outlet>
+</md-sidenav-layout>
 <mute-dev-label *ngIf="visible"></mute-dev-label>

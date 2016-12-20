@@ -1,17 +1,10 @@
-<md-sidenav-layout class="fixed">
-  <button md-icon-button (click)="toggleSidenav()" color="primary">
-    <md-icon>menu</md-icon>
+<span class="input-icon-prefix">
+  <md-icon>face</md-icon>
+  <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
+</span>
+<button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
+<div id="storage-list">
+  <button [disabled]="!available" class="active" md-button routerLink="/">
+    Remote bot storage
   </button>
-  <md-sidenav #sidenavElm mode="side">
-    <span class="input-icon-prefix">
-      <md-icon>face</md-icon>
-      <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
-    </span>
-    <button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
-    <div id="storage-list">
-      <button [disabled]="!available" class="active" md-button routerLink="/">
-        Remote bot storage
-      </button>
-    </div>
-  </md-sidenav>
-</md-sidenav-layout>
+</div>

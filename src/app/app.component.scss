@@ -1,0 +1,16 @@
+@import '../assets/theme';
+@import '../assets/variables';
+
+:host {
+  display: flex;
+  height: 100%;
+}
+
+md-sidenav-layout {
+  width: 100%;
+  background-color: $color-bg;
+
+  md-sidenav-content {
+    width: 100%;
+  }
+}

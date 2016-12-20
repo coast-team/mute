@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common'
 
 import { BotStorageService } from './bot-storage/bot-storage.service'
 import { ProfileService } from './profile/profile.service'
+import { UiService } from './ui/ui.service'
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { ProfileService } from './profile/profile.service'
   providers: [
     Http,
     BotStorageService,
-    ProfileService
+    ProfileService,
+    UiService
   ]
 })
 export class CoreModule { }

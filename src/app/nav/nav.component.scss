@@ -3,67 +3,46 @@
 
 :host {
   display: flex;
-  min-width: 30rem;
-  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.fixed {
-  position: fixed;
+#new-doc {
+  margin-top: 2rem;
+  align-self: center;
 }
 
-md-sidenav-layout {
+#storage-list {
+  margin-top: 2rem;
+  width: 100%;
   display: flex;
-  height: 100%;
-  background-color: $color-bg;
+  flex-direction: column;
+  justify-content: center;
 
-  button[md-icon-button] {
-    margin: 1rem 0 0 0;
-  }
-
-  md-sidenav {
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-
-    #new-doc {
-      margin-top: 2rem;
-      align-self: center;
-    }
-
-    #storage-list {
-      margin-top: 2rem;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-
-      .active {
-        border-left: 3px solid md-color($accent);
-        font-family: $font-medium;
-      }
-    }
-
-    .input-icon-prefix {
-      padding-left: 10px;
-      margin: 2rem 0 0 0;
-      display: flex;
-      align-items: center;
-
-      md-icon {
-        margin-right: 5px;
-      }
-    }
+  .active {
+    border-left: 3px solid md-color($accent);
+    font-family: $font-medium;
   }
 }
 
-@media only screen and (max-width: 1366px) {
-  :host {
-    min-width: 20rem;
-  }
-  md-sidenav-layout {
-    md-sidenav {
-      width: 15rem;
-    }
+.input-icon-prefix {
+  padding-left: 10px;
+  margin: 2rem 0 0 0;
+  display: flex;
+  align-items: center;
+
+  md-icon {
+    margin-right: 5px;
   }
 }
+// 
+// @media only screen and (max-width: 1366px) {
+//   :host {
+//     min-width: 20rem;
+//   }
+//   md-sidenav-layout {
+//     md-sidenav {
+//       width: 15rem;
+//     }
+//   }
+// }
