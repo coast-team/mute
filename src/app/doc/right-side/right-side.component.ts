@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core'
 
-import { NetworkService } from 'core/network'
+import { NetworkService } from 'doc/network'
 import { DocService } from 'doc/doc.service'
 
 @Component({
-  selector: 'mute-rightside',
-  templateUrl: './rightside.component.html',
-  styleUrls: ['./rightside.component.scss']
+  selector: 'mute-right-side',
+  templateUrl: './right-side.component.html',
+  styleUrls: ['./right-side.component.scss']
 })
-export class RightsideComponent implements OnInit {
+export class RightSideComponent implements OnInit {
 
   private doorOpened: boolean = false
   private title: string = ''

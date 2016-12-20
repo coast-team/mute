@@ -12,7 +12,7 @@ import {
   TextDelete
 } from 'mute-structs'
 
-import { JoinEvent, NetworkService, NetworkMessage } from 'core/network'
+import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
 import { EditorService } from 'doc/editor/editor.service'
 const pb = require('./message_pb.js')
 

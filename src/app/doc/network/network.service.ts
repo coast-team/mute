@@ -1,19 +1,14 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, ReplaySubject, Observable, Observer } from 'rxjs/Rx'
-
-import {
-  LogootSRopes,
-  Identifier
-} from 'mute-structs'
 import * as netflux from 'netflux'
 
-import { JoinEvent, NetworkMessage } from 'core/network'
-import { BotStorageService } from '../bot-storage/bot-storage.service'
+import { JoinEvent } from './JoinEvent'
+import { NetworkMessage } from './NetworkMessage'
+import { BotStorageService } from 'core/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
 
-export { Identifier, LogootSRopes }
 
 @Injectable()
 export class NetworkService {

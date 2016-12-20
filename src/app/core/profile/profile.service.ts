@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core'
+import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
-import { CollaboratorsService, Collaborator } from 'core/collaborators'
 
 @Injectable()
 export class ProfileService {
 
   private storagePrefix = 'mute'
   private pseudonymDefault = 'Anonymous'
+  private pseudoSubject: BehaviorSubject<string>
 
-  constructor (
-    private collaborators: CollaboratorsService
-  ) {
-    this.collaborators.onJoin.subscribe((collab: Collaborator) => {
-      this.collaborators.updatePseudo(this.pseudonym, collab.id)
-    })
+  constructor () {
+    this.pseudoSubject = new BehaviorSubject<string>(this.pseudonym)
   }
 
   get pseudonym () {
@@ -24,13 +21,17 @@ export class ProfileService {
     return pseudonym
   }
 
+  get onPseudonym (): Observable<string> {
+    return this.pseudoSubject.asObservable()
+  }
+
   set pseudonym (value) {
     if (value !== '') {
       this.setItem('pseudonym', value)
     } else {
       this.removeItem('pseudonym')
     }
-    this.collaborators.updatePseudo(this.pseudonym)
+    this.pseudoSubject.next(this.pseudonym)
   }
 
   private setItem (key, value) {

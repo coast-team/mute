@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core'
 import * as CodeMirror from 'codemirror'
 import { Identifier } from 'mute-structs'
 
-import { CollaboratorsService, Collaborator } from 'core/collaborators'
-import { NetworkService, NetworkMessage } from 'core/network'
-import { DocService } from '../../doc.service'
+import { CollaboratorsService } from 'doc/right-side/collaborators/collaborators.service'
+import { Collaborator } from 'doc/right-side/collaborators/Collaborator'
+import { NetworkService, NetworkMessage } from 'doc/network'
+import { DocService } from 'doc/doc.service'
 const pb = require('./cursor_pb.js')
 
 @Injectable()

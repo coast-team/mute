@@ -3,30 +3,27 @@ import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
 import { MaterialModule } from '@angular/material'
 
+import { NetworkService } from './network/network.service'
 import { DocService } from './doc.service'
 import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
 import { EditorService } from './editor/editor.service'
-import { RightsideComponent } from './rightside/rightside.component'
-import { CollaboratorsComponent } from './rightside/collaborators/collaborators.component'
-import { InviteBotComponent } from './rightside/invite-bot/invite-bot.component'
+import { RightSideModule } from './right-side'
 
 
 @NgModule({
   declarations: [
-    RightsideComponent,
     DocComponent,
-    CollaboratorsComponent,
-    InviteBotComponent,
     EditorComponent
   ],
   imports: [
     CommonModule,
+    RightSideModule,
     MaterialModule.forRoot(),
     RouterModule.forChild([
       {path: 'doc/:key', component: DocComponent}
     ])
   ],
-  providers: [ DocService, EditorService ]
+  providers: [ NetworkService, DocService, EditorService ]
 })
 export class DocModule { }

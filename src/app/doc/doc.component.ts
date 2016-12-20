@@ -3,7 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router'
 
 // import { EditorService } from 'doc/editor'
 import { DocService } from './doc.service'
-import { NetworkService } from 'core/network'
+import { NetworkService } from 'doc/network'
 
 @Component({
   selector: 'mute-doc',
@@ -18,9 +18,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private network: NetworkService,
     private doc: DocService
-  ) {
-    log.debug('Hello wolrd!')
-  }
+  ) {}
 
   ngOnInit () {
     this.route.params.forEach((params: Params) => {

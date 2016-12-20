@@ -8,12 +8,12 @@ mute-editor {
   flex-grow: 1;
 }
 
-mute-rightside {
+mute-right-side {
   min-width: 30rem;
 }
 
 @media only screen and (max-width: 1366px) {
-  mute-rightside {
+  mute-right-side {
     min-width: 20rem;
   }
 }

@@ -4,8 +4,9 @@ import { BehaviorSubject, ReplaySubject } from 'rxjs/Rx'
 
 import * as randomMC from 'random-material-color'
 
-import { NetworkService, NetworkMessage } from 'core/network'
-import { Collaborator } from 'core/collaborators'
+import { NetworkService, NetworkMessage } from 'doc/network'
+import { ProfileService } from 'core/profile/profile.service'
+import { Collaborator } from './Collaborator'
 const pb = require('./collaborator_pb.js')
 
 @Injectable()
@@ -18,18 +19,24 @@ export class CollaboratorsService {
   public collaborators: Set<Collaborator>
 
   constructor(
-    private network: NetworkService
+    private network: NetworkService,
+    private profile: ProfileService
   ) {
     this.collaborators = new Set<Collaborator>()
     this.joinSubject = new ReplaySubject<Collaborator>()
     this.leaveSubject = new ReplaySubject<Collaborator>()
     this.pseudoSubject = new BehaviorSubject<Collaborator>(null)
 
+    this.profile.onPseudonym.subscribe((pseudo: string) => {
+      this.emitPseudo(pseudo)
+    })
+
     this.network.onLeave.subscribe(() => {
       this.collaborators = new Set<Collaborator>()
     })
 
     this.network.onPeerJoin.subscribe((id) => {
+      this.emitPseudo(this.profile.pseudonym, id)
       const collab = new Collaborator(id, randomMC.getColor({ shades: ['900', '800']}))
       this.collaborators.add(collab)
       this.joinSubject.next(collab)
@@ -65,7 +72,7 @@ export class CollaboratorsService {
 
   get onPseudo (): Observable<Collaborator> { return this.pseudoSubject.asObservable() }
 
-  updatePseudo (pseudo: string, id?: number) {
+  emitPseudo (pseudo: string, id?: number) {
     let collabMsg = new pb.Collaborator()
     collabMsg.setPseudo(pseudo)
     this.network.newSend(this.constructor.name, collabMsg.serializeBinary(), id)

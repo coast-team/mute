@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
 
-import { CollaboratorsService } from '../../../core/collaborators'
+import { CollaboratorsService } from './collaborators.service'
 
 @Component({
   selector: 'mute-collaborators',
