@@ -5,11 +5,11 @@ import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/bot-storage/bot-storage.service'
 
 @Component({
-  selector: 'mute-leftside',
-  templateUrl: './leftside.component.html',
-  styleUrls: ['./leftside.component.scss']
+  selector: 'mute-nav',
+  templateUrl: './nav.component.html',
+  styleUrls: ['./nav.component.scss']
 })
-export class LeftsideComponent implements OnInit {
+export class NavComponent implements OnInit {
 
   private route: ActivatedRoute
   private router: Router

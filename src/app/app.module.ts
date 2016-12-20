@@ -5,7 +5,7 @@ import { MaterialModule } from '@angular/material'
 /* App Root */
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { LeftsideComponent } from 'leftside'
+import { NavComponent } from 'nav'
 import { DevLabelComponent } from 'dev-label'
 
 /* Modules */
@@ -17,7 +17,7 @@ import { DocsModule } from 'docs'
 @NgModule({
   declarations: [
     AppComponent,
-    LeftsideComponent,
+    NavComponent,
     DevLabelComponent
   ],
   imports: [
