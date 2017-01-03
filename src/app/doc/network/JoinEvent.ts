@@ -1,3 +1,3 @@
 export class JoinEvent {
-  constructor (public id: number, public created: boolean) {}
+  constructor (public id: number, public key: string, public created: boolean) {}
 }

@@ -239,7 +239,7 @@ export class NetworkService {
       .then((openData) => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
-        this.joinObserver.next(new JoinEvent(this.webChannel.myId, true))
+        this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, true))
         if (key === this.botStorageService.currentBot.key) {
           this.inviteBot(this.botStorageService.currentBot.url)
         }
@@ -250,7 +250,7 @@ export class NetworkService {
         return this.webChannel.join(key)
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
-            this.joinObserver.next(new JoinEvent(this.webChannel.myId, false))
+            this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, false))
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
