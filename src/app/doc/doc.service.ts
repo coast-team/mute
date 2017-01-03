@@ -47,9 +47,25 @@ export class DocService {
         // Have to retrieve the document from another peer
         this.sendQueryDoc()
       } else {
-        this.doc = new LogootSRopes(joinEvent.id)
-        // Emit initial value
-        this.docValueObserver.next(this.doc.str)
+        // Try to retrieve the document from the local database
+        this.storageService.get(this.docID)
+        .then((plainDoc: any) => {
+          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
+
+          if (doc instanceof LogootSRopes) {
+            this.doc = doc
+          } else {
+            // TODO: Handle this error properly
+            log.error('logootsropes:doc', 'retrieved invalid document')
+            this.doc = new LogootSRopes(joinEvent.id)
+          }
+          this.docValueObserver.next(this.doc.str)
+        }, (err: string) => {
+          // Was not able to retrieve the document
+          // Create a new one
+          this.doc = new LogootSRopes(joinEvent.id)
+          this.docValueObserver.next(this.doc.str)
+        })
       }
     })
 
@@ -79,9 +95,6 @@ export class DocService {
           this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSDel))
           break
         case pb.Doc.TypeCase.LOGOOTSROPES:
-          const myId: number = this.network.myId
-          const clock = 0
-
           const plainDoc: any = content.toObject().logootsropes
 
           // Protobuf rename keys like 'base' to 'baseList' because, just because...
@@ -89,12 +102,13 @@ export class DocService {
             this.renameKeys(plainDoc.root)
           }
 
-          const doc: LogootSRopes | null = LogootSRopes.fromPlain(myId, clock, plainDoc)
+          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
 
           if (doc instanceof LogootSRopes) {
             this.doc = doc
             this.docValueObserver.next(this.doc.str)
           } else {
+            // TODO: Handle this error properly
             log.error('logootsropes:doc', 'received invalid document')
           }
           break
@@ -107,6 +121,13 @@ export class DocService {
     this.localOperationsSubscription = this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.handleTextOperations(textOperations)
     })
+  }
+
+  generateDoc (plainDoc: any): LogootSRopes | null {
+    const myId: number = this.network.myId
+    const clock = 0
+
+    return LogootSRopes.fromPlain(myId, clock, plainDoc)
   }
 
   saveDoc (): void {
