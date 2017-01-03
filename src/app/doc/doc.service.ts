@@ -14,12 +14,14 @@ import {
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
 import { EditorService } from 'doc/editor/editor.service'
+import { StorageService } from 'core/storage/storage.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
 
   private doc: LogootSRopes
+  private docID: string
   private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docValueObservable: Observable<string>
@@ -31,6 +33,7 @@ export class DocService {
 
   constructor (
     private editorService: EditorService,
+    private storageService: StorageService,
     private network: NetworkService
   ) {
 
@@ -39,6 +42,7 @@ export class DocService {
     })
 
     this.joinSubscription = this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
+      this.docID = joinEvent.key
       if (!joinEvent.created) {
         // Have to retrieve the document from another peer
         this.sendQueryDoc()
@@ -105,6 +109,15 @@ export class DocService {
     })
   }
 
+  saveDoc (): void {
+    this.storageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
+    .then((id: string) => {
+      console.log('Updated doc: ', id)
+    }, (err: string) => {
+      // TODO: Handle this error properly
+    })
+  }
+
   clean () {
     this.joinSubscription.unsubscribe()
     this.localOperationsSubscription.unsubscribe()
@@ -130,11 +143,13 @@ export class DocService {
         }
       })
     })
+    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
   }
 
   handleRemoteOperation (logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
     const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
+    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
     return textOperations
   }
