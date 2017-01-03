@@ -33,6 +33,7 @@
     "bragi-browser": "^0.0.12",
     "codemirror": "^5.20.2",
     "core-js": "^2.4.1",
+    "jio": "git+https://github.com/Nexedi/jio.git",
     "loglevel": "^1.4.1",
     "material-design-icons": "^3.0.1",
     "mute-structs": "latest",
