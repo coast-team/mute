@@ -14,7 +14,7 @@ import {
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
 import { EditorService } from 'doc/editor/editor.service'
-import { StorageService } from 'core/storage/storage.service'
+import { LocalStorageService } from 'core/local-storage/local-storage.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
@@ -33,7 +33,7 @@ export class DocService {
 
   constructor (
     private editorService: EditorService,
-    private storageService: StorageService,
+    private localStorageService: LocalStorageService,
     private network: NetworkService
   ) {
 
@@ -48,7 +48,7 @@ export class DocService {
         this.sendQueryDoc()
       } else {
         // Try to retrieve the document from the local database
-        this.storageService.get(this.docID)
+        this.localStorageService.get(this.docID)
         .then((plainDoc: any) => {
           const doc: LogootSRopes | null = this.generateDoc(plainDoc)
 
@@ -131,10 +131,8 @@ export class DocService {
   }
 
   saveDoc (): void {
-    this.storageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
-    .then((id: string) => {
-      console.log('Updated doc: ', id)
-    }, (err: string) => {
+    this.localStorageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
+    .then((id: string) => {}, (err: string) => {
       // TODO: Handle this error properly
     })
   }

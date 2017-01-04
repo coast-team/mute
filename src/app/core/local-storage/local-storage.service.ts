@@ -4,7 +4,7 @@ declare const jIO: any
 declare const RSVP: any
 
 @Injectable()
-export class StorageService {
+export class LocalStorageService {
 
   private instance: any
 
