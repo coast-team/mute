@@ -12,6 +12,69 @@
     line-height: 2.4rem;
   }
 
+  .cm-header {
+    font-family: Roboto-Medium;
+    text-align: center;
+    font-weight: 700;
+    color: #000;
+  }
+
+  .cm-header-1 {
+    font-size: 2rem;
+    text-transform: uppercase;
+  }
+  .cm-header-2 {
+    font-size: 2rem;
+  }
+  .cm-header-3 {
+    font-size: 1.8rem;
+  }
+  .cm-header-4 {
+    font-style: italic;
+    font-size: 1.8rem;
+  }
+  .cm-header-5 {
+    text-transform: uppercase;
+  }
+  .cm-header-6 {
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  .cm-link {
+    color: #000;
+  }
+  .cm-url {
+    color: #999;
+  }
+
+  .cm-comment {
+    color: #000;
+    font-family: monospace;
+  }
+
+  .cm-quote {
+    font-style: italic;
+    color: #000;
+  }
+
+  .cm-hr {
+    color: #999;
+  }
+
+  // currently in markdown mode, list items are associated with those classes
+  // unfortunately, this is also the case for variables that are syntaxically
+  // highlighted in code blocks
+  .cm-variable, .cm-variable-2, .cm-variable-3 {
+    color: #000;
+    //font-family: monospace;
+  }
+
+  .cm-keyword, .cm-def, .cm-operator {
+    font-family: monospace;
+  }
+
+
   .peerCursor {
     display: inline-block;
     position: absolute;
