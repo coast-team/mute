@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { Router, ActivatedRoute, UrlSegment } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/bot-storage/bot-storage.service'
@@ -18,7 +18,6 @@ export class NavComponent implements OnInit {
   private available: boolean
   private tooltipMsg: string
 
-  @ViewChild('sidenavElm') sidenavElm
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
@@ -36,13 +35,6 @@ export class NavComponent implements OnInit {
 
   ngOnInit () {
     this.pseudonymElm.value = this.profileService.pseudonym
-    this.route.url.forEach((urlFrag: UrlSegment[]) => {
-      if (urlFrag[0].path === '') {
-        setTimeout(() => {
-          this.sidenavElm.open()
-        }, 1500)
-      }
-    })
     this.botStorageService.reachable()
       .then(() => {
         this.available = true
@@ -52,10 +44,6 @@ export class NavComponent implements OnInit {
         this.available = false
         this.tooltipMsg = `${this.botStorageService.getURL()} is not available`
       })
-  }
-
-  toggleSidenav () {
-    this.sidenavElm.toggle()
   }
 
   updatePseudonym (event) {
