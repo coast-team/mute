@@ -12,9 +12,11 @@ html {
 
   &, body {
     height: 100%;
+    width: 100%;
   }
 
   body {
+    overflow: hidden;
     font-size: 1.4rem;
     background-color: $color-bg;
   }

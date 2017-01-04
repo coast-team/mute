@@ -2,15 +2,20 @@
 @import '../assets/variables';
 
 :host {
-  display: flex;
   height: 100%;
+  width: 100%;
 }
 
-md-sidenav-layout {
-  width: 100%;
-  background-color: $color-bg;
-
-  md-sidenav-content {
-    width: 100%;
+md-toolbar {
+  button {
+    margin-right: 2rem;
   }
+}
+
+md-sidenav-container {
+  overflow: hidden;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  background-color: $color-bg !important;
 }

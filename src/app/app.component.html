@@ -1,7 +1,13 @@
-<md-sidenav-layout>
+<md-toolbar fxFlex fxHide="false" fxHide.gt-md color="primary">
+  <button md-icon-button (click)="ui.toggleNav()">
+    <md-icon>menu</md-icon>
+  </button>
+  <span>Multi User Text Editor Toolbar (visible only on screen < 1280px)</span>
+</md-toolbar>
+<md-sidenav-container>
   <md-sidenav #sidenavElm mode="over">
     <mute-nav></mute-nav>
   </md-sidenav>
   <router-outlet></router-outlet>
-</md-sidenav-layout>
+</md-sidenav-container>
 <mute-dev-label *ngIf="visible"></mute-dev-label>

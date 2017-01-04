@@ -21,7 +21,12 @@ export class UiService {
 
   closeNav (): void {
     this.navToggleSubject.next(false)
-      this.navOpened = false
+    this.navOpened = false
+  }
+
+  toggleNav (): void {
+    this.navOpened = !this.navOpened
+    this.navToggleSubject.next(this.navOpened)
   }
 
 }

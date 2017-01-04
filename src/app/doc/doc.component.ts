@@ -8,7 +8,7 @@ import { UiService } from 'core/ui/ui.service'
 @Component({
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
-  styleUrls: ['./doc.component.css'],
+  styleUrls: ['./doc.component.scss'],
   providers: [ ]
 })
 @Injectable()
