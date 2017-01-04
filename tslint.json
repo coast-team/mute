@@ -108,8 +108,8 @@
       "check-type",
       "check-typecast"
     ],
-    "directive-selector": [true, "attribute", "app", "camelCase"],
-    "component-selector": [true, "element", "app", "kebab-case"],
+    "directive-selector": [true, "attribute", "mute", "camelCase"],
+    "component-selector": [true, "element", "mute", "kebab-case"],
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
