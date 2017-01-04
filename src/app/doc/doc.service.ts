@@ -14,12 +14,14 @@ import {
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
 import { EditorService } from 'doc/editor/editor.service'
+import { StorageService } from 'core/storage/storage.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
 
   private doc: LogootSRopes
+  private docID: string
   private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
   private docValueObservable: Observable<string>
@@ -31,6 +33,7 @@ export class DocService {
 
   constructor (
     private editorService: EditorService,
+    private storageService: StorageService,
     private network: NetworkService
   ) {
 
@@ -39,13 +42,30 @@ export class DocService {
     })
 
     this.joinSubscription = this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
+      this.docID = joinEvent.key
       if (!joinEvent.created) {
         // Have to retrieve the document from another peer
         this.sendQueryDoc()
       } else {
-        this.doc = new LogootSRopes(joinEvent.id)
-        // Emit initial value
-        this.docValueObserver.next(this.doc.str)
+        // Try to retrieve the document from the local database
+        this.storageService.get(this.docID)
+        .then((plainDoc: any) => {
+          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
+
+          if (doc instanceof LogootSRopes) {
+            this.doc = doc
+          } else {
+            // TODO: Handle this error properly
+            log.error('logootsropes:doc', 'retrieved invalid document')
+            this.doc = new LogootSRopes(joinEvent.id)
+          }
+          this.docValueObserver.next(this.doc.str)
+        }, (err: string) => {
+          // Was not able to retrieve the document
+          // Create a new one
+          this.doc = new LogootSRopes(joinEvent.id)
+          this.docValueObserver.next(this.doc.str)
+        })
       }
     })
 
@@ -75,9 +95,6 @@ export class DocService {
           this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSDel))
           break
         case pb.Doc.TypeCase.LOGOOTSROPES:
-          const myId: number = this.network.myId
-          const clock = 0
-
           const plainDoc: any = content.toObject().logootsropes
 
           // Protobuf rename keys like 'base' to 'baseList' because, just because...
@@ -85,12 +102,13 @@ export class DocService {
             this.renameKeys(plainDoc.root)
           }
 
-          const doc: LogootSRopes | null = LogootSRopes.fromPlain(myId, clock, plainDoc)
+          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
 
           if (doc instanceof LogootSRopes) {
             this.doc = doc
             this.docValueObserver.next(this.doc.str)
           } else {
+            // TODO: Handle this error properly
             log.error('logootsropes:doc', 'received invalid document')
           }
           break
@@ -102,6 +120,22 @@ export class DocService {
 
     this.localOperationsSubscription = this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.handleTextOperations(textOperations)
+    })
+  }
+
+  generateDoc (plainDoc: any): LogootSRopes | null {
+    const myId: number = this.network.myId
+    const clock = 0
+
+    return LogootSRopes.fromPlain(myId, clock, plainDoc)
+  }
+
+  saveDoc (): void {
+    this.storageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
+    .then((id: string) => {
+      console.log('Updated doc: ', id)
+    }, (err: string) => {
+      // TODO: Handle this error properly
     })
   }
 
@@ -130,11 +164,13 @@ export class DocService {
         }
       })
     })
+    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
   }
 
   handleRemoteOperation (logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
     const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
+    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
     return textOperations
   }
