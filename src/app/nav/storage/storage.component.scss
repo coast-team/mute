@@ -1,0 +1,16 @@
+@import '../../../assets/theme';
+@import '../../../assets/variables';
+
+
+md-button {
+  margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.active {
+  border-left: 3px solid md-color($accent);
+  font-family: $font-medium;
+}
