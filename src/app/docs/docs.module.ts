@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router'
 import { MaterialModule } from '@angular/material'
 
 import { DocsComponent } from './docs.component'
-import { BotStorageService } from 'core/bot-storage'
 
 @NgModule({
   declarations: [ DocsComponent ],
@@ -15,6 +14,6 @@ import { BotStorageService } from 'core/bot-storage'
       {path: '', component: DocsComponent}
     ])
   ],
-  providers: [ BotStorageService ]
+  providers: []
 })
 export class DocsModule { }

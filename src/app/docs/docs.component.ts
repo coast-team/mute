@@ -1,44 +1,50 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
+import { Subscription } from 'rxjs/Rx'
 
-import { BotStorageService } from '../core/bot-storage/bot-storage.service'
+import { StorageManagerService } from 'core/storage-manager/storage-manager.service'
 
 @Component({
   selector: 'mute-docs',
   templateUrl: './docs.component.html',
   styleUrls: ['./docs.component.scss']
 })
-export class DocsComponent implements OnInit {
+export class DocsComponent implements OnDestroy, OnInit {
 
   private router: Router
-  private botStorageService: BotStorageService
-  private docs: Array<Object> = []
-  private url: string
+  private storageManagerService: StorageManagerService
+  private docsSubscription: Subscription
+  private docs: any[]
   private hasDocuments: boolean
 
-  constructor (router: Router, botStorageService: BotStorageService) {
+  constructor (router: Router, storageManagerService: StorageManagerService) {
     this.router = router
-    this.botStorageService = botStorageService
+    this.storageManagerService = storageManagerService
   }
 
   ngOnInit () {
-    this.botStorageService.reachable()
-      .then(() => {
-        this.hasDocuments = true
-        this.url = this.botStorageService.currentBot.url
-        this.botStorageService.getDocuments()
-          .then((docs: any) => {
-            this.docs = docs
-          })
-      })
-      .catch(() => {
-        this.hasDocuments = false
-      })
+    this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
+      this.docs = docs
+      this.hasDocuments = (this.docs.length > 0)
+    })
+  }
+
+  ngOnDestroy () {
+    this.docsSubscription.unsubscribe()
+  }
+
+  isStorageServiceSelected (): boolean {
+    const storageService = this.storageManagerService.getCurrentStorageService()
+    return storageService !== null
+  }
+
+  getDocuments (): Promise<any> {
+    const storageService = this.storageManagerService.getCurrentStorageService()
+    return storageService.getDocuments()
   }
 
   openDoc (key: string) {
-    this.botStorageService.updateCurrent(key)
-    this.router.navigate(['/' + key])
+    this.router.navigate(['doc/' + key])
   }
 
   newDoc () {
