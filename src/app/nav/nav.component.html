@@ -4,7 +4,7 @@
 </span>
 <button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
 <div id="storage-list">
-  <button [disabled]="!available" class="active" md-button routerLink="/">
-    Remote bot storage
-  </button>
+  <div *ngFor="let storageService of getStorageServices()">
+    <mute-storage [storageService]="storageService" (click)="setCurrentStorageService(storageService)"></mute-storage>
+  </div>
 </div>

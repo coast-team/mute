@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { Router, ActivatedRoute } from '@angular/router'
+import { Router } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
-import { BotStorageService } from '../core/bot-storage/bot-storage.service'
+
+import { AbstractStorageService } from 'core/AbstractStorageService'
+import { StorageManagerService } from 'core/storage-manager/storage-manager.service'
 
 @Component({
   selector: 'mute-nav',
@@ -11,39 +13,25 @@ import { BotStorageService } from '../core/bot-storage/bot-storage.service'
 })
 export class NavComponent implements OnInit {
 
-  private route: ActivatedRoute
   private router: Router
   private profileService: ProfileService
-  private botStorageService: BotStorageService
-  private available: boolean
-  private tooltipMsg: string
+  private storageManager: StorageManagerService
 
   @ViewChild('pseudonymElm') pseudonymElm
   pseudonym: string
 
   constructor (
     router: Router,
-    route: ActivatedRoute,
-    botStorageService: BotStorageService,
-    profileService: ProfileService
+    profileService: ProfileService,
+    storageManager: StorageManagerService
   ) {
     this.router = router
-    this.route = route
-    this.botStorageService = botStorageService
     this.profileService = profileService
+    this.storageManager = storageManager
   }
 
   ngOnInit () {
     this.pseudonymElm.value = this.profileService.pseudonym
-    this.botStorageService.reachable()
-      .then(() => {
-        this.available = true
-        this.tooltipMsg = `Is available on: ${this.botStorageService.getURL()}`
-      })
-      .catch(() => {
-        this.available = false
-        this.tooltipMsg = `${this.botStorageService.getURL()} is not available`
-      })
   }
 
   updatePseudonym (event) {
@@ -53,20 +41,11 @@ export class NavComponent implements OnInit {
     }
   }
 
-  showTooltip () {
-
+  getStorageServices (): AbstractStorageService[] {
+    return this.storageManager.getStorageServices()
   }
 
-  newDoc () {
-    const MIN_LENGTH = 10
-    const DELTA_LENGTH = 0
-    const MASK = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let key = ''
-    const length = MIN_LENGTH + Math.round(Math.random() * DELTA_LENGTH)
-
-    for (let i = 0; i < length; i++) {
-      key += MASK[Math.round(Math.random() * (MASK.length - 1))]
-    }
-    this.router.navigate(['doc/' + key])
+  setCurrentStorageService (storageService: AbstractStorageService) {
+    this.storageManager.setCurrentStorageService(storageService)
   }
 }
