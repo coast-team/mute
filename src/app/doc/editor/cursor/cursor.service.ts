@@ -38,11 +38,13 @@ export class CursorService {
 
     this.collaborators.onLeave.subscribe((collab: Collaborator) => {
       const cursor = this.cmCursors.get(collab.id)
-      if (cursor.cmBookmark !== null) {
-        cursor.cmBookmark.clear()
+      if (cursor !== undefined) {
+        if (cursor.cmBookmark !== null) {
+          cursor.cmBookmark.clear()
+        }
+        cursor.stopClotting()
+        this.cmCursors.delete(collab.id)
       }
-      cursor.stopClotting()
-      this.cmCursors.delete(collab.id)
     })
 
     this.network.onMessage
@@ -75,7 +77,7 @@ export class CursorService {
     })
 
     const updateCursor = () => {
-      const cursor: {index: number, last?: number, base?: number[]} =
+      const cursor: {index: number, last?: number, base?: number[]} | null =
         this.doc.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
       if (cursor === null) {
         this.pbCursor.setVisible(true)
