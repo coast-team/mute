@@ -14,7 +14,7 @@ export class CollaboratorsService {
 
   private joinSubject: ReplaySubject<Collaborator>
   private leaveSubject: ReplaySubject<Collaborator>
-  private pseudoSubject: BehaviorSubject<Collaborator>
+  private pseudoSubject: BehaviorSubject<Collaborator | null>
 
   public collaborators: Set<Collaborator>
 
@@ -25,7 +25,7 @@ export class CollaboratorsService {
     this.collaborators = new Set<Collaborator>()
     this.joinSubject = new ReplaySubject<Collaborator>()
     this.leaveSubject = new ReplaySubject<Collaborator>()
-    this.pseudoSubject = new BehaviorSubject<Collaborator>(null)
+    this.pseudoSubject = new BehaviorSubject<Collaborator | null>(null)
 
     this.profile.onPseudonym.subscribe((pseudo: string) => {
       this.emitPseudo(pseudo)
@@ -44,7 +44,7 @@ export class CollaboratorsService {
 
     this.network.onPeerLeave.subscribe((id) => {
       const collab = this.getCollaboratorById(id)
-      if (this.collaborators.delete(collab)) {
+      if (collab !== null && this.collaborators.delete(collab)) {
         this.leaveSubject.next(collab)
       }
     })
@@ -70,16 +70,16 @@ export class CollaboratorsService {
 
   get onLeave (): Observable<Collaborator> { return this.leaveSubject.asObservable() }
 
-  get onPseudo (): Observable<Collaborator> { return this.pseudoSubject.asObservable() }
+  get onPseudo (): Observable<Collaborator | null> { return this.pseudoSubject.asObservable() }
 
   emitPseudo (pseudo: string, id?: number) {
-    let collabMsg = new pb.Collaborator()
+    const collabMsg = new pb.Collaborator()
     collabMsg.setPseudo(pseudo)
     this.network.newSend(this.constructor.name, collabMsg.serializeBinary(), id)
   }
 
   getCollaboratorById (id: number): Collaborator | null {
-    let collab: Collaborator = null
+    let collab: Collaborator | null = null
     this.collaborators.forEach((value) => {
       if (value.id === id) {
         collab = value
