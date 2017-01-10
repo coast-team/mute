@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core'
+import { Subscription } from 'rxjs'
 
 import { NetworkService } from 'doc/network'
 import { DocService } from 'doc/doc.service'
@@ -8,7 +9,10 @@ import { DocService } from 'doc/doc.service'
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss']
 })
-export class RightSideComponent implements OnInit {
+export class RightSideComponent implements OnDestroy, OnInit {
+
+  private onDoorSubscription: Subscription
+  private onDocTitleSubscription: Subscription
 
   private doorOpened: boolean = false
   private title: string = ''
@@ -23,16 +27,21 @@ export class RightSideComponent implements OnInit {
   ) {}
 
   ngOnInit () {
-      this.networkService.onDoor.subscribe((opened) => {
-        this.doorOpened = opened
-        this.changeDetectorRef.detectChanges()
-      })
+    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
+      this.doorOpened = opened
+      this.changeDetectorRef.detectChanges()
+    })
 
-      this.networkService.onDocTitle.subscribe((title: string) => {
-        this.title = title
-        this.changeDetectorRef.detectChanges()
-      })
+    this.onDocTitleSubscription = this.networkService.onDocTitle.subscribe((title: string) => {
+      this.title = title
+      this.changeDetectorRef.detectChanges()
+    })
     this.sidenavElm.open()
+  }
+
+  ngOnDestroy () {
+    this.onDoorSubscription.unsubscribe()
+    this.onDocTitleSubscription.unsubscribe()
   }
 
   toggleSidenav () {
