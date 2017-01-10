@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Subscription } from 'rxjs'
 
 import { CollaboratorsService } from './collaborators.service'
 
@@ -7,7 +8,11 @@ import { CollaboratorsService } from './collaborators.service'
   templateUrl: './collaborators.component.html',
   styleUrls: ['./collaborators.component.scss']
 })
-export class CollaboratorsComponent implements OnInit {
+export class CollaboratorsComponent implements OnDestroy, OnInit {
+
+  private onJoinSubscription: Subscription
+  private onLeaveSubscription: Subscription
+  private onPseudoSubscription: Subscription
 
   constructor(
     private collabService: CollaboratorsService,
@@ -15,17 +20,23 @@ export class CollaboratorsComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.collabService.onJoin.subscribe(() => {
+  ngOnInit () {
+    this.onJoinSubscription = this.collabService.onJoin.subscribe(() => {
       this.changeDetectorRef.detectChanges()
     })
 
-    this.collabService.onLeave.subscribe(() => {
+    this.onLeaveSubscription = this.collabService.onLeave.subscribe(() => {
       this.changeDetectorRef.detectChanges()
     })
 
-    this.collabService.onPseudo.subscribe(() => {
+    this.onPseudoSubscription = this.collabService.onPseudo.subscribe(() => {
       this.changeDetectorRef.detectChanges()
     })
+  }
+
+  ngOnDestroy () {
+    this.onJoinSubscription.unsubscribe()
+    this.onLeaveSubscription.unsubscribe()
+    this.onPseudoSubscription.unsubscribe()
   }
 }
