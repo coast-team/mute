@@ -31,7 +31,7 @@ export class NetworkService {
 
   constructor (botStorageService: BotStorageService) {
     this.botStorageService = botStorageService
-    this.doorOwnerId = null
+    this.doorOwnerId = -1
     this.messageSubject = new ReplaySubject<NetworkMessage>()
     this.joinObservable = Observable.create((observer) => {
       this.joinObserver = observer
@@ -122,7 +122,7 @@ export class NetworkService {
     return this.doorOwnerId
   }
 
-  setDoor (opened: boolean, id: number | null = null): void {
+  setDoor (opened: boolean, id: number = -1): void {
     this.doorOwnerId = id
     this.doorSubject.next(opened)
   }
@@ -144,7 +144,7 @@ export class NetworkService {
       }
     } else {
       // Closing door
-      if (this.doorOwnerId !== null) {
+      if (this.doorOwnerId !== -1) {
         if (this.doorOwnerId === this.webChannel.myId) {
           log.debug('I\'m closing door')
           this.webChannel.close()
