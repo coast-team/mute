@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment'
 @Injectable()
 export class BotStorageService {
 
-  public currentBot: {url: string, key: string} = {url: null, key: null}
+  public currentBot: {url: string, key: string} = {url: '', key: ''}
 
   constructor(private http: Http) {}
 
