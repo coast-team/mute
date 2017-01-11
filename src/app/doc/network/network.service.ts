@@ -43,13 +43,13 @@ export class NetworkService {
     this.docTitleSubject = new BehaviorSubject<string>('Untitled document')
 
     this.initWebChannel()
+
+    // Leave webChannel before closing tab or browser
+    window.addEventListener('beforeunload', (event) => this.webChannel.leave())
   }
 
   initWebChannel () {
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
-
-    // Leave webChannel before closing tab or browser
-    window.addEventListener('beforeunload', (event) => this.webChannel.leave())
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => {
@@ -103,6 +103,12 @@ export class NetworkService {
           break
       }
     }
+  }
+
+  cleanWebChannel (): void {
+    this.webChannel.close()
+    this.webChannel.leave()
+    this.leaveSubject.next(-1)
   }
 
   newSend (service: string, content: ArrayBuffer, id?: number) {
@@ -225,13 +231,6 @@ export class NetworkService {
   }
 
   join (key) {
-    // Leave previous webChannel if existing
-    this.webChannel.close()
-    this.webChannel.leave()
-    this.leaveSubject.next(-1)
-
-    this.initWebChannel()
-
     this.key = key
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)

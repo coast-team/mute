@@ -14,6 +14,8 @@ import { UiService } from 'core/ui/ui.service'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
+  private inited: boolean = false
+
   constructor (
     private route: ActivatedRoute,
     private network: NetworkService,
@@ -22,14 +24,20 @@ export class DocComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit () {
-    this.route.params.forEach((params: Params) => {
-      let key = params['key'] // (+) converts string 'id' to a number
+    this.route.params.subscribe((params: Params) => {
+      const key = params['key'] // (+) converts string 'id' to a number
+      if (this.inited) {
+        // Need to clean the services before
+        this.network.cleanWebChannel()
+      }
+      this.network.initWebChannel()
       this.network.join(key)
+      this.inited = true
     })
   }
 
   ngOnDestroy () {
-    this.doc.clean()
+    this.network.cleanWebChannel()
   }
 
   openNav () {
