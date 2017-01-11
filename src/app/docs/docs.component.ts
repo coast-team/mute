@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs/Rx'
 
+import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 
 @Component({
@@ -35,7 +36,12 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   isStorageServiceSelected (): boolean {
     const storageService = this.storageManagerService.getCurrentStorageService()
-    return storageService !== null
+    return storageService instanceof AbstractStorageService
+  }
+
+  getStorageServiceName (): string {
+    const storageService = this.storageManagerService.getCurrentStorageService()
+    return storageService.name
   }
 
   getDocuments (): Promise<any> {

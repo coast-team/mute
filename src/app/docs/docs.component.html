@@ -1,6 +1,6 @@
-<md-card *ngIf='isStorageServiceSelected()'>
-  <md-list>
-    <h2 md-subheader>Documents stored at: {{url}}</h2>
+<md-card *ngIf='isStorageServiceSelected() && hasDocuments'>
+  <md-list *ngIf='hasDocuments'>
+    <h2 md-subheader>Documents stored at {{getStorageServiceName()}}:</h2>
     <span *ngFor="let doc of docs">
       <md-list-item md-button  [routerLink]="'doc/' + doc.id" (click) = "openDoc(doc.id)">
         <md-icon md-list-avatar>note</md-icon>
@@ -10,7 +10,11 @@
     </span>
   </md-list>
 </md-card>
+<div *ngIf='isStorageServiceSelected() && !hasDocuments'>
+  <span>No documents stored at {{getStorageServiceName()}}. Create the first: </span>
+  <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
+</div>
 <div *ngIf='!isStorageServiceSelected()'>
-  <span>No documents. Create the first: </span>
+  <span>No storage selected. Pick one on the left or just create a new document: </span>
   <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
 </div>
