@@ -9,7 +9,7 @@ import { AbstractStorageService } from 'core/AbstractStorageService'
 })
 export class StorageComponent implements OnInit {
 
-  private available: boolean
+  private isAvailable: boolean
   private tooltipMsg: string
   @Input() storageService: AbstractStorageService
 
@@ -18,21 +18,17 @@ export class StorageComponent implements OnInit {
   ngOnInit () {
     this.storageService.isReachable()
       .then((isReachable: boolean) => {
-        this.available = isReachable
+        this.isAvailable = isReachable
       })
       .catch(() => {
-        this.available = false
+        this.isAvailable = false
       })
       .then(() => {
-        if (this.available) {
+        if (this.isAvailable) {
           this.tooltipMsg = `Is available on: ${this.storageService}`
         } else {
           this.tooltipMsg = `${this.storageService} is not available`
         }
       })
-  }
-
-  isAvailable (): boolean {
-    return this.available
   }
 }
