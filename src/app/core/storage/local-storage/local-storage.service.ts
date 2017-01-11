@@ -37,21 +37,9 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   getDocuments (): Promise<any[]> {
-    const docs = [
-      {
-        id: 'id1',
-        title: 'title1'
-      },
-      {
-        id: 'id2',
-        title: 'title2'
-      },
-      {
-        id: 'id3',
-        title: 'title3'
-      },
-    ]
-    return Promise.resolve(docs)
+    return this.instance.allDocs().then((response) => {
+      return response.data.rows
+    })
   }
 
 }
