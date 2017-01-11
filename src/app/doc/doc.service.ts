@@ -14,7 +14,7 @@ import {
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
 import { EditorService } from 'doc/editor/editor.service'
-import { LocalStorageService } from 'core/local-storage/local-storage.service'
+import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
 const pb = require('./message_pb.js')
 
 @Injectable()

@@ -3,8 +3,8 @@ import { Router } from '@angular/router'
 
 import { ProfileService } from '../core/profile/profile.service'
 
-import { AbstractStorageService } from 'core/AbstractStorageService'
-import { StorageManagerService } from 'core/storage-manager/storage-manager.service'
+import { AbstractStorageService } from 'core/storage/AbstractStorageService'
+import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 
 @Component({
   selector: 'mute-nav',

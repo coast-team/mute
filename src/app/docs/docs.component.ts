@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs/Rx'
 
-import { StorageManagerService } from 'core/storage-manager/storage-manager.service'
+import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 
 @Component({
   selector: 'mute-docs',

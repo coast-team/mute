@@ -3,7 +3,7 @@ import { Http } from '@angular/http'
 
 import { AbstractStorageService } from '../AbstractStorageService'
 
-import { environment } from '../../../environments/environment'
+import { environment } from '../../../../environments/environment'
 
 @Injectable()
 export class BotStorageService extends AbstractStorageService {

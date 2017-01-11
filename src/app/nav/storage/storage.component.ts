@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
 
-import { AbstractStorageService } from 'core/AbstractStorageService'
+import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 
 @Component({
   selector: 'mute-storage',

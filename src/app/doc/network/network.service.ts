@@ -5,7 +5,7 @@ import * as netflux from 'netflux'
 
 import { JoinEvent } from './JoinEvent'
 import { NetworkMessage } from './NetworkMessage'
-import { BotStorageService } from 'core/bot-storage/bot-storage.service'
+import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
 
@@ -236,6 +236,8 @@ export class NetworkService {
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
       .then((openData) => {
+        console.log('this.webChannel.myId: ', this.webChannel.myId)
+        console.log(this.webChannel.myId | 0)
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
         this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, true))
