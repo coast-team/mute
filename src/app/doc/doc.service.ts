@@ -36,6 +36,7 @@ export class DocService {
     private localStorageService: LocalStorageService,
     private network: NetworkService
   ) {
+    this.doc = new LogootSRopes()
 
     this.docValueObservable = Observable.create((observer) => {
       this.docValueObserver = observer
