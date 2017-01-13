@@ -13,7 +13,6 @@ import {
 } from 'mute-structs'
 
 import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
-import { EditorService } from 'doc/editor/editor.service'
 import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
 const pb = require('./message_pb.js')
 
@@ -32,7 +31,6 @@ export class DocService {
   private messageSubscription: Subscription
 
   constructor (
-    private editorService: EditorService,
     private localStorageService: LocalStorageService,
     private network: NetworkService
   ) {
@@ -43,7 +41,19 @@ export class DocService {
       this.docValueObserver = observer
     })
 
-    this.joinSubscription = this.network.onJoin.subscribe( (joinEvent: JoinEvent) => {
+    this.remoteOperationsObservable = Observable.create((observer) => {
+      this.remoteOperationsObserver = observer
+    })
+  }
+
+  set localOperationsSource (source: Observable<(TextDelete | TextInsert)[][]>) {
+    this.localOperationsSubscription = source.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
+      this.handleTextOperations(textOperations)
+    })
+  }
+
+  set joinSource (source: Observable<JoinEvent>) {
+    this.joinSubscription = source.subscribe( (joinEvent: JoinEvent) => {
       this.docID = joinEvent.key
       if (!joinEvent.created) {
         // Have to retrieve the document from another peer
@@ -70,12 +80,10 @@ export class DocService {
         })
       }
     })
+  }
 
-    this.remoteOperationsObservable = Observable.create((observer) => {
-      this.remoteOperationsObserver = observer
-    })
-
-    this.messageSubscription = this.network.onMessage
+  set messageSource (source: Observable<NetworkMessage>) {
+    this.messageSubscription = source
     .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
     .subscribe((msg: NetworkMessage) => {
       const content = new pb.Doc.deserializeBinary(msg.content)
@@ -119,10 +127,14 @@ export class DocService {
           break
       }
     })
+  }
 
-    this.localOperationsSubscription = this.editorService.onLocalOperations.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
-      this.handleTextOperations(textOperations)
-    })
+  get onDocValue (): Observable<string> {
+    return this.docValueObservable
+  }
+
+  get onRemoteOperations (): Observable<TextInsert[] | TextDelete[]> {
+    return this.remoteOperationsObservable
   }
 
   generateDoc (plainDoc: any): LogootSRopes | null {
@@ -143,14 +155,6 @@ export class DocService {
     this.joinSubscription.unsubscribe()
     this.localOperationsSubscription.unsubscribe()
     this.messageSubscription.unsubscribe()
-  }
-
-  get onDocValue (): Observable<string> {
-    return this.docValueObservable
-  }
-
-  get onRemoteOperations (): Observable<TextInsert[] | TextDelete[]> {
-    return this.remoteOperationsObservable
   }
 
   handleTextOperations (array: any[][]): void {

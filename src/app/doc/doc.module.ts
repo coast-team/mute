@@ -25,8 +25,10 @@ import { EditorService } from './editor/editor.service'
   providers: [ NetworkService, DocService, EditorService ]
 })
 export class DocModule {
-
-  constructor () {
+  constructor (docService: DocService, editorService: EditorService, networkService: NetworkService) {
     log.angular('DocModule constructor')
+    docService.localOperationsSource = editorService.onLocalOperations
+    docService.joinSource = networkService.onJoin
+    docService.messageSource = networkService.onMessage
   }
 }
