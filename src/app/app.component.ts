@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
   public visible: boolean
 
   constructor (
-    private ui: UiService
+    public ui: UiService
   ) {
     this.visible = environment.devLabel
   }

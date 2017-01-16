@@ -35,7 +35,8 @@ import { NetworkService } from 'doc/network/network.service'
 export class InviteBotComponent implements OnInit {
 
   private regexHostName = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])(\:[0-9]{1,5})?$'
-  private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}(\:[0-9]{1,5})?$'
+  private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])' +
+                    '(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}(\:[0-9]{1,5})?$'
 
   private network: NetworkService
 
@@ -66,7 +67,7 @@ export class InviteBotComponent implements OnInit {
     }
   }
 
-  validate (event) {
+  validate () {
     log.debug('Event: ', this.ipElm.value)
     if (this.ipElm.value.match(`${this.regexIP}|${this.regexHostName}`)) {
       this.error = false

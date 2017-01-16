@@ -76,7 +76,7 @@ class Log {
     loglevel.disableAll()
   }
 
-  noConflict() {}
+  noConflict () {}
 
   private getTimestamp (): string {
     let now = new Date()

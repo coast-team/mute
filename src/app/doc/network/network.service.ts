@@ -45,7 +45,7 @@ export class NetworkService {
     this.initWebChannel()
 
     // Leave webChannel before closing tab or browser
-    window.addEventListener('beforeunload', (event) => this.webChannel.leave())
+    window.addEventListener('beforeunload', () => this.webChannel.leave())
   }
 
   initWebChannel () {
@@ -138,7 +138,7 @@ export class NetworkService {
       // Opening door only if it closed
       if (!this.webChannel.isOpen()) {
         this.webChannel.open({key: this.key})
-          .then((openData) => {
+          .then(() => {
             log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
             this.setDoor(true, this.webChannel.myId)
             this.sendDoor(true, true, null)
@@ -235,7 +235,7 @@ export class NetworkService {
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
     return this.webChannel.open({key})
-      .then((openData) => {
+      .then(() => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
         this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, true))

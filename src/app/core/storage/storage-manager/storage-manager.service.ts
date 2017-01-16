@@ -11,7 +11,7 @@ export class StorageManagerService {
   private currentStorageService: AbstractStorageService
   private docsSubject: BehaviorSubject<any>
 
-  constructor(localStorage: LocalStorageService, botStorage: BotStorageService) {
+  constructor (localStorage: LocalStorageService, botStorage: BotStorageService) {
     this.storageServices = [localStorage, botStorage]
     this.docsSubject = new BehaviorSubject<any>([])
   }

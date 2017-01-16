@@ -18,7 +18,7 @@ export class CollaboratorsService {
 
   public collaborators: Set<Collaborator>
 
-  constructor(
+  constructor (
     private network: NetworkService,
     private profile: ProfileService
   ) {
