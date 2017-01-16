@@ -9,9 +9,9 @@ import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 })
 export class StorageComponent implements OnInit {
 
-  private isAvailable: boolean
   private tooltipMsg: string
   @Input() storageService: AbstractStorageService
+  public isAvailable: boolean
 
   constructor () {}
 

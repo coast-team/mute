@@ -11,7 +11,7 @@ export class BotStorageService extends AbstractStorageService {
   readonly name: string = 'Remote Bot Storage'
   public currentBot: {url: string, key: string} = {url: '', key: ''}
 
-  constructor(private http: Http) {
+  constructor (private http: Http) {
     super()
   }
 

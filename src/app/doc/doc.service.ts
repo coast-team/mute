@@ -61,7 +61,7 @@ export class DocService {
             this.doc = new LogootSRopes(joinEvent.id)
           }
           this.docValueObserver.next(this.doc.str)
-        }, (err: string) => {
+        }, () => {
           // Was not able to retrieve the document
           // Create a new one
           this.doc = new LogootSRopes(joinEvent.id)
@@ -133,7 +133,7 @@ export class DocService {
 
   saveDoc (): void {
     this.localStorageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
-    .then((id: string) => {}, (err: string) => {
+    .then(() => {}, () => {
       // TODO: Handle this error properly
     })
   }

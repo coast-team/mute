@@ -1,7 +1,6 @@
 import { Component, Injectable, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
-import { DocService } from './doc.service'
 import { NetworkService } from 'doc/network'
 import { UiService } from 'core/ui/ui.service'
 
@@ -19,7 +18,6 @@ export class DocComponent implements OnDestroy, OnInit {
   constructor (
     private route: ActivatedRoute,
     private network: NetworkService,
-    private doc: DocService,
     private ui: UiService
   ) {}
 

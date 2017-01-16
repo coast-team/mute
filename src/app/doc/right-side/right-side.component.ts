@@ -14,8 +14,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
   private onDoorSubscription: Subscription
   private onDocTitleSubscription: Subscription
 
-  private doorOpened: boolean = false
-  private title: string = ''
+  public doorOpened: boolean = false
+  public title: string = ''
 
   @ViewChild('sidenavElm') sidenavElm
   menuIcon: string

@@ -10,7 +10,7 @@ export class LocalStorageService extends AbstractStorageService {
   private instance: any
   readonly name: string = 'Local Storage'
 
-  constructor() {
+  constructor () {
     super()
     this.instance = jIO.createJIO({
       type: 'query',
