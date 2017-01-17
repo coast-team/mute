@@ -25,6 +25,9 @@ export class DocService {
   private docValueObservable: Observable<string>
   private docValueObserver: Observer<string>
 
+  private localLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
+  private localLogootSOperationObserver: Observer<LogootSAdd | LogootSDel>
+
   private remoteTextOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteTextOperationsObserver: Observer<TextInsert[] | TextDelete[]>
 
@@ -41,6 +44,10 @@ export class DocService {
 
     this.docValueObservable = Observable.create((observer) => {
       this.docValueObserver = observer
+    })
+
+    this.localLogootSOperationObservable = Observable.create((observer) => {
+      this.localLogootSOperationObserver = observer
     })
 
     this.remoteTextOperationsObservable = Observable.create((observer) => {
@@ -90,22 +97,6 @@ export class DocService {
     .subscribe((msg: NetworkMessage) => {
       const content = new pb.Doc.deserializeBinary(msg.content)
       switch (content.getTypeCase()) {
-        case pb.Doc.TypeCase.LOGOOTSADD:
-          const logootSAddMsg = content.getLogootsadd()
-          const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
-          const logootSAdd: LogootSAdd = new LogootSAdd(identifier, logootSAddMsg.getContent())
-          log.info('operation:network', 'received insert: ', logootSAdd)
-          this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSAdd))
-          break
-        case pb.Doc.TypeCase.LOGOOTSDEL:
-          const logootSDelMsg: any = content.getLogootsdel()
-          const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
-            return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
-          })
-          const logootSDel: any = new LogootSDel(lid)
-          log.info('operation:network', 'received delete: ', logootSDel)
-          this.remoteOperationsObserver.next(this.handleRemoteOperation(logootSDel))
-          break
         case pb.Doc.TypeCase.LOGOOTSROPES:
           const plainDoc: any = content.toObject().logootsropes
 
@@ -133,6 +124,10 @@ export class DocService {
 
   get onDocValue (): Observable<string> {
     return this.docValueObservable
+  }
+
+  get onLocalLogootSOperation (): Observable<LogootSAdd | LogootSDel> {
+    return this.localLogootSOperationObservable
   }
 
   get onRemoteTextOperations (): Observable<TextInsert[] | TextDelete[]> {
@@ -163,11 +158,7 @@ export class DocService {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: LogootSAdd | LogootSDel = textOperation.applyTo(this.doc)
-        if (logootSOperation instanceof LogootSAdd) {
-          this.sendLogootSAdd(logootSOperation)
-        } else {
-          this.sendLogootSDel(logootSOperation)
-        }
+        this.localLogootSOperationObserver.next(logootSOperation)
       })
     })
     this.saveDoc()
@@ -200,37 +191,6 @@ export class DocService {
   setTitle (title: string): void {
     log.debug('Sending title: ' + title)
     this.network.sendDocTitle(title)
-  }
-
-  sendLogootSAdd (logootSAdd: LogootSAdd): void {
-    const identifier = new pb.Identifier()
-
-    identifier.setBaseList(logootSAdd.id.base)
-    identifier.setLast(logootSAdd.id.last)
-
-    const logootSAddMsg = new pb.LogootSAdd()
-    logootSAddMsg.setId(identifier)
-    logootSAddMsg.setContent(logootSAdd.l)
-
-    const msg = new pb.Doc()
-    msg.setLogootsadd(logootSAddMsg)
-
-    this.network.newSend(this.constructor.name, msg.serializeBinary())
-  }
-
-  sendLogootSDel (logootSDel: LogootSDel): void {
-    const lid: any[] = logootSDel.lid.map( (id: any) => {
-      const identifierInterval: any = this.generateIdentifierInterval(id)
-      return identifierInterval
-    })
-
-    const logootSDelMsg = new pb.LogootSDel()
-    logootSDelMsg.setLidList(lid)
-
-    const msg = new pb.Doc()
-    msg.setLogootsdel(logootSDelMsg)
-
-    this.network.newSend(this.constructor.name, msg.serializeBinary())
   }
 
   sendDoc (id: number): void {
