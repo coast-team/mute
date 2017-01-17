@@ -5,22 +5,22 @@ import { Observable, Observer } from 'rxjs'
 @Injectable()
 export class EditorService {
 
-  private localOperationsObservable: Observable<(TextInsert | TextDelete)[][]>
-  private localOperationsObserver: Observer<(TextInsert | TextDelete)[][]>
+  private localTextOperationsObservable: Observable<(TextInsert | TextDelete)[][]>
+  private localTextOperationsObserver: Observer<(TextInsert | TextDelete)[][]>
 
   constructor () {
     log.angular('EditorService constructor')
-    this.localOperationsObservable = Observable.create((observer) => {
-      this.localOperationsObserver = observer
+    this.localTextOperationsObservable = Observable.create((observer) => {
+      this.localTextOperationsObserver = observer
     })
   }
 
-  get onLocalOperations (): Observable<(TextInsert | TextDelete)[][]> {
-    return this.localOperationsObservable
+  get onLocalTextOperations (): Observable<(TextInsert | TextDelete)[][]> {
+    return this.localTextOperationsObservable
   }
 
   emitLocalTextOperations (textOperations: (TextInsert | TextDelete)[][]): void {
-    this.localOperationsObserver.next(textOperations)
+    this.localTextOperationsObserver.next(textOperations)
   }
 
 }

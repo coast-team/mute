@@ -48,7 +48,7 @@ export class DocService {
     })
   }
 
-  set localOperationsSource (source: Observable<(TextDelete | TextInsert)[][]>) {
+  set localTextOperationsSource (source: Observable<(TextDelete | TextInsert)[][]>) {
     this.localOperationsSubscription = source.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
       this.handleTextOperations(textOperations)
     })

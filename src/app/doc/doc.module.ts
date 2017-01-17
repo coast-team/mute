@@ -27,7 +27,7 @@ import { EditorService } from './editor/editor.service'
 export class DocModule {
   constructor (docService: DocService, editorService: EditorService, networkService: NetworkService) {
     log.angular('DocModule constructor')
-    docService.localOperationsSource = editorService.onLocalOperations
+    docService.localTextOperationsSource = editorService.onLocalTextOperations
     docService.joinSource = networkService.onJoin
     docService.messageSource = networkService.onMessage
   }
