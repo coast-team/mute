@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core'
-import { IdentifierInterval, LogootSDel, LogootSAdd } from 'mute-structs'
-import { Observable } from 'rxjs'
+import { Identifier, IdentifierInterval, LogootSDel, LogootSAdd } from 'mute-structs'
+import { Observable, Observer } from 'rxjs'
 
-import { NetworkService } from 'doc/network'
+import { NetworkMessage, NetworkService } from 'doc/network'
 import { RichLogootSOperation } from './RichLogootSOperation'
 
 const pb = require('./sync_pb.js')
@@ -10,7 +10,41 @@ const pb = require('./sync_pb.js')
 @Injectable()
 export class SyncMessageService {
 
-  constructor (private network: NetworkService) {}
+  private remoteRichLogootSOperationObservable: Observable<RichLogootSOperation>
+  private remoteRichLogootSOperationObserver: Observer<RichLogootSOperation>
+
+  constructor (private network: NetworkService) {
+    this.remoteRichLogootSOperationObservable = Observable.create((observer) => {
+      this.remoteRichLogootSOperationObserver = observer
+    })
+  }
+
+  set messageSource (source: Observable<NetworkMessage>) {
+    source
+    .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
+    .subscribe((msg: NetworkMessage) => {
+      const content = new pb.RichLogootSOperation.deserializeBinary(msg.content)
+
+      const id: number = content.getId()
+      const clock: number = content.getClock()
+
+      let logootSOp: LogootSAdd | LogootSDel
+      if (content.hasLogootsadd()) {
+        const logootSAddMsg = content.getLogootsadd()
+        const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+        logootSOp = new LogootSAdd(identifier, logootSAddMsg.getContent())
+      } else {
+        const logootSDelMsg: any = content.getLogootsdel()
+        const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
+          return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
+        })
+        logootSOp = new LogootSDel(lid)
+      }
+
+      const richLogootSOp = new RichLogootSOperation(id, clock, logootSOp)
+      this.remoteRichLogootSOperationObserver.next(richLogootSOp)
+    })
+  }
 
   set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
@@ -19,19 +53,21 @@ export class SyncMessageService {
     })
   }
 
+  get onRemoteRichLogootSOperation (): Observable<RichLogootSOperation> {
+    return this.remoteRichLogootSOperationObservable
+  }
+
   generateRichLogootSOpMsg (richLogootSOp: RichLogootSOperation): any {
     const msg = new pb.RichLogootSOperation()
     msg.setId(richLogootSOp.id)
     msg.setClock(richLogootSOp.clock)
 
     const logootSOp: LogootSAdd | LogootSDel = richLogootSOp.logootSOp
-    let logootSOpMsg: any
     if (logootSOp instanceof LogootSAdd) {
-      logootSOpMsg = this.generateLogootSAddMsg(logootSOp)
+      msg.setLogootsadd(this.generateLogootSAddMsg(logootSOp))
     } else if (logootSOp instanceof LogootSDel) {
-      logootSOpMsg = this.generateLogootSDelMsg(logootSOp)
+      msg.setLogootsdel(this.generateLogootSDelMsg(logootSOp))
     }
-    msg.setLogootSop(logootSOpMsg)
 
     return msg
   }
