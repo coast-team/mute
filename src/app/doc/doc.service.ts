@@ -61,6 +61,12 @@ export class DocService {
     })
   }
 
+  set remoteLogootSOperationSource (source: Observable<LogootSAdd | LogootSDel>) {
+    source.subscribe((logootSOp: LogootSAdd | LogootSDel) => {
+      this.remoteTextOperationsObserver.next(this.handleRemoteOperation(logootSOp))
+    })
+  }
+
   set joinSource (source: Observable<JoinEvent>) {
     this.joinSubscription = source.subscribe( (joinEvent: JoinEvent) => {
       this.docID = joinEvent.key
