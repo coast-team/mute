@@ -21,10 +21,12 @@ export class DocService {
 
   private doc: LogootSRopes
   private docID: string
-  private remoteOperationsObservable: Observable<TextInsert[] | TextDelete[]>
-  private remoteOperationsObserver: Observer<TextInsert[] | TextDelete[]>
+
   private docValueObservable: Observable<string>
   private docValueObserver: Observer<string>
+
+  private remoteTextOperationsObservable: Observable<TextInsert[] | TextDelete[]>
+  private remoteTextOperationsObserver: Observer<TextInsert[] | TextDelete[]>
 
   private joinSubscription: Subscription
   private localOperationsSubscription: Subscription
@@ -41,8 +43,8 @@ export class DocService {
       this.docValueObserver = observer
     })
 
-    this.remoteOperationsObservable = Observable.create((observer) => {
-      this.remoteOperationsObserver = observer
+    this.remoteTextOperationsObservable = Observable.create((observer) => {
+      this.remoteTextOperationsObserver = observer
     })
   }
 
@@ -133,8 +135,8 @@ export class DocService {
     return this.docValueObservable
   }
 
-  get onRemoteOperations (): Observable<TextInsert[] | TextDelete[]> {
-    return this.remoteOperationsObservable
+  get onRemoteTextOperations (): Observable<TextInsert[] | TextDelete[]> {
+    return this.remoteTextOperationsObservable
   }
 
   generateDoc (plainDoc: any): LogootSRopes | null {

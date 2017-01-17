@@ -103,7 +103,7 @@ export class EditorComponent implements OnDestroy, OnInit {
     //     })
     //   })
 
-    this.remoteOperationsSubscription = this.docService.onRemoteOperations.subscribe( (textOperations: any[]) => {
+    this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
       const doc: CodeMirror.Doc = this.editor.getDoc()
 
       log.info('operation:editor', 'applied: ', textOperations)
