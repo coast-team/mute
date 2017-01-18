@@ -7,6 +7,10 @@
   font-size: 1.6rem;
 }
 
+mute-pseudonym {
+  margin: 2rem 0 0 0;
+}
+
 #main-container {
   display: flex;
   flex-direction: column;
@@ -29,7 +33,6 @@
 
     md-sidenav {
       box-shadow: none;
-      padding-right: 10px;
       display: flex;
       flex-direction: column;
       background-color: $color-bg;

@@ -1,7 +1,3 @@
-<span class="input-icon-prefix">
-  <md-icon>face</md-icon>
-  <md-input #pseudonymElm placeholder="Pseudonym" (change)="updatePseudonym($event)"></md-input>
-</span>
 <button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
 <div id="storage-list">
   <div *ngFor="let storageService of getStorageServices()">

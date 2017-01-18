@@ -1,0 +1,25 @@
+@import '../../../assets/theme';
+@import '../../../assets/variables';
+
+
+.pseudo {
+
+  padding: 0.4rem 0.4rem 0 0.4rem;
+  outline: none;
+
+  &:hover {
+    cursor: text;
+  }
+}
+
+.bottom-line {
+  display: inline-block;
+  background-color: md-color($accent);
+  height: 1px;
+  width: 0px;
+  transition: width .2s ease;
+}
+
+md-icon {
+  margin-left: 5px;
+}

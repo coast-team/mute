@@ -1,0 +1,20 @@
+<div fxLayout="row" fxLayoutAlign="end center">
+
+  <div fxLayout="column" fxLayoutAlign="center center"
+      (mouseenter)="togglePreEditState()"
+      (mouseleave)="toggleViewState()">
+    <span class="pseudo" #pseudonymElm contenteditable="false" spellcheck="false"
+        (click)="edit()"
+        (keydown)="done($event)"
+        (blur)="done($event)">
+    </span>
+    <span #bottomLine class="bottom-line"></span>
+  </div>
+
+  <md-icon *ngIf="viewState"
+      [@viewState]="'active'"
+      (@viewState.done)="viewStateDone($event)">face</md-icon>
+  <md-icon *ngIf="preEditState" color="accent"
+      [@preEditState]="'active'"
+      (@preEditState.done)="preEditStateDone($event)">mode_edit</md-icon>
+</div>
