@@ -8,6 +8,10 @@
   font-family: $font-light, serif;
   font-size: 1.6rem;
 
+  .CodeMirror-vscrollbar {
+    display: none !important;
+  }
+
   .CodeMirror-line {
     line-height: 2.4rem;
   }
