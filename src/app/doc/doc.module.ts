@@ -43,12 +43,17 @@ export class DocModule {
     docService.localTextOperationsSource = editorService.onLocalTextOperations
     docService.remoteLogootSOperationSource = syncService.onRemoteLogootSOperation
     docService.joinSource = networkService.onJoin
-    docService.messageSource = networkService.onMessage
 
+    syncService.joinSource = networkService.onJoin
     syncService.localLogootSOperationSource = docService.onLocalLogootSOperation
+    syncService.queryDocSource = docService.onQueryDoc
+    syncService.remoteQuerySyncSource = syncMessageService.onRemoteQuerySync
+    syncService.remoteReplySyncSource = syncMessageService.onRemoteReplySync
     syncService.remoteRichLogootSOperationSource = syncMessageService.onRemoteRichLogootSOperation
 
     syncMessageService.localRichLogootSOperationSource = syncService.onLocalRichLogootSOperation
     syncMessageService.messageSource = networkService.onMessage
+    syncMessageService.querySyncSource = syncService.onQuerySync
+    syncMessageService.replySyncSource = syncService.onReplySync
   }
 }
