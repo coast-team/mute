@@ -1,8 +1,10 @@
-<md-toolbar fxFlex fxHide="false" fxHide.gt-md color="primary">
-  <button md-icon-button (click)="ui.toggleNav()">
-    <md-icon>menu</md-icon>
-  </button>
-  <span>Multi User Text Editor Toolbar (visible only on screen < 1280px)</span>
+<md-toolbar fxHide="false" fxHide.gt-md color="primary">
+  <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
+    <button md-icon-button (click)="ui.toggleNav()">
+      <md-icon>menu</md-icon>
+    </button>
+    <mute-pseudonym fxLayout="row" fxLayoutAlign="end center"></mute-pseudonym>
+  </div>
 </md-toolbar>
 <md-sidenav-container>
   <md-sidenav #sidenavElm mode="over">

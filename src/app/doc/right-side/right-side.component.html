@@ -6,6 +6,7 @@
       </button>
       <md-sidenav #sidenavElm align="end" mode="side">
         <div>
+          <mute-pseudonym fxLayout="row" fxLayoutAlign="end center" fxShow="false" fxShow.gt-md></mute-pseudonym>
           <button md-icon-button (click)="toggleDoor()">
             <md-icon *ngIf="doorOpened">lock_open</md-icon>
             <md-icon *ngIf="!doorOpened">lock</md-icon>
