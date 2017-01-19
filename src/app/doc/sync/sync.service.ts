@@ -4,6 +4,8 @@ import { Observable, Observer } from 'rxjs'
 
 import { RichLogootSOperation } from './RichLogootSOperation'
 
+import { JoinEvent } from 'doc/network'
+
 @Injectable()
 export class SyncService {
 
@@ -33,6 +35,12 @@ export class SyncService {
 
   get onRemoteLogootSOperation (): Observable<LogootSAdd | LogootSDel> {
     return this.remoteLogootSOperationObservable
+  }
+
+  set joinSource (source: Observable<JoinEvent>) {
+    source.subscribe((joinEvent: JoinEvent) => {
+      this.id = joinEvent.id
+    })
   }
 
   set localLogootSOperationSource (source: Observable<LogootSAdd | LogootSDel>) {
