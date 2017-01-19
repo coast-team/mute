@@ -3,18 +3,14 @@ import { Observable, Observer, Subscription } from 'rxjs'
 import {
   LogootSAdd,
   LogootSDel,
-  LogootSBlock,
   LogootSRopes,
   Identifier,
-  IdentifierInterval,
-  RopesNodes,
   TextInsert,
   TextDelete
 } from 'mute-structs'
 
-import { JoinEvent, NetworkService, NetworkMessage } from 'doc/network'
+import { JoinEvent, NetworkService } from 'doc/network'
 import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
-const pb = require('./message_pb.js')
 
 @Injectable()
 export class DocService {
@@ -23,10 +19,13 @@ export class DocService {
   private docID: string
 
   private docValueObservable: Observable<string>
-  private docValueObserver: Observer<string>
+  private docValueObservers: Observer<string>[] = []
 
   private localLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
   private localLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
+
+  private queryDocObservable: Observable<void>
+  private queryDocObservers: Observer<void>[] = []
 
   private remoteTextOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteTextOperationsObservers: Observer<TextInsert[] | TextDelete[]>[] = []
@@ -43,12 +42,15 @@ export class DocService {
     this.doc = new LogootSRopes()
 
     this.docValueObservable = Observable.create((observer) => {
-      this.docValueObserver = observer
+      this.docValueObservers.push(observer)
     })
 
     this.localLogootSOperationObservable = Observable.create((observer) => {
       this.localLogootSOperationObservers.push(observer)
     })
+
+    this.queryDocObservable = Observable.create((observer) => {
+      this.queryDocObservers.push(observer)
     })
 
     this.remoteTextOperationsObservable = Observable.create((observer) => {
@@ -73,10 +75,15 @@ export class DocService {
   set joinSource (source: Observable<JoinEvent>) {
     this.joinSubscription = source.subscribe( (joinEvent: JoinEvent) => {
       this.docID = joinEvent.key
+      this.doc = new LogootSRopes(joinEvent.id)
       if (!joinEvent.created) {
         // Have to retrieve the document from another peer
-        this.sendQueryDoc()
-      } else {
+        this.queryDocObservers.forEach((observer: Observer<void>) => {
+          observer.next(undefined)
+        })
+      }
+      /*
+      else {
         // Try to retrieve the document from the local database
         this.localStorageService.get(this.docID)
         .then((plainDoc: any) => {
@@ -97,37 +104,7 @@ export class DocService {
           this.docValueObserver.next(this.doc.str)
         })
       }
-    })
-  }
-
-  set messageSource (source: Observable<NetworkMessage>) {
-    this.messageSubscription = source
-    .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
-    .subscribe((msg: NetworkMessage) => {
-      const content = new pb.Doc.deserializeBinary(msg.content)
-      switch (content.getTypeCase()) {
-        case pb.Doc.TypeCase.LOGOOTSROPES:
-          const plainDoc: any = content.toObject().logootsropes
-
-          // Protobuf rename keys like 'base' to 'baseList' because, just because...
-          if (plainDoc.root instanceof Object) {
-            this.renameKeys(plainDoc.root)
-          }
-
-          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
-
-          if (doc instanceof LogootSRopes) {
-            this.doc = doc
-            this.docValueObserver.next(this.doc.str)
-          } else {
-            // TODO: Handle this error properly
-            log.error('logootsropes:doc', 'received invalid document')
-          }
-          break
-        case pb.Doc.TypeCase.QUERYDOC:
-          this.sendDoc(msg.id)
-          break
-      }
+      */
     })
   }
 
@@ -137,6 +114,10 @@ export class DocService {
 
   get onLocalLogootSOperation (): Observable<LogootSAdd | LogootSDel> {
     return this.localLogootSOperationObservable
+  }
+
+  get onQueryDoc (): Observable<void> {
+    return this.queryDocObservable
   }
 
   get onRemoteTextOperations (): Observable<TextInsert[] | TextDelete[]> {
@@ -202,81 +183,5 @@ export class DocService {
   setTitle (title: string): void {
     log.debug('Sending title: ' + title)
     this.network.sendDocTitle(title)
-  }
-
-  sendDoc (id: number): void {
-    const msg = new pb.Doc()
-
-    const logootSRopesMsg = new pb.LogootSRopes()
-    logootSRopesMsg.setStr(this.doc.str)
-
-    if (this.doc.root instanceof RopesNodes) {
-      const ropesMsg = this.generateRopesNodeMsg(this.doc.root)
-      logootSRopesMsg.setRoot(ropesMsg)
-    }
-    msg.setLogootsropes(logootSRopesMsg)
-
-    this.network.newSend(this.constructor.name, msg.serializeBinary(), id)
-  }
-
-  sendQueryDoc (): void {
-    const msg = new pb.Doc()
-
-    const queryDoc = new pb.QueryDoc()
-    msg.setQuerydoc(queryDoc)
-
-    const peerDoor: number = this.network.members[0]
-    this.network.newSend(this.constructor.name, msg.serializeBinary(), peerDoor)
-  }
-
-  generateRopesNodeMsg (ropesNode: RopesNodes): any {
-    const ropesNodeMsg = new pb.RopesNode()
-
-    const blockMsg = this.generateBlockMsg(ropesNode.block)
-    ropesNodeMsg.setBlock(blockMsg)
-
-    if (ropesNode.left instanceof RopesNodes) {
-      ropesNodeMsg.setLeft(this.generateRopesNodeMsg(ropesNode.left))
-    }
-
-    if (ropesNode.right instanceof RopesNodes) {
-      ropesNodeMsg.setRight(this.generateRopesNodeMsg(ropesNode.right))
-    }
-
-    ropesNodeMsg.setOffset(ropesNode.offset)
-    ropesNodeMsg.setLength(ropesNode.length)
-
-    return ropesNodeMsg
-  }
-
-  generateBlockMsg (block: LogootSBlock): any {
-    const blockMsg = new pb.LogootSBlock()
-
-    blockMsg.setId(this.generateIdentifierInterval(block.id))
-    blockMsg.setNbelement(block.nbElement)
-
-    return blockMsg
-  }
-
-  generateIdentifierInterval (id: IdentifierInterval): any {
-    const identifierInterval = new pb.IdentifierInterval()
-
-    identifierInterval.setBaseList(id.base)
-    identifierInterval.setBegin(id.begin)
-    identifierInterval.setEnd(id.end)
-
-    return identifierInterval
-  }
-
-  // FIXME: Prevent Protobuf from renaming our fields or move this code elsewhere
-  renameKeys (node: {block: {id: any, nbElement?: any, nbelement: number}, right?: any, left?: any}): void {
-    node.block.id.base = node.block.id.baseList
-    node.block.nbElement = node.block.nbelement
-    if (node.left) {
-      this.renameKeys(node.left)
-    }
-    if (node.right) {
-      this.renameKeys(node.right)
-    }
   }
 }
