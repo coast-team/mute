@@ -3,13 +3,24 @@
     <button md-icon-button (click)="ui.toggleNav()">
       <md-icon>menu</md-icon>
     </button>
-    <mute-pseudonym fxLayout="row" fxLayoutAlign="end center"></mute-pseudonym>
+    <div fxLayout="row" fxLayoutAlign="end center">
+      <mute-pseudonym fxLayout="row" fxLayoutAlign="end center"></mute-pseudonym>
+      <button md-icon-button fxFlexOffset="10px" (click)="ui.toggleDocNav()">
+        <md-icon>menu</md-icon>
+      </button>
+    </div>
   </div>
 </md-toolbar>
+
 <md-sidenav-container>
-  <md-sidenav #sidenavElm mode="over">
+
+  <!-- Left Sidenav-->
+  <md-sidenav align="start" mode="over" #leftSidenavElm>
     <mute-nav></mute-nav>
   </md-sidenav>
+
+  <!-- Content -->
   <router-outlet></router-outlet>
+
 </md-sidenav-container>
 <mute-dev-label *ngIf="visible"></mute-dev-label>

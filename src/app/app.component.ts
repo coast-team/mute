@@ -10,7 +10,7 @@ import { UiService } from 'core/ui/ui.service'
 })
 export class AppComponent implements OnInit {
 
-  @ViewChild('sidenavElm') sidenavElm
+  @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
 
   constructor (
@@ -20,9 +20,11 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit () {
-    this.sidenavElm.opened = true
+    this.leftSidenavElm.onClose.subscribe(() => {
+      this.ui.navOpened = false
+    })
     this.ui.onNavToggle.subscribe((open: boolean) => {
-      this.sidenavElm.opened = open
+      this.leftSidenavElm.opened = open
     })
   }
 }

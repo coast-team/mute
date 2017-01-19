@@ -5,8 +5,10 @@ import { Subject, Observable } from 'rxjs/Rx'
 export class UiService {
 
   private navToggleSubject = new Subject<boolean>()
+  private docNavToggleSubject = new Subject<boolean>()
 
   navOpened: boolean
+  docNavOpened: boolean
 
   constructor () { }
 
@@ -27,6 +29,25 @@ export class UiService {
   toggleNav (): void {
     this.navOpened = !this.navOpened
     this.navToggleSubject.next(this.navOpened)
+  }
+
+  get onDocNavToggle (): Observable<boolean> {
+    return this.docNavToggleSubject.asObservable()
+  }
+
+  openDocNav (): void {
+    this.docNavToggleSubject.next(true)
+    this.docNavOpened = true
+  }
+
+  closeDocNav (): void {
+    this.docNavToggleSubject.next(false)
+    this.docNavOpened = false
+  }
+
+  toggleDocNav (): void {
+    this.docNavOpened = !this.docNavOpened
+    this.docNavToggleSubject.next(this.docNavOpened)
   }
 
 }

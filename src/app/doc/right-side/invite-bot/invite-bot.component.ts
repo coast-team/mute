@@ -55,7 +55,6 @@ export class InviteBotComponent implements OnInit {
   btnStateDone (event) {
     if (event.toState === 'void') {
       this.inputActive = true
-      log.debug('EVENT: ', event)
     }
   }
 

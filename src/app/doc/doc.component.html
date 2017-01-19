@@ -1,5 +1,17 @@
-<button md-icon-button (click)="openNav()">
+<button md-icon-button fxShow="false" fxShow.gt-md class="nav left" (click)="ui.openNav()">
   <md-icon color="primary">menu</md-icon>
 </button>
-<mute-editor></mute-editor>
-<mute-right-side></mute-right-side>
+
+<md-sidenav-container>
+
+  <mute-editor fxLayout="row" fxLayoutAlign="center stretch"></mute-editor>
+
+  <md-sidenav align="end" mode="side" #rightSidenavElm>
+    <mute-right-side></mute-right-side>
+  </md-sidenav>
+
+</md-sidenav-container>
+
+<button md-icon-button *ngIf="rightMenuBtnVisible" fxShow="false" fxShow.gt-md class="nav right" (click)="ui.openDocNav()">
+  <md-icon color="primary">menu</md-icon>
+</button>

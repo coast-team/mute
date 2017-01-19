@@ -1,15 +1,14 @@
 import { NgModule } from '@angular/core'
-import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
-import { MaterialModule } from '@angular/material'
 
-import { NetworkService } from './network/network.service'
+
+import { RightSideModule } from './right-side'
+import { SharedModule } from 'shared'
 import { DocService } from './doc.service'
 import { DocComponent } from './doc.component'
+import { NetworkService } from './network/network.service'
 import { EditorComponent } from './editor/editor.component'
 import { EditorService } from './editor/editor.service'
-import { RightSideModule } from './right-side'
-
 
 @NgModule({
   declarations: [
@@ -17,9 +16,8 @@ import { RightSideModule } from './right-side'
     EditorComponent
   ],
   imports: [
-    CommonModule,
+    SharedModule,
     RightSideModule,
-    MaterialModule.forRoot(),
     RouterModule.forChild([
       {path: 'doc/:key', component: DocComponent}
     ])

@@ -1,4 +1,4 @@
-import { Component, Injectable, OnDestroy, OnInit } from '@angular/core'
+import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
 import { NetworkService } from 'doc/network'
@@ -13,12 +13,14 @@ import { UiService } from 'core/ui/ui.service'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
+  @ViewChild('rightSidenavElm') rightSidenavElm
   private inited: boolean = false
+  public rightMenuBtnVisible = true
 
   constructor (
     private route: ActivatedRoute,
     private network: NetworkService,
-    private ui: UiService
+    public ui: UiService
   ) {}
 
   ngOnInit () {
@@ -32,14 +34,20 @@ export class DocComponent implements OnDestroy, OnInit {
       this.network.join(key)
       this.inited = true
     })
+    this.rightSidenavElm.onOpenStart.subscribe(() => {
+      this.rightMenuBtnVisible = false
+    })
+    this.rightSidenavElm.onClose.subscribe(() => {
+      this.rightMenuBtnVisible = true
+    })
+    this.ui.onDocNavToggle.subscribe((open: boolean) => {
+      this.rightSidenavElm.opened = open
+    })
+    this.ui.openDocNav()
   }
 
   ngOnDestroy () {
     this.network.cleanWebChannel()
-  }
-
-  openNav () {
-    this.ui.openNav()
   }
 
 }

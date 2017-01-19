@@ -1,25 +1,31 @@
 :host {
-  display: flex;
   height: 100%;
   width: 100%;
+}
 
-  button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
+.nav {
+  position: fixed;
+  z-index: 100;
+  top: 10px;
+
+  &.left {
+    left: 10px;
+  }
+
+  &.right {
+    right: 10px;
   }
 }
 
 mute-editor {
-  flex-grow: 1;
+  height: 100%;
+  width: 100%;
 }
 
 mute-right-side {
   min-width: 30rem;
 }
 
-@media only screen and (max-width: 1366px) {
-  mute-right-side {
-    min-width: 20rem;
-  }
+md-sidenav-container {
+  height: 100%;
 }

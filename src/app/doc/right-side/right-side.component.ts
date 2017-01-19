@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs'
 
 import { NetworkService } from 'doc/network'
 import { DocService } from 'doc/doc.service'
+import { UiService } from 'core/ui/ui.service'
 
 @Component({
   selector: 'mute-right-side',
@@ -23,7 +24,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
   constructor (
     private networkService: NetworkService,
     private docService: DocService,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    public ui: UiService
   ) {}
 
   ngOnInit () {
@@ -36,7 +38,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
       this.title = title
       this.changeDetectorRef.detectChanges()
     })
-    this.sidenavElm.open()
+    // this.sidenavElm.open()
   }
 
   ngOnDestroy () {
@@ -44,12 +46,12 @@ export class RightSideComponent implements OnDestroy, OnInit {
     this.onDocTitleSubscription.unsubscribe()
   }
 
-  toggleSidenav () {
-    this.sidenavElm.toggle()
-      .then(() => {
-        this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
-      })
-  }
+  // toggleSidenav () {
+  //   this.sidenavElm.toggle()
+  //     .then(() => {
+  //       this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
+  //     })
+  // }
 
   toggleDoor () {
     this.networkService.openDoor(!this.doorOpened)

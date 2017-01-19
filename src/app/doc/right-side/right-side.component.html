@@ -1,26 +1,19 @@
-<div class="fixed">
-  <div id="main-container">
-    <md-sidenav-layout>
-      <button md-icon-button (click)="toggleSidenav()" color="primary">
-        <md-icon [textContent]="menuIcon"></md-icon>
-      </button>
-      <md-sidenav #sidenavElm align="end" mode="side">
-        <div>
-          <mute-pseudonym fxLayout="row" fxLayoutAlign="end center" fxShow="false" fxShow.gt-md></mute-pseudonym>
-          <button md-icon-button (click)="toggleDoor()">
-            <md-icon *ngIf="doorOpened">lock_open</md-icon>
-            <md-icon *ngIf="!doorOpened">lock</md-icon>
-          </button>
-          <md-input class='docTitle' #docTitleElm placeholder="Document title" (keyup)="updateTitle($event)" [value]="title"></md-input>
-        </div>
 
-        <mute-invite-bot></mute-invite-bot>
-        <md-tab-group>
-          <md-tab label="Collaborators">
-            <mute-collaborators></mute-collaborators>
-          </md-tab>
-        </md-tab-group>
-      </md-sidenav>
-    </md-sidenav-layout>
-  </div>
+<button md-icon-button class="close" (click)="ui.closeDocNav()">
+  <md-icon color="primary">close</md-icon>
+</button>
 <div>
+  <mute-pseudonym fxLayout="row" fxLayoutAlign="end center" fxShow="false" fxShow.gt-md></mute-pseudonym>
+  <button md-icon-button (click)="toggleDoor()">
+    <md-icon *ngIf="doorOpened">lock_open</md-icon>
+    <md-icon *ngIf="!doorOpened">lock</md-icon>
+  </button>
+  <md-input class='docTitle' #docTitleElm placeholder="Document title" (keyup)="updateTitle($event)" [value]="title"></md-input>
+</div>
+
+<mute-invite-bot></mute-invite-bot>
+<md-tab-group>
+  <md-tab label="Collaborators">
+    <mute-collaborators></mute-collaborators>
+  </md-tab>
+</md-tab-group>
