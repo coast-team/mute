@@ -3,6 +3,7 @@ import { LogootSDel, LogootSAdd } from 'mute-structs'
 import { Observable, Observer } from 'rxjs'
 
 import { RichLogootSOperation } from './RichLogootSOperation'
+import { State } from './State'
 
 import { JoinEvent } from 'doc/network'
 
@@ -11,6 +12,8 @@ export class SyncService {
 
   private id: number = -1
   private clock: number = 0
+  private vector: Map<number, number> = new Map()
+  private richLogootSOps: RichLogootSOperation[] = []
 
   private localRichLogootSOperationObservable: Observable<RichLogootSOperation>
   private localRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
@@ -37,6 +40,10 @@ export class SyncService {
     return this.remoteLogootSOperationObservable
   }
 
+  get state (): State {
+    return new State(this.vector, this.richLogootSOps)
+  }
+
   set joinSource (source: Observable<JoinEvent>) {
     source.subscribe((joinEvent: JoinEvent) => {
       this.id = joinEvent.id
@@ -47,6 +54,8 @@ export class SyncService {
     source.subscribe((logootSOp: LogootSAdd | LogootSDel) => {
       const richLogootSOp: RichLogootSOperation = new RichLogootSOperation(this.id, this.clock, logootSOp)
 
+      this.updateVector(this.id, this.clock)
+      this.richLogootSOps.push(richLogootSOp)
       this.localRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
         observer.next(richLogootSOp)
       })
@@ -62,9 +71,20 @@ export class SyncService {
   }
 
   applyRichLogootSOperation (richLogootSOp: RichLogootSOperation): void {
+    this.updateVector(richLogootSOp.id, richLogootSOp.clock)
+    this.richLogootSOps.push(richLogootSOp)
     this.remoteLogootSOperationObservers.forEach((observer: Observer<LogootSAdd | LogootSDel>) => {
       observer.next(richLogootSOp.logootSOp)
     })
+  }
+
+  updateVector (id: number, clock: number): void {
+    if (this.vector.get(id) < clock) {
+      this.vector.set(id, clock)
+    }
+
+    // TODO: Check if operation had previously been received
+    // TODO: Check if some operations are missing
   }
 
 }
