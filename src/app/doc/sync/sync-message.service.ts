@@ -31,6 +31,14 @@ export class SyncMessageService {
     this.remoteRichLogootSOperationObservable = Observable.create((observer) => {
       this.remoteRichLogootSOperationObservers.push(observer)
     })
+
+  }
+
+  set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
+    source.subscribe((richLogootSOp: RichLogootSOperation) => {
+      const msg = this.generateRichLogootSOpMsg(richLogootSOp)
+      this.network.newSend(this.constructor.name, msg.serializeBinary())
+    })
   }
 
   set messageSource (source: Observable<NetworkMessage>) {
@@ -58,10 +66,15 @@ export class SyncMessageService {
     })
   }
 
-  set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
-    source.subscribe((richLogootSOp: RichLogootSOperation) => {
-      const msg = this.generateRichLogootSOpMsg(richLogootSOp)
-      this.network.newSend(this.constructor.name, msg.serializeBinary())
+  set replySyncSource (source: Observable<RichLogootSOperation[]>) {
+    source
+      // Retrieve the id of the peer querying for sync
+      .zip(this.remoteQuerySyncIdObservable, (richLogootSOps: RichLogootSOperation[], id: number) => {
+        return { id, richLogootSOps }
+      })
+      .subscribe(({ id, richLogootSOps}: { id: number, richLogootSOps: RichLogootSOperation[] }) => {
+      const msg = this.generateReplySyncMsg(richLogootSOps)
+      this.network.newSend(this.constructor.name, msg.serializeBinary(), id)
     })
   }
 
@@ -175,6 +188,18 @@ export class SyncMessageService {
 
     const msg = new pb.Sync()
     msg.setQuerysync(querySyncMsg)
+
+    return msg
+  }
+
+  generateReplySyncMsg (richLogootSOps: RichLogootSOperation[]): any {
+    const replySyncMsg = new pb.ReplySync()
+    replySyncMsg.setRichlogootsopsList(richLogootSOps.map((richLogootSOp: RichLogootSOperation) => {
+      return this.serializeRichLogootSOperation(richLogootSOp)
+    }))
+
+    const msg = new pb.Sync()
+    msg.setReplysync(replySyncMsg)
 
     return msg
   }
