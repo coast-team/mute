@@ -24,6 +24,9 @@ export class SyncService {
   private remoteLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
   private remoteLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
+  private replySyncObservable: Observable<RichLogootSOperation[]>
+  private replySyncObservers: Observer<RichLogootSOperation[]>[] = []
+
   constructor () {
     this.localRichLogootSOperationObservable = Observable.create((observer) => {
       this.localRichLogootSOperationObservers.push(observer)
@@ -37,6 +40,9 @@ export class SyncService {
       this.remoteLogootSOperationObservers.push(observer)
     })
 
+    this.replySyncObservable = Observable.create((observer) => {
+      this.replySyncObservers.push(observer)
+    })
   }
 
   get onLocalRichLogootSOperation (): Observable<RichLogootSOperation> {
@@ -49,6 +55,10 @@ export class SyncService {
 
   get onRemoteLogootSOperation (): Observable<LogootSAdd | LogootSDel> {
     return this.remoteLogootSOperationObservable
+  }
+
+  get onReplySync (): Observable<RichLogootSOperation[]> {
+    return this.replySyncObservable
   }
 
   get state (): State {
@@ -80,6 +90,28 @@ export class SyncService {
       this.querySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
         observer.next(this.vector)
       })
+    })
+  }
+
+  set remoteQuerySyncSource (source: Observable<Map<number, number>>) {
+    source.subscribe((vector: Map<number, number>) => {
+      const missingRichLogootSOps: RichLogootSOperation[] = this.richLogootSOps.filter((richLogootSOperation: RichLogootSOperation) => {
+        const id: number = richLogootSOperation.id
+        const clock: number = richLogootSOperation.clock
+        if (vector.get(id) === undefined) {
+          return true
+        } else if (vector.get(id) < clock) {
+          return true
+        }
+        return false
+      })
+      // TODO: Add sort function to apply LogootSAdd operations before LogootSDel ones
+      this.replySyncObservers.forEach((observer: Observer<RichLogootSOperation[]>) => {
+        observer.next(missingRichLogootSOps)
+      })
+
+      // TODO: Retrieve our missing operations
+      // TODO: Query them
     })
   }
 
