@@ -19,6 +19,9 @@ export class SyncMessageService {
   private remoteRichLogootSOperationObservable: Observable<RichLogootSOperation>
   private remoteRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
+  private remoteReplySyncObservable: Observable<RichLogootSOperation[]>
+  private remoteReplySyncObservers: Observer<RichLogootSOperation[]>[] = []
+
   constructor (private network: NetworkService) {
     this.remoteQuerySyncObservable = Observable.create((observer) => {
       this.remoteQuerySyncObservers.push(observer)
@@ -32,6 +35,9 @@ export class SyncMessageService {
       this.remoteRichLogootSOperationObservers.push(observer)
     })
 
+    this.remoteReplySyncObservable = Observable.create((observer) => {
+      this.remoteReplySyncObservers.push(observer)
+    })
   }
 
   set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
@@ -53,6 +59,9 @@ export class SyncMessageService {
         case pb.Sync.TypeCase.QUERYSYNC:
           this.remoteQuerySyncIdObserver.next(msg.id) // Register the id of the peer
           this.handleQuerySyncMsg(content.getQuerysync())
+          break
+        case pb.Sync.TypeCase.REPLYSYNC:
+          this.handleReplySyncMsg(content.getReplysync())
           break
       }
     })
@@ -86,6 +95,10 @@ export class SyncMessageService {
     return this.remoteQuerySyncObservable
   }
 
+  get onRemoteReplySync (): Observable<RichLogootSOperation[]> {
+    return this.remoteReplySyncObservable
+  }
+
   handleRichLogootSOpMsg (content: any): void {
     const richLogootSOp: RichLogootSOperation = this.deserializeRichLogootSOperation(content)
 
@@ -98,6 +111,16 @@ export class SyncMessageService {
     const vector: Map<number, number> = content.getVectorMap()
     this.remoteQuerySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
       observer.next(vector)
+    })
+  }
+
+  handleReplySyncMsg (content: any): void {
+    const richLogootSOpsList: any[] = content.getRichlogootsopsList()
+    const richLogootSOps: RichLogootSOperation[] = richLogootSOpsList.map((richLogootSOpMsg: any) => {
+      return this.deserializeRichLogootSOperation(richLogootSOpMsg)
+    })
+    this.remoteReplySyncObservers.forEach((observer: Observer<RichLogootSOperation[]>) => {
+      observer.next(richLogootSOps)
     })
   }
 
