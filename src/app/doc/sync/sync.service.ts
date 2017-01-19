@@ -18,12 +18,19 @@ export class SyncService {
   private localRichLogootSOperationObservable: Observable<RichLogootSOperation>
   private localRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
+  private querySyncObservable: Observable<Map<number, number>>
+  private querySyncObservers: Observer<Map<number, number>>[] = []
+
   private remoteLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
   private remoteLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
   constructor () {
     this.localRichLogootSOperationObservable = Observable.create((observer) => {
       this.localRichLogootSOperationObservers.push(observer)
+    })
+
+    this.querySyncObservable = Observable.create((observer) => {
+      this.querySyncObservers.push(observer)
     })
 
     this.remoteLogootSOperationObservable = Observable.create((observer) => {
@@ -34,6 +41,10 @@ export class SyncService {
 
   get onLocalRichLogootSOperation (): Observable<RichLogootSOperation> {
     return this.localRichLogootSOperationObservable
+  }
+
+  get onQuerySync (): Observable<Map<number, number>> {
+    return this.querySyncObservable
   }
 
   get onRemoteLogootSOperation (): Observable<LogootSAdd | LogootSDel> {
@@ -61,6 +72,14 @@ export class SyncService {
       })
 
       this.clock++
+    })
+  }
+
+  set queryDocSource (source: Observable<void>) {
+    source.subscribe(() => {
+      this.querySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
+        observer.next(this.vector)
+      })
     })
   }
 
