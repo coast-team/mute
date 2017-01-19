@@ -12,8 +12,8 @@ import { ProfileService } from 'core/profile/profile.service'
 
 @Component({
   selector: 'mute-pseudonym',
-  templateUrl: './pseudonym.html',
-  styleUrls: [ './pseudonym.scss' ],
+  templateUrl: './pseudonym.component.html',
+  styleUrls: [ './pseudonym.component.scss' ],
   animations: [
     trigger('viewState', [
       state('active', style({transform: 'scale(1)'})),
