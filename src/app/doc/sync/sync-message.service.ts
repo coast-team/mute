@@ -11,11 +11,11 @@ const pb = require('./sync_pb.js')
 export class SyncMessageService {
 
   private remoteRichLogootSOperationObservable: Observable<RichLogootSOperation>
-  private remoteRichLogootSOperationObserver: Observer<RichLogootSOperation>
+  private remoteRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
   constructor (private network: NetworkService) {
     this.remoteRichLogootSOperationObservable = Observable.create((observer) => {
-      this.remoteRichLogootSOperationObserver = observer
+      this.remoteRichLogootSOperationObservers.push(observer)
     })
   }
 
@@ -23,26 +23,13 @@ export class SyncMessageService {
     source
     .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
     .subscribe((msg: NetworkMessage) => {
-      const content = new pb.RichLogootSOperation.deserializeBinary(msg.content)
-
-      const id: number = content.getId()
-      const clock: number = content.getClock()
-
-      let logootSOp: LogootSAdd | LogootSDel
-      if (content.hasLogootsadd()) {
-        const logootSAddMsg = content.getLogootsadd()
-        const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
-        logootSOp = new LogootSAdd(identifier, logootSAddMsg.getContent())
-      } else {
-        const logootSDelMsg: any = content.getLogootsdel()
-        const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
-          return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
-        })
-        logootSOp = new LogootSDel(lid)
+      const content = new pb.Sync.deserializeBinary(msg.content)
+      switch (content.getTypeCase()) {
+        case pb.Sync.TypeCase.RICHLOGOOTSOP:
+          this.handleRichLogootSOpMsg(content.getRichlogootsop())
+          break
       }
 
-      const richLogootSOp = new RichLogootSOperation(id, clock, logootSOp)
-      this.remoteRichLogootSOperationObserver.next(richLogootSOp)
     })
   }
 
@@ -57,19 +44,55 @@ export class SyncMessageService {
     return this.remoteRichLogootSOperationObservable
   }
 
+  handleRichLogootSOpMsg (content: any): void {
+    const richLogootSOp: RichLogootSOperation = this.deserializeRichLogootSOperation(content)
+
+    this.remoteRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
+      observer.next(richLogootSOp)
+    })
+  }
+
   generateRichLogootSOpMsg (richLogootSOp: RichLogootSOperation): any {
-    const msg = new pb.RichLogootSOperation()
-    msg.setId(richLogootSOp.id)
-    msg.setClock(richLogootSOp.clock)
+    const richLogootSOperationMsg = this.serializeRichLogootSOperation(richLogootSOp)
+    const msg = new pb.Sync()
+    msg.setRichlogootsop(richLogootSOperationMsg)
+
+    return msg
+  }
+
+  serializeRichLogootSOperation (richLogootSOp: RichLogootSOperation): any {
+    const richLogootSOperationMsg = new pb.RichLogootSOperation()
+    richLogootSOperationMsg.setId(richLogootSOp.id)
+    richLogootSOperationMsg.setClock(richLogootSOp.clock)
 
     const logootSOp: LogootSAdd | LogootSDel = richLogootSOp.logootSOp
     if (logootSOp instanceof LogootSAdd) {
-      msg.setLogootsadd(this.generateLogootSAddMsg(logootSOp))
+      richLogootSOperationMsg.setLogootsadd(this.generateLogootSAddMsg(logootSOp))
     } else if (logootSOp instanceof LogootSDel) {
-      msg.setLogootsdel(this.generateLogootSDelMsg(logootSOp))
+      richLogootSOperationMsg.setLogootsdel(this.generateLogootSDelMsg(logootSOp))
     }
 
-    return msg
+    return richLogootSOperationMsg
+  }
+
+  deserializeRichLogootSOperation (content: any): RichLogootSOperation {
+    const id: number = content.getId()
+    const clock: number = content.getClock()
+
+    let logootSOp: LogootSAdd | LogootSDel
+    if (content.hasLogootsadd()) {
+      const logootSAddMsg = content.getLogootsadd()
+      const identifier: Identifier = new Identifier(logootSAddMsg.getId().getBaseList(), logootSAddMsg.getId().getLast())
+      logootSOp = new LogootSAdd(identifier, logootSAddMsg.getContent())
+    } else {
+      const logootSDelMsg: any = content.getLogootsdel()
+      const lid: any = logootSDelMsg.getLidList().map( (identifier: any) => {
+        return new IdentifierInterval(identifier.getBaseList(), identifier.getBegin(), identifier.getEnd())
+      })
+      logootSOp = new LogootSDel(lid)
+    }
+
+    return new RichLogootSOperation(id, clock, logootSOp)
   }
 
   generateLogootSAddMsg (logootSAdd: LogootSAdd): any {
