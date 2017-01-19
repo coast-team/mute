@@ -29,7 +29,14 @@ export class SyncMessageService {
           this.handleRichLogootSOpMsg(content.getRichlogootsop())
           break
       }
+    })
+  }
 
+  set querySyncSource (source: Observable<Map<number, number>>) {
+    source.subscribe((vector: Map<number, number>) => {
+      const msg = this.generateQuerySyncMsg(vector)
+      const peerId: number = this.network.members[0]
+      this.network.newSend(this.constructor.name, msg.serializeBinary(), peerId)
     })
   }
 
@@ -127,6 +134,20 @@ export class SyncMessageService {
     identifierIntervalMsg.setEnd(id.end)
 
     return identifierIntervalMsg
+  }
+
+  generateQuerySyncMsg (vector: Map<number, number>): any {
+    const querySyncMsg = new pb.QuerySync()
+
+    const map: Map<number, number> = querySyncMsg.getVectorMap()
+    vector.forEach((clock: number, id: number) => {
+      map.set(id, clock)
+    })
+
+    const msg = new pb.Sync()
+    msg.setQuerysync(querySyncMsg)
+
+    return msg
   }
 
 }
