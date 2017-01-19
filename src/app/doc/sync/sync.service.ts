@@ -115,6 +115,14 @@ export class SyncService {
     })
   }
 
+  set remoteReplySyncSource (source: Observable<RichLogootSOperation[]>) {
+    source.subscribe((richLogootSOps: RichLogootSOperation[]) => {
+      richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
+        this.applyRichLogootSOperation(richLogootSOp)
+      })
+    })
+  }
+
   set remoteRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
       this.applyRichLogootSOperation(richLogootSOp)
