@@ -10,10 +10,24 @@ const pb = require('./sync_pb.js')
 @Injectable()
 export class SyncMessageService {
 
+  private remoteQuerySyncObservable: Observable<Map<number, number>>
+  private remoteQuerySyncObservers: Observer<Map<number, number>>[] = []
+
+  private remoteQuerySyncIdObservable: Observable<number>
+  private remoteQuerySyncIdObserver: Observer<number>
+
   private remoteRichLogootSOperationObservable: Observable<RichLogootSOperation>
   private remoteRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
   constructor (private network: NetworkService) {
+    this.remoteQuerySyncObservable = Observable.create((observer) => {
+      this.remoteQuerySyncObservers.push(observer)
+    })
+
+    this.remoteQuerySyncIdObservable = Observable.create((observer) => {
+      this.remoteQuerySyncIdObserver = observer
+    })
+
     this.remoteRichLogootSOperationObservable = Observable.create((observer) => {
       this.remoteRichLogootSOperationObservers.push(observer)
     })
@@ -27,6 +41,10 @@ export class SyncMessageService {
       switch (content.getTypeCase()) {
         case pb.Sync.TypeCase.RICHLOGOOTSOP:
           this.handleRichLogootSOpMsg(content.getRichlogootsop())
+          break
+        case pb.Sync.TypeCase.QUERYSYNC:
+          this.remoteQuerySyncIdObserver.next(msg.id) // Register the id of the peer
+          this.handleQuerySyncMsg(content.getQuerysync())
           break
       }
     })
@@ -51,11 +69,22 @@ export class SyncMessageService {
     return this.remoteRichLogootSOperationObservable
   }
 
+  get onRemoteQuerySync (): Observable<Map<number, number>> {
+    return this.remoteQuerySyncObservable
+  }
+
   handleRichLogootSOpMsg (content: any): void {
     const richLogootSOp: RichLogootSOperation = this.deserializeRichLogootSOperation(content)
 
     this.remoteRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
       observer.next(richLogootSOp)
+    })
+  }
+
+  handleQuerySyncMsg (content: any): void {
+    const vector: Map<number, number> = content.getVectorMap()
+    this.remoteQuerySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
+      observer.next(vector)
     })
   }
 
