@@ -11,18 +11,18 @@ export class SyncService {
   private clock: number = 0
 
   private localRichLogootSOperationObservable: Observable<RichLogootSOperation>
-  private localRichLogootSOperationObserver: Observer<RichLogootSOperation>
+  private localRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
   private remoteLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
-  private remoteLogootSOperationObserver: Observer<LogootSAdd | LogootSDel>
+  private remoteLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
   constructor () {
     this.localRichLogootSOperationObservable = Observable.create((observer) => {
-      this.localRichLogootSOperationObserver = observer
+      this.localRichLogootSOperationObservers.push(observer)
     })
 
     this.remoteLogootSOperationObservable = Observable.create((observer) => {
-      this.remoteLogootSOperationObserver = observer
+      this.remoteLogootSOperationObservers.push(observer)
     })
 
   }
@@ -39,7 +39,9 @@ export class SyncService {
     source.subscribe((logootSOp: LogootSAdd | LogootSDel) => {
       const richLogootSOp: RichLogootSOperation = new RichLogootSOperation(this.id, this.clock, logootSOp)
 
-      this.localRichLogootSOperationObserver.next(richLogootSOp)
+      this.localRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
+        observer.next(richLogootSOp)
+      })
 
       this.clock++
     })
@@ -47,7 +49,13 @@ export class SyncService {
 
   set remoteRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
-      this.remoteLogootSOperationObserver.next(richLogootSOp.logootSOp)
+      this.applyRichLogootSOperation(richLogootSOp)
+    })
+  }
+
+  applyRichLogootSOperation (richLogootSOp: RichLogootSOperation): void {
+    this.remoteLogootSOperationObservers.forEach((observer: Observer<LogootSAdd | LogootSDel>) => {
+      observer.next(richLogootSOp.logootSOp)
     })
   }
 

@@ -22,7 +22,7 @@ export class NetworkService {
   private doorOwnerId: number // One of the peer id
 
   private joinObservable: Observable<JoinEvent>
-  private joinObserver: Observer<JoinEvent>
+  private joinObservers: Observer<JoinEvent>[] = []
   private leaveSubject: BehaviorSubject<number>
   private messageSubject: ReplaySubject<NetworkMessage>
   private peerJoinSubject: ReplaySubject<number>
@@ -37,7 +37,7 @@ export class NetworkService {
     this.doorOwnerId = -1
     this.messageSubject = new ReplaySubject<NetworkMessage>()
     this.joinObservable = Observable.create((observer) => {
-      this.joinObserver = observer
+      this.joinObservers.push(observer)
     })
     this.leaveSubject = new BehaviorSubject<number>(-1)
     this.peerJoinSubject = new ReplaySubject<number>()
@@ -262,7 +262,9 @@ export class NetworkService {
       .then(() => {
         log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
         this.setDoor(true, this.webChannel.myId)
-        this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, true))
+        this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
+          observer.next(new JoinEvent(this.webChannel.myId, key, true))
+        })
         if (key === this.botStorageService.currentBot.key) {
           this.inviteBot(this.botStorageService.currentBot.url)
         }
@@ -273,7 +275,9 @@ export class NetworkService {
         return this.webChannel.join(key)
           .then(() => {
             log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
-            this.joinObserver.next(new JoinEvent(this.webChannel.myId, key, false))
+            this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
+              observer.next(new JoinEvent(this.webChannel.myId, key, false))
+            })
           })
           .catch((reason) => {
             log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)

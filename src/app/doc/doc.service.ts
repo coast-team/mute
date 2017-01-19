@@ -26,10 +26,10 @@ export class DocService {
   private docValueObserver: Observer<string>
 
   private localLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
-  private localLogootSOperationObserver: Observer<LogootSAdd | LogootSDel>
+  private localLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
   private remoteTextOperationsObservable: Observable<TextInsert[] | TextDelete[]>
-  private remoteTextOperationsObserver: Observer<TextInsert[] | TextDelete[]>
+  private remoteTextOperationsObservers: Observer<TextInsert[] | TextDelete[]>[] = []
 
   private joinSubscription: Subscription
   private localOperationsSubscription: Subscription
@@ -47,11 +47,12 @@ export class DocService {
     })
 
     this.localLogootSOperationObservable = Observable.create((observer) => {
-      this.localLogootSOperationObserver = observer
+      this.localLogootSOperationObservers.push(observer)
+    })
     })
 
     this.remoteTextOperationsObservable = Observable.create((observer) => {
-      this.remoteTextOperationsObserver = observer
+      this.remoteTextOperationsObservers.push(observer)
     })
   }
 
@@ -63,7 +64,9 @@ export class DocService {
 
   set remoteLogootSOperationSource (source: Observable<LogootSAdd | LogootSDel>) {
     source.subscribe((logootSOp: LogootSAdd | LogootSDel) => {
-      this.remoteTextOperationsObserver.next(this.handleRemoteOperation(logootSOp))
+      this.remoteTextOperationsObservers.forEach((observer: Observer<(TextInsert | TextDelete)[]>) => {
+        observer.next(this.handleRemoteOperation(logootSOp))
+      })
     })
   }
 
@@ -164,7 +167,9 @@ export class DocService {
     array.forEach( (textOperations: any[]) => {
       textOperations.forEach( (textOperation: any) => {
         const logootSOperation: LogootSAdd | LogootSDel = textOperation.applyTo(this.doc)
-        this.localLogootSOperationObserver.next(logootSOperation)
+        this.localLogootSOperationObservers.forEach((observer: Observer<LogootSAdd | LogootSDel>) => {
+          observer.next(logootSOperation)
+        })
       })
     })
     this.saveDoc()

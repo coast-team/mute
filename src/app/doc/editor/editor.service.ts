@@ -6,12 +6,12 @@ import { Observable, Observer } from 'rxjs'
 export class EditorService {
 
   private localTextOperationsObservable: Observable<(TextInsert | TextDelete)[][]>
-  private localTextOperationsObserver: Observer<(TextInsert | TextDelete)[][]>
+  private localTextOperationsObservers: Observer<(TextInsert | TextDelete)[][]>[] = []
 
   constructor () {
     log.angular('EditorService constructor')
     this.localTextOperationsObservable = Observable.create((observer) => {
-      this.localTextOperationsObserver = observer
+      this.localTextOperationsObservers.push(observer)
     })
   }
 
@@ -20,7 +20,9 @@ export class EditorService {
   }
 
   emitLocalTextOperations (textOperations: (TextInsert | TextDelete)[][]): void {
-    this.localTextOperationsObserver.next(textOperations)
+    this.localTextOperationsObservers.forEach((observer: Observer<(TextInsert | TextDelete)[][]>) => {
+      observer.next(textOperations)
+    })
   }
 
 }
