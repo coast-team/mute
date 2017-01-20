@@ -144,6 +144,16 @@ export class SyncService {
     })
   }
 
+  set storedStateSource (source: Observable<State>) {
+    source.subscribe((state: State) => {
+      this.vector.clear()
+      this.richLogootSOps = state.richLogootSOps
+      this.richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
+        this.applyRichLogootSOperation(richLogootSOp)
+      })
+    })
+  }
+
   applyRichLogootSOperation (richLogootSOp: RichLogootSOperation): void {
     this.updateState(richLogootSOp)
     this.remoteLogootSOperationObservers.forEach((observer: Observer<LogootSAdd | LogootSDel>) => {
