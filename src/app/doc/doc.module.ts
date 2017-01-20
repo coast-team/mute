@@ -11,6 +11,7 @@ import { EditorComponent } from './editor/editor.component'
 import { EditorService } from './editor/editor.service'
 import { SyncService } from './sync/sync.service'
 import { SyncMessageService } from './sync/sync-message.service'
+import { SyncStorageService } from './sync/sync-storage.service'
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { SyncMessageService } from './sync/sync-message.service'
     EditorService,
     NetworkService,
     SyncMessageService,
-    SyncService
+    SyncService,
+    SyncStorageService
   ]
 })
 export class DocModule {
@@ -38,8 +40,10 @@ export class DocModule {
     editorService: EditorService,
     networkService: NetworkService,
     syncMessageService: SyncMessageService,
-    syncService: SyncService) {
+    syncService: SyncService,
+    syncStorageService: SyncStorageService) {
     log.angular('DocModule constructor')
+
     docService.localTextOperationsSource = editorService.onLocalTextOperations
     docService.remoteLogootSOperationSource = syncService.onRemoteLogootSOperation
     docService.joinSource = networkService.onJoin
@@ -49,10 +53,14 @@ export class DocModule {
     syncService.remoteQuerySyncSource = syncMessageService.onRemoteQuerySync
     syncService.remoteReplySyncSource = syncMessageService.onRemoteReplySync
     syncService.remoteRichLogootSOperationSource = syncMessageService.onRemoteRichLogootSOperation
+    syncService.storedStateSource = syncStorageService.onStoredState
 
     syncMessageService.localRichLogootSOperationSource = syncService.onLocalRichLogootSOperation
     syncMessageService.messageSource = networkService.onMessage
     syncMessageService.querySyncSource = syncService.onQuerySync
     syncMessageService.replySyncSource = syncService.onReplySync
+
+    syncStorageService.joinSource = networkService.onJoin
+    syncStorageService.stateSource = syncService.onState
   }
 }
