@@ -15,6 +15,9 @@ export class SyncService {
   private vector: Map<number, number> = new Map()
   private richLogootSOps: RichLogootSOperation[] = []
 
+  private isReadyObservable: Observable<void>
+  private isReadyObserver: Observer<void>
+
   private localRichLogootSOperationObservable: Observable<RichLogootSOperation>
   private localRichLogootSOperationObservers: Observer<RichLogootSOperation>[] = []
 
@@ -31,6 +34,10 @@ export class SyncService {
   private stateObservers: Observer<State>[] = []
 
   constructor () {
+    this.isReadyObservable = Observable.create((observer) => {
+      this.isReadyObserver = observer
+    })
+
     this.localRichLogootSOperationObservable = Observable.create((observer) => {
       this.localRichLogootSOperationObservers.push(observer)
     })
@@ -77,9 +84,24 @@ export class SyncService {
   }
 
   set joinSource (source: Observable<JoinEvent>) {
-    source.subscribe((joinEvent: JoinEvent) => {
-      this.id = joinEvent.id
-    })
+    source
+      .map((joinEvent: JoinEvent) => {
+        this.id = joinEvent.id
+        return joinEvent
+      })
+      .zip(
+        this.isReadyObservable,
+        (joinEvent: JoinEvent) => {
+          return joinEvent
+        }
+      )
+      .subscribe((joinEvent: JoinEvent) => {
+        if (!joinEvent.created) {
+          this.querySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
+            observer.next(this.vector)
+          })
+        }
+      })
   }
 
   set localLogootSOperationSource (source: Observable<LogootSAdd | LogootSDel>) {
@@ -151,6 +173,7 @@ export class SyncService {
       this.richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
         this.applyRichLogootSOperation(richLogootSOp)
       })
+      this.isReadyObserver.next(undefined)
     })
   }
 
