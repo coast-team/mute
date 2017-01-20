@@ -85,14 +85,6 @@ export class SyncService {
     })
   }
 
-  set queryDocSource (source: Observable<void>) {
-    source.subscribe(() => {
-      this.querySyncObservers.forEach((observer: Observer<Map<number, number>>) => {
-        observer.next(this.vector)
-      })
-    })
-  }
-
   set remoteQuerySyncSource (source: Observable<Map<number, number>>) {
     source.subscribe((vector: Map<number, number>) => {
       const missingRichLogootSOps: RichLogootSOperation[] = this.richLogootSOps.filter((richLogootSOperation: RichLogootSOperation) => {

@@ -10,7 +10,6 @@ import {
 } from 'mute-structs'
 
 import { JoinEvent, NetworkService } from 'doc/network'
-import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
 
 @Injectable()
 export class DocService {
@@ -24,9 +23,6 @@ export class DocService {
   private localLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
   private localLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
-  private queryDocObservable: Observable<void>
-  private queryDocObservers: Observer<void>[] = []
-
   private remoteTextOperationsObservable: Observable<TextInsert[] | TextDelete[]>
   private remoteTextOperationsObservers: Observer<TextInsert[] | TextDelete[]>[] = []
 
@@ -35,7 +31,6 @@ export class DocService {
   private messageSubscription: Subscription
 
   constructor (
-    private localStorageService: LocalStorageService,
     private network: NetworkService
   ) {
     log.angular('DocService constructor')
@@ -47,10 +42,6 @@ export class DocService {
 
     this.localLogootSOperationObservable = Observable.create((observer) => {
       this.localLogootSOperationObservers.push(observer)
-    })
-
-    this.queryDocObservable = Observable.create((observer) => {
-      this.queryDocObservers.push(observer)
     })
 
     this.remoteTextOperationsObservable = Observable.create((observer) => {
@@ -76,35 +67,10 @@ export class DocService {
     this.joinSubscription = source.subscribe( (joinEvent: JoinEvent) => {
       this.docID = joinEvent.key
       this.doc = new LogootSRopes(joinEvent.id)
-      if (!joinEvent.created) {
-        // Have to retrieve the document from another peer
-        this.queryDocObservers.forEach((observer: Observer<void>) => {
-          observer.next(undefined)
-        })
-      }
-      /*
-      else {
-        // Try to retrieve the document from the local database
-        this.localStorageService.get(this.docID)
-        .then((plainDoc: any) => {
-          const doc: LogootSRopes | null = this.generateDoc(plainDoc)
 
-          if (doc instanceof LogootSRopes) {
-            this.doc = doc
-          } else {
-            // TODO: Handle this error properly
-            log.error('logootsropes:doc', 'retrieved invalid document')
-            this.doc = new LogootSRopes(joinEvent.id)
-          }
-          this.docValueObserver.next(this.doc.str)
-        }, () => {
-          // Was not able to retrieve the document
-          // Create a new one
-          this.doc = new LogootSRopes(joinEvent.id)
-          this.docValueObserver.next(this.doc.str)
-        })
-      }
-      */
+      this.docValueObservers.forEach((observer: Observer<string>) => {
+        observer.next(this.doc.str)
+      })
     })
   }
 
@@ -116,26 +82,8 @@ export class DocService {
     return this.localLogootSOperationObservable
   }
 
-  get onQueryDoc (): Observable<void> {
-    return this.queryDocObservable
-  }
-
   get onRemoteTextOperations (): Observable<TextInsert[] | TextDelete[]> {
     return this.remoteTextOperationsObservable
-  }
-
-  generateDoc (plainDoc: any): LogootSRopes | null {
-    const myId: number = this.network.myId
-    const clock = 0
-
-    return LogootSRopes.fromPlain(myId, clock, plainDoc)
-  }
-
-  saveDoc (): void {
-    this.localStorageService.put(this.docID, { root: this.doc.root, str: this.doc.str })
-    .then(() => {}, () => {
-      // TODO: Handle this error properly
-    })
   }
 
   clean () {
@@ -153,13 +101,11 @@ export class DocService {
         })
       })
     })
-    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
   }
 
   handleRemoteOperation (logootSOperation: LogootSAdd | LogootSDel): TextInsert[] | TextDelete[] {
     const textOperations: TextInsert[] | TextDelete[] = logootSOperation.execute(this.doc)
-    this.saveDoc()
     log.info('operation:doc', 'updated doc: ', this.doc)
     return textOperations
   }

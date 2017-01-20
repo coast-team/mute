@@ -46,7 +46,6 @@ export class DocModule {
 
     syncService.joinSource = networkService.onJoin
     syncService.localLogootSOperationSource = docService.onLocalLogootSOperation
-    syncService.queryDocSource = docService.onQueryDoc
     syncService.remoteQuerySyncSource = syncMessageService.onRemoteQuerySync
     syncService.remoteReplySyncSource = syncMessageService.onRemoteReplySync
     syncService.remoteRichLogootSOperationSource = syncMessageService.onRemoteRichLogootSOperation
