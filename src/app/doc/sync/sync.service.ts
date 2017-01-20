@@ -27,6 +27,9 @@ export class SyncService {
   private replySyncObservable: Observable<RichLogootSOperation[]>
   private replySyncObservers: Observer<RichLogootSOperation[]>[] = []
 
+  private stateObservable: Observable<State>
+  private stateObservers: Observer<State>[] = []
+
   constructor () {
     this.localRichLogootSOperationObservable = Observable.create((observer) => {
       this.localRichLogootSOperationObservers.push(observer)
@@ -42,6 +45,10 @@ export class SyncService {
 
     this.replySyncObservable = Observable.create((observer) => {
       this.replySyncObservers.push(observer)
+    })
+
+    this.stateObservable = Observable.create((observer) => {
+      this.stateObservers.push(observer)
     })
   }
 
@@ -61,6 +68,10 @@ export class SyncService {
     return this.replySyncObservable
   }
 
+  get onState (): Observable<State> {
+    return this.stateObservable
+  }
+
   get state (): State {
     return new State(this.vector, this.richLogootSOps)
   }
@@ -75,8 +86,12 @@ export class SyncService {
     source.subscribe((logootSOp: LogootSAdd | LogootSDel) => {
       const richLogootSOp: RichLogootSOperation = new RichLogootSOperation(this.id, this.clock, logootSOp)
 
-      this.updateVector(this.id, this.clock)
-      this.richLogootSOps.push(richLogootSOp)
+      this.updateState(richLogootSOp)
+
+      this.stateObservers.forEach((observer: Observer<State>) => {
+        observer.next(this.state)
+      })
+
       this.localRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
         observer.next(richLogootSOp)
       })
@@ -112,21 +127,33 @@ export class SyncService {
       richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
         this.applyRichLogootSOperation(richLogootSOp)
       })
+
+      this.stateObservers.forEach((observer: Observer<State>) => {
+        observer.next(this.state)
+      })
     })
   }
 
   set remoteRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
       this.applyRichLogootSOperation(richLogootSOp)
+
+      this.stateObservers.forEach((observer: Observer<State>) => {
+        observer.next(this.state)
+      })
     })
   }
 
   applyRichLogootSOperation (richLogootSOp: RichLogootSOperation): void {
-    this.updateVector(richLogootSOp.id, richLogootSOp.clock)
-    this.richLogootSOps.push(richLogootSOp)
+    this.updateState(richLogootSOp)
     this.remoteLogootSOperationObservers.forEach((observer: Observer<LogootSAdd | LogootSDel>) => {
       observer.next(richLogootSOp.logootSOp)
     })
+  }
+
+  updateState (richLogootSOp: RichLogootSOperation): void {
+    this.updateVector(richLogootSOp.id, richLogootSOp.clock)
+    this.richLogootSOps.push(richLogootSOp)
   }
 
   updateVector (id: number, clock: number): void {
