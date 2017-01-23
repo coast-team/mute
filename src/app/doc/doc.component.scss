@@ -43,6 +43,10 @@ md-sidenav-container {
     position: fixed;
   }
 
+  h2 {
+    font-family: $font-header-regular;
+  }
+
   .rightsidenav {
     box-shadow: none;
     background-color: $color-bg !important;
