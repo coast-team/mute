@@ -13,9 +13,15 @@
     src: url(assets/font/Roboto/Roboto-Medium.ttf);
 }
 
+@font-face {
+    font-family: AmaticaSC-Regular;
+    src: url(assets/font/Amatica_SC/AmaticaSC-Regular.ttf);
+}
+
 $font-light: Roboto-Light, sans-serif;
 $font-regular: Roboto-Regular, sans-serif;
 $font-medium: Roboto-Medium, sans-serif;
+$font-header-regular: AmaticaSC-Regular, sans-serif;
 
 $color-bg: #ECEFF1;
 
