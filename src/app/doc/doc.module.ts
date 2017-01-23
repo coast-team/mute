@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router'
 
 import { RightSideModule } from './right-side'
 import { SharedModule } from 'shared'
+import { NavModule } from 'nav'
 import { DocService } from './doc.service'
 import { DocComponent } from './doc.component'
 import { NetworkService } from './network/network.service'
@@ -18,6 +19,7 @@ import { EditorService } from './editor/editor.service'
   imports: [
     SharedModule,
     RightSideModule,
+    NavModule,
     RouterModule.forChild([
       {path: 'doc/:key', component: DocComponent}
     ])

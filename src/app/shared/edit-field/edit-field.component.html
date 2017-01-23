@@ -3,7 +3,7 @@
   <div fxLayout="column" fxLayoutAlign="center center"
       (mouseenter)="togglePreEditState()"
       (mouseleave)="toggleViewState()">
-    <span class="pseudo" #pseudonymElm contenteditable="false" spellcheck="false"
+    <span class="pseudo" #editableElm contenteditable="true" spellcheck="false"
         (click)="edit()"
         (keydown)="done($event)"
         (blur)="done($event)">
@@ -11,10 +11,10 @@
     <span #bottomLine class="bottom-line"></span>
   </div>
 
-  <md-icon *ngIf="viewState"
+  <md-icon *ngIf="iconSet() && viewState"
       [@viewState]="'active'"
-      (@viewState.done)="viewStateDone($event)">face</md-icon>
-  <md-icon *ngIf="preEditState" color="accent"
+      (@viewState.done)="viewStateDone($event)">{{icon}}</md-icon>
+  <md-icon *ngIf="iconSet() && preEditState" color="accent"
       [@preEditState]="'active'"
       (@preEditState.done)="preEditStateDone($event)">mode_edit</md-icon>
 </div>

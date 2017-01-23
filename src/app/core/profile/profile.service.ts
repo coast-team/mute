@@ -6,8 +6,8 @@ import { BehaviorSubject, Observable } from 'rxjs/Rx'
 export class ProfileService {
 
   private storagePrefix = 'mute'
-  private pseudonymDefault = 'Anonymous'
   private pseudoSubject: BehaviorSubject<string>
+  public pseudonymDefault = 'Anonymous'
 
   constructor () {
     this.pseudoSubject = new BehaviorSubject<string>(this.pseudonym)

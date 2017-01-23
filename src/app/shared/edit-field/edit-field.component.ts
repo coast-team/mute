@@ -1,19 +1,22 @@
 import {
   Component,
+  SimpleChange,
+  EventEmitter,
   OnInit,
+  OnChanges,
   ViewChild,
   trigger,
   state,
   style,
   transition,
-  animate } from '@angular/core'
-
-import { ProfileService } from 'core/profile/profile.service'
+  animate,
+  Input,
+  Output } from '@angular/core'
 
 @Component({
-  selector: 'mute-pseudonym',
-  templateUrl: './pseudonym.component.html',
-  styleUrls: [ './pseudonym.component.scss' ],
+  selector: 'mute-edit-field',
+  templateUrl: './edit-field.component.html',
+  styleUrls: [ './edit-field.component.scss' ],
   animations: [
     trigger('viewState', [
       state('active', style({transform: 'scale(1)'})),
@@ -29,25 +32,46 @@ import { ProfileService } from 'core/profile/profile.service'
     ])
   ]
 })
-export class PseudonymComponent implements OnInit {
+export class EditFieldComponent implements OnInit, OnChanges {
 
-  @ViewChild('pseudonymElm') pseudonymElm
+  /**
+   * This variable is usefull when the mouse is passing very fast over tag
+   * (less then 100ms, see animations->trigger->transition->animate value), thus
+   * the state does not have enough time to change. In that case we force it to change.
+   */
+  private fastLeave = false
+
+  @Input() value: string
+  @Input() emptyValue: string
+  @Input() icon = ''
+  @Output() onDone = new EventEmitter<string>()
+
+  @ViewChild('editableElm') editableElm
   @ViewChild('bottomLine') bottomLine
   public viewState = true
   public preEditState = false
   public editState = false
 
-  constructor (
-    private profile: ProfileService
-  ) { }
+  constructor () { }
 
   ngOnInit () {
-    this.pseudonymElm.nativeElement.innerHTML = this.profile.pseudonym
+    this.editableElm.nativeElement.textContent = this.value
+  }
+
+  ngOnChanges (changes: {value: SimpleChange}) {
+    if (changes.value.currentValue !== this.editableElm.nativeElement.textContent) {
+      this.editableElm.nativeElement.textContent = changes.value.currentValue
+    }
+  }
+
+  iconSet () {
+    return this.icon !== ''
   }
 
   toggleViewState () {
     if (!this.editState) {
       this.bottomLine.nativeElement.style.width = 0
+      this.fastLeave = !this.preEditState ? true : false
       this.preEditState = false
     }
   }
@@ -69,6 +93,11 @@ export class PseudonymComponent implements OnInit {
   preEditStateDone (event) {
     if (event.toState === 'void') {
       this.viewState = true
+    } else if (event.fromState === 'void') {
+      if (this.fastLeave) {
+        this.fastLeave = false
+        this.toggleViewState()
+      }
     }
   }
 
@@ -80,9 +109,8 @@ export class PseudonymComponent implements OnInit {
     if (this.viewState) {
       this.viewState = false
     }
-    this.pseudonymElm.nativeElement.contentEditable = true
     const range = window.document.createRange()
-    range.selectNodeContents(this.pseudonymElm.nativeElement)
+    range.selectNodeContents(this.editableElm.nativeElement)
     const sel = window.getSelection()
     sel.removeAllRanges()
     sel.addRange(range)
@@ -90,21 +118,21 @@ export class PseudonymComponent implements OnInit {
   }
 
   done (event) {
-    if (event.type === 'blur' || (event.type === 'keydown' && event.keyCode === 13)) {
-      event.preventDefault()
-      const pseudo = this.pseudonymElm.nativeElement.innerHTML
-      if (this.profile.pseudonym !== pseudo) {
-        this.profile.pseudonym = pseudo
-        if (pseudo === '') {
-          this.pseudonymElm.nativeElement.innerHTML = this.profile.pseudonym
-        }
-      }
-      window.getSelection().removeAllRanges()
-      this.pseudonymElm.nativeElement.blur()
-      this.bottomLine.nativeElement.style.width = 0
-      this.pseudonymElm.nativeElement.contentEditable = false
+    if (this.editState && event.type === 'blur' || (event.type === 'keydown' && event.keyCode === 13)) {
       this.editState = false
       this.preEditState = false
+      event.preventDefault()
+      window.getSelection().removeAllRanges()
+      this.editableElm.nativeElement.blur()
+      this.bottomLine.nativeElement.style.width = 0
+      const currentValue = this.editableElm.nativeElement.textContent
+      if (currentValue === '') {
+        this.editableElm.nativeElement.textContent = this.emptyValue
+      }
+      if (this.value !== currentValue) {
+        this.value = currentValue
+        this.onDone.emit(currentValue)
+      }
     }
   }
 }

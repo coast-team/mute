@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core'
-import { Subject, Observable } from 'rxjs/Rx'
+import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
 @Injectable()
 export class UiService {
 
-  private navToggleSubject = new Subject<boolean>()
-  private docNavToggleSubject = new Subject<boolean>()
+  private navToggleSubject: BehaviorSubject<boolean>
+  private docNavToggleSubject: BehaviorSubject<boolean>
 
-  navOpened: boolean
-  docNavOpened: boolean
+  public navOpened = false
+  public docNavOpened = true
 
-  constructor () { }
+  constructor () {
+    this.navToggleSubject = new BehaviorSubject<boolean>(this.navOpened)
+    this.docNavToggleSubject = new BehaviorSubject<boolean>(this.docNavOpened)
+  }
 
   get onNavToggle (): Observable<boolean> {
     return this.navToggleSubject.asObservable()

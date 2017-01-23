@@ -19,4 +19,14 @@ html {
     font-size: 1.4rem;
     background-color: $color-bg;
   }
+
+  .md-sidenav-content {
+    display: inline-grid;
+    background-color: $color-bg;
+    transition: all .4s cubic-bezier(.25,.8,.25,1);
+  }
+
+  // .md-sidenav-backdrop.md-sidenav-shown {
+  //   height: 100%;
+  // }
 }

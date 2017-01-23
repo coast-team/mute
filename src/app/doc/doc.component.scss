@@ -1,3 +1,6 @@
+@import '../../assets/theme';
+@import '../../assets/variables';
+
 :host {
   height: 100%;
   width: 100%;
@@ -27,5 +30,31 @@ mute-right-side {
 }
 
 md-sidenav-container {
-  height: 100%;
+  display: inline-grid;
+  transform: none;
+  height: initial  !important;
+  background-color: $color-bg !important;
+
+  md-sidenav {
+    position: fixed;
+  }
+
+  .rightsidenav {
+    box-shadow: none;
+    background-color: $color-bg !important;
+  }
+
+
+}
+
+@media only screen and (min-width: 960px) and (max-width: 1280px) {
+  .leftsidenav, .rightsidenav {
+    top: $toolbar-height-md;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .leftsidenav, .rightsidenav {
+    top: $toolbar-height-sm;
+  }
 }

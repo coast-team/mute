@@ -3,7 +3,7 @@ import { MaterialModule } from '@angular/material'
 import { CommonModule } from '@angular/common'
 import { FlexLayoutModule } from '@angular/flex-layout'
 
-import { PseudonymComponent } from './pseudonym/pseudonym.component'
+import { EditFieldComponent } from './edit-field/edit-field.component'
 
 @NgModule({
   imports: [
@@ -11,12 +11,12 @@ import { PseudonymComponent } from './pseudonym/pseudonym.component'
     MaterialModule.forRoot(),
     FlexLayoutModule.forRoot()
   ],
-  declarations: [ PseudonymComponent ],
+  declarations: [ EditFieldComponent ],
   exports: [
     CommonModule,
     MaterialModule,
     FlexLayoutModule,
-    PseudonymComponent
+    EditFieldComponent
   ]
 })
 export class SharedModule { }

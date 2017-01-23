@@ -1,22 +1,26 @@
-@import '../assets/theme';
 @import '../assets/variables';
 
 :host {
   height: 100%;
-  width: 100%;
 }
 
 md-toolbar {
+
+  position: fixed;
+  z-index: 9999;
 
   md-toolbar-row div {
     width: 100%;
   }
 }
 
-md-sidenav-container {
-  overflow: hidden;
-  margin: 0;
-  height: 100%;
-  width: 100%;
-  background-color: $color-bg !important;
+.gap {
+  display: block;
+  height: $toolbar-height-md;
+}
+
+@media only screen and (max-width: 960px) {
+  .gap {
+    height: $toolbar-height-sm;
+  }
 }

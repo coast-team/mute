@@ -10,7 +10,6 @@ import { DevLabelComponent } from 'dev-label'
 import { CoreModule } from './core/core.module'
 import { DocModule } from 'doc'
 import { DocsModule } from 'docs'
-import { NavModule } from 'nav'
 import { SharedModule } from 'shared'
 
 @NgModule({
@@ -20,7 +19,6 @@ import { SharedModule } from 'shared'
     SharedModule,
     DocModule,
     DocsModule,
-    NavModule,
     AppRoutingModule
   ],
   declarations: [
