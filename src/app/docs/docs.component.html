@@ -15,7 +15,7 @@
   <!-- Content -->
   <div fxFlexFill fxLayout="row" fxLayoutAlign="center center">
     <div fxFlexFill fxLayout="column" fxLayoutAlign="start center" *ngIf='isStorageServiceSelected() && hasDocuments'>
-      <h2>{{getStorageServiceName()}}</h2>
+      <h2 fxShow="false" fxShow.gt-md>{{getStorageServiceName()}}</h2>
       <div fxFlexFill fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
         <md-card fxFlex="200px" *ngFor="let doc of docs" fxFlexOffset="20px" fxFlexOffset.xs="0">
           <button fxFlexFill md-button (click) = "openDoc(doc.id)">

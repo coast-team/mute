@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs/Rx'
+import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
 import { AbstractStorageService } from '../AbstractStorageService'
 import { LocalStorageService } from '../local-storage/local-storage.service'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
@@ -9,15 +9,21 @@ export class StorageManagerService {
 
   private storageServices: AbstractStorageService[]
   private currentStorageService: AbstractStorageService
+  private storageServiceSubject: Subject<AbstractStorageService>
   private docsSubject: BehaviorSubject<any>
 
   constructor (localStorage: LocalStorageService, botStorage: BotStorageService) {
     this.storageServices = [localStorage, botStorage]
     this.docsSubject = new BehaviorSubject<any>([])
+    this.storageServiceSubject = new Subject<AbstractStorageService>()
   }
 
-  get onDocs(): Observable<any> {
+  get onDocs (): Observable<any> {
     return this.docsSubject
+  }
+
+  get onStorageService (): Observable<AbstractStorageService> {
+    return this.storageServiceSubject.asObservable()
   }
 
   getStorageServices (): AbstractStorageService[] {
@@ -30,6 +36,7 @@ export class StorageManagerService {
 
   setCurrentStorageService (storageService: AbstractStorageService): void {
     this.currentStorageService = storageService
+    this.storageServiceSubject.next(storageService)
     this.getDocuments().then((docs: any[]) => {
       this.docsSubject.next(docs)
     })

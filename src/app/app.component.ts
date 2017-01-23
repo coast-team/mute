@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 import { environment } from '../environments/environment'
 import { UiService } from 'core/ui/ui.service'
 import { ProfileService } from 'core/profile/profile.service'
+import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
+import { AbstractStorageService } from 'core/storage/AbstractStorageService'
+
 
 @Component({
   selector: 'mute-root',
@@ -13,8 +17,11 @@ export class AppComponent implements OnInit {
 
   // @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
+  public storageName: string
 
   constructor (
+    private storageManager: StorageManagerService,
+    private router: Router,
     public ui: UiService,
     public profile: ProfileService
   ) {
@@ -22,12 +29,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit () {
-    // this.leftSidenavElm.onClose.subscribe(() => {
-    //   this.ui.navOpened = false
-    // })
-    // this.ui.onNavToggle.subscribe((open: boolean) => {
-    //   this.leftSidenavElm.opened = open
-    // })
+    this.storageManager.onStorageService.subscribe((storage: AbstractStorageService) => {
+      this.storageName = storage.name
+    })
+  }
+
+  isDoc () {
+    return this.router.url.includes('doc')
   }
 
   updatePseudo (pseudo: string) {

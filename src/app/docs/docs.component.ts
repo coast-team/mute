@@ -36,7 +36,6 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.leftVisible = false
     })
     this.ui.onNavToggle.subscribe((open: boolean) => {
-      log.debug('Nav toggled: ' + open)
       this.leftSidenavElm.opened = open
     })
     this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
@@ -44,6 +43,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.hasDocuments = (this.docs.length > 0)
     })
     this.ui.openNav()
+    this.ui.toolbarTitle = this.getStorageServiceName()
   }
 
   ngOnDestroy () {
@@ -57,7 +57,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   getStorageServiceName (): string {
     const storageService = this.storageManagerService.getCurrentStorageService()
-    return storageService.name
+    return storageService === undefined ? '' : storageService.name
   }
 
   getDocuments (): Promise<any> {

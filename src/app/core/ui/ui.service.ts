@@ -6,6 +6,7 @@ export class UiService {
 
   private navToggleSubject: BehaviorSubject<boolean>
   private docNavToggleSubject: BehaviorSubject<boolean>
+  private toolbarTitleSubject: BehaviorSubject<string>
 
   public navOpened = false
   public docNavOpened = true
@@ -13,6 +14,7 @@ export class UiService {
   constructor () {
     this.navToggleSubject = new BehaviorSubject<boolean>(this.navOpened)
     this.docNavToggleSubject = new BehaviorSubject<boolean>(this.docNavOpened)
+    this.toolbarTitleSubject = new BehaviorSubject<string>(this.toolbarTitle)
   }
 
   get onNavToggle (): Observable<boolean> {
@@ -52,6 +54,14 @@ export class UiService {
   toggleDocNav (): void {
     this.docNavOpened = !this.docNavOpened
     this.docNavToggleSubject.next(this.docNavOpened)
+  }
+
+  get onToolbarTitle (): Observable<string> {
+    return this.toolbarTitleSubject.asObservable()
+  }
+
+  set toolbarTitle (title) {
+    this.toolbarTitleSubject.next(title)
   }
 
 }

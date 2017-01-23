@@ -12,6 +12,12 @@ md-toolbar {
   md-toolbar-row div {
     width: 100%;
   }
+
+  h2 {
+    margin: 0;
+    font-family: $font-header-regular;
+    font-weight: initial;
+  }
 }
 
 .leftsidenav {
