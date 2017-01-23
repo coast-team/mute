@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { RouterModule } from '@angular/router'
-import { MaterialModule } from '@angular/material'
 
+import { SharedModule } from 'shared'
+import { NavModule } from 'nav'
 import { DocsComponent } from './docs.component'
 
 @NgModule({
   declarations: [ DocsComponent ],
   imports: [
     CommonModule,
-    MaterialModule.forRoot(),
+    SharedModule,
+    NavModule,
     RouterModule.forChild([
       {path: '', component: DocsComponent}
     ])

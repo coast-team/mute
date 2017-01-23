@@ -3,6 +3,7 @@ import { Router } from '@angular/router'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
+import { UiService } from 'core/ui/ui.service'
 
 @Component({
   selector: 'mute-nav',
@@ -11,16 +12,11 @@ import { StorageManagerService } from 'core/storage/storage-manager/storage-mana
 })
 export class NavComponent {
 
-  private router: Router
-  private storageManager: StorageManagerService
-
   constructor (
-    router: Router,
-    storageManager: StorageManagerService
-  ) {
-    this.router = router
-    this.storageManager = storageManager
-  }
+    private router: Router,
+    private storageManager: StorageManagerService,
+    public ui: UiService
+  ) { }
 
   getStorageServices (): AbstractStorageService[] {
     return this.storageManager.getStorageServices()

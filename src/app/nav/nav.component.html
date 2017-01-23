@@ -1,6 +1,13 @@
-<button id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
-<div id="storage-list">
-  <div *ngFor="let storageService of getStorageServices()">
-    <mute-storage [storageService]="storageService" (click)="setCurrentStorageService(storageService)"></mute-storage>
-  </div>
+<button md-icon-button class="close" (click)="ui.closeNav()">
+  <md-icon color="primary">close</md-icon>
+</button>
+<div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+  <h1><a routerLink="/">MUTE</a></h1>
+  <button fxFlexAlign="center" id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
+  <nav fxLayout="column" fxLayoutAlign="start stretch">
+    <mute-storage *ngFor="let storageService of getStorageServices()"
+        [storageService]="storageService"
+        (click)="setCurrentStorageService(storageService)">
+    </mute-storage>
+  </nav>
 </div>

@@ -2,28 +2,37 @@
 @import '../../assets/variables';
 
 :host {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  min-width: 30rem;
 }
 
-#new-doc {
-  margin-top: 2rem;
-  align-self: center;
+.active {
+  border-left: 3px solid md-color($accent);
+  font-family: $font-medium;
 }
 
-#storage-list {
-  margin-top: 2rem;
+.close {
+  position: fixed;
+  top: 10px;
+  right: 0;
+}
+
+h1 {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  font-family: $font-header-regular;
+  font-weight: initial;
+  font-size: 3.4rem;
+  margin: 1rem 0 1rem 0;
+  text-align: center;
 
-  .active {
-    border-left: 3px solid md-color($accent);
-    font-family: $font-medium;
+  a {
+    color: inherit;
+    text-decoration: inherit;
   }
 }
+
+// .control {
+//   margin
+// }
 
 //
 // @media only screen and (max-width: 1366px) {

@@ -1,20 +1,41 @@
-<md-card *ngIf='isStorageServiceSelected() && hasDocuments'>
-  <md-list *ngIf='hasDocuments'>
-    <h2 md-subheader>Documents stored at {{getStorageServiceName()}}:</h2>
-    <span *ngFor="let doc of docs">
-      <md-list-item md-button  [routerLink]="'doc/' + doc.id" (click) = "openDoc(doc.id)">
-        <md-icon md-list-avatar>note</md-icon>
-        <h3 md-line>{{doc.title}}</h3>
-        <p md-line>Key: {{doc.id}}</p>
-      </md-list-item>
-    </span>
-  </md-list>
-</md-card>
-<div *ngIf='isStorageServiceSelected() && !hasDocuments'>
-  <span>No documents stored at {{getStorageServiceName()}}. Create the first: </span>
-  <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
-</div>
-<div *ngIf='!isStorageServiceSelected()'>
-  <span>No storage selected. Pick one on the left or just create a new document: </span>
-  <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
-</div>
+<button md-icon-button *ngIf="leftVisible" class="nav left"
+    fxShow="false"
+    fxShow.gt-md
+    (click)="ui.openNav()">
+  <md-icon color="primary">menu</md-icon>
+</button>
+
+<md-sidenav-container fxFlexFill>
+
+  <!-- Left Sidenav-->
+  <md-sidenav align="start" mode="side" class="leftsidenav" #leftSidenavElm>
+    <mute-nav></mute-nav>
+  </md-sidenav>
+
+  <!-- Content -->
+  <div fxFlexFill fxLayout="row" fxLayoutAlign="center center">
+    <div fxFlexFill fxLayout="column" fxLayoutAlign="start center" *ngIf='isStorageServiceSelected() && hasDocuments'>
+      <h2>{{getStorageServiceName()}}</h2>
+      <div fxFlexFill fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
+        <md-card fxFlex="200px" *ngFor="let doc of docs" fxFlexOffset="20px" fxFlexOffset.xs="0">
+          <button fxFlexFill md-button (click) = "openDoc(doc.id)">
+            <h3>Title: {{doc.title}}</h3>
+            <p>Key: {{doc.id}}</p>
+          </button>
+        </md-card>
+      </div>
+    </div>
+
+    <div *ngIf='isStorageServiceSelected() && !hasDocuments'>
+      <span>No documents stored at {{getStorageServiceName()}}. Create the first: </span>
+      <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
+    </div>
+    <div *ngIf='!isStorageServiceSelected()'>
+      <span>No storage selected. Pick one on the left or just create a new document: </span>
+      <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
+    </div>
+  </div>
+
+  <!-- Right Sidenav-->
+
+</md-sidenav-container>

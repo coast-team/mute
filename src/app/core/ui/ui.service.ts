@@ -20,16 +20,17 @@ export class UiService {
   }
 
   openNav (): void {
-    this.navToggleSubject.next(true)
     this.navOpened = true
+    this.navToggleSubject.next(true)
   }
 
   closeNav (): void {
-    this.navToggleSubject.next(false)
     this.navOpened = false
+    this.navToggleSubject.next(false)
   }
 
   toggleNav (): void {
+    log.debug('UI nav toggle from ' + this.navOpened)
     this.navOpened = !this.navOpened
     this.navToggleSubject.next(this.navOpened)
   }

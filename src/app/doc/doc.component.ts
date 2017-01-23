@@ -13,7 +13,7 @@ import { UiService } from 'core/ui/ui.service'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
-@ViewChild('leftSidenavElm') leftSidenavElm
+  @ViewChild('leftSidenavElm') leftSidenavElm
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited: boolean = false
   public leftVisible = true
@@ -34,6 +34,7 @@ export class DocComponent implements OnDestroy, OnInit {
       this.leftVisible = false
     })
     this.ui.onNavToggle.subscribe((open: boolean) => {
+      log.debug('Hello world!')
       this.leftSidenavElm.opened = open
     })
     this.route.params.subscribe((params: Params) => {
@@ -55,6 +56,10 @@ export class DocComponent implements OnDestroy, OnInit {
     this.ui.onDocNavToggle.subscribe((open: boolean) => {
       this.rightSidenavElm.opened = open
     })
+    if (this.ui.navOpened) {
+      this.ui.closeNav()
+      this.leftVisible = true
+    }
     this.ui.openDocNav()
   }
 

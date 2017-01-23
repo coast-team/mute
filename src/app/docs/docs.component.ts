@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs/Rx'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
+import { UiService } from 'core/ui/ui.service'
 
 @Component({
   selector: 'mute-docs',
@@ -12,22 +13,37 @@ import { StorageManagerService } from 'core/storage/storage-manager/storage-mana
 })
 export class DocsComponent implements OnDestroy, OnInit {
 
-  private router: Router
-  private storageManagerService: StorageManagerService
   private docsSubscription: Subscription
   private docs: any[]
   private hasDocuments: boolean
 
-  constructor (router: Router, storageManagerService: StorageManagerService) {
-    this.router = router
-    this.storageManagerService = storageManagerService
-  }
+  @ViewChild('leftSidenavElm') leftSidenavElm
+
+  public leftVisible = true
+
+  constructor (
+    private router: Router,
+    private storageManagerService: StorageManagerService,
+    public ui: UiService
+) {}
 
   ngOnInit () {
+    this.leftSidenavElm.onClose.subscribe(() => {
+      this.ui.navOpened = false
+      this.leftVisible = true
+    })
+    this.leftSidenavElm.onOpenStart.subscribe(() => {
+      this.leftVisible = false
+    })
+    this.ui.onNavToggle.subscribe((open: boolean) => {
+      log.debug('Nav toggled: ' + open)
+      this.leftSidenavElm.opened = open
+    })
     this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
       this.docs = docs
       this.hasDocuments = (this.docs.length > 0)
     })
+    this.ui.openNav()
   }
 
   ngOnDestroy () {
