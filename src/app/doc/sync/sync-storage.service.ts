@@ -35,7 +35,7 @@ export class SyncStorageService {
           this.storedStateObservers.forEach((observer: Observer<State>) => {
             observer.next(new State(new Map(), richLogootSOps))
           })
-        }, (err: string) => {
+        }, () => {
           this.storedStateObservers.forEach((observer: Observer<State>) => {
             observer.next(new State(new Map(), []))
           })
