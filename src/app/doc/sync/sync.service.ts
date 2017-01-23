@@ -190,7 +190,7 @@ export class SyncService {
   }
 
   updateVector (id: number, clock: number): void {
-    if (this.vector.get(id) < clock) {
+    if (!this.vector.has(id) || this.vector.get(id) < clock) {
       this.vector.set(id, clock)
     }
 
