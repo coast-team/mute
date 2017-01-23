@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core'
 import { LogootSDel, LogootSAdd } from 'mute-structs'
 import { Observable, Observer } from 'rxjs'
 
+import { Interval } from './Interval'
+import { ReplySyncEvent } from './ReplySyncEvent'
 import { RichLogootSOperation } from './RichLogootSOperation'
 import { State } from './State'
 
@@ -27,8 +29,8 @@ export class SyncService {
   private remoteLogootSOperationObservable: Observable<LogootSAdd | LogootSDel>
   private remoteLogootSOperationObservers: Observer<LogootSAdd | LogootSDel>[] = []
 
-  private replySyncObservable: Observable<RichLogootSOperation[]>
-  private replySyncObservers: Observer<RichLogootSOperation[]>[] = []
+  private replySyncObservable: Observable<ReplySyncEvent>
+  private replySyncObservers: Observer<ReplySyncEvent>[] = []
 
   private stateObservable: Observable<State>
   private stateObservers: Observer<State>[] = []
@@ -71,7 +73,7 @@ export class SyncService {
     return this.remoteLogootSOperationObservable
   }
 
-  get onReplySync (): Observable<RichLogootSOperation[]> {
+  get onReplySync (): Observable<ReplySyncEvent> {
     return this.replySyncObservable
   }
 
@@ -135,23 +137,49 @@ export class SyncService {
         return false
       })
       // TODO: Add sort function to apply LogootSAdd operations before LogootSDel ones
-      this.replySyncObservers.forEach((observer: Observer<RichLogootSOperation[]>) => {
-        observer.next(missingRichLogootSOps)
+
+      const missingIntervals: Interval[] = []
+      vector.forEach((clock: number, id: number) => {
+        if (this.vector.has(id) && this.vector.get(id) < clock) {
+          const begin: number = this.vector.get(id) + 1
+          const end: number = clock
+          missingIntervals.push( new Interval(id, begin, end))
+        } else if (!this.vector.has(id)) {
+          const begin = 0
+          const end: number = clock
+          missingIntervals.push( new Interval(id, begin, end))
+        }
       })
 
-      // TODO: Retrieve our missing operations
-      // TODO: Query them
+      const replySyncEvent: ReplySyncEvent = new ReplySyncEvent(missingRichLogootSOps, missingIntervals)
+      this.replySyncObservers.forEach((observer: Observer<ReplySyncEvent>) => {
+        observer.next(replySyncEvent)
+      })
     })
   }
 
-  set remoteReplySyncSource (source: Observable<RichLogootSOperation[]>) {
-    source.subscribe((richLogootSOps: RichLogootSOperation[]) => {
-      richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
+  set remoteReplySyncSource (source: Observable<ReplySyncEvent>) {
+    source.subscribe((replySyncEvent: ReplySyncEvent) => {
+      replySyncEvent.richLogootSOps.forEach((richLogootSOp: RichLogootSOperation) => {
         this.applyRichLogootSOperation(richLogootSOp)
       })
 
       this.stateObservers.forEach((observer: Observer<State>) => {
         observer.next(this.state)
+      })
+
+      replySyncEvent.intervals.forEach((interval: Interval) => {
+        this.richLogootSOps
+          .filter((richLogootSOp: RichLogootSOperation) => {
+            const id: number = richLogootSOp.id
+            const clock: number = richLogootSOp.clock
+            return interval.id === id && interval.begin <= clock && clock <= interval.end
+          })
+          .forEach((richLogootSOp: RichLogootSOperation) => {
+            this.localRichLogootSOperationObservers.forEach((observer: Observer<RichLogootSOperation>) => {
+              observer.next(richLogootSOp)
+            })
+          })
       })
     })
   }

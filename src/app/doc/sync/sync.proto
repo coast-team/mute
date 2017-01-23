@@ -43,4 +43,11 @@ message QuerySync {
 
 message ReplySync {
   repeated RichLogootSOperation richLogootSOps = 1;
+  repeated Interval intervals = 2;
+}
+
+message Interval {
+  int32 id = 1;
+  int32 begin = 2;
+  int32 end = 3;
 }
