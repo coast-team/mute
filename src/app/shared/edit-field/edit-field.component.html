@@ -1,10 +1,10 @@
-<div fxLayout="row" fxLayoutAlign="end center">
+<div fxLayout="row" fxLayoutAlign="end center"
+    (mouseenter)="togglePreEditState()"
+    (mouseleave)="toggleViewState()"
+    (click)="edit()">
 
-  <div fxLayout="column" fxLayoutAlign="center center"
-      (mouseenter)="togglePreEditState()"
-      (mouseleave)="toggleViewState()">
+  <div fxLayout="column" fxLayoutAlign="center center">
     <span class="pseudo" #editableElm contenteditable="true" spellcheck="false"
-        (click)="edit()"
         (keydown)="done($event)"
         (blur)="done($event)">
     </span>
