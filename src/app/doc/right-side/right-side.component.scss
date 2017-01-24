@@ -1,89 +1,10 @@
 @import '../../../assets/variables';
 
-:host {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-size: 1.6rem;
-}
+header {
+  margin: 10px 0 30px 0;
 
-.close {
-  position: absolute;
-  top: 10px;
-  left: 0;
-}
-
-mute-pseudonym {
-  margin: 2rem 0 0 0;
-}
-
-#main-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  height: 100%;
-}
-
-.fixed {
-  position: fixed;
-  right: 0;
-  height: 100%;
-
-  md-sidenav-layout {
-    height: 100%;
-    background-color: $color-bg;
-
-    button[md-icon-button] {
-      margin: 1rem 1rem 0 0;
-    }
-
-    md-sidenav {
-      box-shadow: none;
-      display: flex;
-      flex-direction: column;
-      background-color: $color-bg;
-      align-items: flex-end;
-      overflow: hidden;
-
-      mute-invite-bot {
-        margin-top: 5rem;
-      }
-
-      .docTitle {
-        margin: 2rem 0 0 0;
-        width: 25rem;
-      }
-
-      md-tab-group {
-        width: 30rem;
-
-        .md-tab-label {
-          width: 30rem;
-        }
-      }
-    }
-  }
-}
-
-@media only screen and (max-width: 1366px) {
-  .fixed {
-
-    md-sidenav-layout {
-      md-sidenav {
-        padding-right: 0;
-
-        .docTitle {
-          width: 20rem;
-        }
-
-        md-tab-group {
-          margin-top: 5rem;
-          width: 20rem;
-        }
-      }
-      md-tab-group {
-        width: 20rem;
-      }
-    }
+  mute-edit-field {
+    margin-right: 20px;
+    font-size: 2rem;
   }
 }

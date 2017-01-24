@@ -1,4 +1,6 @@
-<button md-icon-button class="close" (click)="ui.closeNav()">
+<button md-icon-button class="close" (click)="ui.closeNav()"
+    fxShow="false"
+    fxShow.gt-md>
   <md-icon color="primary">close</md-icon>
 </button>
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">

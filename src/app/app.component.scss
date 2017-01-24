@@ -18,10 +18,11 @@ md-toolbar {
     font-family: $font-header-regular;
     font-weight: initial;
   }
-}
 
-.leftsidenav {
-  min-width: 20rem;
+  .doc-title {
+    font-family: $font-header-bold;
+    font-size: 2.4rem;
+  }
 }
 
 .gap {

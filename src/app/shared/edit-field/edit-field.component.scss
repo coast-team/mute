@@ -13,12 +13,18 @@
   outline: none;
 }
 
-.bottom-line {
+.bottom-line-container {
   display: inline-block;
-  background-color: md-color($accent);
-  height: 1px;
-  width: 0px;
-  transition: width .2s ease;
+  height: 2px;
+  width: 100%;
+
+  .bottom-line {
+    display: block;
+    background-color: md-color($accent);
+    height: 1px;
+    width: 0px;
+    transition: width .2s ease;
+  }
 }
 
 md-icon {

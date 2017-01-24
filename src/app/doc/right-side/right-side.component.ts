@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs'
 import { NetworkService } from 'doc/network'
 import { DocService } from 'doc/doc.service'
 import { UiService } from 'core/ui/ui.service'
+import { ProfileService } from 'core/profile/profile.service'
 
 @Component({
   selector: 'mute-right-side',
@@ -25,7 +26,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
     private networkService: NetworkService,
     private docService: DocService,
     private changeDetectorRef: ChangeDetectorRef,
-    public ui: UiService
+    public ui: UiService,
+    public profile: ProfileService
   ) {}
 
   ngOnInit () {
@@ -52,6 +54,10 @@ export class RightSideComponent implements OnDestroy, OnInit {
   //       this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
   //     })
   // }
+
+  updatePseudo (pseudo: string) {
+    this.profile.pseudonym = pseudo
+  }
 
   toggleDoor () {
     this.networkService.openDoor(!this.doorOpened)

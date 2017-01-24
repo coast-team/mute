@@ -16,7 +16,7 @@ import { CursorService } from './cursor/cursor.service'
   styleUrls: [
     // FIXME: Importing CodeMirror's CSS here doesn't work.
     // Should find a proper way to do it.
-    './editor.component.css'
+    './editor.component.scss'
   ],
   providers: [ CursorService ]
 })
@@ -42,6 +42,7 @@ export class EditorComponent implements OnDestroy, OnInit {
     this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
       lineNumbers: false,
       lineWrapping: true,
+      autofocus: false,
       mode: {name: 'gfm', globalVars: true}
     })
 

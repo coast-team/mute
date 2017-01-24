@@ -1,18 +1,16 @@
-<button md-icon-button class="close" (click)="ui.closeDocNav()">
-  <md-icon color="primary">close</md-icon>
-</button>
-<div>
-  <mute-edit-field myprop="Unknown" fxLayout="row" fxLayoutAlign="end center" fxShow="false" fxShow.gt-md></mute-edit-field>
-  <button md-icon-button (click)="toggleDoor()">
-    <md-icon *ngIf="doorOpened">lock_open</md-icon>
-    <md-icon *ngIf="!doorOpened">lock</md-icon>
-  </button>
-  <md-input class='docTitle' #docTitleElm placeholder="Document title" (keyup)="updateTitle($event)" [value]="title"></md-input>
+<div fxLayout="column" fxLayoutAlign="start stretch">
+
+  <header fxLayout="row" fxLayoutAlign="space-between center" fxShow="false" fxShow.gt-md>
+    <button md-icon-button class="close" (click)="ui.closeDocNav()">
+      <md-icon color="primary">close</md-icon>
+    </button>
+    <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
+        icon="face"
+        [value]="profile.onPseudonym | async"
+        [emptyValue]="profile.pseudonymDefault"
+        (onDone)="updatePseudo($event)">
+    </mute-edit-field>
+  </header>
 </div>
 
-<mute-invite-bot></mute-invite-bot>
-<md-tab-group>
-  <md-tab label="Collaborators">
-    <mute-collaborators></mute-collaborators>
-  </md-tab>
-</md-tab-group>
+<mute-collaborators></mute-collaborators>

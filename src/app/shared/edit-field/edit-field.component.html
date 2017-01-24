@@ -8,7 +8,9 @@
         (keydown)="done($event)"
         (blur)="done($event)">
     </span>
-    <span #bottomLine class="bottom-line"></span>
+    <span class="bottom-line-container">
+      <span #bottomLine class="bottom-line"></span>
+    </span>
   </div>
 
   <md-icon *ngIf="iconSet() && viewState"

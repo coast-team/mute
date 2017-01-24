@@ -4,6 +4,9 @@
       <md-icon>menu</md-icon>
     </button>
     <mute-edit-field *ngIf="isDoc()" fxLayout="row" fxLayoutAlign="end center"
+        class="doc-title"
+        autofocus="true"
+        selectAll="false"
         value="Untitled document"
         emptyValue="Untitled document"
         (onDone)="updateTitle($event)">

@@ -25,14 +25,6 @@ mute-editor {
   width: 100%;
 }
 
-mute-right-side {
-  min-width: 30rem;
-}
-
-.leftsidenav {
-  min-width: 20rem;
-}
-
 md-sidenav-container {
   display: inline-grid;
   transform: none;
@@ -47,9 +39,14 @@ md-sidenav-container {
     font-family: $font-header-regular;
   }
 
+  .leftsidenav {
+    min-width: 20rem;
+  }
+
   .rightsidenav {
     box-shadow: none;
     background-color: $color-bg !important;
+    min-width: 30rem;
   }
 }
 

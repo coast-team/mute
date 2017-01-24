@@ -44,6 +44,8 @@ export class EditFieldComponent implements OnInit, OnChanges {
   @Input() value: string
   @Input() emptyValue: string
   @Input() icon = ''
+  @Input() autofocus = 'false'
+  @Input() selectAll = 'true'
   @Output() onDone = new EventEmitter<string>()
 
   @ViewChild('editableElm') editableElm
@@ -56,6 +58,10 @@ export class EditFieldComponent implements OnInit, OnChanges {
 
   ngOnInit () {
     this.editableElm.nativeElement.textContent = this.value
+    if (this.autofocus === 'true' && this.value === this.emptyValue) {
+      this.edit()
+      this.autofocus = 'false'
+    }
   }
 
   ngOnChanges (changes: {value: SimpleChange}) {
@@ -109,11 +115,20 @@ export class EditFieldComponent implements OnInit, OnChanges {
     if (this.viewState) {
       this.viewState = false
     }
-    const range = window.document.createRange()
-    range.selectNodeContents(this.editableElm.nativeElement)
-    const sel = window.getSelection()
-    sel.removeAllRanges()
-    sel.addRange(range)
+    if (this.selectAll === 'true') {
+      const range = window.document.createRange()
+      range.selectNodeContents(this.editableElm.nativeElement)
+      const sel = window.getSelection()
+      sel.removeAllRanges()
+      sel.addRange(range)
+    } else if (this.autofocus === 'true') {
+      const range = window.document.createRange()
+      range.setStart(this.editableElm.nativeElement.childNodes[0], this.editableElm.nativeElement.textContent.length)
+      range.collapse(true)
+      const sel = window.getSelection()
+      sel.removeAllRanges()
+      sel.addRange(range)
+    }
     this.editState = true
   }
 
