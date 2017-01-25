@@ -15,12 +15,12 @@ md-toolbar {
 
   h2 {
     margin: 0;
-    font-family: $font-header-regular;
+    font-family: $font-header-light;
     font-weight: initial;
   }
 
   .doc-title {
-    font-family: $font-header-bold;
+    font-family: $font-header-regular;
     font-size: 2.4rem;
   }
 }

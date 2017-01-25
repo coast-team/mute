@@ -1,33 +1,24 @@
 @font-face {
-    font-family: Roboto-Light;
-    src: url(assets/font/Roboto/Roboto-Light.ttf);
+    font-family: DroidSans;
+    src: url(assets/font/Droid_Sans/DroidSans.ttf);
 }
 
 @font-face {
-    font-family: Roboto-Regular;
-    src: url(assets/font/Roboto/Roboto-Regular.ttf);
+    font-family: DroidSerif;
+    src: url(assets/font/Droid_Serif/DroidSerif.ttf);
 }
 
 @font-face {
-    font-family: Roboto-Medium;
-    src: url(assets/font/Roboto/Roboto-Medium.ttf);
+    font-family: CinzelDecorative-Regular;
+    src: url(assets/font/Cinzel_Decorative/CinzelDecorative-Regular.ttf);
 }
 
-@font-face {
-    font-family: AmaticaSC-Regular;
-    src: url(assets/font/Amatica_SC/AmaticaSC-Regular.ttf);
-}
-
-@font-face {
-    font-family: AmaticaSC-Bold;
-    src: url(assets/font/Amatica_SC/AmaticaSC-Bold.ttf);
-}
-
-$font-light: Roboto-Light, sans-serif;
-$font-regular: Roboto-Regular, sans-serif;
-$font-medium: Roboto-Medium, sans-serif;
-$font-header-regular: AmaticaSC-Regular, sans-serif;
-$font-header-bold: AmaticaSC-Bold, sans-serif;
+$font-light: DroidSans, sans-serif;
+$font-regular: DroidSans, sans-serif;
+$font-medium: DroidSans, sans-serif;
+$font-header-light: DroidSerif, serif;
+$font-header-regular: DroidSerif, serif;
+$font-logo: CinzelDecorative-Regular, serif;
 
 $color-bg: #ECEFF1;
 
