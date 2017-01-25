@@ -44,8 +44,8 @@ export class EditFieldComponent implements OnInit, OnChanges {
   @Input() value: string
   @Input() emptyValue: string
   @Input() icon = ''
-  @Input() autofocus = 'false'
-  @Input() selectAll = 'true'
+  @Input() autofocus = false
+  @Input() selectAll = true
   @Output() onDone = new EventEmitter<string>()
 
   @ViewChild('editableElm') editableElm
@@ -58,9 +58,9 @@ export class EditFieldComponent implements OnInit, OnChanges {
 
   ngOnInit () {
     this.editableElm.nativeElement.textContent = this.value
-    if (this.autofocus === 'true' && this.value === this.emptyValue) {
+    if (this.autofocus && this.value === this.emptyValue) {
       this.edit()
-      this.autofocus = 'false'
+      this.autofocus = false
     }
   }
 
@@ -83,6 +83,7 @@ export class EditFieldComponent implements OnInit, OnChanges {
   }
 
   togglePreEditState () {
+    log.debug('PreEdit')
     if (!this.editState) {
       this.bottomLine.nativeElement.style.height = '1px'
       this.bottomLine.nativeElement.style.width = '100%'
@@ -115,13 +116,13 @@ export class EditFieldComponent implements OnInit, OnChanges {
     if (this.viewState) {
       this.viewState = false
     }
-    if (this.selectAll === 'true') {
+    if (this.selectAll) {
       const range = window.document.createRange()
       range.selectNodeContents(this.editableElm.nativeElement)
       const sel = window.getSelection()
       sel.removeAllRanges()
       sel.addRange(range)
-    } else if (this.autofocus === 'true') {
+    } else if (this.autofocus) {
       const range = window.document.createRange()
       range.setStart(this.editableElm.nativeElement.childNodes[0], this.editableElm.nativeElement.textContent.length)
       range.collapse(true)

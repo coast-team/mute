@@ -1,9 +1,9 @@
-<md-card fxFlex.sm="95%" fxFlex>
+<md-card fxFlex.sm="95%" fxFlex fxLayout="column" fxLayoutAlign="start stretch">
   <mute-edit-field fxLayout="row" fxLayoutAlign="center center" fxShow="false" fxShow.gt-md
       value="Untitled document"
       emptyValue="Untitled document"
-      autofocus="true"
-      selectAll="false">
+      [autofocus]="innerWidth >= 1280"
+      [selectAll]="false">
   </mute-edit-field>
   <textarea #editorElt></textarea>
 </md-card>

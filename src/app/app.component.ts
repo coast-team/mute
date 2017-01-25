@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { environment } from '../environments/environment'
@@ -15,9 +15,10 @@ import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 })
 export class AppComponent implements OnInit {
 
-  // @ViewChild('leftSidenavElm') leftSidenavElm
+  @ViewChild('toolbarElm') toolbarElm
   public visible: boolean
   public storageName: string
+  public innerWidth = window.innerWidth
 
   constructor (
     private storageManager: StorageManagerService,
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit () {
+    log.debug('Display property = "' + this.toolbarElm.elementRef.nativeElement.style.display + '"')
     this.storageManager.onStorageService.subscribe((storage: AbstractStorageService) => {
       this.storageName = storage.name
     })

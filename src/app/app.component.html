@@ -1,12 +1,12 @@
-<md-toolbar fxHide="false" fxHide.gt-md color="primary">
+<md-toolbar #toolbarElm fxHide="false" fxHide.gt-md color="primary">
   <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
     <button md-icon-button (click)="ui.toggleNav()">
       <md-icon>menu</md-icon>
     </button>
     <mute-edit-field *ngIf="isDoc()" fxLayout="row" fxLayoutAlign="end center"
         class="doc-title"
-        autofocus="true"
-        selectAll="false"
+        [autofocus]="innerWidth < 1280"
+        [selectAll]="false"
         value="Untitled document"
         emptyValue="Untitled document"
         (onDone)="updateTitle($event)">

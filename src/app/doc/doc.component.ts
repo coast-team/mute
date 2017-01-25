@@ -34,7 +34,6 @@ export class DocComponent implements OnDestroy, OnInit {
       this.leftVisible = false
     })
     this.ui.onNavToggle.subscribe((open: boolean) => {
-      log.debug('Hello world!')
       this.leftSidenavElm.opened = open
     })
     this.route.params.subscribe((params: Params) => {

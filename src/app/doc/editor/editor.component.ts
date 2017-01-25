@@ -32,6 +32,8 @@ export class EditorComponent implements OnDestroy, OnInit {
 
   @ViewChild('editorElt') editorElt
 
+  public innerWidth = window.innerWidth
+
   constructor (
     private editorService: EditorService,
     private docService: DocService,
