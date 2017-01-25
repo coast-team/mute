@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   devLabel: true,
-  signalingURL: 'wss://sigver8-coastteam.rhcloud.com:8443',
+  signalingURL: 'http://signal2.loria.fr',
   botStorageAPI: 'localhost:8080',
   botStorage: 'localhost:9000'
 }
