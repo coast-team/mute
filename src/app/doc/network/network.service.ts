@@ -4,6 +4,7 @@ import { BehaviorSubject, ReplaySubject, Observable, Observer } from 'rxjs/Rx'
 import * as netflux from 'netflux'
 
 import { JoinEvent } from './JoinEvent'
+import { IceServers } from './IceServers'
 import { NetworkMessage } from './NetworkMessage'
 import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
@@ -51,6 +52,10 @@ export class NetworkService {
   initWebChannel () {
     this.webChannel = netflux.create({signalingURL: environment.signalingURL})
 
+    const iceServers = new IceServers()
+    iceServers.onConfig = (iceServers) => {
+      this.webChannel.settings.iceServers = iceServers
+    }
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => {
       if (this.doorOwnerId === this.webChannel.myId) {
