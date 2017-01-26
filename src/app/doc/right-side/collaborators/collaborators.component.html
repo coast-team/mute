@@ -1,3 +1,8 @@
-<span *ngFor="let collab of collabService.collaborators" [style.background-color]="collab.color">
-  {{collab.pseudo}}
-</span>
+<div fxLayout="row" fxLayoutAlign="end center" fxLayoutWrap="true" class="container">
+  <span *ngFor="let collab of collabService.collaborators"
+      [style.background-color]="collab.color"
+      [@peerArriving]="'active'"
+  >
+    {{collab.pseudo}}
+  </span>
+</div>

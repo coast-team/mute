@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { MaterialModule } from '@angular/material'
 
 import { CollaboratorsComponent } from './collaborators.component'
 import { CollaboratorsService } from './collaborators.service'
-
+import { SharedModule } from 'shared'
 
 @NgModule({
   declarations: [
@@ -12,7 +11,7 @@ import { CollaboratorsService } from './collaborators.service'
   ],
   imports: [
     CommonModule,
-    MaterialModule.forRoot()
+    SharedModule
   ],
   exports: [ CollaboratorsComponent ],
   providers: [ CollaboratorsService ]

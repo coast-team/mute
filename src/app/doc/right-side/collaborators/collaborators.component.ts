@@ -1,4 +1,13 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ChangeDetectorRef,
+  trigger,
+  state,
+  style,
+  transition,
+  animate } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import { CollaboratorsService } from './collaborators.service'
@@ -6,7 +15,15 @@ import { CollaboratorsService } from './collaborators.service'
 @Component({
   selector: 'mute-collaborators',
   templateUrl: './collaborators.component.html',
-  styleUrls: ['./collaborators.component.scss']
+  styleUrls: ['./collaborators.component.scss'],
+  animations: [
+    trigger('peerArriving', [
+      state('active', style({transform: 'translateX(0)'})),
+      state('void', style({transform: 'translateX(100%)'})),
+      transition(':enter', animate('100ms ease-in')),
+      transition(':leave', animate('100ms ease-out'))
+    ])
+  ]
 })
 export class CollaboratorsComponent implements OnDestroy, OnInit {
 
