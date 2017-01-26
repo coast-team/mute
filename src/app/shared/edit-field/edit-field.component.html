@@ -13,10 +13,5 @@
     </span>
   </div>
 
-  <md-icon *ngIf="iconSet() && viewState"
-      [@viewState]="'active'"
-      (@viewState.done)="viewStateDone($event)">{{icon}}</md-icon>
-  <md-icon *ngIf="iconSet() && preEditState" color="accent"
-      [@preEditState]="'active'"
-      (@preEditState.done)="preEditStateDone($event)">mode_edit</md-icon>
+  <md-icon *ngIf="iconSet()">{{icon}}</md-icon>
 </div>

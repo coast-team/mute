@@ -5,41 +5,15 @@ import {
   OnInit,
   OnChanges,
   ViewChild,
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
   Input,
   Output } from '@angular/core'
 
 @Component({
   selector: 'mute-edit-field',
   templateUrl: './edit-field.component.html',
-  styleUrls: [ './edit-field.component.scss' ],
-  animations: [
-    trigger('viewState', [
-      state('active', style({transform: 'scale(1)'})),
-      state('void', style({transform: 'scale(0)'})),
-      transition(':enter', animate('100ms ease-in')),
-      transition(':leave', animate('100ms ease-out'))
-    ]),
-    trigger('preEditState', [
-      state('active', style({transform: 'scale(1)'})),
-      state('void', style({transform: 'scale(0)'})),
-      transition(':enter', animate('100ms ease-in')),
-      transition(':leave', animate('100ms ease-out'))
-    ])
-  ]
+  styleUrls: [ './edit-field.component.scss' ]
 })
 export class EditFieldComponent implements OnInit, OnChanges {
-
-  /**
-   * This variable is usefull when the mouse is passing very fast over tag
-   * (less then 100ms, see animations->trigger->transition->animate value), thus
-   * the state does not have enough time to change. In that case we force it to change.
-   */
-  private fastLeave = false
 
   @Input() value: string
   @Input() emptyValue: string
@@ -76,35 +50,16 @@ export class EditFieldComponent implements OnInit, OnChanges {
 
   toggleViewState () {
     if (!this.editState) {
-      this.bottomLine.nativeElement.style.width = 0
-      this.fastLeave = !this.preEditState ? true : false
       this.preEditState = false
+      this.bottomLine.nativeElement.style.width = 0
     }
   }
 
   togglePreEditState () {
-    log.debug('PreEdit')
     if (!this.editState) {
+      this.viewState = false
       this.bottomLine.nativeElement.style.height = '1px'
       this.bottomLine.nativeElement.style.width = '100%'
-      this.viewState = false
-    }
-  }
-
-  viewStateDone (event) {
-    if (event.toState === 'void') {
-      this.preEditState = true
-    }
-  }
-
-  preEditStateDone (event) {
-    if (event.toState === 'void') {
-      this.viewState = true
-    } else if (event.fromState === 'void') {
-      if (this.fastLeave) {
-        this.fastLeave = false
-        this.toggleViewState()
-      }
     }
   }
 
