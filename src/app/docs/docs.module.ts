@@ -18,4 +18,9 @@ import { DocsComponent } from './docs.component'
   ],
   providers: []
 })
-export class DocsModule { }
+export class DocsModule {
+
+  constructor () {
+    log.angular('DocsModule constructor')
+  }
+}
