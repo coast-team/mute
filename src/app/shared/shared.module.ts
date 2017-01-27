@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core'
+import 'hammerjs/hammer'
 import { MaterialModule } from '@angular/material'
 import { CommonModule } from '@angular/common'
 import { FlexLayoutModule } from '@angular/flex-layout'
