@@ -36,6 +36,7 @@ export class DocService {
     private localStorageService: LocalStorageService,
     private network: NetworkService
   ) {
+    log.angular('DocService constructor')
     this.doc = new LogootSRopes()
 
     this.docValueObservable = Observable.create((observer) => {

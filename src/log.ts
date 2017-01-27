@@ -31,6 +31,10 @@ class Log {
     BRAGI.log(group + ':'  + this.getTimestamp(), msg, obj)
   }
 
+  angular (msg: string, obj?: any) {
+    this.info('ANGULAR', msg, obj)
+  }
+
  /**
   * Browser native console.trace. Works in Chrome, but maybe not in other browsers.
   * @param {string} msg   message

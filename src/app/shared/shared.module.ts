@@ -19,4 +19,9 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     EditFieldComponent
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+
+  constructor () {
+    log.angular('SharedModule constructor')
+  }
+}

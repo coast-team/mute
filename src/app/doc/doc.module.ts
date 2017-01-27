@@ -26,4 +26,9 @@ import { EditorService } from './editor/editor.service'
   ],
   providers: [ NetworkService, DocService, EditorService ]
 })
-export class DocModule { }
+export class DocModule {
+
+  constructor () {
+    log.angular('DocModule constructor')
+  }
+}
