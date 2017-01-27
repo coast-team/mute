@@ -1,4 +1,4 @@
-<md-toolbar #toolbarElm fxHide="false" fxHide.gt-md color="primary">
+<md-toolbar #toolbarElm  color="primary">
   <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
     <button md-icon-button (click)="ui.toggleNav()">
       <md-icon>menu</md-icon>
@@ -25,8 +25,6 @@
     </div>
   </div>
 </md-toolbar>
-
-<div fxHide="false" fxHide.gt-md color="primary" class="gap"></div>
 
 <router-outlet></router-outlet>
 

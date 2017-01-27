@@ -1,11 +1,14 @@
 @import '../assets/variables';
 
 :host {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   height: 100%;
 }
 
 md-toolbar {
-
   position: fixed;
   z-index: 9999;
 
@@ -22,16 +25,5 @@ md-toolbar {
   .doc-title {
     font-family: $font-header-regular;
     font-size: 2.4rem;
-  }
-}
-
-.gap {
-  display: block;
-  height: $toolbar-height-md;
-}
-
-@media only screen and (max-width: 960px) {
-  .gap {
-    height: $toolbar-height-sm;
   }
 }
