@@ -7,6 +7,9 @@ declare var System: any
 declare var log: Log
 declare var BRAGI: any
 
+declare var fetch: any
+declare var Headers: any
+
 declare module 'netflux'
 declare module 'random-material-color'
 

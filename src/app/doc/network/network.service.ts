@@ -4,7 +4,7 @@ import { BehaviorSubject, ReplaySubject, Observable, Observer } from 'rxjs/Rx'
 import * as netflux from 'netflux'
 
 import { JoinEvent } from './JoinEvent'
-import { IceServers } from './IceServers'
+import { fetchIceServers } from './xirsysservers'
 import { NetworkMessage } from './NetworkMessage'
 import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
@@ -18,6 +18,7 @@ export class NetworkService {
 
   private key: string
   private webChannel
+  private iceServers: Array<Object>
   private doorOwnerId: number // One of the peer id
 
   private joinObservable: Observable<JoinEvent>
@@ -31,6 +32,7 @@ export class NetworkService {
   private docTitleSubject: BehaviorSubject<string>
 
   constructor (botStorageService: BotStorageService) {
+    log.angular('NetworkService constructor')
     this.botStorageService = botStorageService
     this.doorOwnerId = -1
     this.messageSubject = new ReplaySubject<NetworkMessage>()
@@ -45,17 +47,32 @@ export class NetworkService {
 
     this.initWebChannel()
 
+    // Fetch ice servers
+    fetchIceServers()
+      .then((iceServers) => {
+        this.iceServers = iceServers
+        if (this.webChannel !== undefined) {
+          this.webChannel.settings.iceServers = iceServers
+        }
+      })
     // Leave webChannel before closing tab or browser
-    window.addEventListener('beforeunload', () => this.webChannel.leave())
+    window.addEventListener('beforeunload', () => {
+      if (this.webChannel !== undefined) {
+        this.webChannel.leave()
+      }
+    })
   }
 
   initWebChannel () {
-    this.webChannel = netflux.create({signalingURL: environment.signalingURL})
-
-    const iceServers = new IceServers()
-    iceServers.onConfig = (iceServers) => {
-      this.webChannel.settings.iceServers = iceServers
+    log.info('network', 'initWebChannel')
+    if (this.webChannel !== undefined) {
+      this.webChannel.leave()
     }
+    this.webChannel = netflux.create({signalingURL: environment.signalingURL})
+    if (this.iceServers !== undefined) {
+      this.webChannel.settings.iceServers = this.iceServers
+    }
+
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => {
       if (this.doorOwnerId === this.webChannel.myId) {
