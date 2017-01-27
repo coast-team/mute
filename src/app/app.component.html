@@ -26,6 +26,16 @@
   </div>
 </md-toolbar>
 
-<router-outlet></router-outlet>
+<md-sidenav-container fxFlex>
+
+  <!-- Left Sidenav-->
+  <md-sidenav align="start" mode="side" class="leftsidenav" #leftSidenavElm>
+    <mute-nav></mute-nav>
+  </md-sidenav>
+
+  <!-- Content -->
+  <router-outlet></router-outlet>
+
+</md-sidenav-container>
 
 <mute-dev-label *ngIf="visible"></mute-dev-label>

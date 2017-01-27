@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs/Rx'
 
@@ -17,10 +17,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   private docs: any[]
   private hasDocuments: boolean
 
-  @ViewChild('leftSidenavElm') leftSidenavElm
-
-  public leftVisible = true
-
   constructor (
     private router: Router,
     private storageManagerService: StorageManagerService,
@@ -28,16 +24,6 @@ export class DocsComponent implements OnDestroy, OnInit {
 ) {}
 
   ngOnInit () {
-    this.leftSidenavElm.onClose.subscribe(() => {
-      this.ui.navOpened = false
-      this.leftVisible = true
-    })
-    this.leftSidenavElm.onOpenStart.subscribe(() => {
-      this.leftVisible = false
-    })
-    this.ui.onNavToggle.subscribe((open: boolean) => {
-      this.leftSidenavElm.opened = open
-    })
     this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
       this.docs = docs
       this.hasDocuments = (this.docs.length > 0)

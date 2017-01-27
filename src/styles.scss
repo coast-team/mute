@@ -21,23 +21,6 @@ html {
   }
 
   .md-sidenav-content {
-    display: inline-grid;
-    background-color: $color-bg;
     transition: all .4s cubic-bezier(.25,.8,.25,1);
-  }
-
-  // .md-sidenav-backdrop.md-sidenav-shown {
-  //   height: 100%;
-  // }
-  #toto {
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    flex-direction: column;
-    -webkit-box-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: stretch;
-    align-items: stretch;
-    height: 100%;
   }
 }

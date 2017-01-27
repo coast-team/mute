@@ -16,6 +16,7 @@ import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 export class AppComponent implements OnInit {
 
   @ViewChild('toolbarElm') toolbarElm
+  @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
   public storageName: string
   public innerWidth = window.innerWidth
@@ -30,10 +31,16 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit () {
-    log.debug('Display property = "' + this.toolbarElm.elementRef.nativeElement.style.display + '"')
+    this.leftSidenavElm.onClose.subscribe(() => {
+      this.ui.navOpened = false
+    })
+    this.ui.onNavToggle.subscribe((open: boolean) => {
+      this.leftSidenavElm.opened = open
+    })
     this.storageManager.onStorageService.subscribe((storage: AbstractStorageService) => {
       this.storageName = storage.name
     })
+    this.ui.openNav()
   }
 
   isDoc () {

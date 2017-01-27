@@ -9,8 +9,6 @@
 }
 
 md-toolbar {
-  position: fixed;
-  z-index: 9999;
 
   md-toolbar-row div {
     width: 100%;
@@ -25,5 +23,17 @@ md-toolbar {
   .doc-title {
     font-family: $font-header-regular;
     font-size: 2.4rem;
+  }
+}
+
+md-sidenav-container {
+  background-color: $color-bg !important;
+
+  md-sidenav {
+    min-width: 24rem;
+  }
+
+  h2 {
+    font-family: $font-header-light;
   }
 }

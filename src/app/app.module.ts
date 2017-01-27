@@ -8,15 +8,17 @@ import { DevLabelComponent } from 'dev-label'
 
 /* Modules */
 import { CoreModule } from './core/core.module'
+import { SharedModule } from 'shared'
+import { NavModule } from 'nav'
 import { DocModule } from 'doc'
 import { DocsModule } from 'docs'
-import { SharedModule } from 'shared'
 
 @NgModule({
   imports: [
     BrowserModule,
     CoreModule,
     SharedModule,
+    NavModule,
     DocModule,
     DocsModule,
     AppRoutingModule
