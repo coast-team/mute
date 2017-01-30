@@ -4,9 +4,10 @@
 * CodeMirror style here, because it is not working in the proper Component css.
 */
 .CodeMirror {
-  height: 100%;
   font-family: $font-light, serif;
   font-size: 1.6rem;
+  height: auto;
+  padding: 10px;
 
   .CodeMirror-vscrollbar {
     display: none !important;

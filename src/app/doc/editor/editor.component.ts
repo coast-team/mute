@@ -125,6 +125,10 @@ export class EditorComponent implements OnDestroy, OnInit {
     this.localOperationsSubscription.unsubscribe()
     this.remoteOperationsSubscription.unsubscribe()
   }
+
+  focus () {
+    this.editor.focus()
+  }
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void

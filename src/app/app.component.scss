@@ -10,10 +10,6 @@
 
 md-toolbar {
 
-  md-toolbar-row div {
-    width: 100%;
-  }
-
   h2 {
     margin: 0;
     font-family: $font-header-light;
@@ -31,9 +27,5 @@ md-sidenav-container {
 
   md-sidenav {
     min-width: 24rem;
-  }
-
-  h2 {
-    font-family: $font-header-light;
   }
 }

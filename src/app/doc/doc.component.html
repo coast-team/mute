@@ -1,19 +1,7 @@
-<button md-icon-button *ngIf="leftVisible" class="nav left"
-    fxShow="false"
-    fxShow.gt-md
-    (click)="ui.openNav()">
-  <md-icon color="primary">menu</md-icon>
-</button>
-
-<md-sidenav-container fxFlexFill>
-
-  <!-- Left Sidenav-->
-  <md-sidenav align="start" mode="over" class="leftsidenav" #leftSidenavElm>
-    <mute-nav></mute-nav>
-  </md-sidenav>
+<md-sidenav-container>
 
   <!-- Content -->
-  <mute-editor fxLayout="row" fxLayoutAlign="center stretch"></mute-editor>
+  <mute-editor></mute-editor>
 
   <!-- Right Sidenav-->
   <md-sidenav align="end" mode="side" class="rightsidenav" #rightSidenavElm>
@@ -21,10 +9,3 @@
   </md-sidenav>
 
 </md-sidenav-container>
-
-<button md-icon-button *ngIf="rightVisible" class="nav right"
-    fxShow="false"
-    fxShow.gt-md
-    (click)="ui.openDocNav()">
-  <md-icon color="primary">menu</md-icon>
-</button>

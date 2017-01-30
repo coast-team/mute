@@ -13,11 +13,8 @@ import { UiService } from 'core/ui/ui.service'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
-  @ViewChild('leftSidenavElm') leftSidenavElm
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited: boolean = false
-  public leftVisible = true
-  public rightVisible = true
 
   constructor (
     private route: ActivatedRoute,
@@ -26,16 +23,6 @@ export class DocComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit () {
-    this.leftSidenavElm.onClose.subscribe(() => {
-      this.ui.navOpened = false
-      this.leftVisible = true
-    })
-    this.leftSidenavElm.onOpenStart.subscribe(() => {
-      this.leftVisible = false
-    })
-    this.ui.onNavToggle.subscribe((open: boolean) => {
-      this.leftSidenavElm.opened = open
-    })
     this.route.params.subscribe((params: Params) => {
       const key = params['key'] // (+) converts string 'id' to a number
       if (this.inited) {
@@ -46,18 +33,11 @@ export class DocComponent implements OnDestroy, OnInit {
       this.network.join(key)
       this.inited = true
     })
-    this.rightSidenavElm.onOpenStart.subscribe(() => {
-      this.rightVisible = false
-    })
-    this.rightSidenavElm.onClose.subscribe(() => {
-      this.rightVisible = true
-    })
     this.ui.onDocNavToggle.subscribe((open: boolean) => {
       this.rightSidenavElm.opened = open
     })
     if (this.ui.navOpened) {
       this.ui.closeNav()
-      this.leftVisible = true
     }
     this.ui.openDocNav()
   }

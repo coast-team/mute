@@ -2,14 +2,9 @@
 @import '../../../assets/variables';
 
 md-card {
-  margin: 20px 0 40px 0;
-  max-width: 760px;
-
-  mute-edit-field {
-    text-align: center;
-    color: md-color($primary);
-    font-family: $font-header-light;
-    font-size: 3rem;
-  }
+  height: auto;
+  margin: 1.5% auto;
+  min-height: 94%;
+  cursor: text;
 }
 
