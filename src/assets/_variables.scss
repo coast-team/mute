@@ -4,8 +4,8 @@
 }
 
 @font-face {
-    font-family: DroidSerif;
-    src: url(assets/font/Droid_Serif/DroidSerif.ttf);
+    font-family: Lato;
+    src: url(assets/font/Lato/Lato-Regular.ttf);
 }
 
 @font-face {
@@ -13,11 +13,15 @@
     src: url(assets/font/Cinzel_Decorative/CinzelDecorative-Regular.ttf);
 }
 
+// Document body
 $font-light: DroidSans, sans-serif;
 $font-regular: DroidSans, sans-serif;
 $font-medium: DroidSans, sans-serif;
-$font-header-light: DroidSerif, serif;
-$font-header-regular: DroidSerif, serif;
+
+// Headers
+$font-header: Lato, serif;
+
+// Logo
 $font-logo: CinzelDecorative-Regular, serif;
 
 $color-bg: #ECEFF1;
