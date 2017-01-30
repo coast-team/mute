@@ -55,6 +55,9 @@ export class NetworkService {
           this.webChannel.settings.iceServers = iceServers
         }
       })
+      .catch((err) => {
+        log.warn('Could not fetch XirSys ice servers', err)
+      })
     // Leave webChannel before closing tab or browser
     window.addEventListener('beforeunload', () => {
       if (this.webChannel !== undefined) {
@@ -64,7 +67,6 @@ export class NetworkService {
   }
 
   initWebChannel () {
-    log.info('network', 'initWebChannel')
     if (this.webChannel !== undefined) {
       this.webChannel.leave()
     }

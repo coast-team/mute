@@ -5,7 +5,11 @@ export function fetchIceServers () {
       method: 'GET',
     })
     .then((response) => response.json())
-    .then((iceServers) => {
+    .then((responseObj) => {
+      if (!('d' in responseObj) || !('iceServers' in responseObj.d)) {
+        throw new Error('Unknown object syntax while fetching ice servers from XirSys')
+      }
+      const iceServers = responseObj.d.iceServers
       for (let opt of iceServers) {
         if ('url' in opt) {
           opt.urls = opt.url
