@@ -33,8 +33,10 @@ export class EditFieldComponent implements OnInit, OnChanges {
   ngOnInit () {
     this.editableElm.nativeElement.textContent = this.value
     if (this.autofocus && this.value === this.emptyValue) {
-      this.edit()
-      this.autofocus = false
+      setTimeout(() => {
+        this.edit()
+        this.autofocus = false
+      }, 1000)
     }
   }
 

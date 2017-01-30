@@ -32,7 +32,6 @@ export class UiService {
   }
 
   toggleNav (): void {
-    log.debug('UI nav toggle from ' + this.navOpened)
     this.navOpened = !this.navOpened
     this.navToggleSubject.next(this.navOpened)
   }

@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@ang
 import { Subscription } from 'rxjs'
 
 import { NetworkService } from 'doc/network'
-import { DocService } from 'doc/doc.service'
 import { UiService } from 'core/ui/ui.service'
 import { ProfileService } from 'core/profile/profile.service'
 
@@ -24,7 +23,6 @@ export class RightSideComponent implements OnDestroy, OnInit {
 
   constructor (
     private networkService: NetworkService,
-    private docService: DocService,
     private changeDetectorRef: ChangeDetectorRef,
     public ui: UiService,
     public profile: ProfileService
@@ -48,23 +46,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
     this.onDocTitleSubscription.unsubscribe()
   }
 
-  // toggleSidenav () {
-  //   this.sidenavElm.toggle()
-  //     .then(() => {
-  //       this.menuIcon = this.sidenavElm.opened ? 'arrow_forward' : 'arrow_back'
-  //     })
-  // }
-
-  updatePseudo (pseudo: string) {
-    this.profile.pseudonym = pseudo
-  }
-
   toggleDoor () {
     this.networkService.openDoor(!this.doorOpened)
-  }
-
-  updateTitle (event) {
-    this.docService.setTitle(event.target.value)
   }
 
 }

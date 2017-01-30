@@ -1,15 +1,3 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
-
-  <header fxLayout="row" fxLayoutAlign="end center" fxShow="false" fxShow.gt-md>
-    <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
-        icon="face"
-        [value]="profile.onPseudonym | async"
-        [emptyValue]="profile.pseudonymDefault"
-        (onDone)="updatePseudo($event)">
-    </mute-edit-field>
-    <button md-icon-button (click)="ui.closeDocNav()">
-      <md-icon color="primary">menu</md-icon>
-    </button>
-  </header>
   <mute-collaborators fxFlex></mute-collaborators>
 </div>
