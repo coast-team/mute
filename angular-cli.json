@@ -30,7 +30,8 @@
         "source": "environments/environment.ts",
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
-        "demo": "environments/environment.demo.ts"
+        "demo": "environments/environment.demo.ts",
+        "ghpages": "environments/environment.ghpages.ts"
       }
     }
   ],
