@@ -9,13 +9,23 @@ export function fetchIceServers () {
       if (!('d' in responseObj) || !('iceServers' in responseObj.d)) {
         throw new Error('Unknown object syntax while fetching ice servers from XirSys')
       }
-      const iceServers = responseObj.d.iceServers
-      for (let opt of iceServers) {
+      const xirSysIceServers = responseObj.d.iceServers
+      let resultIceServers: Array<Object> = []
+      let turnNb = 0
+      for (let opt of xirSysIceServers) {
         if ('url' in opt) {
           opt.urls = opt.url
           delete opt.url
         }
+        if (opt.urls.startsWith('turn')) {
+          turnNb++
+          if (turnNb <= 2) {
+            resultIceServers.push(opt)
+          }
+        } else {
+          resultIceServers.push(opt)
+        }
       }
-      return iceServers
+      return resultIceServers
     })
 }
