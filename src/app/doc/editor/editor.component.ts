@@ -1,4 +1,4 @@
-import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, Injectable, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 // FIXME: Find a proper way to import the mode's files
@@ -7,7 +7,7 @@ require('codemirror/mode/javascript/javascript')
 import { TextDelete, TextInsert }  from 'mute-structs'
 
 import { EditorService } from './editor.service'
-import { DocService } from 'doc/doc.service'
+import { DocService } from 'mute-core'
 import { CursorService } from './cursor/cursor.service'
 
 @Component({
@@ -30,13 +30,13 @@ export class EditorComponent implements OnDestroy, OnInit {
   private remoteOperationsSubscription: Subscription
   private localOperationsSubscription: Subscription
 
+  @Input() docService: DocService
   @ViewChild('editorElt') editorElt
 
   public innerWidth = window.innerWidth
 
   constructor (
     private editorService: EditorService,
-    private docService: DocService,
     private cursorService: CursorService
   ) {}
 
