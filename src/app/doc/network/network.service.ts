@@ -258,9 +258,9 @@ export class NetworkService {
     this.key = key
     // This is for demo to work out of the box.
     // FIXME: change after 8 of December (demo)
-    return this.webChannel.open({key})
+    return this.webChannel.join(key)
       .then(() => {
-        log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
+        log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
         this.setDoor(true, this.webChannel.myId)
         this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
           observer.next(new JoinEvent(this.webChannel.myId, key, true))
@@ -270,18 +270,7 @@ export class NetworkService {
         }
       })
       .catch((reason) => {
-        log.warn('Could not open a door with the signaling: '
-          + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
-        return this.webChannel.join(key)
-          .then(() => {
-            log.info('network', `Joined via the signaling: ${this.webChannel.settings.signalingURL}`)
-            this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
-              observer.next(new JoinEvent(this.webChannel.myId, key, false))
-            })
-          })
-          .catch((reason) => {
-            log.error('network', `Could not join via the signaling: ${this.webChannel.settings.signalingURL}: ${reason}`)
-          })
+        log.error(`Could not join via ${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
       })
   }
 
