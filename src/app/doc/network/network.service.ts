@@ -3,12 +3,12 @@ import { Injectable } from '@angular/core'
 import { ReplaySubject, Subject, Observable } from 'rxjs/Rx'
 import { create } from 'netflux'
 
-import { JoinEvent } from './JoinEvent'
 import { fetchIceServers } from './xirsysservers'
-import { NetworkMessage } from './NetworkMessage'
 import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
+
+import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 @Injectable()
 export class NetworkService {
@@ -91,6 +91,25 @@ export class NetworkService {
     }
   }
 
+  set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
+    source.subscribe((broadcastMessage: BroadcastMessage) => {
+      this.send(broadcastMessage.service, broadcastMessage.content)
+    })
+  }
+
+  set messageToSendRandomlySource (source: Observable<SendRandomlyMessage>) {
+    source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
+      const index: number = Math.ceil(Math.random() * this.members.length) - 1
+      const id: number = this.members[index]
+      this.send(sendRandomlyMessage.service, sendRandomlyMessage.content, id)
+    })
+  }
+
+  set messageToSendToSource (source: Observable<SendToMessage>) {
+    source.subscribe((sendToMessage: SendToMessage) => {
+      this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
+    })
+  }
 
   get myId (): number {
     return this.webChannel.myId
