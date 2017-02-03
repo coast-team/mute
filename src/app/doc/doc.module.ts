@@ -4,14 +4,10 @@ import { RouterModule } from '@angular/router'
 
 import { RightSideModule } from './right-side'
 import { SharedModule } from 'shared'
-import { DocService } from './doc.service'
 import { DocComponent } from './doc.component'
-import { NetworkService } from './network/network.service'
 import { EditorComponent } from './editor/editor.component'
 import { EditorService } from './editor/editor.service'
-import { SyncService } from './sync/sync.service'
-import { SyncMessageService } from './sync/sync-message.service'
-import { SyncStorageService } from './sync/sync-storage.service'
+import { NetworkService } from './network/network.service'
 
 @NgModule({
   declarations: [
@@ -25,26 +21,12 @@ import { SyncStorageService } from './sync/sync-storage.service'
       {path: 'doc/:key', component: DocComponent}
     ])
   ],
-  providers: [
-    DocService,
-    EditorService,
-    NetworkService,
-    SyncMessageService,
-    SyncService,
-    SyncStorageService
-  ]
+  providers: [ EditorService, NetworkService ]
 })
 export class DocModule {
-  constructor (
-    docService: DocService,
-    editorService: EditorService,
-    networkService: NetworkService,
-    syncMessageService: SyncMessageService,
-    syncService: SyncService,
-    syncStorageService: SyncStorageService
-  ) {
+  constructor () {
     log.angular('DocModule constructed')
-
+    /*
     docService.localTextOperationsSource = editorService.onLocalTextOperations
     docService.remoteLogootSOperationSource = syncService.onRemoteLogootSOperation
     docService.joinSource = networkService.onJoin
@@ -63,5 +45,6 @@ export class DocModule {
 
     syncStorageService.joinSource = networkService.onJoin
     syncStorageService.stateSource = syncService.onState
+    */
   }
 }

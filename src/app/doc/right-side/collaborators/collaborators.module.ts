@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 
 import { CollaboratorsComponent } from './collaborators.component'
-import { CollaboratorsService } from './collaborators.service'
 import { SharedModule } from 'shared'
 
 @NgModule({
@@ -14,6 +13,6 @@ import { SharedModule } from 'shared'
     SharedModule
   ],
   exports: [ CollaboratorsComponent ],
-  providers: [ CollaboratorsService ]
+  providers: []
 })
 export class CollaboratorsModule { }
