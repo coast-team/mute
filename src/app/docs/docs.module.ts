@@ -19,6 +19,6 @@ import { DocsComponent } from './docs.component'
 export class DocsModule {
 
   constructor () {
-    log.angular('DocsModule constructor')
+    log.angular('DocsModule constructed')
   }
 }

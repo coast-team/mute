@@ -1,25 +1,7 @@
 syntax = "proto3";
 
 message Message {
-  oneof type {
-    Door door = 1;
-    Doc doc = 2;
-    Newmessage msg = 3;
-  }
-}
-
-message Newmessage {
   string service = 1;
   bytes content = 2;
 }
 
-message Door {
-  string key = 1;
-  bool opened = 2;
-  bool intentionally = 3;
-  bool mustClose = 4;
-}
-
-message Doc {
-  string title = 1;
-}

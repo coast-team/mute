@@ -9,7 +9,7 @@ import {
   TextDelete
 } from 'mute-structs'
 
-import { JoinEvent, NetworkService } from 'doc/network'
+import { JoinEvent } from 'doc/network'
 
 @Injectable()
 export class DocService {
@@ -30,10 +30,8 @@ export class DocService {
   private localOperationsSubscription: Subscription
   private messageSubscription: Subscription
 
-  constructor (
-    private network: NetworkService
-  ) {
-    log.angular('DocService constructor')
+  constructor () {
+    log.angular('DocService constructed')
     this.doc = new LogootSRopes()
 
     this.docValueObservable = Observable.create((observer) => {
@@ -126,8 +124,7 @@ export class DocService {
     return this.doc.searchPos(id, new Array())
   }
 
-  setTitle (title: string): void {
-    log.debug('Sending title: ' + title)
-    this.network.sendDocTitle(title)
+  setTitle (): void {
+    // TODO: Implement this
   }
 }

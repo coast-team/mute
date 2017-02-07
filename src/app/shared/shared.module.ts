@@ -23,6 +23,6 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
 export class SharedModule {
 
   constructor () {
-    log.angular('SharedModule constructor')
+    log.angular('SharedModule constructed')
   }
 }

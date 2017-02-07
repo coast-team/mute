@@ -46,7 +46,7 @@ export class SyncMessageService extends ServiceIdentifier {
   set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
       const msg = this.generateRichLogootSOpMsg(richLogootSOp)
-      this.network.newSend(this.id, msg.serializeBinary())
+      this.network.send(this.id, msg.serializeBinary())
     })
   }
 
@@ -74,7 +74,7 @@ export class SyncMessageService extends ServiceIdentifier {
     source.subscribe((vector: Map<number, number>) => {
       const msg = this.generateQuerySyncMsg(vector)
       const peerId: number = this.network.members[0]
-      this.network.newSend(this.id, msg.serializeBinary(), peerId)
+      this.network.send(this.id, msg.serializeBinary(), peerId)
     })
   }
 
@@ -87,7 +87,7 @@ export class SyncMessageService extends ServiceIdentifier {
       })
       .subscribe(({ id, replySyncEvent}: { id: number, replySyncEvent: ReplySyncEvent }) => {
         const msg = this.generateReplySyncMsg(replySyncEvent.richLogootSOps, replySyncEvent.intervals)
-        this.network.newSend(this.id, msg.serializeBinary(), id)
+        this.network.send(this.id, msg.serializeBinary(), id)
       })
   }
 

@@ -25,6 +25,6 @@ import { UiService } from './ui/ui.service'
 })
 export class CoreModule {
   constructor () {
-    log.angular('CoreModule constructor')
+    log.angular('CoreModule constructed')
   }
 }

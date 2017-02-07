@@ -9,7 +9,7 @@ export class EditorService {
   private localTextOperationsObservers: Observer<(TextInsert | TextDelete)[][]>[] = []
 
   constructor () {
-    log.angular('EditorService constructor')
+    log.angular('EditorService constructed')
     this.localTextOperationsObservable = Observable.create((observer) => {
       this.localTextOperationsObservers.push(observer)
     })

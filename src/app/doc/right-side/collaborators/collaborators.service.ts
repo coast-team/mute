@@ -77,7 +77,7 @@ export class CollaboratorsService extends ServiceIdentifier {
   emitPseudo (pseudo: string, id?: number) {
     const collabMsg = new pb.Collaborator()
     collabMsg.setPseudo(pseudo)
-    this.network.newSend(this.id, collabMsg.serializeBinary(), id)
+    this.network.send(this.id, collabMsg.serializeBinary(), id)
   }
 
   getCollaboratorById (id: number): Collaborator | null {

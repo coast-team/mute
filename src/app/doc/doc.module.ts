@@ -41,8 +41,9 @@ export class DocModule {
     networkService: NetworkService,
     syncMessageService: SyncMessageService,
     syncService: SyncService,
-    syncStorageService: SyncStorageService) {
-    log.angular('DocModule constructor')
+    syncStorageService: SyncStorageService
+  ) {
+    log.angular('DocModule constructed')
 
     docService.localTextOperationsSource = editorService.onLocalTextOperations
     docService.remoteLogootSOperationSource = syncService.onRemoteLogootSOperation

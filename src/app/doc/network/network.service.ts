@@ -13,36 +13,41 @@ const pb = require('./message_pb.js')
 @Injectable()
 export class NetworkService {
 
-  private botStorageService: BotStorageService
-
-  private key: string
   private webChannel
-  private iceServers: Array<Object>
-  private doorOwnerId: number // One of the peer id
+  private key: string
+  private iceServers: Array<RTCIceServer>
 
+  // Subjects related to the current peer
   private joinObservable: Observable<JoinEvent>
   private joinObservers: Observer<JoinEvent>[] = []
   private leaveSubject: BehaviorSubject<number>
+  private doorSubject: BehaviorSubject<boolean>
+
+  // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
+
+  /**
+   * Peer Join/Leave subjects
+   */
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
-  private peerSelectionSubject: BehaviorSubject<number>
-  private doorSubject: BehaviorSubject<boolean>
-  private docTitleSubject: BehaviorSubject<string>
 
-  constructor (botStorageService: BotStorageService) {
-    log.angular('NetworkService constructor')
-    this.botStorageService = botStorageService
-    this.doorOwnerId = -1
-    this.messageSubject = new ReplaySubject<NetworkMessage>()
+  constructor (
+    private botStorageService: BotStorageService
+  ) {
+    log.angular('NetworkService constructed')
+
+    // Initialize subjects
     this.joinObservable = Observable.create((observer) => {
       this.joinObservers.push(observer)
     })
+    this.doorSubject = new BehaviorSubject<boolean>(true)
     this.leaveSubject = new BehaviorSubject<number>(-1)
+
+    this.messageSubject = new ReplaySubject<NetworkMessage>()
+
     this.peerJoinSubject = new ReplaySubject<number>()
     this.peerLeaveSubject = new ReplaySubject<number>()
-    this.doorSubject = new BehaviorSubject<boolean>(true)
-    this.docTitleSubject = new BehaviorSubject<string>('Untitled document')
 
     this.initWebChannel()
 
@@ -51,12 +56,14 @@ export class NetworkService {
       .then((iceServers) => {
         this.iceServers = iceServers
         if (this.webChannel !== undefined) {
+          log.debug('ICE servers: ', iceServers)
           this.webChannel.settings.iceServers = iceServers
         }
       })
       .catch((err) => {
         log.warn('Could not fetch XirSys ice servers', err)
       })
+
     // Leave webChannel before closing tab or browser
     window.addEventListener('beforeunload', () => {
       if (this.webChannel !== undefined) {
@@ -65,7 +72,7 @@ export class NetworkService {
     })
   }
 
-  initWebChannel () {
+  initWebChannel (): void {
     if (this.webChannel !== undefined) {
       this.webChannel.leave()
     }
@@ -75,117 +82,22 @@ export class NetworkService {
     }
 
     // Peer JOIN event
-    this.webChannel.onPeerJoin = (id) => {
-      if (this.doorOwnerId === this.webChannel.myId) {
-        this.sendDoor(true, true, null, id)
-      }
-      this.peerJoinSubject.next(id)
-    }
+    this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
 
     // Peer LEAVE event
-    this.webChannel.onPeerLeave = (id) => {
-      if (this.doorOwnerId === id) {
-        this.setDoor(false)
-      }
-      this.peerLeaveSubject.next(id)
-    }
+    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
 
     // On door closed
-    this.webChannel.onClose = () => this.setDoor(false)
+    this.webChannel.onClose = () => this.doorSubject.next(false)
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
-      let msg = pb.Message.deserializeBinary(bytes)
-      switch (msg.getTypeCase()) {
-      case pb.Message.TypeCase.MSG:
-        let newMsg = msg.getMsg()
-        let service  = newMsg.getService()
-        let content = newMsg.getContent()
-        this.messageSubject.next(new NetworkMessage(service, id, isBroadcast, content))
-        break
-      case pb.Message.TypeCase.DOOR:
-        let door = msg.getDoor()
-        if (door.getMustclose() !== null && door.getMustclose()) {
-          this.openDoor(false)
-        } else {
-          if (!door.getOpened()) {
-            if (!door.getIntentionally()) {
-              // Reopen door or not
-            } else {
-              this.setDoor(false)
-            }
-          } else {
-            this.setDoor(true, id)
-          }
-        }
-        break
-      case pb.Message.TypeCase.DOC:
-        log.debug('Doc title received: ' + msg.getDoc().getTitle())
-        this.docTitleSubject.next(msg.getDoc().getTitle())
-        break
-      case pb.Message.TypeCase.TYPE_NOT_SET:
-        log.error('network', 'Protobuf: message type not set')
-        break
-      }
+      const msg = pb.Message.deserializeBinary(bytes)
+      const networkMessage = new NetworkMessage(msg.getService(), id, isBroadcast, msg.getContent())
+      this.messageSubject.next(networkMessage)
     }
   }
 
-  cleanWebChannel (): void {
-    this.webChannel.close()
-    this.webChannel.leave()
-    this.leaveSubject.next(-1)
-  }
-
-  newSend (service: string, content: ArrayBuffer, id?: number) {
-    let msg = new pb.Message()
-    let newmsg = new pb.Newmessage()
-    newmsg.setService(service)
-    newmsg.setContent(content)
-    msg.setMsg(newmsg)
-    if (id) {
-      this.webChannel.sendTo(id, msg.serializeBinary())
-    } else {
-      this.webChannel.send(msg.serializeBinary())
-    }
-  }
-
-  getDoor (): number {
-    return this.doorOwnerId
-  }
-
-  setDoor (opened: boolean, id: number = -1): void {
-    this.doorOwnerId = id
-    this.doorSubject.next(opened)
-  }
-
-  openDoor (open: boolean) {
-    if (open) {
-      // Opening door only if it closed
-      if (!this.webChannel.isOpen()) {
-        this.webChannel.open({key: this.key})
-          .then(() => {
-            log.info('network', `Opened a door with the signaling: ${this.webChannel.settings.signalingURL}`)
-            this.setDoor(true, this.webChannel.myId)
-            this.sendDoor(true, true, null)
-          })
-          .catch((reason) => {
-            log.warn('Could not open a door with the signaling: '
-              + `${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
-          })
-      }
-    } else {
-      // Closing door
-      if (this.doorOwnerId !== -1) {
-        if (this.doorOwnerId === this.webChannel.myId) {
-          log.debug('I\'m closing door')
-          this.webChannel.close()
-          this.sendDoor(false, true, null)
-        } else {
-          this.sendDoor(null, null, true, this.doorOwnerId)
-        }
-      }
-    }
-  }
 
   get myId (): number {
     return this.webChannel.myId
@@ -203,66 +115,34 @@ export class NetworkService {
     return this.joinObservable
   }
 
-  get onLeave () {
+  get onLeave (): Observable<number> {
     return this.leaveSubject.asObservable()
   }
 
-  get onPeerJoin () {
+  get onPeerJoin (): Observable<number> {
     return this.peerJoinSubject.asObservable()
   }
 
-  get onPeerLeave () {
+  get onPeerLeave (): Observable<number> {
     return this.peerLeaveSubject.asObservable()
-  }
-
-  get onPeerSelection () {
-    return this.peerSelectionSubject.asObservable()
   }
 
   get onDoor (): Observable<boolean> {
     return this.doorSubject.asObservable()
   }
 
-  get onDocTitle (): Observable<string> {
-    return this.docTitleSubject.asObservable()
+  cleanWebChannel (): void {
+    this.webChannel.close()
+    this.webChannel.leave()
+    this.leaveSubject.next(-1)
   }
 
-  sendDocTitle (title: string): void {
-    let docMsg = new pb.Doc()
-    docMsg.setTitle(title)
-    let msg = new pb.Message()
-    msg.setDoc(docMsg)
-    this.webChannel.send(msg.serializeBinary())
-  }
-
-  sendDoor (opened, intentionally, mustClose, id?: number) {
-    let doorMsg = new pb.Door()
-    if (mustClose === null) {
-      if (opened) {
-        doorMsg.setKey(this.key)
-      }
-      doorMsg.setOpened(opened)
-      doorMsg.setIntentionally(intentionally)
-    } else {
-      doorMsg.setMustclose(mustClose)
-    }
-    let msg = new pb.Message()
-    msg.setDoor(doorMsg)
-    if (id) {
-      this.webChannel.sendTo(id, msg.serializeBinary())
-    } else {
-      this.webChannel.send(msg.serializeBinary())
-    }
-  }
-
-  join (key) {
+  join (key): Promise<void> {
     this.key = key
-    // This is for demo to work out of the box.
-    // FIXME: change after 8 of December (demo)
     return this.webChannel.join(key)
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
-        this.setDoor(true, this.webChannel.myId)
+        this.doorSubject.next(true)
         this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
           observer.next(new JoinEvent(this.webChannel.myId, key, true))
         })
@@ -271,15 +151,50 @@ export class NetworkService {
         }
       })
       .catch((reason) => {
-        log.error(`Could not join via ${this.webChannel.settings.signalingURL}: ${reason}`, this.webChannel)
+        log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
       })
   }
 
-  send (message: string) {
-    this.webChannel(message)
+
+  inviteBot (url: string): void {
+    this.webChannel.invite(`ws://${url}`)
   }
 
-  inviteBot (url: string) {
-    this.webChannel.invite(`ws://${url}`)
+  send (service: string, content: ArrayBuffer): void
+
+  send (service: string, content: ArrayBuffer, id: number|undefined): void
+
+  send (service: string, content: ArrayBuffer, id?: number|undefined): void {
+    const msg = new pb.Message()
+    msg.setService(service)
+    msg.setContent(content)
+    if (id === undefined) {
+      this.webChannel.send(msg.serializeBinary())
+    } else {
+      this.webChannel.sendTo(id, msg.serializeBinary())
+    }
+  }
+
+  /**
+   * Open the door with signaling server if it is closed, otherwise do nothing.
+   */
+  openDoor (key: string): Promise<void> {
+    if (!this.webChannel.isOpen()) {
+      return this.webChannel().open(key)
+        .then(() => {
+          this.doorSubject.next(true)
+        })
+    }
+    return Promise.resolve()
+  }
+
+  /**
+   * Close the door with signaling server if it is opened, otherwise do nothing.
+   */
+  closeDoor (): void {
+    if (this.webChannel.isOpen()) {
+      this.webChannel.close()
+      this.doorSubject.next(false)
+    }
   }
 }
