@@ -4,6 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { ProfileService } from 'core/profile/profile.service'
 import { EditorService } from 'doc/editor/editor.service'
 import { NetworkService } from 'doc/network'
+import { RichCollaboratorsService } from 'doc/rich-collaborators'
 import { UiService } from 'core/ui/ui.service'
 
 import { MuteCore } from 'mute-core'
@@ -12,7 +13,7 @@ import { MuteCore } from 'mute-core'
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
-  providers: [ ]
+  providers: [ RichCollaboratorsService ]
 })
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
@@ -23,6 +24,7 @@ export class DocComponent implements OnDestroy, OnInit {
   private muteCore: MuteCore
 
   constructor (
+    private richCollaboratorsService: RichCollaboratorsService,
     private profile: ProfileService,
     private route: ActivatedRoute,
     private editor: EditorService,
@@ -50,6 +52,7 @@ export class DocComponent implements OnDestroy, OnInit {
       this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
       this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
       this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
+      this.richCollaboratorsService.collaboratorsSource = this.muteCore.collaboratorsService.collaborators
 
       this.network.join(key)
       this.inited = true
