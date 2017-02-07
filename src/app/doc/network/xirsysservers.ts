@@ -37,7 +37,6 @@ export function fetchIceServers (): Promise<Array<RTCIceServer>> {
           iceServers.push(opt)
         }
       }
-      log.debug('All: ', iceServers)
       return iceServers
     })
 }

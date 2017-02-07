@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, ReplaySubject, Observable, Observer } from 'rxjs/Rx'
+import { ReplaySubject, Subject, Observable } from 'rxjs/Rx'
 import { create } from 'netflux'
 
 import { JoinEvent } from './JoinEvent'
@@ -18,10 +18,9 @@ export class NetworkService {
   private iceServers: Array<RTCIceServer>
 
   // Subjects related to the current peer
-  private joinObservable: Observable<JoinEvent>
-  private joinObservers: Observer<JoinEvent>[] = []
-  private leaveSubject: BehaviorSubject<number>
-  private doorSubject: BehaviorSubject<boolean>
+  private joinSubject: Subject<JoinEvent>
+  private leaveSubject: Subject<number>
+  private doorSubject: Subject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -38,25 +37,22 @@ export class NetworkService {
     log.angular('NetworkService constructed')
 
     // Initialize subjects
-    this.joinObservable = Observable.create((observer) => {
-      this.joinObservers.push(observer)
-    })
-    this.doorSubject = new BehaviorSubject<boolean>(true)
-    this.leaveSubject = new BehaviorSubject<number>(-1)
+    this.joinSubject = new Subject()
+    this.leaveSubject = new Subject()
+    this.doorSubject = new Subject()
 
-    this.messageSubject = new ReplaySubject<NetworkMessage>()
+    this.messageSubject = new ReplaySubject()
 
-    this.peerJoinSubject = new ReplaySubject<number>()
-    this.peerLeaveSubject = new ReplaySubject<number>()
+    this.peerJoinSubject = new ReplaySubject()
+    this.peerLeaveSubject = new ReplaySubject()
 
-    this.initWebChannel()
+    // this.initWebChannel()
 
     // Fetch ice servers
     fetchIceServers()
       .then((iceServers) => {
         this.iceServers = iceServers
         if (this.webChannel !== undefined) {
-          log.debug('ICE servers: ', iceServers)
           this.webChannel.settings.iceServers = iceServers
         }
       })
@@ -73,9 +69,6 @@ export class NetworkService {
   }
 
   initWebChannel (): void {
-    if (this.webChannel !== undefined) {
-      this.webChannel.leave()
-    }
     this.webChannel = create({signalingURL: environment.signalingURL})
     if (this.iceServers !== undefined) {
       this.webChannel.settings.iceServers = this.iceServers
@@ -112,7 +105,7 @@ export class NetworkService {
   }
 
   get onJoin (): Observable<JoinEvent> {
-    return this.joinObservable
+    return this.joinSubject.asObservable()
   }
 
   get onLeave (): Observable<number> {
@@ -132,9 +125,11 @@ export class NetworkService {
   }
 
   cleanWebChannel (): void {
-    this.webChannel.close()
-    this.webChannel.leave()
-    this.leaveSubject.next(-1)
+    if (this.webChannel !== undefined) {
+      this.webChannel.close()
+      this.webChannel.leave()
+      this.leaveSubject.next()
+    }
   }
 
   join (key): Promise<void> {
@@ -143,9 +138,8 @@ export class NetworkService {
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
         this.doorSubject.next(true)
-        this.joinObservers.forEach((observer: Observer<JoinEvent>) => {
-          observer.next(new JoinEvent(this.webChannel.myId, key, true))
-        })
+        const created = this.members.length === 0
+        this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
         if (key === this.botStorageService.currentBot.key) {
           this.inviteBot(this.botStorageService.currentBot.url)
         }

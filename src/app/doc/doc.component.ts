@@ -14,7 +14,7 @@ import { UiService } from 'core/ui/ui.service'
 export class DocComponent implements OnDestroy, OnInit {
 
   @ViewChild('rightSidenavElm') rightSidenavElm
-  private inited: boolean = false
+  private inited = false
 
   constructor (
     private route: ActivatedRoute,
@@ -24,6 +24,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
   ngOnInit () {
     this.route.params.subscribe((params: Params) => {
+      log.angular('DocComponent init')
       const key = params['key'] // (+) converts string 'id' to a number
       if (this.inited) {
         // Need to clean the services before
@@ -43,6 +44,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy () {
+    log.angular('DocComponent destroyed')
     this.network.cleanWebChannel()
   }
 
