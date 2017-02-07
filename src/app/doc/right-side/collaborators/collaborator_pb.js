@@ -107,35 +107,25 @@ proto.Collaborator.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.Collaborator} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.Collaborator.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.Collaborator.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.Collaborator.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.Collaborator} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.Collaborator.prototype.serializeBinaryToWriter = function (writer) {
+proto.Collaborator.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getPseudo();
+  f = message.getPseudo();
   if (f.length > 0) {
     writer.writeString(
       1,

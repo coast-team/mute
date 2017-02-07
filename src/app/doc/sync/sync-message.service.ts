@@ -6,11 +6,11 @@ import { Interval } from './Interval'
 import { NetworkMessage, NetworkService } from 'doc/network'
 import { ReplySyncEvent } from './ReplySyncEvent'
 import { RichLogootSOperation } from './RichLogootSOperation'
-
+import { ServiceIdentifier } from 'helper/ServiceIdentifier'
 const pb = require('./sync_pb.js')
 
 @Injectable()
-export class SyncMessageService {
+export class SyncMessageService extends ServiceIdentifier {
 
   private remoteQuerySyncObservable: Observable<Map<number, number>>
   private remoteQuerySyncObservers: Observer<Map<number, number>>[] = []
@@ -25,6 +25,7 @@ export class SyncMessageService {
   private remoteReplySyncObservers: Observer<ReplySyncEvent>[] = []
 
   constructor (private network: NetworkService) {
+    super('SyncMessage')
     this.remoteQuerySyncObservable = Observable.create((observer) => {
       this.remoteQuerySyncObservers.push(observer)
     })
@@ -45,13 +46,13 @@ export class SyncMessageService {
   set localRichLogootSOperationSource (source: Observable<RichLogootSOperation>) {
     source.subscribe((richLogootSOp: RichLogootSOperation) => {
       const msg = this.generateRichLogootSOpMsg(richLogootSOp)
-      this.network.newSend(this.constructor.name, msg.serializeBinary())
+      this.network.newSend(this.id, msg.serializeBinary())
     })
   }
 
   set messageSource (source: Observable<NetworkMessage>) {
     source
-    .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
+    .filter((msg: NetworkMessage) => msg.service === this.id)
     .subscribe((msg: NetworkMessage) => {
       const content = new pb.Sync.deserializeBinary(msg.content)
       switch (content.getTypeCase()) {
@@ -73,7 +74,7 @@ export class SyncMessageService {
     source.subscribe((vector: Map<number, number>) => {
       const msg = this.generateQuerySyncMsg(vector)
       const peerId: number = this.network.members[0]
-      this.network.newSend(this.constructor.name, msg.serializeBinary(), peerId)
+      this.network.newSend(this.id, msg.serializeBinary(), peerId)
     })
   }
 
@@ -86,7 +87,7 @@ export class SyncMessageService {
       })
       .subscribe(({ id, replySyncEvent}: { id: number, replySyncEvent: ReplySyncEvent }) => {
         const msg = this.generateReplySyncMsg(replySyncEvent.richLogootSOps, replySyncEvent.intervals)
-        this.network.newSend(this.constructor.name, msg.serializeBinary(), id)
+        this.network.newSend(this.id, msg.serializeBinary(), id)
       })
   }
 

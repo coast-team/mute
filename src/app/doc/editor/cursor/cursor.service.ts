@@ -6,10 +6,11 @@ import { CollaboratorsService } from 'doc/right-side/collaborators/collaborators
 import { Collaborator } from 'doc/right-side/collaborators/Collaborator'
 import { NetworkService, NetworkMessage } from 'doc/network'
 import { DocService } from 'doc/doc.service'
+import { ServiceIdentifier } from 'helper/ServiceIdentifier'
 const pb = require('./cursor_pb.js')
 
 @Injectable()
-export class CursorService {
+export class CursorService extends ServiceIdentifier{
 
   private cmEditor: CodeMirror.Editor
 
@@ -22,6 +23,7 @@ export class CursorService {
     private collaborators: CollaboratorsService,
     private doc: DocService
   ) {
+    super('Cursor')
     this.cmCursors = new Map()
     this.pbPosition = new pb.Position()
     this.pbCursor = new pb.Cursor()
@@ -34,7 +36,7 @@ export class CursorService {
     this.collaborators.onJoin
       .subscribe((collab: Collaborator) => {
         this.cmCursors.set(collab.id, new CmCursor(cmDoc, collab.color))
-    })
+      })
 
     this.collaborators.onLeave.subscribe((collab: Collaborator) => {
       const cursor = this.cmCursors.get(collab.id)
@@ -49,7 +51,7 @@ export class CursorService {
 
     this.network.onMessage
       .subscribe((msg: NetworkMessage) => {
-        if (msg.service === this.constructor.name) {
+        if (msg.service === this.id) {
           const pbCursor = pb.Cursor.deserializeBinary(msg.content)
           const cursor = this.cmCursors.get(msg.id)
           if (cursor !== undefined) {
@@ -87,12 +89,12 @@ export class CursorService {
         this.pbPosition.setBaseList(cursor.base)
         this.pbCursor.setPosition(this.pbPosition)
       }
-      this.network.newSend(this.constructor.name, this.pbCursor.serializeBinary())
+      this.network.newSend(this.id, this.pbCursor.serializeBinary())
     }
 
     CodeMirror.on(this.cmEditor, 'blur', () => {
       this.pbCursor.setVisible(false)
-      this.network.newSend(this.constructor.name, this.pbCursor.serializeBinary())
+      this.network.newSend(this.id, this.pbCursor.serializeBinary())
       CodeMirror.off(cmDoc, 'cursorActivity', updateCursor)
     })
 

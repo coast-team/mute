@@ -2,31 +2,15 @@ syntax = "proto3";
 
 message Message {
   oneof type {
-    PeerPseudo peerPseudo = 1;
-    PeerCursor peerCursor = 2;
-    Door door = 7;
-    Doc doc = 8;
-    Newmessage msg = 9;
+    Door door = 1;
+    Doc doc = 2;
+    Newmessage msg = 3;
   }
 }
 
 message Newmessage {
   string service = 1;
   bytes content = 2;
-}
-
-message PeerPseudo {
-  string pseudo = 1;
-}
-
-message PeerCursor {
-  Identifier id = 1;
-  int32 index = 2;
-}
-
-message Identifier {
-  repeated int32 base = 1;
-  int32 last = 2;
 }
 
 message Door {

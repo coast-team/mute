@@ -1,7 +1,7 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, ReplaySubject, Observable, Observer } from 'rxjs/Rx'
-import * as netflux from 'netflux'
+import { create } from 'netflux'
 
 import { JoinEvent } from './JoinEvent'
 import { fetchIceServers } from './xirsysservers'
@@ -9,7 +9,6 @@ import { NetworkMessage } from './NetworkMessage'
 import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
-
 
 @Injectable()
 export class NetworkService {
@@ -70,7 +69,7 @@ export class NetworkService {
     if (this.webChannel !== undefined) {
       this.webChannel.leave()
     }
-    this.webChannel = netflux.create({signalingURL: environment.signalingURL})
+    this.webChannel = create({signalingURL: environment.signalingURL})
     if (this.iceServers !== undefined) {
       this.webChannel.settings.iceServers = this.iceServers
     }
@@ -98,33 +97,35 @@ export class NetworkService {
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
       let msg = pb.Message.deserializeBinary(bytes)
       switch (msg.getTypeCase()) {
-        case pb.Message.TypeCase.MSG:
-          let newMsg = msg.getMsg()
-          this.messageSubject.next(new NetworkMessage(newMsg.getService(), id, isBroadcast, newMsg.getContent()))
-          break
-        case pb.Message.TypeCase.DOOR:
-          let door = msg.getDoor()
-          if (door.getMustclose() !== null && door.getMustclose()) {
-            this.openDoor(false)
-          } else {
-            if (!door.getOpened()) {
-              if (!door.getIntentionally()) {
-                // Reopen door or not
-              } else {
-                  this.setDoor(false)
-              }
+      case pb.Message.TypeCase.MSG:
+        let newMsg = msg.getMsg()
+        let service  = newMsg.getService()
+        let content = newMsg.getContent()
+        this.messageSubject.next(new NetworkMessage(service, id, isBroadcast, content))
+        break
+      case pb.Message.TypeCase.DOOR:
+        let door = msg.getDoor()
+        if (door.getMustclose() !== null && door.getMustclose()) {
+          this.openDoor(false)
+        } else {
+          if (!door.getOpened()) {
+            if (!door.getIntentionally()) {
+              // Reopen door or not
             } else {
-              this.setDoor(true, id)
+              this.setDoor(false)
             }
+          } else {
+            this.setDoor(true, id)
           }
-          break
-        case pb.Message.TypeCase.DOC:
-          log.debug('Doc title received: ' + msg.getDoc().getTitle())
-          this.docTitleSubject.next(msg.getDoc().getTitle())
-          break
-        case pb.Message.TypeCase.TYPE_NOT_SET:
-          log.error('network', 'Protobuf: message type not set')
-          break
+        }
+        break
+      case pb.Message.TypeCase.DOC:
+        log.debug('Doc title received: ' + msg.getDoc().getTitle())
+        this.docTitleSubject.next(msg.getDoc().getTitle())
+        break
+      case pb.Message.TypeCase.TYPE_NOT_SET:
+        log.error('network', 'Protobuf: message type not set')
+        break
       }
     }
   }

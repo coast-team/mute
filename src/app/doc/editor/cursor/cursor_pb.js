@@ -140,35 +140,25 @@ proto.Cursor.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.Cursor} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.Cursor.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.Cursor.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.Cursor.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.Cursor} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.Cursor.prototype.serializeBinaryToWriter = function (writer) {
+proto.Cursor.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getPosition();
+  f = message.getPosition();
   if (f != null) {
     writer.writeMessage(
       1,
@@ -176,7 +166,7 @@ proto.Cursor.prototype.serializeBinaryToWriter = function (writer) {
       proto.Position.serializeBinaryToWriter
     );
   }
-  f = /** @type {boolean} */ (jspb.Message.getField(this, 2));
+  f = /** @type {boolean} */ (jspb.Message.getField(message, 2));
   if (f != null) {
     writer.writeBool(
       2,
@@ -361,49 +351,39 @@ proto.Position.deserializeBinaryFromReader = function(msg, reader) {
 
 
 /**
- * Class method variant: serializes the given message to binary data
- * (in protobuf wire format), writing to the given BinaryWriter.
- * @param {!proto.Position} message
- * @param {!jspb.BinaryWriter} writer
- */
-proto.Position.serializeBinaryToWriter = function(message, writer) {
-  message.serializeBinaryToWriter(writer);
-};
-
-
-/**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
 proto.Position.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
-  this.serializeBinaryToWriter(writer);
+  proto.Position.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
 
 
 /**
- * Serializes the message to binary data (in protobuf wire format),
- * writing to the given BinaryWriter.
+ * Serializes the given message to binary data (in protobuf wire
+ * format), writing to the given BinaryWriter.
+ * @param {!proto.Position} message
  * @param {!jspb.BinaryWriter} writer
  */
-proto.Position.prototype.serializeBinaryToWriter = function (writer) {
+proto.Position.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = this.getBaseList();
+  f = message.getBaseList();
   if (f.length > 0) {
     writer.writePackedDouble(
       2,
       f
     );
   }
-  f = this.getLast();
+  f = message.getLast();
   if (f !== 0) {
     writer.writeInt32(
       3,
       f
     );
   }
-  f = this.getIndex();
+  f = message.getIndex();
   if (f !== 0) {
     writer.writeInt32(
       4,

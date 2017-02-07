@@ -7,10 +7,11 @@ import * as randomMC from 'random-material-color'
 import { NetworkService, NetworkMessage } from 'doc/network'
 import { ProfileService } from 'core/profile/profile.service'
 import { Collaborator } from './Collaborator'
+import { ServiceIdentifier } from 'helper/ServiceIdentifier'
 const pb = require('./collaborator_pb.js')
 
 @Injectable()
-export class CollaboratorsService {
+export class CollaboratorsService extends ServiceIdentifier {
 
   private joinSubject: ReplaySubject<Collaborator>
   private leaveSubject: ReplaySubject<Collaborator>
@@ -22,6 +23,7 @@ export class CollaboratorsService {
     private network: NetworkService,
     private profile: ProfileService
   ) {
+    super('Collaborators')
     this.collaborators = new Set<Collaborator>()
     this.joinSubject = new ReplaySubject<Collaborator>()
     this.leaveSubject = new ReplaySubject<Collaborator>()
@@ -50,17 +52,17 @@ export class CollaboratorsService {
     })
 
     this.network.onMessage.subscribe((msg: NetworkMessage) => {
-      if (msg.service === this.constructor.name) {
+      if (msg.service === this.id) {
         const pbCollaborator = new pb.Collaborator.deserializeBinary(msg.content)
         const collaborator = this.getCollaboratorById(msg.id)
         if (collaborator !== null) {
-            const oldPseudo = collaborator.pseudo
-            collaborator.pseudo = pbCollaborator.getPseudo()
-            if (oldPseudo === null) {
-              this.joinSubject.next(collaborator)
-            } else {
-              this.pseudoSubject.next(collaborator)
-            }
+          const oldPseudo = collaborator.pseudo
+          collaborator.pseudo = pbCollaborator.getPseudo()
+          if (oldPseudo === null) {
+            this.joinSubject.next(collaborator)
+          } else {
+            this.pseudoSubject.next(collaborator)
+          }
         }
       }
     })
@@ -75,7 +77,7 @@ export class CollaboratorsService {
   emitPseudo (pseudo: string, id?: number) {
     const collabMsg = new pb.Collaborator()
     collabMsg.setPseudo(pseudo)
-    this.network.newSend(this.constructor.name, collabMsg.serializeBinary(), id)
+    this.network.newSend(this.id, collabMsg.serializeBinary(), id)
   }
 
   getCollaboratorById (id: number): Collaborator | null {
