@@ -1,3 +1,3 @@
 <md-card fxFlex="760px" fxFlex.md="75%" fxFlex.sm="85%" fxFlex.xs="100%" (click)="focus()">
-  <textarea #editorElt></textarea>
+  <textarea #editorElt muteCursors [cmEditor]="editor" [docService]="docService"></textarea>
 </md-card>

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-
+import { CursorsDirective } from 'doc/editor/cursor/cursors.directive'
 import { RightSideModule } from './right-side'
 import { SharedModule } from 'shared'
 import { DocComponent } from './doc.component'
@@ -12,7 +12,8 @@ import { NetworkService } from './network/network.service'
 @NgModule({
   declarations: [
     DocComponent,
-    EditorComponent
+    EditorComponent,
+    CursorsDirective
   ],
   imports: [
     SharedModule,

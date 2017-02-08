@@ -8,7 +8,6 @@ import { TextDelete, TextInsert }  from 'mute-structs'
 
 import { EditorService } from './editor.service'
 import { DocService } from 'mute-core'
-import { CursorService } from './cursor/cursor.service'
 
 @Component({
   selector: 'mute-editor',
@@ -18,7 +17,7 @@ import { CursorService } from './cursor/cursor.service'
     // Should find a proper way to do it.
     './editor.component.scss'
   ],
-  providers: [ CursorService ]
+  providers: []
 })
 
 @Injectable()
@@ -36,8 +35,7 @@ export class EditorComponent implements OnDestroy, OnInit {
   public innerWidth = window.innerWidth
 
   constructor (
-    private editorService: EditorService,
-    private cursorService: CursorService
+    private editorService: EditorService
   ) {}
 
   ngOnInit () {
@@ -47,8 +45,6 @@ export class EditorComponent implements OnDestroy, OnInit {
       autofocus: false,
       mode: {name: 'gfm', globalVars: true}
     })
-
-    this.cursorService.init(this.editor)
 
     const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {

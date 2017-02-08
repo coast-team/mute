@@ -1,27 +1,27 @@
-import { Injectable } from '@angular/core'
+import { Directive, Injectable, Input, OnInit } from '@angular/core'
+import { RichCollaborator, RichCollaboratorsService } from 'doc/rich-collaborators/'
+import { NetworkService } from 'doc/network/'
+import { ServiceIdentifier } from 'helper/ServiceIdentifier'
+
 import * as CodeMirror from 'codemirror'
+import { DocService, NetworkMessage } from 'mute-core'
 import { Identifier } from 'mute-structs'
 
-import { CollaboratorsService } from 'doc/right-side/collaborators/collaborators.service'
-import { Collaborator } from 'doc/right-side/collaborators/Collaborator'
-import { NetworkService, NetworkMessage } from 'doc/network'
-import { DocService } from 'doc/doc.service'
-import { ServiceIdentifier } from 'helper/ServiceIdentifier'
 const pb = require('./cursor_pb.js')
 
-@Injectable()
-export class CursorService extends ServiceIdentifier{
+@Injectable() @Directive({ selector: '[muteCursors]' })
+export class CursorsDirective extends ServiceIdentifier implements OnInit {
 
-  private cmEditor: CodeMirror.Editor
+  @Input() cmEditor: CodeMirror.Editor
+  @Input() docService: DocService
 
   private cmCursors: Map<number, CmCursor> // CodeMirror cursors of other peers
   private pbCursor: any
   private pbPosition: any // My cursor
 
   constructor (
-    private network: NetworkService,
-    private collaborators: CollaboratorsService,
-    private doc: DocService
+    private collabService: RichCollaboratorsService,
+    private network: NetworkService
   ) {
     super('Cursor')
     this.cmCursors = new Map()
@@ -29,58 +29,55 @@ export class CursorService extends ServiceIdentifier{
     this.pbCursor = new pb.Cursor()
   }
 
-  init (cmEditor: CodeMirror.Editor): void {
-    this.cmEditor = cmEditor
-    const cmDoc = cmEditor.getDoc()
+  ngOnInit () {
+    const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
 
-    this.collaborators.onJoin
-      .subscribe((collab: Collaborator) => {
-        this.cmCursors.set(collab.id, new CmCursor(cmDoc, collab.color))
-      })
+    this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
+      this.cmCursors.set(collaborator.id, new CmCursor(cmDoc, collaborator.color))
+    })
 
-    this.collaborators.onLeave.subscribe((collab: Collaborator) => {
-      const cursor = this.cmCursors.get(collab.id)
+    this.collabService.onCollaboratorLeave.subscribe((id: number) => {
+      const cursor: CmCursor | undefined = this.cmCursors.get(id)
       if (cursor !== undefined) {
         if (cursor.cmBookmark !== null) {
           cursor.cmBookmark.clear()
         }
         cursor.stopClotting()
-        this.cmCursors.delete(collab.id)
+        this.cmCursors.delete(id)
       }
     })
 
     this.network.onMessage
+      .filter((msg: NetworkMessage) => msg.service === this.id)
       .subscribe((msg: NetworkMessage) => {
-        if (msg.service === this.id) {
-          const pbCursor = pb.Cursor.deserializeBinary(msg.content)
-          const cursor = this.cmCursors.get(msg.id)
-          if (cursor !== undefined) {
-            let pos: any
-            if (pbCursor.getContentCase() === pb.Cursor.ContentCase.VISIBLE) {
-              if (pbCursor.getVisible()) {
-                const lastLine = cmDoc.lastLine()
-                pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
-              } else {
-                cursor.hide()
-                return
-              }
+        const pbCursor = pb.Cursor.deserializeBinary(msg.content)
+        const cursor = this.cmCursors.get(msg.id)
+        if (cursor !== undefined) {
+          let pos: any
+          if (pbCursor.getContentCase() === pb.Cursor.ContentCase.VISIBLE) {
+            if (pbCursor.getVisible()) {
+              const lastLine = cmDoc.lastLine()
+              pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
             } else {
-              const pbPosition = pbCursor.getPosition()
-              const identifier = new Identifier(pbPosition.getBaseList(), pbPosition.getLast())
-              pos = cmDoc.posFromIndex(this.doc.indexFromId(identifier) + pbPosition.getIndex())
+              cursor.hide()
+              return
             }
-              const oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
-              const newCoords = this.cmEditor.cursorCoords(pos, 'local')
-              cursor.translate({x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top})
-              cursor.show()
-              cursor.restartClotting()
+          } else {
+            const pbPosition = pbCursor.getPosition()
+            const identifier = new Identifier(pbPosition.getBaseList(), pbPosition.getLast())
+            pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + pbPosition.getIndex())
           }
+          const oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
+          const newCoords = this.cmEditor.cursorCoords(pos, 'local')
+          cursor.translate({x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top})
+          cursor.show()
+          cursor.restartClotting()
         }
-    })
+      })
 
-    const updateCursor = () => {
+    const updateCursor = (): void => {
       const cursor: {index: number, last?: number, base?: number[]} | null =
-        this.doc.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
+        this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
       if (cursor === null) {
         this.pbCursor.setVisible(true)
       } else {
@@ -135,7 +132,7 @@ class CmCursor {
           this.domElm.className += ' clotted'
         }
       }, 600)
-   }, 400)
+    }, 400)
   }
 
   stopClotting (): void {
