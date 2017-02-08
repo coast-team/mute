@@ -1,12 +1,14 @@
 import {
+  animate,
+  ChangeDetectorRef,
   Component,
-  trigger,
+  OnInit,
   state,
   style,
   transition,
-  animate } from '@angular/core'
-
-import { RichCollaboratorsService } from 'doc/rich-collaborators'
+  trigger
+} from '@angular/core'
+import { RichCollaborator, RichCollaboratorsService } from 'doc/rich-collaborators'
 
 @Component({
   selector: 'mute-collaborators',
@@ -21,9 +23,39 @@ import { RichCollaboratorsService } from 'doc/rich-collaborators'
     ])
   ]
 })
-export class CollaboratorsComponent {
+export class CollaboratorsComponent implements OnInit {
+
+  private mapCollaborators: Map<number, RichCollaborator>
 
   constructor (
+    private changeDetectorRef: ChangeDetectorRef,
     private collabService: RichCollaboratorsService
-  ) {}
+  ) {
+    this.mapCollaborators = new Map()
+  }
+
+  ngOnInit (): void {
+    this.collabService.onCollaboratorChangePseudo.subscribe((collaborator: RichCollaborator) => {
+      this.mapCollaborators.set(collaborator.id, collaborator)
+      this.changeDetectorRef.detectChanges()
+    })
+
+    this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
+      this.mapCollaborators.set(collaborator.id, collaborator)
+      this.changeDetectorRef.detectChanges()
+    })
+
+    this.collabService.onCollaboratorLeave.subscribe((id: number) => {
+      this.mapCollaborators.delete(id)
+      this.changeDetectorRef.detectChanges()
+    })
+  }
+
+  get collaborators (): RichCollaborator[] {
+    const collaborators: RichCollaborator[] = []
+    this.mapCollaborators.forEach((collaborator: RichCollaborator) => {
+      collaborators.push(collaborator)
+    })
+    return collaborators
+  }
 }

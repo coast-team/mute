@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="end center" fxLayoutWrap="true" class="container">
-  <span *ngFor="let collab of collabService.collaborators"
+  <span *ngFor="let collab of collaborators"
       [style.background-color]="collab.color"
       [@peerArriving]="'active'"
   >
