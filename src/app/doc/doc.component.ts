@@ -52,7 +52,9 @@ export class DocComponent implements OnDestroy, OnInit {
       this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
       this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
       this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
-      this.richCollaboratorsService.collaboratorsSource = this.muteCore.collaboratorsService.collaborators
+      this.richCollaboratorsService.collaboratorChangePseudoSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
+      this.richCollaboratorsService.collaboratorJoinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
+      this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
       this.network.join(key)
       this.inited = true

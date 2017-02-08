@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs'
 
 import { Collaborator } from 'mute-core'
@@ -10,25 +10,48 @@ import * as randomMC from 'random-material-color'
 @Injectable()
 export class RichCollaboratorsService {
 
+  private collaboratorChangePseudoObservable: Observable<RichCollaborator>
+  private collaboratorJoinObservable: Observable<RichCollaborator>
+  private collaboratorLeaveObservable: Observable<number>
+
   private colors: Map<number, string>
   public collaborators: RichCollaborator[]
 
-  constructor (
-    private ngZone: NgZone
-  ) {
-    console.log('Constructeur RichCollaboratorsService')
+  constructor () {
     this.colors = new Map()
     this.collaborators = []
   }
 
-  set collaboratorsSource(source: Observable<Collaborator[]>) {
-    source.subscribe((collaborators: Collaborator[]) => {
-      this.ngZone.run(() => {
-        this.collaborators = collaborators.map((collaborator: Collaborator) => {
-          const color: string = this.getColor(collaborator.id)
-          return new RichCollaborator(collaborator.id, collaborator.pseudo, color)
-        })
-      })
+  get onCollaboratorChangePseudo (): Observable<RichCollaborator> {
+    return this.collaboratorChangePseudoObservable
+  }
+
+  get onCollaboratorJoin (): Observable<RichCollaborator> {
+    return this.collaboratorJoinObservable
+  }
+
+  get onCollaboratorLeave (): Observable<number> {
+    return this.collaboratorLeaveObservable
+  }
+
+  set collaboratorChangePseudoSource (source: Observable<Collaborator>) {
+    this.collaboratorChangePseudoObservable = source.map((collaborator: Collaborator) => {
+      const color: string = this.getColor(collaborator.id)
+      return new RichCollaborator(collaborator.id, collaborator.pseudo, color)
+    })
+  }
+
+  set collaboratorJoinSource (source: Observable<Collaborator>) {
+    this.collaboratorJoinObservable = source.map((collaborator: Collaborator) => {
+      const color: string = this.getColor(collaborator.id)
+      return new RichCollaborator(collaborator.id, collaborator.pseudo, color)
+    })
+  }
+
+  set collaboratorLeaveSource (source: Observable<number>) {
+    this.collaboratorLeaveObservable = source.map((id: number) => {
+      this.colors.delete(id)
+      return id
     })
   }
 
