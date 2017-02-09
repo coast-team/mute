@@ -39,6 +39,7 @@ export class DocComponent implements OnDestroy, OnInit {
       if (this.inited) {
         // Need to clean the services before
         this.network.cleanWebChannel()
+        this.muteCore.clean()
       }
       this.network.initWebChannel()
       this.muteCore = new MuteCore(42)
@@ -71,6 +72,7 @@ export class DocComponent implements OnDestroy, OnInit {
   ngOnDestroy () {
     log.angular('DocComponent destroyed')
     this.network.cleanWebChannel()
+    this.muteCore.clean()
   }
 
 }
