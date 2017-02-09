@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, Injectable, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 // FIXME: Find a proper way to import the mode's files
@@ -21,9 +21,10 @@ import { DocService } from 'mute-core'
 })
 
 @Injectable()
-export class EditorComponent implements OnDestroy, OnInit {
+export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private editor: CodeMirror.Editor
+  private isInited = false
 
   private docValueSubscription: Subscription
   private remoteOperationsSubscription: Subscription
@@ -86,9 +87,6 @@ export class EditorComponent implements OnDestroy, OnInit {
       this.editorService.emitLocalTextOperations(textOperations)
     })
 
-    this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
-      this.editor.setValue(str)
-    })
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
@@ -98,6 +96,17 @@ export class EditorComponent implements OnDestroy, OnInit {
     //       console.log(changeEvent.change)
     //     })
     //   })
+  }
+
+  ngOnChanges (changes: SimpleChanges): void {
+    if (this.isInited) {
+      this.docValueSubscription.unsubscribe()
+      this.remoteOperationsSubscription.unsubscribe()
+    }
+
+    this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
+      this.editor.setValue(str)
+    })
 
     this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
       const doc: CodeMirror.Doc = this.editor.getDoc()
@@ -114,6 +123,8 @@ export class EditorComponent implements OnDestroy, OnInit {
         }
       })
     })
+
+    this.isInited = true
   }
 
   ngOnDestroy () {
