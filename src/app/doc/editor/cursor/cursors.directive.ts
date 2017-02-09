@@ -1,7 +1,9 @@
-import { Directive, Injectable, Input, OnInit } from '@angular/core'
+import { Directive, Injectable, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core'
 import { RichCollaborator, RichCollaboratorsService } from 'doc/rich-collaborators/'
 import { NetworkService } from 'doc/network/'
 import { ServiceIdentifier } from 'helper/ServiceIdentifier'
+
+import { Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
 import { DocService, NetworkMessage } from 'mute-core'
@@ -10,12 +12,15 @@ import { Identifier } from 'mute-structs'
 const pb = require('./cursor_pb.js')
 
 @Injectable() @Directive({ selector: '[muteCursors]' })
-export class CursorsDirective extends ServiceIdentifier implements OnInit {
+export class CursorsDirective extends ServiceIdentifier implements OnChanges, OnInit {
 
   @Input() cmEditor: CodeMirror.Editor
   @Input() docService: DocService
 
+  private messageSubscription: Subscription
+
   private cmCursors: Map<number, CmCursor> // CodeMirror cursors of other peers
+  private isInited = false
   private pbCursor: any
   private pbPosition: any // My cursor
 
@@ -47,8 +52,41 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit {
       }
     })
 
-    this.network.onMessage
-      .filter((msg: NetworkMessage) => msg.service === this.id)
+    const updateCursor = (): void => {
+      const cursor: {index: number, last?: number, base?: number[]} | null =
+        this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
+      if (cursor === null) {
+        this.pbCursor.setVisible(true)
+      } else {
+        this.pbPosition.setIndex(cursor.index)
+        this.pbPosition.setLast(cursor.last)
+        this.pbPosition.setBaseList(cursor.base)
+        this.pbCursor.setPosition(this.pbPosition)
+      }
+      this.network.newSend(this.constructor.name, this.pbCursor.serializeBinary())
+    }
+
+    CodeMirror.on(this.cmEditor, 'blur', () => {
+      this.pbCursor.setVisible(false)
+      this.network.newSend(this.constructor.name, this.pbCursor.serializeBinary())
+      CodeMirror.off(cmDoc, 'cursorActivity', updateCursor)
+    })
+
+    CodeMirror.on(this.cmEditor, 'focus', () => {
+      updateCursor()
+      CodeMirror.on(cmDoc, 'cursorActivity', updateCursor)
+    })
+  }
+
+  ngOnChanges (changes: SimpleChanges): void {
+    const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
+
+    if (this.isInited) {
+      this.messageSubscription.unsubscribe()
+    }
+
+    this.messageSubscription = this.network.onMessage
+      .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
       .subscribe((msg: NetworkMessage) => {
         const pbCursor = pb.Cursor.deserializeBinary(msg.content)
         const cursor = this.cmCursors.get(msg.id)
@@ -75,30 +113,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit {
         }
       })
 
-    const updateCursor = (): void => {
-      const cursor: {index: number, last?: number, base?: number[]} | null =
-        this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
-      if (cursor === null) {
-        this.pbCursor.setVisible(true)
-      } else {
-        this.pbPosition.setIndex(cursor.index)
-        this.pbPosition.setLast(cursor.last)
-        this.pbPosition.setBaseList(cursor.base)
-        this.pbCursor.setPosition(this.pbPosition)
-      }
-      this.network.send(this.id, this.pbCursor.serializeBinary())
-    }
-
-    CodeMirror.on(this.cmEditor, 'blur', () => {
-      this.pbCursor.setVisible(false)
-      this.network.send(this.id, this.pbCursor.serializeBinary())
-      CodeMirror.off(cmDoc, 'cursorActivity', updateCursor)
-    })
-
-    CodeMirror.on(this.cmEditor, 'focus', () => {
-      updateCursor()
-      CodeMirror.on(cmDoc, 'cursorActivity', updateCursor)
-    })
+    this.isInited = true
   }
 }
 
