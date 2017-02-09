@@ -30,6 +30,8 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private remoteOperationsSubscription: Subscription
   private localOperationsSubscription: Subscription
 
+  private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
+
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt
 
@@ -77,16 +79,13 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       })
       */
 
-    const textOperationsStream: Observable<(TextDelete | TextInsert)[][]> = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
+    this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
       return changeEvents.map( (changeEvent: ChangeEvent ) => {
         return changeEvent.toTextOperations()
       })
     })
 
-    this.localOperationsSubscription = textOperationsStream.subscribe((textOperations: (TextDelete | TextInsert)[][]) => {
-      this.editorService.emitLocalTextOperations(textOperations)
-    })
-
+    this.docService.localTextOperationsSource = this.textOperationsObservable
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
@@ -102,6 +101,12 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     if (this.isInited) {
       this.docValueSubscription.unsubscribe()
       this.remoteOperationsSubscription.unsubscribe()
+    }
+
+    // First ngOnChanges is called before ngOnInit
+    // This observable is not ready yet
+    if (this.textOperationsObservable !== undefined) {
+      this.docService.localTextOperationsSource = this.textOperationsObservable
     }
 
     this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {

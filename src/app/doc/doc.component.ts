@@ -45,7 +45,6 @@ export class DocComponent implements OnDestroy, OnInit {
       this.muteCore = new MuteCore(42)
       this.muteCore.joinSource = this.network.onJoin
       this.muteCore.messageSource = this.network.onMessage
-      this.muteCore.docService.localTextOperationsSource = this.editor.onLocalTextOperations
       this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
       this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
       this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
