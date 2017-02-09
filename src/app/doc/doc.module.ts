@@ -6,7 +6,6 @@ import { RightSideModule } from './right-side'
 import { SharedModule } from 'shared'
 import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
-import { EditorService } from './editor/editor.service'
 import { NetworkService } from './network/network.service'
 
 @NgModule({

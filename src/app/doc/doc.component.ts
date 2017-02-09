@@ -2,7 +2,6 @@ import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute, Params } from '@angular/router'
 
 import { ProfileService } from 'core/profile/profile.service'
-import { EditorService } from 'doc/editor/editor.service'
 import { NetworkService } from 'doc/network'
 import { RichCollaboratorsService } from 'doc/rich-collaborators'
 import { UiService } from 'core/ui/ui.service'
@@ -27,7 +26,6 @@ export class DocComponent implements OnDestroy, OnInit {
     private richCollaboratorsService: RichCollaboratorsService,
     private profile: ProfileService,
     private route: ActivatedRoute,
-    private editor: EditorService,
     private network: NetworkService,
     public ui: UiService
   ) {}

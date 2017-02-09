@@ -6,7 +6,6 @@ require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
 import { TextDelete, TextInsert }  from 'mute-structs'
 
-import { EditorService } from './editor.service'
 import { DocService } from 'mute-core'
 
 @Component({
@@ -37,9 +36,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   public innerWidth = window.innerWidth
 
-  constructor (
-    private editorService: EditorService
-  ) {}
+  constructor () {}
 
   ngOnInit () {
     this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
