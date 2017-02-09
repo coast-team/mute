@@ -56,6 +56,13 @@ export class RichCollaboratorsService {
     source.subscribe((id: number) => {
       this.colors.delete(id)
       this.collaboratorLeaveSubject.next(id)
+    },
+    () => {},
+    () => {
+      this.colors.forEach((color: string, id: number) => {
+        this.colors.delete(id)
+        this.collaboratorLeaveSubject.next(id)
+      })
     })
   }
 
