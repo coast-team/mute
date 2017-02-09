@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
-import { ReplaySubject, Subject, Observable } from 'rxjs/Rx'
+import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 import { create } from 'netflux'
 
 import { fetchIceServers } from './xirsysservers'
@@ -30,6 +30,10 @@ export class NetworkService {
    */
   private peerJoinSubject: ReplaySubject<number>
   private peerLeaveSubject: ReplaySubject<number>
+
+  private messageToBroadcastSubscription: Subscription
+  private messageToSendRandomlySubscription: Subscription
+  private messageToSendToSubscription: Subscription
 
   constructor (
     private botStorageService: BotStorageService
@@ -92,13 +96,13 @@ export class NetworkService {
   }
 
   set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
-    source.subscribe((broadcastMessage: BroadcastMessage) => {
+    this.messageToBroadcastSubscription = source.subscribe((broadcastMessage: BroadcastMessage) => {
       this.send(broadcastMessage.service, broadcastMessage.content)
     })
   }
 
   set messageToSendRandomlySource (source: Observable<SendRandomlyMessage>) {
-    source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
+    this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
       const index: number = Math.ceil(Math.random() * this.members.length) - 1
       const id: number = this.members[index]
       this.send(sendRandomlyMessage.service, sendRandomlyMessage.content, id)
@@ -106,7 +110,7 @@ export class NetworkService {
   }
 
   set messageToSendToSource (source: Observable<SendToMessage>) {
-    source.subscribe((sendToMessage: SendToMessage) => {
+    this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
       this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
     })
   }
@@ -148,6 +152,24 @@ export class NetworkService {
       this.webChannel.close()
       this.webChannel.leave()
       this.leaveSubject.next()
+
+      this.messageSubject.complete()
+      this.joinSubject.complete()
+      this.leaveSubject.complete()
+      this.peerJoinSubject.complete()
+      this.peerLeaveSubject.complete()
+      this.doorSubject.complete()
+
+      this.messageSubject = new ReplaySubject<NetworkMessage>()
+      this.joinSubject = new Subject()
+      this.leaveSubject = new Subject()
+      this.peerJoinSubject = new ReplaySubject<number>()
+      this.peerLeaveSubject = new ReplaySubject<number>()
+      this.doorSubject = new Subject<boolean>()
+
+      this.messageToBroadcastSubscription.unsubscribe()
+      this.messageToSendRandomlySubscription.unsubscribe()
+      this.messageToSendToSubscription.unsubscribe()
     }
   }
 
