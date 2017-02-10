@@ -1,6 +1,6 @@
-<div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="20px">
+<div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
   <h1><a routerLink="/">MUTE</a></h1>
-  <button fxFlexAlign="center" id="new-doc" md-raised-button color="accent" (click)="newDoc()">New Document</button>
+  <button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="newDoc()">New Document</button>
   <nav fxLayout="column" fxLayoutAlign="start stretch">
     <mute-storage *ngFor="let storageService of getStorageServices()"
         [storageService]="storageService"
