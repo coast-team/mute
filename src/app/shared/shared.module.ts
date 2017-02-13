@@ -10,7 +10,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
   imports: [
     CommonModule,
     MaterialModule.forRoot(),
-    FlexLayoutModule.forRoot()
+    FlexLayoutModule
   ],
   declarations: [ EditFieldComponent ],
   exports: [
