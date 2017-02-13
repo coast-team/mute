@@ -27,7 +27,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private docValueSubscription: Subscription
   private remoteOperationsSubscription: Subscription
-  private localOperationsSubscription: Subscription
 
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
 
@@ -131,7 +130,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnDestroy () {
     this.docValueSubscription.unsubscribe()
-    this.localOperationsSubscription.unsubscribe()
     this.remoteOperationsSubscription.unsubscribe()
   }
 
