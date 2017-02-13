@@ -11,7 +11,7 @@
         emptyValue="Untitled document"
         (onDone)="updateTitle($event)">
     </mute-edit-field>
-    <h2 *ngIf="!isDoc()">{{storageName}}</h2>
+    <h2 *ngIf="!isDoc()" fxFlexAlign="center">{{storageName}}</h2>
     <div fxLayout="row" fxLayoutAlign="end center">
       <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
           icon="face"
