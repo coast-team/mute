@@ -63,12 +63,12 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
         this.pbPosition.setBaseList(cursor.base)
         this.pbCursor.setPosition(this.pbPosition)
       }
-      this.network.send(this.constructor.name, this.pbCursor.serializeBinary())
+      this.network.send(this.id, this.pbCursor.serializeBinary())
     }
 
     CodeMirror.on(this.cmEditor, 'blur', () => {
       this.pbCursor.setVisible(false)
-      this.network.send(this.constructor.name, this.pbCursor.serializeBinary())
+      this.network.send(this.id, this.pbCursor.serializeBinary())
       CodeMirror.off(cmDoc, 'cursorActivity', updateCursor)
     })
 
@@ -86,7 +86,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
     }
 
     this.messageSubscription = this.network.onMessage
-      .filter((msg: NetworkMessage) => msg.service === this.constructor.name)
+      .filter((msg: NetworkMessage) => msg.service === this.id)
       .subscribe((msg: NetworkMessage) => {
         const pbCursor = pb.Cursor.deserializeBinary(msg.content)
         const cursor = this.cmCursors.get(msg.id)
