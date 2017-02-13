@@ -21,7 +21,7 @@ import { NetworkService } from './network/network.service'
       {path: 'doc/:key', component: DocComponent}
     ])
   ],
-  providers: [ EditorService, NetworkService ]
+  providers: [ NetworkService ]
 })
 export class DocModule {
   constructor () {
