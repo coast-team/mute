@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { Observable, Observer } from 'rxjs'
 
-import { JoinEvent } from 'doc/network'
 import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
-import { RichLogootSOperation } from './RichLogootSOperation'
-import { State } from './State'
+
+import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
+
 
 @Injectable()
 export class SyncStorageService {

@@ -4,6 +4,7 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { ProfileService } from 'core/profile/profile.service'
 import { NetworkService } from 'doc/network'
 import { RichCollaboratorsService } from 'doc/rich-collaborators'
+import { SyncStorageService } from 'doc/sync/sync-storage.service'
 import { UiService } from 'core/ui/ui.service'
 
 import { MuteCore } from 'mute-core'
@@ -12,7 +13,7 @@ import { MuteCore } from 'mute-core'
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
-  providers: [ RichCollaboratorsService ]
+  providers: [ RichCollaboratorsService, SyncStorageService ]
 })
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
@@ -27,6 +28,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private profile: ProfileService,
     private route: ActivatedRoute,
     private network: NetworkService,
+    private syncStorage: SyncStorageService,
     public ui: UiService
   ) {}
 
@@ -53,6 +55,10 @@ export class DocComponent implements OnDestroy, OnInit {
       this.richCollaboratorsService.collaboratorChangePseudoSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
       this.richCollaboratorsService.collaboratorJoinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
       this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
+
+      this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
+      this.syncStorage.joinSource = this.network.onJoin
+      this.syncStorage.stateSource = this.muteCore.syncService.onState
 
       this.network.join(key)
       this.inited = true
