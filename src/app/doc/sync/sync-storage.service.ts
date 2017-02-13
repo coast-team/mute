@@ -23,7 +23,7 @@ export class SyncStorageService {
   set joinSource (source: Observable<JoinEvent>) {
     source.subscribe((joinEvent: JoinEvent) => {
       this.key = joinEvent.key
-      this.localStorageService.get(this.storageId)
+      this.localStorageService.get(this.key)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
             .map((richLogootSOp: any): RichLogootSOperation | null => {
@@ -45,12 +45,8 @@ export class SyncStorageService {
 
   set stateSource (source: Observable<State>) {
     source.subscribe((state: State) => {
-      this.localStorageService.put(this.storageId, state)
+      this.localStorageService.put(this.key, state)
     })
-  }
-
-  get storageId(): string {
-    return this.constructor.name + '-' + this.key
   }
 
   get onStoredState(): Observable<State> {
