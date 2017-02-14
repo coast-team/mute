@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
+import { MdSnackBar } from '@angular/material'
 import { Router } from '@angular/router'
-import { Subscription } from 'rxjs/Rx'
+import { Subject, Subscription } from 'rxjs/Rx'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
@@ -17,8 +18,11 @@ export class DocsComponent implements OnDestroy, OnInit {
   private docs: any[]
   private hasDocuments: boolean
 
+  private snackBarSubject: Subject<string>
+
   constructor (
     private router: Router,
+    private snackBar: MdSnackBar,
     private storageManagerService: StorageManagerService,
     public ui: UiService
 ) {}
@@ -30,9 +34,20 @@ export class DocsComponent implements OnDestroy, OnInit {
     })
     this.ui.openNav()
     this.ui.toolbarTitle = this.getStorageServiceName()
+
+    this.snackBarSubject = new Subject()
+    this.snackBarSubject
+      .throttleTime(500)
+      .subscribe((message: string) => {
+        this.snackBar.open(message, 'close', {
+          duration: 3000
+        })
+      })
   }
 
   ngOnDestroy () {
+    this.snackBarSubject.complete()
+
     this.docsSubscription.unsubscribe()
   }
 
@@ -58,6 +73,9 @@ export class DocsComponent implements OnDestroy, OnInit {
         this.docs = []
         this.hasDocuments = false
       })
+      .catch((err: Error) => {
+        this.snackBarSubject.next(err.message)
+      })
   }
 
   deleteDoc (key: string): void {
@@ -66,6 +84,9 @@ export class DocsComponent implements OnDestroy, OnInit {
       .then(() => {
         this.docs = this.docs.filter((doc: any) => doc.id !== key)
         this.hasDocuments = (this.docs.length > 0)
+      })
+      .catch((err: Error) => {
+        this.snackBarSubject.next(err.message)
       })
   }
 
