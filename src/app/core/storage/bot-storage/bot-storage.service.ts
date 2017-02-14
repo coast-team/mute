@@ -32,6 +32,14 @@ export class BotStorageService extends AbstractStorageService {
       })
   }
 
+  delete (name: string): Promise<void> {
+    return Promise.reject('not yet implemented')
+  }
+
+  deleteAll (): Promise<void> {
+    return Promise.reject('not yet implemented')
+  }
+
   getDocuments (): Promise<any> {
     return this.http.get(`http://${environment.botStorageAPI}/docs`).toPromise()
       .then((response) => {

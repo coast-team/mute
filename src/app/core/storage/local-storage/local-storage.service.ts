@@ -8,7 +8,7 @@ declare const jIO: any
 export class LocalStorageService extends AbstractStorageService {
 
   private instance: any
-  readonly name: string = 'Local Storage'
+  readonly name = 'Local Storage'
 
   constructor () {
     super()
@@ -21,6 +21,35 @@ export class LocalStorageService extends AbstractStorageService {
           database: 'mute'
         }
       }
+    })
+  }
+
+  delete (name: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.instance.remove(name)
+        .then(() => {
+          resolve()
+        }, (err: Error) => {
+          reject(err)
+        })
+    })
+  }
+
+  deleteAll (): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.getDocuments()
+        .then((docs: any[]) => {
+          const promises: Promise<void>[] = docs.map((doc: any) => {
+            return this.delete(doc.id)
+          })
+          Promise.all(promises)
+            .then(() => {
+              resolve()
+            })
+            .catch((err: Error) => {
+              reject(err)
+            })
+        })
     })
   }
 
