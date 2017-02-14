@@ -44,9 +44,13 @@ export class SyncStorageService {
   }
 
   set stateSource (source: Observable<State>) {
-    source.subscribe((state: State) => {
-      this.localStorageService.put(this.key, state)
-    })
+    source
+      .bufferTime(750)
+      .filter((states: State[]) => states.length > 0)
+      .subscribe((states: State[]) => {
+        const lastIndex = states.length - 1
+        this.localStorageService.put(this.key, states[lastIndex])
+      })
   }
 
   get onStoredState(): Observable<State> {
