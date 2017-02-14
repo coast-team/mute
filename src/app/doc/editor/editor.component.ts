@@ -110,19 +110,24 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     })
 
     this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
-      const doc: CodeMirror.Doc = this.editor.getDoc()
 
-      log.info('operation:editor', 'applied: ', textOperations)
+      const updateDoc: () => void = () => {
+        const doc: CodeMirror.Doc = this.editor.getDoc()
 
-      textOperations.forEach( (textOperation: any) => {
-        const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
-        if (textOperation instanceof TextInsert) {
-          doc.replaceRange(textOperation.content, from)
-        } else if (textOperation instanceof TextDelete) {
-          const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-          doc.replaceRange('', from, to)
-        }
-      })
+        log.info('operation:editor', 'applied: ', textOperations)
+
+        textOperations.forEach( (textOperation: any) => {
+          const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
+          if (textOperation instanceof TextInsert) {
+            doc.replaceRange(textOperation.content, from)
+          } else if (textOperation instanceof TextDelete) {
+            const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
+            doc.replaceRange('', from, to)
+          }
+        })
+      }
+
+      this.editor.operation(updateDoc)
     })
 
     this.isInited = true
