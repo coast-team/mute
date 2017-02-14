@@ -51,6 +51,24 @@ export class DocsComponent implements OnDestroy, OnInit {
     return storageService.getDocuments()
   }
 
+  deleteAllDocs (): void {
+    const storageService = this.storageManagerService.getCurrentStorageService()
+    storageService.deleteAll()
+      .then(() => {
+        this.docs = []
+        this.hasDocuments = false
+      })
+  }
+
+  deleteDoc (key: string): void {
+    const storageService = this.storageManagerService.getCurrentStorageService()
+    storageService.delete(key)
+      .then(() => {
+        this.docs = this.docs.filter((doc: any) => doc.id !== key)
+        this.hasDocuments = (this.docs.length > 0)
+      })
+  }
+
   openDoc (key: string) {
     this.router.navigate(['doc/' + key])
   }
