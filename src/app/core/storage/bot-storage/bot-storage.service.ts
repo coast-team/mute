@@ -8,11 +8,10 @@ import { environment } from '../../../../environments/environment'
 @Injectable()
 export class BotStorageService extends AbstractStorageService {
 
-  readonly name: string = 'Remote Bot Storage'
   public currentBot: {url: string, key: string} = {url: '', key: ''}
 
   constructor (private http: Http) {
-    super()
+    super('Bot Storage', 'bot', 'cloud')
   }
 
   isReachable (): Promise<boolean> {
@@ -49,8 +48,8 @@ export class BotStorageService extends AbstractStorageService {
   }
 
   updateCurrent (key) {
-      this.currentBot.url = this.getURL()
-      this.currentBot.key = key
+    this.currentBot.url = this.getURL()
+    this.currentBot.key = key
   }
 
   getURL () {

@@ -1,5 +1,5 @@
 <!-- Content -->
-<div fxFlexFill fxLayout="row" fxLayoutAlign="center start" *ngIf='isStorageServiceSelected() && hasDocuments'>
+<div fxFlexFill fxLayout="row" fxLayoutAlign="center start" *ngIf='hasDocuments'>
 
   <div fxFlex="95%" fxLayout="column" fxLayoutAlign="start center">
     <div fxFlexFill fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
@@ -23,7 +23,7 @@
 
 </div>
 
-<div fxFlexFill fxLayout="row" fxLayoutAlign="center center">
+<!--<div fxFlexFill fxLayout="row" fxLayoutAlign="center center">
   <div *ngIf='isStorageServiceSelected() && !hasDocuments'>
     <span>No documents stored at {{getStorageServiceName()}}. Create the first: </span>
     <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
@@ -32,4 +32,4 @@
     <span>No storage selected. Pick one on the left or just create a new document: </span>
     <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
   </div>
-</div>
+</div>-->

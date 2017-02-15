@@ -26,6 +26,14 @@ export class StorageManagerService {
     return this.storageServiceSubject.asObservable()
   }
 
+  getStorageByLink (link) {
+    for (let s of this.storageServices) {
+      if (s.link === link) {
+        return s
+      }
+    }
+  }
+
   getStorageServices (): AbstractStorageService[] {
     return this.storageServices
   }

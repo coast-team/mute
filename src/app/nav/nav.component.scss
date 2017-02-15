@@ -5,11 +5,6 @@
   min-width: 30rem;
 }
 
-.active {
-  border-left: 3px solid md-color($accent);
-  font-family: $font-medium;
-}
-
 .btn {
   margin: 0;
 }
@@ -27,5 +22,27 @@ h1 {
     color: inherit;
     text-decoration: inherit;
     outline: none;
+  }
+}
+
+md-button-toggle-group {
+  box-shadow: none;
+
+  .content {
+    display: inline-block;
+    width: 100%;
+    height: 5rem;
+    font-family: $font-header;
+    font-size: 1.6rem;
+  }
+
+  md-icon {
+    margin-right: 1rem;
+  }
+
+  .active-link {
+    .content {
+      font-family: $font-header-bold;
+    }
   }
 }

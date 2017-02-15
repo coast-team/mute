@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
       this.leftSidenavElm.opened = open
     })
     this.storageManager.onStorageService.subscribe((storage: AbstractStorageService) => {
-      this.storageName = storage.name
+      this.storageName = storage.title
     })
     this.ui.openNav()
   }

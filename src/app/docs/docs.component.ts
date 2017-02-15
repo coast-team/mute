@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core'
 import { MdSnackBar } from '@angular/material'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute, Params } from '@angular/router'
 import { Subject, Subscription } from 'rxjs/Rx'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
@@ -21,6 +21,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   private snackBarSubject: Subject<string>
 
   constructor (
+    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MdSnackBar,
     private storageManagerService: StorageManagerService,
@@ -28,12 +29,15 @@ export class DocsComponent implements OnDestroy, OnInit {
 ) {}
 
   ngOnInit () {
+    this.route.params.subscribe((params: Params) => {
+      const storage = params['storage']
+      // this.ui.toolbarTitle = this.getStorageServiceName()
+    })
     this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
       this.docs = docs
       this.hasDocuments = (this.docs.length > 0)
     })
     this.ui.openNav()
-    this.ui.toolbarTitle = this.getStorageServiceName()
 
     this.snackBarSubject = new Subject()
     this.snackBarSubject
@@ -47,19 +51,13 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy () {
     this.snackBarSubject.complete()
-
     this.docsSubscription.unsubscribe()
   }
 
-  isStorageServiceSelected (): boolean {
-    const storageService = this.storageManagerService.getCurrentStorageService()
-    return storageService instanceof AbstractStorageService
-  }
-
-  getStorageServiceName (): string {
-    const storageService = this.storageManagerService.getCurrentStorageService()
-    return storageService === undefined ? '' : storageService.name
-  }
+  // getStorageServiceName (): string {
+  //   const storageService = this.storageManagerService.getCurrentStorageService()
+  //   return storageService === undefined ? '' : storageService.name
+  // }
 
   getDocuments (): Promise<any> {
     const storageService = this.storageManagerService.getCurrentStorageService()

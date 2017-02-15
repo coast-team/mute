@@ -1,27 +1,36 @@
-import { Component } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, OnInit } from '@angular/core'
+import { Router, ActivatedRoute, Params } from '@angular/router'
+import { MdDialog } from '@angular/material'
+
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
+import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
 
 @Component({
   selector: 'mute-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent {
+export class NavComponent implements OnInit {
+
 
   constructor (
+    private route: ActivatedRoute,
     private router: Router,
-    private storageManager: StorageManagerService
+    public sm: StorageManagerService,
+    public dialog: MdDialog
   ) { }
 
+  ngOnInit () {
+  }
+
   getStorageServices (): AbstractStorageService[] {
-    return this.storageManager.getStorageServices()
+    return this.sm.getStorageServices()
   }
 
   setCurrentStorageService (storageService: AbstractStorageService) {
-    this.storageManager.setCurrentStorageService(storageService)
+    this.sm.setCurrentStorageService(storageService)
   }
 
   newDoc () {
@@ -35,5 +44,12 @@ export class NavComponent {
       key += MASK[Math.round(Math.random() * (MASK.length - 1))]
     }
     this.router.navigate(['doc/' + key])
+  }
+
+  openDialog () {
+    let dialogRef = this.dialog.open(AddStorageDialogComponent)
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   log.debug('RESULT is: ', result)
+    // })
   }
 }

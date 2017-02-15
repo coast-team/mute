@@ -111,6 +111,7 @@ export class NetworkService {
 
   set messageToSendToSource (source: Observable<SendToMessage>) {
     this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
+      log.debug('Message to be sent: ', sendToMessage)
       this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
     })
   }
@@ -193,6 +194,15 @@ export class NetworkService {
 
   inviteBot (url: string): void {
     this.webChannel.invite(`ws://${url}`)
+      .then(() => {
+        log.info('network', `Sending the document key ${this.key} to the bot`)
+        const pbMsg = new pb.Message()
+        pbMsg.setService('Bot Storage')
+        const pbBotRequest = new pb.BotRequest()
+        pbBotRequest.setKey(this.key)
+        pbMsg.setContent(pbBotRequest.serializeBinary())
+        this.webChannel.send(pbMsg.serializeBinary())
+      })
   }
 
   send (service: string, content: ArrayBuffer): void

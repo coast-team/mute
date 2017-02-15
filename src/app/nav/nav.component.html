@@ -1,10 +1,26 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
   <h1><a routerLink="/">MUTE</a></h1>
   <button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="newDoc()">New Document</button>
-  <nav fxLayout="column" fxLayoutAlign="start stretch">
-    <mute-storage *ngFor="let storageService of getStorageServices()"
-        [storageService]="storageService"
-        (click)="setCurrentStorageService(storageService)">
-    </mute-storage>
-  </nav>
+  <!--<button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="openDialog()">Add Storage</button>-->
+  <md-button-toggle-group vertical="true" fxLayout="column" fxLayoutAlign="start stretch">
+    <md-button-toggle
+      routerLink="/"
+      routerLinkActive="active-link" #rla="routerLinkActive"
+      [routerLinkActiveOptions]="{exact: true}"
+      [checked]="rla.isActive">
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">All Documents</span>
+    </md-button-toggle>
+    <md-button-toggle *ngFor="let s of this.sm.getStorageServices()"
+        [routerLink]="s.link"
+        routerLinkActive="active-link" #rla="routerLinkActive"
+        [checked]="rla.isActive"
+        [value]="s.link"
+        (click)="setCurrentStorageService(s)"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{s.icon}}</md-icon>
+        {{s.title}}
+      </span>
+    </md-button-toggle>
+  </md-button-toggle-group>
 </div>

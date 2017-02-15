@@ -4,8 +4,13 @@
 }
 
 @font-face {
-    font-family: Lato;
+    font-family: Lato-Regular;
     src: url(assets/font/Lato/Lato-Regular.ttf);
+}
+
+@font-face {
+    font-family: Lato-Bold;
+    src: url(assets/font/Lato/Lato-Bold.ttf);
 }
 
 @font-face {
@@ -19,7 +24,8 @@ $font-regular: DroidSans, sans-serif;
 $font-medium: DroidSans, sans-serif;
 
 // Headers
-$font-header: Lato, serif;
+$font-header: Lato-Regular, sans-serif;
+$font-header-bold: Lato-Bold, sans-serif;
 
 // Logo
 $font-logo: CinzelDecorative-Regular, serif;

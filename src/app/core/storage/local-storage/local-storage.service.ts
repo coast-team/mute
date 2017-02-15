@@ -2,17 +2,14 @@ import { Injectable } from '@angular/core'
 
 import { AbstractStorageService } from '../AbstractStorageService'
 
-declare const jIO: any
-
 @Injectable()
 export class LocalStorageService extends AbstractStorageService {
 
-  private instance: any
-  readonly name = 'Local Storage'
+  private jio: any
 
   constructor () {
-    super()
-    this.instance = jIO.createJIO({
+    super('Local Storage', 'local', 'computer')
+    this.jio = jIO.createJIO({
       type: 'query',
       sub_storage: {
         type: 'uuid',
@@ -26,7 +23,7 @@ export class LocalStorageService extends AbstractStorageService {
 
   delete (name: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.instance.remove(name)
+      this.jio.remove(name)
         .then(() => {
           resolve()
         }, (err: Error) => {
@@ -54,11 +51,11 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   get (name: string): Promise<any> {
-    return this.instance.get(name)
+    return this.jio.get(name)
   }
 
   put (name: string, object: any): Promise<string> {
-    return this.instance.put(name, object)
+    return this.jio.put(name, object)
   }
 
   isReachable (): Promise<boolean> {
@@ -66,7 +63,7 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   getDocuments (): Promise<any[]> {
-    return this.instance.allDocs().then((response) => {
+    return this.jio.allDocs().then((response) => {
       return response.data.rows
     })
   }

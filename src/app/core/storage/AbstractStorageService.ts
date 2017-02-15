@@ -1,6 +1,10 @@
 export abstract class AbstractStorageService {
 
-  readonly name: string
+  constructor (
+    readonly title: string,
+    readonly link: string,
+    readonly icon: string
+  ) { }
 
   abstract delete (name: string): Promise<void>
   abstract deleteAll (): Promise<void>
