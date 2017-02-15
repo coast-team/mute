@@ -3,6 +3,8 @@
 
 declare var System: any
 
+declare var jIO: any
+
 // Logging frameworks global variables
 declare var log: Log
 declare var BRAGI: any
