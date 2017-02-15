@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
 import { MdSnackBar } from '@angular/material'
-import { Router, ActivatedRoute, Params } from '@angular/router'
-import { Subject, Subscription } from 'rxjs/Rx'
+import { Router } from '@angular/router'
+import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 import { UiService } from 'core/ui/ui.service'
+import { Folder } from 'core/storage/Folder'
 
 @Component({
   selector: 'mute-docs',
@@ -14,32 +15,41 @@ import { UiService } from 'core/ui/ui.service'
 })
 export class DocsComponent implements OnDestroy, OnInit {
 
-  private docsSubscription: Subscription
-  private docs: any[]
+  private activeFolderSubs: Subscription
   private hasDocuments: boolean
+  private docsSubject: BehaviorSubject<any>
 
   private snackBarSubject: Subject<string>
 
+  public activeFolder: Folder
+
   constructor (
-    private route: ActivatedRoute,
     private router: Router,
     private snackBar: MdSnackBar,
-    private storageManagerService: StorageManagerService,
-    public ui: UiService
-) {}
+    private sm: StorageManagerService,
+    public ui: UiService,
+    private ref: ChangeDetectorRef
+  ) {
+    this.docsSubject = new BehaviorSubject([])
+    this.snackBarSubject = new Subject()
+  }
 
   ngOnInit () {
-    this.route.params.subscribe((params: Params) => {
-      const storage = params['storage']
-      // this.ui.toolbarTitle = this.getStorageServiceName()
-    })
-    this.docsSubscription = this.storageManagerService.onDocs.subscribe((docs: any[]) => {
-      this.docs = docs
-      this.hasDocuments = (this.docs.length > 0)
+    log.angular('DocsComponent init')
+    this.activeFolderSubs = this.sm.onActiveFolder.subscribe((folder: Folder) => {
+      if (folder !== null) {
+        this.activeFolder = folder
+        this.docsSubject.next([])
+        folder.getDocuments()
+          .then((docs: any) => {
+            this.docsSubject.next(docs)
+            // FIXME: have to call detectChanges() for document list view update
+            this.ref.detectChanges()
+          })
+      }
     })
     this.ui.openNav()
 
-    this.snackBarSubject = new Subject()
     this.snackBarSubject
       .throttleTime(500)
       .subscribe((message: string) => {
@@ -49,43 +59,48 @@ export class DocsComponent implements OnDestroy, OnInit {
       })
   }
 
+  get docs () {
+    return this.docsSubject.asObservable()
+  }
+
   ngOnDestroy () {
     this.snackBarSubject.complete()
-    this.docsSubscription.unsubscribe()
+    this.activeFolderSubs.unsubscribe()
   }
 
   // getStorageServiceName (): string {
-  //   const storageService = this.storageManagerService.getCurrentStorageService()
+  //   const storageService = this.sm.getCurrentStorageService()
   //   return storageService === undefined ? '' : storageService.name
   // }
 
   getDocuments (): Promise<any> {
-    const storageService = this.storageManagerService.getCurrentStorageService()
-    return storageService.getDocuments()
+    // const storageService = this.sm.getCurrentStorageService()
+    // return storageService.getDocuments()
+    return Promise.resolve([])
   }
 
   deleteAllDocs (): void {
-    const storageService = this.storageManagerService.getCurrentStorageService()
-    storageService.deleteAll()
-      .then(() => {
-        this.docs = []
-        this.hasDocuments = false
-      })
-      .catch((err: Error) => {
-        this.snackBarSubject.next(err.message)
-      })
+    // const storageService = this.sm.getCurrentStorageService()
+    // storageService.deleteAll()
+    //   .then(() => {
+    //     this.docs = []
+    //     this.hasDocuments = false
+    //   })
+    //   .catch((err: Error) => {
+    //     this.snackBarSubject.next(err.message)
+    //   })
   }
 
   deleteDoc (key: string): void {
-    const storageService = this.storageManagerService.getCurrentStorageService()
-    storageService.delete(key)
-      .then(() => {
-        this.docs = this.docs.filter((doc: any) => doc.id !== key)
-        this.hasDocuments = (this.docs.length > 0)
-      })
-      .catch((err: Error) => {
-        this.snackBarSubject.next(err.message)
-      })
+    // const storageService = this.sm.getCurrentStorageService()
+    // storageService.delete(key)
+    //   .then(() => {
+    //     this.docs = this.docs.filter((doc: any) => doc.id !== key)
+    //     this.hasDocuments = (this.docs.length > 0)
+    //   })
+    //   .catch((err: Error) => {
+    //     this.snackBarSubject.next(err.message)
+    //   })
   }
 
   openDoc (key: string) {

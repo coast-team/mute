@@ -1,3 +1,5 @@
+import { Folder } from 'core/storage/Folder'
+
 export abstract class AbstractStorageService {
 
   constructor (
@@ -6,8 +8,10 @@ export abstract class AbstractStorageService {
     readonly icon: string
   ) { }
 
-  abstract delete (name: string): Promise<void>
-  abstract deleteAll (): Promise<void>
+  abstract delete (folder: Folder, name: string): Promise<void>
+  abstract deleteAll (folder: Folder): Promise<void>
   abstract isReachable (): Promise<any>
-  abstract getDocuments (): Promise<any>
+  abstract getDocuments (folder: Folder): Promise<any>
+  abstract getDocument (folder: Folder, name: string)
+  abstract addDocument (folder: Folder, name: string, doc: any)
 }

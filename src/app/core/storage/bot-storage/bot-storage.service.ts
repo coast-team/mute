@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
+import { Observable } from 'rxjs/Rx'
 
 import { AbstractStorageService } from '../AbstractStorageService'
-
+import { Folder } from 'core/storage/Folder'
 import { environment } from '../../../../environments/environment'
 
 @Injectable()
@@ -10,8 +11,11 @@ export class BotStorageService extends AbstractStorageService {
 
   public currentBot: {url: string, key: string} = {url: '', key: ''}
 
+  public folders: Observable<Folder>
+
   constructor (private http: Http) {
     super('Bot Storage', 'bot', 'cloud')
+    this.folders = Observable.of(new Folder('Bot Storage', 'bot', 'cloud', this))
   }
 
   isReachable (): Promise<boolean> {
@@ -31,21 +35,25 @@ export class BotStorageService extends AbstractStorageService {
       })
   }
 
-  delete (name: string): Promise<void> {
+  delete (folder: Folder, name: string): Promise<void> {
     return Promise.reject('not yet implemented')
   }
 
-  deleteAll (): Promise<void> {
+  deleteAll (folder: Folder): Promise<void> {
     return Promise.reject('not yet implemented')
   }
 
-  getDocuments (): Promise<any> {
+  getDocuments (folder: Folder): Promise<any> {
     return this.http.get(`http://${environment.botStorageAPI}/docs`).toPromise()
       .then((response) => {
         log.debug('DOCS: ', response.json())
         return response.json()
       })
   }
+
+  getDocument (folder: Folder, name: string) {}
+
+  addDocument (folder: Folder, name: string, doc: any) {}
 
   updateCurrent (key) {
     this.currentBot.url = this.getURL()

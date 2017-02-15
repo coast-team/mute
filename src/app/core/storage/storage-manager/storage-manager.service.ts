@@ -1,57 +1,31 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
+
 import { AbstractStorageService } from '../AbstractStorageService'
 import { LocalStorageService } from '../local-storage/local-storage.service'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
+import { Folder } from 'core/storage/Folder'
 
 @Injectable()
 export class StorageManagerService {
 
   private storageServices: AbstractStorageService[]
-  private currentStorageService: AbstractStorageService
-  private storageServiceSubject: Subject<AbstractStorageService>
-  private docsSubject: BehaviorSubject<any>
+  private activeFolderSubject: BehaviorSubject<Folder | null>
+
+  public folders: Observable<Folder[]>
 
   constructor (localStorage: LocalStorageService, botStorage: BotStorageService) {
+    this.activeFolderSubject = new BehaviorSubject(null)
     this.storageServices = [localStorage, botStorage]
-    this.docsSubject = new BehaviorSubject<any>([])
-    this.storageServiceSubject = new Subject<AbstractStorageService>()
+    this.folders = localStorage.folders
   }
 
-  get onDocs (): Observable<any> {
-    return this.docsSubject
+  setActiveFolder (folder: Folder) {
+    this.activeFolderSubject.next(folder)
   }
 
-  get onStorageService (): Observable<AbstractStorageService> {
-    return this.storageServiceSubject.asObservable()
-  }
-
-  getStorageByLink (link) {
-    for (let s of this.storageServices) {
-      if (s.link === link) {
-        return s
-      }
-    }
-  }
-
-  getStorageServices (): AbstractStorageService[] {
-    return this.storageServices
-  }
-
-  getCurrentStorageService (): AbstractStorageService {
-    return this.currentStorageService
-  }
-
-  setCurrentStorageService (storageService: AbstractStorageService): void {
-    this.currentStorageService = storageService
-    this.storageServiceSubject.next(storageService)
-    this.getDocuments().then((docs: any[]) => {
-      this.docsSubject.next(docs)
-    })
-  }
-
-  getDocuments (): Promise<any> {
-    return this.currentStorageService.getDocuments()
+  get onActiveFolder (): Observable<Folder> {
+    return this.activeFolderSubject.asObservable()
   }
 
 }
