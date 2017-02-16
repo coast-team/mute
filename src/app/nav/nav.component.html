@@ -14,14 +14,14 @@
       disabled>
       <span class="content" fxLayout="row" fxLayoutAlign="left center">All Documents</span>
     </md-button-toggle>-->
-    <md-button-toggle *ngFor="let f of sm.folders | async"
+    <md-button-toggle *ngFor="let f of sm.onRootFolders | async"
         [routerLink]="f.link"
         routerLinkActive="active-link" #rla="routerLinkActive"
         [checked]="rla.isActive"
         [value]="f"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{f.icon}}</md-icon>
+        <md-icon color="primary">{{f.icon}}</md-icon>
         {{f.title}}
       </span>
     </md-button-toggle>

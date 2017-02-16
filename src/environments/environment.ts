@@ -7,6 +7,10 @@ export const environment = {
   production: false,
   devLabel: false,
   signalingURL: 'http://signal2.loria.fr',
-  botStorageAPI: 'localhost:8080',
-  botStorage: 'localhost:9000'
+  storages: [
+    {
+      api: 'http://localhost:8080',
+      p2p: 'ws://localhost:9000'
+    }
+  ]
 }

@@ -182,9 +182,9 @@ export class NetworkService {
         this.doorSubject.next(true)
         const created = this.members.length === 0
         this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
-        if (key === this.botStorageService.currentBot.key) {
-          this.inviteBot(this.botStorageService.currentBot.url)
-        }
+        // if (key === this.botStorageService.currentBot.key) {
+        //   this.inviteBot(this.botStorageService.currentBot.url)
+        // }
       })
       .catch((reason) => {
         log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)

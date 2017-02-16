@@ -1,66 +1,65 @@
 import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
-import { Observable } from 'rxjs/Rx'
+import { ReplaySubject, Observable } from 'rxjs/Rx'
 
-import { AbstractStorageService } from '../AbstractStorageService'
+import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { Folder } from 'core/storage/Folder'
 import { environment } from '../../../../environments/environment'
 
 @Injectable()
 export class BotStorageService extends AbstractStorageService {
 
-  public currentBot: {url: string, key: string} = {url: '', key: ''}
+  private bots: Map<string, {api: string, p2p: string}>
+  private foldersSubject: ReplaySubject<Folder>
 
-  public folders: Observable<Folder>
+  public onFolders: Observable<Folder>
 
   constructor (private http: Http) {
-    super('Bot Storage', 'bot', 'cloud')
-    this.folders = Observable.of(new Folder('Bot Storage', 'bot', 'cloud', this))
-  }
-
-  isReachable (): Promise<boolean> {
-    return this.http.get(`http://${environment.botStorageAPI}/ping`).toPromise()
-      .then((response) => {
-        if (typeof response.text() !== 'string' || response.text() !== 'pong') {
-          let msg = 'Wrong bot storage response on /ping'
-          log.error(msg)
-          return false
-          // FIXME: Re-enable the following line?
-          // throw new Error(msg)
-        }
-        return true
-      })
-      .catch(() => {
-        return false
-      })
+    super()
+    this.bots = new Map()
+    this.foldersSubject = new ReplaySubject()
+    this.onFolders = this.foldersSubject.asObservable()
+    const promises = new Array<Promise<void>>()
+    environment.storages.forEach((bot: {api: string, p2p: string}) => {
+      promises.push(
+        this.http.get(`${bot.api}/name`).toPromise()
+          .then((response) => {
+            const botName = response.text()
+            const botLink = 'bs-' + encodeURI(botName.toLowerCase())
+            this.bots.set(botLink, bot)
+            const folder = new Folder(`Bot Storage: ${botName}`, botLink, 'cloud', this)
+            this.foldersSubject.next(folder)
+          })
+          .catch((err) => log.info(`Bot storage ${bot.api} is unavailable`, err))
+      )
+    })
+    Promise.all(promises).then(() => this.foldersSubject.complete())
   }
 
   delete (folder: Folder, name: string): Promise<void> {
-    return Promise.reject('not yet implemented')
+    throw new Error('Not implemented')
   }
 
   deleteAll (folder: Folder): Promise<void> {
-    return Promise.reject('not yet implemented')
+    throw new Error('Not implemented')
   }
 
-  getDocuments (folder: Folder): Promise<any> {
-    return this.http.get(`http://${environment.botStorageAPI}/docs`).toPromise()
-      .then((response) => {
-        log.debug('DOCS: ', response.json())
-        return response.json()
-      })
+  getDocuments (folder: Folder): Promise<Array<any>> {
+    const bot = this.bots.get(folder.link)
+    if (bot !== undefined) {
+      return this.http.get(`${bot.api}/docs`).toPromise()
+        .then((response) => response.json())
+    } else {
+      log.warn(`Could not find a bot related to ${folder.link} folder`)
+      return Promise.resolve([])
+    }
   }
 
-  getDocument (folder: Folder, name: string) {}
-
-  addDocument (folder: Folder, name: string, doc: any) {}
-
-  updateCurrent (key) {
-    this.currentBot.url = this.getURL()
-    this.currentBot.key = key
+  getDocument (folder: Folder, name: string) {
+    throw new Error('Not implemented')
   }
 
-  getURL () {
-    return environment.botStorage
+  addDocument (folder: Folder, name: string, doc: any) {
+    throw new Error('Not implemented')
   }
 }

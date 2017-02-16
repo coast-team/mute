@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs/Rx'
+import { ReplaySubject, Observable } from 'rxjs/Rx'
 
 import { AbstractStorageService } from '../AbstractStorageService'
 import { Folder } from 'core/storage/Folder'
@@ -9,16 +9,15 @@ export class LocalStorageService extends AbstractStorageService {
 
   private homeIO: any
   private trashIO: any
-  private folderStorages: Map<Folder, any>
-  public home: Folder
+  private jios: Map<Folder, any>
 
-  public folders: Observable<Folder[]>
+  public onFolders: Observable<Folder>
 
   constructor () {
-    super('Local Storage', 'local', 'computer')
-    this.home = new Folder('Local Storage', 'local', 'computer', this)
+    super()
+    const home = new Folder('Local Storage', 'local', 'computer', this)
     const trash = new Folder('Trash', 'trash', 'delete', this)
-    this.folders = Observable.of([this.home, trash])
+    this.onFolders = Observable.of(home, trash)
     this.homeIO = jIO.createJIO({
       type: 'query',
       sub_storage: {
@@ -39,13 +38,13 @@ export class LocalStorageService extends AbstractStorageService {
         }
       }
     })
-    this.folderStorages = new Map()
-    this.folderStorages.set(this.home, this.homeIO)
-    this.folderStorages.set(this.home, this.trashIO)
+    this.jios = new Map()
+    this.jios.set(home, this.homeIO)
+    this.jios.set(trash, this.trashIO)
   }
 
   delete (folder: Folder, name: string): Promise<void> {
-    const folderIO = this.folderStorages.get(folder)
+    const folderIO = this.jios.get(folder)
     if (folderIO !== undefined) {
       return new Promise<void>((resolve, reject) => {
         folderIO.remove(name).then(() => resolve(), (err: Error) => reject(err))
@@ -55,7 +54,7 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   deleteAll (folder: Folder): Promise<void> {
-    const folderIO = this.folderStorages.get(folder)
+    const folderIO = this.jios.get(folder)
     if (folderIO !== undefined) {
       return new Promise<void>((resolve, reject) => {
         this.getDocuments(folder)
@@ -77,12 +76,12 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   get (name: string): Promise<any> {
-    const homeIO = this.folderStorages.get(this.home)
+    const homeIO = this.jios.get(this.home)
     return homeIO.get(name)
   }
 
   put (name: string, object: any): Promise<string> {
-    const homeIO = this.folderStorages.get(this.home)
+    const homeIO = this.jios.get(this.home)
     return homeIO.put(name, object)
   }
 
@@ -91,7 +90,7 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   getDocuments (folder: Folder): Promise<any[]> {
-    const folderIO = this.folderStorages.get(folder)
+    const folderIO = this.jios.get(folder)
     if (folderIO !== undefined) {
       return folderIO.allDocs().then((response) => {
         return response.data.rows
@@ -101,7 +100,7 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   getDocument (folder: Folder, name: string) {
-    const folderIO = this.folderStorages.get(folder)
+    const folderIO = this.jios.get(folder)
     if (folderIO !== undefined) {
       return folderIO.get(name)
     }
@@ -109,7 +108,7 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   addDocument (folder: Folder, name: string, doc: any) {
-    const folderIO = this.folderStorages.get(folder)
+    const folderIO = this.jios.get(folder)
     if (folderIO !== undefined) {
       return folderIO.put(name, doc)
     }

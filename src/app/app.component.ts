@@ -1,12 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
+import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { environment } from '../environments/environment'
 import { UiService } from 'core/ui/ui.service'
 import { ProfileService } from 'core/profile/profile.service'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-
+import { Folder } from 'core/storage/Folder'
 
 @Component({
   selector: 'mute-root',
@@ -18,16 +19,19 @@ export class AppComponent implements OnInit {
   @ViewChild('toolbarElm') toolbarElm
   @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
-  public storageName: string
+  public rootFolderTitle: Observable<string>
   public innerWidth = window.innerWidth
 
   constructor (
-    private storageManager: StorageManagerService,
+    public sm: StorageManagerService,
     private router: Router,
     public ui: UiService,
     public profile: ProfileService
   ) {
     this.visible = environment.devLabel
+    this.rootFolderTitle = this.sm.onActiveFolder
+      .filter((folder) => folder !== null)
+      .pluck('title')
   }
 
   ngOnInit () {
@@ -37,9 +41,6 @@ export class AppComponent implements OnInit {
     this.ui.onNavToggle.subscribe((open: boolean) => {
       this.leftSidenavElm.opened = open
     })
-    // this.storageManager.onStorageService.subscribe((storage: AbstractStorageService) => {
-    //   this.storageName = storage.title
-    // })
     this.ui.openNav()
   }
 
