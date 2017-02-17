@@ -2,22 +2,23 @@ import { Injectable } from '@angular/core'
 import { ReplaySubject, Observable } from 'rxjs/Rx'
 
 import { AbstractStorageService } from '../AbstractStorageService'
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 @Injectable()
 export class LocalStorageService extends AbstractStorageService {
 
   private homeIO: any
   private trashIO: any
-  private jios: Map<Folder, any>
+  private jios: Map<File, any>
 
-  public onFolders: Observable<Folder>
+  public rootFiles: File[]
+  public trashFile: File
 
   constructor () {
     super()
-    const home = new Folder('Local Storage', 'local', 'computer', this)
-    const trash = new Folder('Trash', 'trash', 'delete', this)
-    this.onFolders = Observable.of(home, trash)
+    const home = new File('local', 'Local Storage', 'computer', false, this)
+    this.trashFile = new File('trash', 'Trash', 'delete', false, this)
+    this.rootFiles = [home]
     this.homeIO = jIO.createJIO({
       type: 'query',
       sub_storage: {
@@ -40,27 +41,31 @@ export class LocalStorageService extends AbstractStorageService {
     })
     this.jios = new Map()
     this.jios.set(home, this.homeIO)
-    this.jios.set(trash, this.trashIO)
+    this.jios.set(this.trashFile, this.trashIO)
   }
 
-  delete (folder: Folder, name: string): Promise<void> {
-    const folderIO = this.jios.get(folder)
-    if (folderIO !== undefined) {
+  getRootFiles (): Promise<File[]> {
+    return Promise.resolve(this.rootFiles)
+  }
+
+  delete (file: File, name: string): Promise<void> {
+    const fileIO = this.jios.get(file)
+    if (fileIO !== undefined) {
       return new Promise<void>((resolve, reject) => {
-        folderIO.remove(name).then(() => resolve(), (err: Error) => reject(err))
+        fileIO.remove(name).then(() => resolve(), (err: Error) => reject(err))
       })
     }
     return Promise.resolve()
   }
 
-  deleteAll (folder: Folder): Promise<void> {
-    const folderIO = this.jios.get(folder)
-    if (folderIO !== undefined) {
+  deleteAll (file: File): Promise<void> {
+    const fileIO = this.jios.get(file)
+    if (fileIO !== undefined) {
       return new Promise<void>((resolve, reject) => {
-        this.getDocuments(folder)
+        this.getDocuments(file)
           .then((docs: any[]) => {
             const promises: Promise<void>[] = docs.map((doc: any) => {
-              return this.delete(folder, doc.id)
+              return this.delete(file, doc.id)
             })
             Promise.all(promises)
               .then(() => {
@@ -76,12 +81,12 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   get (name: string): Promise<any> {
-    const homeIO = this.jios.get(this.home)
+    const homeIO = this.jios.get(this.rootFiles[0])
     return homeIO.get(name)
   }
 
   put (name: string, object: any): Promise<string> {
-    const homeIO = this.jios.get(this.home)
+    const homeIO = this.jios.get(this.rootFiles[0])
     return homeIO.put(name, object)
   }
 
@@ -89,28 +94,28 @@ export class LocalStorageService extends AbstractStorageService {
     return Promise.resolve(true)
   }
 
-  getDocuments (folder: Folder): Promise<any[]> {
-    const folderIO = this.jios.get(folder)
-    if (folderIO !== undefined) {
-      return folderIO.allDocs().then((response) => {
+  getDocuments (file: File): Promise<any[]> {
+    const fileIO = this.jios.get(file)
+    if (fileIO !== undefined) {
+      return fileIO.allDocs().then((response) => {
         return response.data.rows
       })
     }
     return Promise.resolve([])
   }
 
-  getDocument (folder: Folder, name: string) {
-    const folderIO = this.jios.get(folder)
-    if (folderIO !== undefined) {
-      return folderIO.get(name)
+  getDocument (file: File, name: string) {
+    const fileIO = this.jios.get(file)
+    if (fileIO !== undefined) {
+      return fileIO.get(name)
     }
     return null
   }
 
-  addDocument (folder: Folder, name: string, doc: any) {
-    const folderIO = this.jios.get(folder)
-    if (folderIO !== undefined) {
-      return folderIO.put(name, doc)
+  addDocument (file: File, name: string, doc: any) {
+    const fileIO = this.jios.get(file)
+    if (fileIO !== undefined) {
+      return fileIO.put(name, doc)
     }
     return true
   }

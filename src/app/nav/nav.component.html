@@ -4,25 +4,39 @@
   <!--<button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="openDialog()">Add Storage</button>-->
   <md-button-toggle-group fxLayout="column" fxLayoutAlign="start stretch"
       vertical="true"
-      (change)="setActiveFolder($event)"
+      (change)="setActiveFile($event)"
   >
-    <!--<md-button-toggle
-      routerLink="/"
+    <md-button-toggle
+      [routerLink]="sm.rootFile.id"
       routerLinkActive="active-link" #rla="routerLinkActive"
       [routerLinkActiveOptions]="{exact: true}"
       [checked]="rla.isActive"
-      disabled>
-      <span class="content" fxLayout="row" fxLayoutAlign="left center">All Documents</span>
-    </md-button-toggle>-->
-    <md-button-toggle *ngFor="let f of sm.onRootFolders | async"
-        [routerLink]="f.link"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon></md-icon>
+        {{sm.rootFile.title}}
+      </span>
+    </md-button-toggle>
+    <md-button-toggle *ngFor="let f of files | async"
+        [routerLink]="f.id"
         routerLinkActive="active-link" #rla="routerLinkActive"
         [checked]="rla.isActive"
         [value]="f"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon color="primary">{{f.icon}}</md-icon>
+        <md-icon>{{f.icon}}</md-icon>
         {{f.title}}
+      </span>
+    </md-button-toggle>
+    <hr class='divider'>
+    <md-button-toggle
+      [routerLink]="ls.trashFile.id"
+      routerLinkActive="active-link" #rla="routerLinkActive"
+      [checked]="rla.isActive"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{ls.trashFile.icon}}</md-icon>
+        {{ls.trashFile.title}}
       </span>
     </md-button-toggle>
   </md-button-toggle-group>

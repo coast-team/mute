@@ -1,10 +1,10 @@
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 export abstract class AbstractStorageService {
 
-  abstract delete (folder: Folder, name: string): Promise<void>
-  abstract deleteAll (folder: Folder): Promise<void>
-  abstract getDocuments (folder: Folder): Promise<any>
-  abstract getDocument (folder: Folder, name: string)
-  abstract addDocument (folder: Folder, name: string, doc: any)
+  abstract delete (folder: File, name: string): Promise<void>
+  abstract deleteAll (folder: File): Promise<void>
+  abstract getDocuments (folder: File): Promise<any>
+  abstract getDocument (folder: File, name: string)
+  abstract addDocument (folder: File, name: string, doc: any)
 }

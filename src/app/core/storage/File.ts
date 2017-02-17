@@ -1,10 +1,11 @@
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 
-export class Folder {
+export class File {
   constructor (
+    readonly id: string,
     readonly title: string,
-    readonly link: string,
     readonly icon: string,
+    readonly isDoc: boolean,
     private storage: AbstractStorageService
   ) { }
 

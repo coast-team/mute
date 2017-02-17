@@ -7,7 +7,7 @@ import { UiService } from 'core/ui/ui.service'
 import { ProfileService } from 'core/profile/profile.service'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 @Component({
   selector: 'mute-root',
@@ -19,7 +19,7 @@ export class AppComponent implements OnInit {
   @ViewChild('toolbarElm') toolbarElm
   @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
-  public rootFolderTitle: Observable<string>
+  public rootFileTitle: Observable<string>
   public innerWidth = window.innerWidth
 
   constructor (
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
     public profile: ProfileService
   ) {
     this.visible = environment.devLabel
-    this.rootFolderTitle = this.sm.onActiveFolder
+    this.rootFileTitle = this.sm.onActiveFile
       .filter((folder) => folder !== null)
       .pluck('title')
   }

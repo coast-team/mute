@@ -4,39 +4,59 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
 import { AbstractStorageService } from '../AbstractStorageService'
 import { LocalStorageService } from '../local-storage/local-storage.service'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 @Injectable()
-export class StorageManagerService {
+export class StorageManagerService extends AbstractStorageService {
 
-  private activeFolderSubject: BehaviorSubject<Folder | null>
+  private activeFileSubject: BehaviorSubject<File | null>
 
-  public onRootFolders: Observable<Folder[]>
+  public rootFile: File
 
-  constructor (localStorage: LocalStorageService, botStorage: BotStorageService) {
-    this.activeFolderSubject = new BehaviorSubject(null)
-
-    // Accumulate all root folders from local storages into one array
-    const localFolders = localStorage.onFolders.reduce((acc: Array<Folder>, curr) => {
-      acc.push(curr)
-      return acc
-    }, new Array<Folder>())
-
-    // Accumulate all root folders from bot storages into one array
-    const botFolders = botStorage.onFolders.reduce((acc: Array<Folder>, curr) => {
-      acc.push(curr)
-      return acc
-    }, new Array<Folder>())
-
-    // Combine both arrays together
-    this.onRootFolders = Observable.combineLatest(localFolders, botFolders, (v1, v2) => v1.concat(v2))
+  constructor (
+    private localStorage: LocalStorageService,
+    private botStorage: BotStorageService
+  ) {
+    super()
+    this.activeFileSubject = new BehaviorSubject(null)
+    this.rootFile = new File('', 'All documents', '', false, this)
   }
 
-  setActiveFolder (folder: Folder) {
-    this.activeFolderSubject.next(folder)
+  getRootFiles (): Promise<File[]> {
+    return Promise.all([
+      this.localStorage.getRootFiles(),
+      this.botStorage.getRootFiles()
+    ])
+      .then((allRootFiles) => {
+        return allRootFiles[0].concat(allRootFiles[1])
+      })
   }
 
-  get onActiveFolder (): Observable<Folder> {
-    return this.activeFolderSubject.asObservable()
+  setActiveFile (folder: File) {
+    this.activeFileSubject.next(folder)
+  }
+
+  get onActiveFile (): Observable<File> {
+    return this.activeFileSubject.asObservable()
+  }
+
+  delete (file: File, name: string): Promise<void> {
+    throw new Error('Not implemented')
+  }
+
+  deleteAll (file: File): Promise<void> {
+    throw new Error('Not implemented')
+  }
+
+  getDocuments (file: File): Promise<Array<any>> {
+    return Promise.resolve([])
+  }
+
+  getDocument (file: File, name: string) {
+    throw new Error('Not implemented')
+  }
+
+  addDocument (file: File, name: string, doc: any) {
+    throw new Error('Not implemented')
   }
 }

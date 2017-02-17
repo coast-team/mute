@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core'
-import { Router, ActivatedRoute, Params } from '@angular/router'
-import { MdDialog } from '@angular/material'
-
+import { Router } from '@angular/router'
+import { Observable } from 'rxjs/Rx'
 
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
+import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
 import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 @Component({
   selector: 'mute-nav',
@@ -15,15 +15,21 @@ import { Folder } from 'core/storage/Folder'
 })
 export class NavComponent implements OnInit {
 
+  public files: Observable<File[]>
+  public trash: File
+
   constructor (
-    private route: ActivatedRoute,
     private router: Router,
     public sm: StorageManagerService,
-    public dialog: MdDialog
+    public ls: LocalStorageService
   ) { }
 
   ngOnInit () {
+    this.sm.getRootFiles()
+      .then((rootFiles) => {
 
+      })
+    this.files = Observable.fromPromise(this.sm.getRootFiles())
   }
 
   newDoc () {
@@ -39,8 +45,8 @@ export class NavComponent implements OnInit {
     this.router.navigate(['doc/' + key])
   }
 
-  setActiveFolder ({value}) {
-    this.sm.setActiveFolder(value)
+  setActiveFile ({value}) {
+    this.sm.setActiveFile(value)
   }
 
   // openDialog () {

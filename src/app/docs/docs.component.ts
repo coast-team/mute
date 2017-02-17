@@ -6,7 +6,7 @@ import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 import { AbstractStorageService } from 'core/storage/AbstractStorageService'
 import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
 import { UiService } from 'core/ui/ui.service'
-import { Folder } from 'core/storage/Folder'
+import { File } from 'core/storage/File'
 
 @Component({
   selector: 'mute-docs',
@@ -15,13 +15,13 @@ import { Folder } from 'core/storage/Folder'
 })
 export class DocsComponent implements OnDestroy, OnInit {
 
-  private activeFolderSubs: Subscription
+  private activeFileSubs: Subscription
   private hasDocuments: boolean
   private docsSubject: BehaviorSubject<any>
 
   private snackBarSubject: Subject<string>
 
-  public activeFolder: Folder
+  public activeFile: File
 
   constructor (
     private router: Router,
@@ -36,9 +36,9 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   ngOnInit () {
     log.angular('DocsComponent init')
-    this.activeFolderSubs = this.sm.onActiveFolder.subscribe((folder: Folder) => {
+    this.activeFileSubs = this.sm.onActiveFile.subscribe((folder: File) => {
       if (folder !== null) {
-        this.activeFolder = folder
+        this.activeFile = folder
         this.docsSubject.next([])
         folder.getDocuments()
           .then((docs: any) => {
@@ -65,7 +65,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   ngOnDestroy () {
     this.snackBarSubject.complete()
-    this.activeFolderSubs.unsubscribe()
+    this.activeFileSubs.unsubscribe()
   }
 
   // getStorageServiceName (): string {
