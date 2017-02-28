@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-md-toolbar {
+mat-toolbar {
 
   h2 {
     margin: 0;
@@ -23,10 +23,10 @@ md-toolbar {
   }
 }
 
-md-sidenav-container {
+mat-sidenav-container {
   background-color: $color-bg !important;
 
-  md-sidenav {
+  mat-sidenav {
     min-width: 24rem;
   }
 }

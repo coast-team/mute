@@ -13,7 +13,7 @@
   }
 
   .double-bounce1 {
-    background-color: md-color($primary, A400);
+    background-color: mat-color($primary, A400);
   }
 
   .double-bounce1, .double-bounce2 {
@@ -32,7 +32,7 @@
   .double-bounce2 {
     -webkit-animation-delay: -1.0s;
     animation-delay: -1.0s;
-    background-color: md-color($accent, A400);
+    background-color: mat-color($accent, A400);
   }
 
   @-webkit-keyframes sk-bounce {

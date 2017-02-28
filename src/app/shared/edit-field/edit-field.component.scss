@@ -20,13 +20,13 @@
 
   .bottom-line {
     display: block;
-    background-color: md-color($accent);
+    background-color: mat-color($accent);
     height: 1px;
     width: 0px;
     transition: width .2s ease;
   }
 }
 
-md-icon {
+mat-icon {
   margin-left: 5px;
 }

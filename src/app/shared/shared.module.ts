@@ -9,7 +9,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
 @NgModule({
   imports: [
     CommonModule,
-    MaterialModule.forRoot(),
+    MaterialModule,
     FlexLayoutModule
   ],
   declarations: [ EditFieldComponent ],
