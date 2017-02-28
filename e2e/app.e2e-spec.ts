@@ -1,14 +1,14 @@
-import { MutePage } from './app.po'
+import { MyProjectPage } from './app.po';
 
-describe('mute App', function () {
-  let page: MutePage
+describe('my-project App', () => {
+  let page: MyProjectPage;
 
   beforeEach(() => {
-    page = new MutePage()
-  })
+    page = new MyProjectPage();
+  });
 
   it('should display message saying app works', () => {
-    page.navigateTo()
-    expect(page.getParagraphText()).toEqual('app works!')
-  })
-})
+    page.navigateTo();
+    expect(page.getParagraphText()).toEqual('app works!');
+  });
+});

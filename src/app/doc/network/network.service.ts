@@ -4,7 +4,7 @@ import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 import { create } from 'netflux'
 
 import { fetchIceServers } from './xirsysservers'
-import { BotStorageService } from 'core/storage/bot-storage/bot-storage.service'
+import { BotStorageService } from '../../core/storage/bot-storage/bot-storage.service'
 import { environment } from '../../../environments/environment'
 const pb = require('./message_pb.js')
 

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs/Rx'
 
-import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
-import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
+import { AbstractStorageService } from '../core/storage/AbstractStorageService'
+import { StorageManagerService } from '../core/storage/storage-manager/storage-manager.service'
+import { LocalStorageService } from '../core/storage/local-storage/local-storage.service'
 import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
-import { File } from 'core/storage/File'
+import { File } from '../core/storage/File'
 
 @Component({
   selector: 'mute-nav',

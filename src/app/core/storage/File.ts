@@ -1,4 +1,4 @@
-import { AbstractStorageService } from 'core/storage/AbstractStorageService'
+import { AbstractStorageService } from './AbstractStorageService'
 
 export class File {
   constructor (

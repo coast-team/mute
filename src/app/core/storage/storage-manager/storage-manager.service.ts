@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
 import { AbstractStorageService } from '../AbstractStorageService'
 import { LocalStorageService } from '../local-storage/local-storage.service'
 import { BotStorageService } from '../bot-storage/bot-storage.service'
-import { File } from 'core/storage/File'
+import { File } from '../File'
 
 @Injectable()
 export class StorageManagerService extends AbstractStorageService {

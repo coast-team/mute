@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
 import { Subscription } from 'rxjs'
 
-import { NetworkService } from 'doc/network'
+import { NetworkService } from '../../doc/network'
 
 @Component({
   selector: 'mute-right-side',

@@ -3,10 +3,10 @@ import { MdSnackBar } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
-import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
-import { UiService } from 'core/ui/ui.service'
-import { File } from 'core/storage/File'
+import { AbstractStorageService } from '../core/storage/AbstractStorageService'
+import { StorageManagerService } from '../core/storage/storage-manager/storage-manager.service'
+import { UiService } from '../core/ui/ui.service'
+import { File } from '../core/storage/File'
 
 @Component({
   selector: 'mute-docs',

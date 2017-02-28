@@ -1,0 +1,7 @@
+export * from './bot-storage/bot-storage.service'
+export * from './local-storage/local-storage.service'
+export * from './storage.service'
+export * from './AbstractStorageService'
+export * from './File'
+export * from './Folder'
+export * from './Doc'

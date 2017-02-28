@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable, Observer } from 'rxjs'
 
-import { LocalStorageService } from 'core/storage/local-storage/local-storage.service'
+import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
 
 import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
 

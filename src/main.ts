@@ -1,11 +1,9 @@
-import './polyfills.ts'
-import './log.ts'
-
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 import { enableProdMode } from '@angular/core'
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic'
 
+import './log.ts'
+import { AppModule } from './app'
 import { environment } from './environments/environment'
-import { AppModule } from './app/'
 
 if (environment.production) {
   enableProdMode()

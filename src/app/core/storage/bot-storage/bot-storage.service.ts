@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
 import { ReplaySubject, Observable } from 'rxjs/Rx'
 
-import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-import { File } from 'core/storage/File'
+import { AbstractStorageService } from '../AbstractStorageService'
+import { File } from '../File'
 import { environment } from '../../../../environments/environment'
 
 @Injectable()

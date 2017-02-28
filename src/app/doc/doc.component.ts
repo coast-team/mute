@@ -1,11 +1,11 @@
 import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
-import { ProfileService } from 'core/profile/profile.service'
-import { NetworkService } from 'doc/network'
-import { RichCollaboratorsService } from 'doc/rich-collaborators'
-import { SyncStorageService } from 'doc/sync/sync-storage.service'
-import { UiService } from 'core/ui/ui.service'
+import { ProfileService } from '../core/profile/profile.service'
+import { NetworkService } from '../doc/network'
+import { RichCollaboratorsService } from '../doc/rich-collaborators'
+import { SyncStorageService } from '../doc/sync/sync-storage.service'
+import { UiService } from '../core/ui/ui.service'
 
 import { MuteCore } from 'mute-core'
 

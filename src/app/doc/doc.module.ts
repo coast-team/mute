@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { CursorsDirective } from 'doc/editor/cursor/cursors.directive'
+import { CursorsDirective } from '../doc/editor/cursor/cursors.directive'
 import { RightSideModule } from './right-side'
-import { SharedModule } from 'shared'
+import { SharedModule } from '../shared'
 import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
 import { NetworkService } from './network/network.service'

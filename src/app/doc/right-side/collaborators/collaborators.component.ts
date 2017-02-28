@@ -8,7 +8,7 @@ import {
   transition,
   trigger
 } from '@angular/core'
-import { RichCollaborator, RichCollaboratorsService } from 'doc/rich-collaborators'
+import { RichCollaborator, RichCollaboratorsService } from '../../../doc/rich-collaborators'
 
 @Component({
   selector: 'mute-collaborators',

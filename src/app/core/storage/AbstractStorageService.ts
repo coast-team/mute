@@ -1,4 +1,4 @@
-import { File } from 'core/storage/File'
+import { File } from './File'
 
 export abstract class AbstractStorageService {
 

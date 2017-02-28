@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { ReplaySubject, Observable } from 'rxjs/Rx'
 
 import { AbstractStorageService } from '../AbstractStorageService'
-import { File } from 'core/storage/File'
+import { File } from '../File'
 
 @Injectable()
 export class LocalStorageService extends AbstractStorageService {

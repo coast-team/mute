@@ -9,7 +9,7 @@ import {
   transition,
   animate } from '@angular/core'
 
-import { NetworkService } from 'doc/network/network.service'
+import { NetworkService } from '../../../doc/network/network.service'
 
 @Component({
   selector: 'mute-invite-bot',

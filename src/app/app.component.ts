@@ -3,11 +3,11 @@ import { Router } from '@angular/router'
 import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { environment } from '../environments/environment'
-import { UiService } from 'core/ui/ui.service'
-import { ProfileService } from 'core/profile/profile.service'
-import { StorageManagerService } from 'core/storage/storage-manager/storage-manager.service'
-import { AbstractStorageService } from 'core/storage/AbstractStorageService'
-import { File } from 'core/storage/File'
+import { UiService } from './core/ui/ui.service'
+import { ProfileService } from './core/profile/profile.service'
+import { StorageManagerService } from './core/storage/storage-manager/storage-manager.service'
+import { AbstractStorageService } from './core/storage/AbstractStorageService'
+import { File } from './core/storage/File'
 
 @Component({
   selector: 'mute-root',
