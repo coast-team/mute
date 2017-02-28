@@ -16,7 +16,7 @@ import 'rxjs/add/operator/toPromise'
 })
 export class DevLabelComponent {
 
-  url: string = 'https://github.com/coast-team/mute/tree/'
+  url = 'https://github.com/coast-team/mute/tree/'
   shortID: string
 
   constructor (http: Http) {
