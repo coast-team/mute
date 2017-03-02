@@ -1,7 +1,7 @@
 import { Directive, Injectable, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core'
-import { RichCollaborator, RichCollaboratorsService } from 'doc/rich-collaborators/'
-import { NetworkService } from 'doc/network/'
-import { ServiceIdentifier } from 'helper/ServiceIdentifier'
+import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
+import { NetworkService } from '../../network/'
+import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
 
 import { Subscription } from 'rxjs'
 

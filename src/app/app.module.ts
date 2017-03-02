@@ -19,8 +19,8 @@ import { DocsModule } from './docs'
     CoreModule,
     SharedModule,
     NavModule,
-    DocModule,
     DocsModule,
+    DocModule,
     AppRoutingModule
   ],
   declarations: [

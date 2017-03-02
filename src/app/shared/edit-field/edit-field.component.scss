@@ -1,5 +1,5 @@
-@import '../../../assets/theme';
-@import '../../../assets/variables';
+@import 'theme';
+@import 'variables';
 
 :host {
 
@@ -27,6 +27,6 @@
   }
 }
 
-mat-icon {
+md-icon {
   margin-left: 5px;
 }

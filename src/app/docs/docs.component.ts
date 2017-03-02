@@ -3,10 +3,10 @@ import { MdSnackBar } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
-import { AbstractStorageService } from '../core/storage/AbstractStorageService'
-import { StorageManagerService } from '../core/storage/storage-manager/storage-manager.service'
+import { AbstractStorageService, LocalStorageService, BotStorageService } from '../core/storage'
+import { Folder } from '../core/Folder'
+import { File } from '../core/File'
 import { UiService } from '../core/ui/ui.service'
-import { File } from '../core/storage/File'
 
 @Component({
   selector: 'mute-docs',
@@ -20,34 +20,37 @@ export class DocsComponent implements OnDestroy, OnInit {
   private docsSubject: BehaviorSubject<any>
 
   private snackBarSubject: Subject<string>
-
-  public activeFile: File
+  private activeFolder: Folder
 
   constructor (
     private router: Router,
     private snackBar: MdSnackBar,
-    private sm: StorageManagerService,
+    private localStorage: LocalStorageService,
+    private botStorage: BotStorageService,
     public ui: UiService,
     private ref: ChangeDetectorRef
   ) {
     this.docsSubject = new BehaviorSubject([])
     this.snackBarSubject = new Subject()
+    this.activeFileSubs = this.ui.onActiveFile
+      .filter((file: File) => file instanceof Folder)
+      .subscribe((folder: Folder) => {
+        log.debug('Active folder: ' + folder.id)
+        this.activeFolder = folder
+        this.docsSubject.next([])
+        folder.getFiles()
+          .then((docs: any) => {
+            this.docsSubject.next(docs)
+            // FIXME: have to call detectChanges() for document list view update
+            // this.ref.detectChanges()
+          })
+      })
   }
 
   ngOnInit () {
     log.angular('DocsComponent init')
-    this.activeFileSubs = this.sm.onActiveFile.subscribe((folder: File) => {
-      if (folder !== null) {
-        this.activeFile = folder
-        this.docsSubject.next([])
-        folder.getDocuments()
-          .then((docs: any) => {
-            this.docsSubject.next(docs)
-            // FIXME: have to call detectChanges() for document list view update
-            this.ref.detectChanges()
-          })
-      }
-    })
+
+    log.debug('Docs subscribed')
     this.ui.openNav()
 
     this.snackBarSubject
@@ -73,22 +76,14 @@ export class DocsComponent implements OnDestroy, OnInit {
   //   return storageService === undefined ? '' : storageService.name
   // }
 
-  getDocuments (): Promise<any> {
+  getFiles (): Promise<any> {
     // const storageService = this.sm.getCurrentStorageService()
-    // return storageService.getDocuments()
+    // return storageService.getFiles()
     return Promise.resolve([])
   }
 
   deleteAllDocs (): void {
-    // const storageService = this.sm.getCurrentStorageService()
-    // storageService.deleteAll()
-    //   .then(() => {
-    //     this.docs = []
-    //     this.hasDocuments = false
-    //   })
-    //   .catch((err: Error) => {
-    //     this.snackBarSubject.next(err.message)
-    //   })
+    this.activeFolder.deleteAll()
   }
 
   deleteDoc (key: string): void {

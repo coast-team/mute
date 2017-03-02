@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs/Rx'
 
-import { AbstractStorageService } from '../core/storage/AbstractStorageService'
-import { StorageManagerService } from '../core/storage/storage-manager/storage-manager.service'
-import { LocalStorageService } from '../core/storage/local-storage/local-storage.service'
-import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
-import { File } from '../core/storage/File'
+import { StorageOverviewService, LocalStorageService, BotStorageService } from '../core/storage'
+import { Folder } from '../core/Folder'
+import { File } from '../core/File'
+// import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
+import { UiService } from '../core/ui/ui.service'
 
 @Component({
   selector: 'mute-nav',
@@ -15,21 +15,29 @@ import { File } from '../core/storage/File'
 })
 export class NavComponent implements OnInit {
 
-  public files: Observable<File[]>
-  public trash: File
+  public files: Promise<File[]>
+  public trash: Folder
 
   constructor (
     private router: Router,
-    public sm: StorageManagerService,
-    public ls: LocalStorageService
+    public storageOverview: StorageOverviewService,
+    public localStorage: LocalStorageService,
+    public botStorage: BotStorageService,
+    public ui: UiService,
   ) { }
 
   ngOnInit () {
-    this.sm.getRootFiles()
-      .then((rootFiles) => {
-
+    log.angular('NavComponent init')
+    this.files = this.botStorage.getRootFolders()
+      .then((folders) => {
+        const resFolders = [
+          this.storageOverview.allDocs,
+          this.localStorage.home
+        ]
+        folders.forEach((folder) => resFolders.push(folder))
+        return resFolders
       })
-    this.files = Observable.fromPromise(this.sm.getRootFiles())
+    this.trash = this.localStorage.trash
   }
 
   newDoc () {
@@ -46,7 +54,7 @@ export class NavComponent implements OnInit {
   }
 
   setActiveFile ({value}) {
-    this.sm.setActiveFile(value)
+    this.ui.setActiveFile(value)
   }
 
   // openDialog () {

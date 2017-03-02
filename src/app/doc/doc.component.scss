@@ -1,11 +1,11 @@
-@import '../../assets/theme';
-@import '../../assets/variables';
+@import 'theme';
+@import 'variables';
 
 :host {
   height: 100%;
 }
 
-mat-sidenav-container {
+md-sidenav-container {
   background-color: $color-bg !important;
   height: 100%;
 

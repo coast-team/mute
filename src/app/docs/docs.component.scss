@@ -1,11 +1,11 @@
-@import '../../assets/variables';
+@import 'variables';
 
 :host {
   width: 100%;
   height: 100%;
 }
 
-mat-card {
+md-card {
   margin: 2rem 0 0 0;
   padding: 0;
 }

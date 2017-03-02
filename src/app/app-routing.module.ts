@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
 
-export const routes: Routes = [
-  { path: 'doc', redirectTo: 'doc', pathMatch: 'prefix'},
-  { path: '**', redirectTo: '' }
+import { AppResolverService } from './app-resolver.service'
+
+const routes: Routes = [
+  { path: '**', redirectTo: '/docs/all' }
 ]
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [ RouterModule.forRoot(routes) ],
+  exports: [ RouterModule ],
+  providers: [ AppResolverService ]
 })
 export class AppRoutingModule {}

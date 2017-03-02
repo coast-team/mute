@@ -11,7 +11,14 @@ import { DocsComponent } from './docs.component'
     CommonModule,
     SharedModule,
     RouterModule.forChild([
-      {path: ':storage', component: DocsComponent}
+      {
+        path: 'docs',
+        redirectTo: '/docs/all',
+        pathMatch: 'full'
+      }, {
+        path: 'docs/:storage',
+        component: DocsComponent
+      }
     ])
   ],
   providers: []

@@ -1,10 +1,10 @@
-import { File } from './File'
+import { File } from '../File'
+import { Folder } from '../Folder'
 
 export abstract class AbstractStorageService {
 
-  abstract delete (folder: File, name: string): Promise<void>
-  abstract deleteAll (folder: File): Promise<void>
-  abstract getDocuments (folder: File): Promise<any>
-  abstract getDocument (folder: File, name: string)
-  abstract addDocument (folder: File, name: string, doc: any)
+  abstract delete (file: File): Promise<void>
+  abstract deleteAll (folder: Folder): Promise<void>
+  abstract getFiles (folder: Folder): Promise<File[]>
+  abstract addFile (folder: Folder, file: File): Promise<void>
 }

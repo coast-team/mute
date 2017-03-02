@@ -9,8 +9,8 @@ export const environment = {
   signalingURL: 'http://signal2.loria.fr',
   storages: [
     {
-      api: 'http://localhost:8080',
-      p2p: 'ws://localhost:9000'
+      apiURL: 'http://localhost:8080',
+      p2pURL: 'ws://localhost:9000'
     }
   ]
 }

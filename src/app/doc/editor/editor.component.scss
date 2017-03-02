@@ -1,7 +1,7 @@
-@import '../../../assets/theme';
-@import '../../../assets/variables';
+@import 'theme';
+@import 'variables';
 
-mat-card {
+md-card {
   height: auto;
   margin: 1.5% auto;
   min-height: 94%;

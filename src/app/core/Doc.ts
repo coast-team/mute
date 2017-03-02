@@ -1,14 +1,24 @@
-import { AbstractStorageService } from './AbstractStorageService'
-import { LocalStorageService } from './local-storage/local-storage.service'
+import { AbstractStorageService } from './storage/AbstractStorageService'
+import { LocalStorageService } from './storage/local-storage/local-storage.service'
 import { Folder } from './Folder'
 import { File } from './File'
+import { BotStorageCotact } from './storage/bot-storage/BotStorageContact'
 
 export class Doc extends File {
   private key: string
+  public botContacts: Set<BotStorageCotact>
   public storages: AbstractStorageService[]
 
-  constructor (key: string, title: string, parent: Folder, storage?: AbstractStorageService, icon = '') {
+  constructor (
+    key: string,
+    title: string,
+    parent: Folder,
+    storage?: AbstractStorageService,
+    icon = ''
+  ) {
     super(title, parent, icon)
+    this.key = key
+    this.botContacts = new Set()
     this.storages = new Array<AbstractStorageService>()
     if (storage !== undefined) {
       this.addStorage(storage)
@@ -23,6 +33,10 @@ export class Doc extends File {
     this.storages[this.storages.length] = storage
   }
 
+  addBotContact (bot: BotStorageCotact) {
+    this.botContacts.add(bot)
+  }
+
   delete (): Promise<void> {
     for (let s of this.storages) {
       if (s instanceof LocalStorageService) {
@@ -35,4 +49,5 @@ export class Doc extends File {
   getFiles () {
     return []
   }
+
 }

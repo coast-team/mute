@@ -1,5 +1,5 @@
-@import '../../assets/theme';
-@import '../../assets/variables';
+@import 'theme';
+@import 'variables';
 
 :host {
   min-width: 30rem;
@@ -13,8 +13,8 @@
   border: 0;
   height: 1px;
   width: 100%;
-  margin: 2rem 0;
-  background-image: linear-gradient(left, #fff, $color-divider, #fff);
+  margin: 1rem 0 2rem 0;
+  background-image: linear-gradient(to left, #fff, $color-divider, #fff);
 }
 
 h1 {
@@ -33,7 +33,7 @@ h1 {
   }
 }
 
-mat-button-toggle-group {
+md-button-toggle-group {
   box-shadow: none;
 
   .content {
@@ -44,13 +44,7 @@ mat-button-toggle-group {
     font-size: 1.6rem;
   }
 
-  mat-icon {
+  md-icon {
     margin-right: 1rem;
-  }
-
-  .active-link {
-    .content {
-      font-family: $font-header-bold;
-    }
   }
 }

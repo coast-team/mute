@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~normalize.css/normalize.css';
-@import 'assets/theme';
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~codemirror/lib/codemirror.css';
-@import 'assets/mute-codemirror.scss';
-@import 'assets/variables';
-@import 'assets/spinner.scss';
+
+@import 'theme';
+@import 'mute-codemirror.scss';
+@import 'variables';
+@import 'spinner.scss';
 
 html {
   font-size: 10px;
@@ -20,7 +21,7 @@ html {
     background-color: $color-bg;
   }
 
-  .mat-sidenav-content {
+  .md-sidenav-content {
     transition: all .4s cubic-bezier(.25,.8,.25,1);
   }
 }

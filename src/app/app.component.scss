@@ -1,4 +1,4 @@
-@import '../assets/variables';
+@import 'variables';
 
 :host {
   display: flex;
@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-mat-toolbar {
+md-toolbar {
 
   h2 {
     margin: 0;
@@ -23,10 +23,10 @@ mat-toolbar {
   }
 }
 
-mat-sidenav-container {
+md-sidenav-container {
   background-color: $color-bg !important;
 
-  mat-sidenav {
+  md-sidenav {
     min-width: 24rem;
   }
 }

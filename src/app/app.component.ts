@@ -1,13 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
-import { Router } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { environment } from '../environments/environment'
 import { UiService } from './core/ui/ui.service'
 import { ProfileService } from './core/profile/profile.service'
-import { StorageManagerService } from './core/storage/storage-manager/storage-manager.service'
-import { AbstractStorageService } from './core/storage/AbstractStorageService'
-import { File } from './core/storage/File'
+import { File } from './core/File'
 
 @Component({
   selector: 'mute-root',
@@ -23,18 +21,22 @@ export class AppComponent implements OnInit {
   public innerWidth = window.innerWidth
 
   constructor (
-    public sm: StorageManagerService,
+    private route: ActivatedRoute,
     private router: Router,
     public ui: UiService,
     public profile: ProfileService
   ) {
     this.visible = environment.devLabel
-    this.rootFileTitle = this.sm.onActiveFile
-      .filter((folder) => folder !== null)
+    this.rootFileTitle = this.ui.onActiveFile
+      .filter((file) => file !== null)
       .pluck('title')
   }
 
   ngOnInit () {
+    this.route.data
+      .subscribe((data: {file: string}) => {
+        log.debug('File: ', data)
+      })
     this.leftSidenavElm.onClose.subscribe(() => {
       this.ui.navOpened = false
     })
@@ -45,7 +47,8 @@ export class AppComponent implements OnInit {
   }
 
   isDoc () {
-    return this.router.url.includes('doc')
+    // FIXME: find better way to distinguish 'doc' from 'docs'
+    return !this.router.url.includes('/docs')
   }
 
   updatePseudo (pseudo: string) {
