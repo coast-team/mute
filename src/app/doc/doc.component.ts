@@ -47,8 +47,8 @@ export class DocComponent implements OnDestroy, OnInit {
       }
       this.network.initWebChannel()
       this.muteCore = new MuteCore(42)
-      this.muteCore.joinSource = this.network.onJoin
       this.muteCore.messageSource = this.network.onMessage
+      this.network.initSource = this.muteCore.onInit
       this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
       this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
       this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
@@ -61,10 +61,10 @@ export class DocComponent implements OnDestroy, OnInit {
       this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
       this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-      this.syncStorage.joinSource = this.network.onJoin
+      this.syncStorage.initSource = this.muteCore.onInit
       this.syncStorage.stateSource = this.muteCore.syncService.onState
 
-      this.network.join(key)
+      this.muteCore.init(key)
       this.inited = true
     })
     this.ui.onDocNavToggle.subscribe((open: boolean) => {
