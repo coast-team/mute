@@ -33,6 +33,10 @@ export class DocComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit () {
+    this.route.data
+      .subscribe((data: {doc: string}) => {
+        log.debug('Resolver gives: ', data)
+      })
     this.route.params.subscribe((params: Params) => {
       log.angular('DocComponent init')
       const key = params['key'] // (+) converts string 'id' to a number

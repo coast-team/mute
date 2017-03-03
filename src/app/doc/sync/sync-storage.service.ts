@@ -49,7 +49,7 @@ export class SyncStorageService {
       .filter((states: State[]) => states.length > 0)
       .subscribe((states: State[]) => {
         const lastIndex = states.length - 1
-        this.localStorageService.put(this.key, states[lastIndex])
+        // this.localStorageService.put(this.key, states[lastIndex])
       })
   }
 

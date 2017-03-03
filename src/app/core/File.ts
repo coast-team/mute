@@ -1,21 +1,19 @@
-import { AbstractStorageService } from './storage/AbstractStorageService'
+import { LocalStorageService } from './storage/local-storage/local-storage.service'
 import { Folder } from './Folder'
 
 export abstract class File {
-  public storages: AbstractStorageService[]
 
-  readonly title: string
-  readonly parent: Folder|null
-  readonly icon: string
+  public title: string
+  public parentId: string
+  public icon: string
 
-  constructor (title: string, parent, icon = '') {
+  constructor (title: string, parentId: string, icon = '') {
     this.title = title
-    this.parent = parent
+    this.parentId = parentId
     this.icon = icon
   }
 
   abstract get id ()
-  abstract delete (): Promise<void>
 
   isDoc (): boolean {
     return !(this instanceof Folder)

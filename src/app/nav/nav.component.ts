@@ -41,16 +41,9 @@ export class NavComponent implements OnInit {
   }
 
   newDoc () {
-    const MIN_LENGTH = 10
-    const DELTA_LENGTH = 0
-    const MASK = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let key = ''
-    const length = MIN_LENGTH + Math.round(Math.random() * DELTA_LENGTH)
-
-    for (let i = 0; i < length; i++) {
-      key += MASK[Math.round(Math.random() * (MASK.length - 1))]
-    }
-    this.router.navigate(['doc/' + key])
+    const doc = this.localStorage.createDoc()
+    this.ui.setActiveFile(doc)
+    this.router.navigate(['/doc', doc.id])
   }
 
   setActiveFile ({value}) {

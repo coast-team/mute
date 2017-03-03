@@ -7,6 +7,7 @@ import { SharedModule } from '../shared'
 import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
 import { NetworkService } from './network/network.service'
+import { DocResolverService } from './doc-resolver.service'
 
 @NgModule({
   declarations: [
@@ -18,10 +19,16 @@ import { NetworkService } from './network/network.service'
     SharedModule,
     RightSideModule,
     RouterModule.forChild([
-      {path: 'doc/:key', component: DocComponent}
+      {
+        path: 'doc/:key',
+        component: DocComponent,
+        resolve: {
+          doc: DocResolverService
+        }
+      }
     ])
   ],
-  providers: [ NetworkService ]
+  providers: [ NetworkService, DocResolverService ]
 })
 export class DocModule {
   constructor () {

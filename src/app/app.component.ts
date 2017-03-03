@@ -33,10 +33,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit () {
-    this.route.data
-      .subscribe((data: {file: string}) => {
-        log.debug('File: ', data)
-      })
     this.leftSidenavElm.onClose.subscribe(() => {
       this.ui.navOpened = false
     })

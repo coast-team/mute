@@ -18,7 +18,7 @@ export class StorageOverviewService extends AbstractStorageService {
     private botStorage: BotStorageService
   ) {
     super()
-    this.allDocs = new Folder('all', 'All documents', null, this, 'view_module')
+    this.allDocs = new Folder('all', 'All documents', '', this, 'view_module')
   }
 
   getRootFolders (): Promise<Folder[]> {
@@ -31,64 +31,43 @@ export class StorageOverviewService extends AbstractStorageService {
       })
   }
 
-  delete (file: File): Promise<void> {
-    log.warn('Could not delete a file from "All documents" folder. This feature is not implemented yet.', file)
-    throw new Error('Could not delete a file from "All documents" folder')
-  }
-
-  deleteAll (folder: Folder): Promise<void> {
-    log.warn('Could not delete all files from "All documents" folder. This feature is not implemented yet.', folder)
-    throw new Error('Could not delete all files from "All documents" folder')
-  }
-
   getFiles (folder: Folder): Promise<File[]> {
     // TODO: find a better implementation for this function
+    let localFiles = null
     return this.localStorage.home.getFiles()
-      .then((localFiles) => this.botStorage.getRootFolders()
-        .then((botFolders) => botFolders[0].getFiles()
-          .then((botFiles) => {
-            const files = new Array<File>()
-            localFiles.forEach((f1: File) => {
-              botFiles.forEach((f2: File) => {
-                if (f1.id === f2.id) {
-                  if (f1.isDoc() && f2.isDoc()) {
-                    this.merge(f1 as Doc, f2 as Doc)
-                  }
-                  files.push(f1)
-                } else {
-                  files.push(f1)
-                  files.push(f2)
-                }
-              })
-            })
-            botFiles.forEach((f2: File) => {
-              let found = false
-              files.forEach((f) => {
-                if (f2.id === f.id) {
-                  found = true
-                }
-              })
-              if (!found) {
-                files.push(f2)
-              }
-            })
-            return files
+      .then((files) => {
+        localFiles = files
+        return this.botStorage.getRootFolders()
+      })
+      .then((botFolders: Folder[]) => botFolders[0].getFiles())
+      .then((botFiles) => {
+        const files: File[] = []
+        localFiles.forEach((f1: File) => {
+          files.push(f1)
+          botFiles.forEach((f2: File) => {
+            if (f1.id === f2.id) {
+              this.merge(f1 as Doc, f2 as Doc)
+            } else {
+              files.push(f2)
+            }
           })
-        )
-      )
-  }
-
-  addFile (folder: Folder, file: File): Promise<void> {
-    log.warn('Could not add a file to "All documents" folder. This feature is not implemented yet.', file)
-    throw new Error('Could not add a file to "All documents" folder')
+        })
+        botFiles.forEach((f2: File) => {
+          let found = false
+          files.forEach((f) => {
+            if (f2.id === f.id) {
+              found = true
+            }
+          })
+          if (!found) {
+            files.push(f2)
+          }
+        })
+        return files
+      })
   }
 
   private merge (doc1: Doc, doc2: Doc) {
-    doc2.storages.forEach((s) => {
-      if (!doc1.storages.includes(s)) {
-        doc1.addStorage(s)
-      }
-    })
     doc2.botContacts.forEach((bc2) => {
       let found = false
       doc1.botContacts.forEach((bc1) => {

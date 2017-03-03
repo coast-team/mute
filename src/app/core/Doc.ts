@@ -4,24 +4,39 @@ import { Folder } from './Folder'
 import { File } from './File'
 import { BotStorageCotact } from './storage/bot-storage/BotStorageContact'
 
+interface DocSerialize {
+  id: string
+  title: string
+  parentId: string
+  botContacts: BotStorageCotact[]
+  icon: string
+}
+
 export class Doc extends File {
+
   private key: string
-  public botContacts: Set<BotStorageCotact>
-  public storages: AbstractStorageService[]
+  private localStorage: LocalStorageService
+
+  public botContacts: Array<BotStorageCotact>
+
+  static deserialize (obj: DocSerialize, localStorage: LocalStorageService): Doc {
+    const doc = new Doc(obj.id, obj.title, obj.parentId, localStorage, obj.icon)
+    doc.botContacts = obj.botContacts
+    return doc
+  }
 
   constructor (
     key: string,
     title: string,
-    parent: Folder,
-    storage?: AbstractStorageService,
+    parentId: string,
+    localStorage?: LocalStorageService,
     icon = ''
   ) {
-    super(title, parent, icon)
+    super(title, parentId, icon)
     this.key = key
-    this.botContacts = new Set()
-    this.storages = new Array<AbstractStorageService>()
-    if (storage !== undefined) {
-      this.addStorage(storage)
+    this.botContacts = new Array()
+    if (localStorage !== undefined) {
+      this.localStorage = localStorage
     }
   }
 
@@ -29,25 +44,35 @@ export class Doc extends File {
     return this.key
   }
 
-  addStorage (storage: AbstractStorageService) {
-    this.storages[this.storages.length] = storage
-  }
-
   addBotContact (bot: BotStorageCotact) {
-    this.botContacts.add(bot)
+    this.botContacts.push(bot)
   }
 
   delete (): Promise<void> {
-    for (let s of this.storages) {
-      if (s instanceof LocalStorageService) {
-        return s.delete(this)
-      }
-    }
-    return Promise.resolve()
+    return this.localStorage.delete(this)
   }
 
-  getFiles () {
-    return []
+  getBody (): any {
+    return this.localStorage.getBody(this)
+  }
+
+  save (body?: any) {
+    return this.localStorage.save(this, body)
+  }
+
+  isSaved () {
+    this.localStorage.get(this.id)
+      .then((doc) => doc !== undefined)
+  }
+
+  serialize (): DocSerialize {
+    return {
+      id: this.id,
+      title: this.title,
+      parentId: this.parentId,
+      botContacts: this.botContacts,
+      icon: this.icon
+    }
   }
 
 }

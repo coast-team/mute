@@ -30,6 +30,7 @@ export class UiService {
   }
 
   setActiveFile (file: File) {
+    this.activeFile = file
     this.activeFileSubject.next(file)
   }
 

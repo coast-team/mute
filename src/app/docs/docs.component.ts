@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
 import { MdSnackBar } from '@angular/material'
 import { Router } from '@angular/router'
-import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs/Rx'
+import { Observable, Subject, Subscription } from 'rxjs/Rx'
 
 import { AbstractStorageService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
 import { File } from '../core/File'
+import { Doc } from '../core/Doc'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({
@@ -17,10 +18,11 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   private activeFileSubs: Subscription
   private hasDocuments: boolean
-  private docsSubject: BehaviorSubject<any>
 
   private snackBarSubject: Subject<string>
   private activeFolder: Folder
+
+  public docs: Doc[]
 
   constructor (
     private router: Router,
@@ -30,27 +32,22 @@ export class DocsComponent implements OnDestroy, OnInit {
     public ui: UiService,
     private ref: ChangeDetectorRef
   ) {
-    this.docsSubject = new BehaviorSubject([])
     this.snackBarSubject = new Subject()
-    this.activeFileSubs = this.ui.onActiveFile
-      .filter((file: File) => file instanceof Folder)
-      .subscribe((folder: Folder) => {
-        log.debug('Active folder: ' + folder.id)
-        this.activeFolder = folder
-        this.docsSubject.next([])
-        folder.getFiles()
-          .then((docs: any) => {
-            this.docsSubject.next(docs)
-            // FIXME: have to call detectChanges() for document list view update
-            // this.ref.detectChanges()
-          })
-      })
   }
 
   ngOnInit () {
     log.angular('DocsComponent init')
 
-    log.debug('Docs subscribed')
+    this.activeFileSubs = this.ui.onActiveFile
+      .filter((file: File) => file instanceof Folder)
+      .subscribe((folder: Folder) => {
+        this.activeFolder = folder
+        folder.getFiles()
+          .then((docs: Doc[]) => {
+            this.docs = docs
+            this.ref.detectChanges()
+          })
+      })
     this.ui.openNav()
 
     this.snackBarSubject
@@ -62,44 +59,46 @@ export class DocsComponent implements OnDestroy, OnInit {
       })
   }
 
-  get docs () {
-    return this.docsSubject.asObservable()
-  }
-
   ngOnDestroy () {
     this.snackBarSubject.complete()
     this.activeFileSubs.unsubscribe()
   }
 
-  // getStorageServiceName (): string {
-  //   const storageService = this.sm.getCurrentStorageService()
-  //   return storageService === undefined ? '' : storageService.name
-  // }
-
-  getFiles (): Promise<any> {
-    // const storageService = this.sm.getCurrentStorageService()
-    // return storageService.getFiles()
-    return Promise.resolve([])
-  }
-
   deleteAllDocs (): void {
-    this.activeFolder.deleteAll()
+    const snackMsg = (this.activeFolder.id !== 'trash') ?
+      'All document moved to tash' : 'All document deleted'
+    log.debug('deleteAllDocs from ', this.activeFolder )
+    this.activeFolder.delete()
+      .then(() => {
+        this.docs = []
+        this.hasDocuments = false
+        this.snackBarSubject.next(snackMsg)
+        this.ref.detectChanges()
+      })
+      .catch((err) => {
+        log.warn('deleteAllDocs error: ', err)
+        this.snackBarSubject.next(err)
+      })
   }
 
-  deleteDoc (key: string): void {
-    // const storageService = this.sm.getCurrentStorageService()
-    // storageService.delete(key)
-    //   .then(() => {
-    //     this.docs = this.docs.filter((doc: any) => doc.id !== key)
-    //     this.hasDocuments = (this.docs.length > 0)
-    //   })
-    //   .catch((err: Error) => {
-    //     this.snackBarSubject.next(err.message)
-    //   })
+  deleteDoc (doc: Doc): void {
+    const snackMsg = (doc.parentId !== 'trash') ?
+      'Document moved to tash' : 'Document deleted'
+    doc.delete()
+      .then(() => {
+        this.docs = this.docs.filter((d: Doc) => doc.id !== d.id)
+        this.hasDocuments = (this.docs.length > 0)
+        this.ref.detectChanges()
+        this.snackBarSubject.next(snackMsg)
+      })
+      .catch((err: Error) => {
+        this.snackBarSubject.next(err.message)
+      })
   }
 
-  openDoc (key: string) {
-    this.router.navigate(['doc/' + key])
+  openDoc (doc: Doc) {
+    this.ui.setActiveFile(doc)
+    this.router.navigate(['/doc', doc.id])
   }
 
   newDoc () {

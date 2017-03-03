@@ -8,13 +8,17 @@ import { Folder } from '../../Folder'
 import { Doc } from '../../Doc'
 import { environment } from '../../../../environments/environment'
 import { BotStorageCotact } from './BotStorageContact'
+import { LocalStorageService } from '../local-storage/local-storage.service'
 
 @Injectable()
 export class BotStorageService extends AbstractStorageService {
 
   private bots: Map<string, BotStorageCotact>
 
-  constructor (private http: Http) {
+  constructor (
+    private http: Http,
+    private localStorage: LocalStorageService
+  ) {
     super()
     this.bots = new Map()
   }
@@ -41,22 +45,14 @@ export class BotStorageService extends AbstractStorageService {
       .then((files) => files.filter((file) => file !== null) as any)
   }
 
-  delete (file: File): Promise<void> {
-    return Promise.reject(new Error('Not implemented'))
-  }
-
-  deleteAll (folder: Folder): Promise<void> {
-    return Promise.reject(new Error('Not implemented'))
-  }
-
   getFiles (folder: Folder): Promise<File[]> {
     const bot = this.bots.get(folder.id)
     if (bot !== undefined) {
       return this.http.get(`${bot.apiURL}/docs`).toPromise()
         .then((response) => response.json())
         .then((keys: Array<Object>) => {
-          return keys.map((key: {id: string}) => {
-            const doc = new Doc(key.id, 'Untitled Document', folder, this)
+          return keys.map(({id, title}: {id: string, title?: string}) => {
+            const doc = new Doc(id, title || 'Untitled Document', folder.id, this.localStorage)
             doc.addBotContact(bot)
             return doc
           })
@@ -65,9 +61,5 @@ export class BotStorageService extends AbstractStorageService {
       log.warn(`Could not find a bot related to ${folder.id} file`)
       return Promise.resolve([])
     }
-  }
-
-  addFile (folder: Folder, file: File): Promise<void> {
-    return Promise.reject(new Error('Not implemented'))
   }
 }

@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router'
 
-import { AppResolverService } from './app-resolver.service'
-
 const routes: Routes = [
   { path: '**', redirectTo: '/docs/all' }
 ]
@@ -10,6 +8,6 @@ const routes: Routes = [
 @NgModule({
   imports: [ RouterModule.forRoot(routes) ],
   exports: [ RouterModule ],
-  providers: [ AppResolverService ]
+  providers: [ ]
 })
 export class AppRoutingModule {}
