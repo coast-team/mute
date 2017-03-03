@@ -20,9 +20,9 @@ export class SyncStorageService {
     })
   }
 
-  set joinSource (source: Observable<JoinEvent>) {
-    source.subscribe((joinEvent: JoinEvent) => {
-      this.key = joinEvent.key
+  set initSource (source: Observable<string>) {
+    source.subscribe((key: string) => {
+      this.key = key
       this.localStorageService.get(this.key)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
