@@ -46,7 +46,13 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.clean()
       }
       this.network.initWebChannel()
-      this.muteCore = new MuteCore(42)
+
+      // TODO: Retrieve previous id for this document if existing
+      const ids = new Int32Array(1)
+      window.crypto.getRandomValues(ids)
+      const id: number = ids[0]
+
+      this.muteCore = new MuteCore(id)
       this.muteCore.messageSource = this.network.onMessage
       this.network.initSource = this.muteCore.onInit
       this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
