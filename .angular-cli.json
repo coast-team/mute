@@ -1,6 +1,6 @@
 {
   "project": {
-    "version": "1.0.0-rc.0",
+    "version": "1.0.0-rc.1",
     "name": "mute"
   },
   "apps": [
@@ -30,8 +30,8 @@
       "scripts": [
         "../node_modules/loglevel/dist/loglevel.min.js",
         "../node_modules/bragi-browser/dist/bragi.min.js",
-        "../node_modules/rsvp/dist/rsvp-2.0.4.js",
-        "../node_modules/jio/dist/jio-latest.js"
+        "../node_modules/rsvp/dist/rsvp-2.0.4.min.js",
+        "../node_modules/jio/dist/jio-latest.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

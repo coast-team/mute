@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   devLabel: true,
   signalingURL: 'wss://sigver-coastteam.rhcloud.com:8443',
   storages: []
