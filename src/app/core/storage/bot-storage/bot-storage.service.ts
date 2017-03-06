@@ -26,6 +26,7 @@ export class BotStorageService extends AbstractStorageService {
   getRootFolders (): Promise<Folder[]> {
     const promises = new Array<Promise<void>>()
     environment.storages.forEach((bot: BotStorageCotact) => {
+      log.debug('Bot ', bot)
       promises.push(
         this.http.get(`${bot.apiURL}/name`).toPromise()
           .then((response) => {
@@ -36,7 +37,7 @@ export class BotStorageService extends AbstractStorageService {
             return folder
           })
           .catch((err) => {
-            log.info(`Bot storage ${bot.apiURL} is unavailable`, err)
+            log.warn(`Bot storage ${bot.apiURL} is unavailable`, err)
             return null
           })
       )

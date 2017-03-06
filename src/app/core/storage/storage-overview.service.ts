@@ -39,7 +39,13 @@ export class StorageOverviewService extends AbstractStorageService {
         localFiles = files
         return this.botStorage.getRootFolders()
       })
-      .then((botFolders: Folder[]) => botFolders[0].getFiles())
+      .then((botFolders: Folder[]) => {
+        // FIXME: run trough all bot root folders. For now the first bot storage root folder is used by default
+        if (botFolders.length !== 0) {
+          return botFolders[0].getFiles()
+        }
+        return []
+      })
       .then((botFiles) => {
         const files: File[] = []
         localFiles.forEach((f1: File) => {
