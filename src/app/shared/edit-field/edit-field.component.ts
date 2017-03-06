@@ -15,6 +15,8 @@ import {
 })
 export class EditFieldComponent implements OnInit, OnChanges {
 
+  @Input() textAlign = 'center'
+  @Input() width = '27rem'
   @Input() value = ''
   @Input() emptyValue: string
   @Input() icon = ''
@@ -30,12 +32,14 @@ export class EditFieldComponent implements OnInit, OnChanges {
   constructor () { }
 
   ngOnInit () {
-    this.editableElm.nativeElement.textContent = this.value
+    this.editableElm.nativeElement.style.width = this.width
+    this.editableElm.nativeElement.style.textAlign = this.textAlign
+    this.editableElm.nativeElement.value = this.value
   }
 
   ngOnChanges (changes: {value: SimpleChange}) {
-    if (changes.value.currentValue !== this.editableElm.nativeElement.textContent) {
-      this.editableElm.nativeElement.textContent = changes.value.currentValue
+    if (changes.value.currentValue !== this.editableElm.nativeElement.value) {
+      this.editableElm.nativeElement.value = changes.value.currentValue
     }
   }
 
@@ -59,7 +63,6 @@ export class EditFieldComponent implements OnInit, OnChanges {
   }
 
   edit () {
-    log.debug('EDIT')
     this.bottomLine.nativeElement.style.height = '2px'
     if (this.bottomLine.nativeElement.style.width !== '100%') {
       this.bottomLine.nativeElement.style.width = '100%'
@@ -68,26 +71,21 @@ export class EditFieldComponent implements OnInit, OnChanges {
       this.viewState = false
     }
     if (this.selectAll) {
-      const range = window.document.createRange()
-      range.selectNodeContents(this.editableElm.nativeElement)
-      const sel = window.getSelection()
-      sel.removeAllRanges()
-      sel.addRange(range)
+      this.editableElm.nativeElement.select()
     }
     this.editState = true
   }
 
   done (event) {
-    if (this.editState && event.type === 'blur' || (event.type === 'keydown' && event.keyCode === 13)) {
+    if (event.type === 'keydown' && event.keyCode === 13) {
+      this.editableElm.nativeElement.blur()
+    } else if (this.editState && event.type === 'blur') {
       this.editState = false
       this.preEditState = false
-      event.preventDefault()
-      window.getSelection().removeAllRanges()
-      this.editableElm.nativeElement.blur()
       this.bottomLine.nativeElement.style.width = 0
-      const currentValue = this.editableElm.nativeElement.textContent
+      const currentValue = this.editableElm.nativeElement.value
       if (currentValue === '') {
-        this.editableElm.nativeElement.textContent = this.emptyValue
+        this.editableElm.nativeElement.value = this.emptyValue
       }
       if (this.value !== currentValue) {
         this.value = currentValue

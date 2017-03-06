@@ -4,10 +4,11 @@
     (click)="edit()">
 
   <div fxLayout="column" fxLayoutAlign="center center">
-    <span class="pseudo" #editableElm contenteditable="true" spellcheck="false"
+    <input type="text" #editableElm spellcheck="false"
+        maxlength="128"
         (keydown)="done($event)"
-        (blur)="done($event)">
-    </span>
+        (blur)="done($event)"
+    />
     <span class="bottom-line-container">
       <span #bottomLine class="bottom-line"></span>
     </span>

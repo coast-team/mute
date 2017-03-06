@@ -8,9 +8,17 @@
   }
 }
 
-.pseudo {
+input {
   padding: 0.4rem 0.4rem 0 0.4rem;
   outline: none;
+  max-width: 27rem;
+  overflow: hidden;
+  border: none;
+  background-color: mat-color($primary);
+  text-align: center;
+  display: inline-block;
+  width: auto;
+  color: #fff;
 }
 
 .bottom-line-container {
