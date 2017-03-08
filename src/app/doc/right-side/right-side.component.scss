@@ -1,10 +1,28 @@
 @import 'variables';
 
-header {
-  margin: 10px 10px 30px 0;
+md-list {
+  text-align: right;
 
   mute-edit-field {
     margin-right: 20px;
     font-size: 2rem;
+  }
+
+  h3 {
+    text-align: left;
+  }
+
+  md-chip-list {
+    margin-top: 10px;
+  }
+
+  .storages {
+    md-chip {
+      margin: 0 7px;
+
+      &:last-child {
+        margin: 0;
+      }
+    }
   }
 }

@@ -35,10 +35,7 @@ export class LocalStorageService extends AbstractStorageService {
     return new Promise((resolve, reject) => {
       this.db.get(key)
         .then(
-          (data) => {
-            log.debug('get doc: ', data)
-            resolve(Doc.deserialize(data, this))
-          },
+          (data) => resolve(Doc.deserialize(data, this)),
           (err) => reject(err)
         )
     })

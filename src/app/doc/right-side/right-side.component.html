@@ -1,6 +1,6 @@
-
-<div fxLayout="column" fxLayoutAlign="start stretch">
-   <mute-edit-field fxHide.gt-xs='true' fxLayout="row" fxLayoutAlign="end center"
+<md-list>
+  <md-list-item fxHide.gt-xs='true'>
+   <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
           width="15rem"
           textAlign="right"
           icon="account_circle"
@@ -9,6 +9,34 @@
           [emptyValue]="profile.pseudonymDefault"
           (onDone)="updatePseudo($event)">
     </mute-edit-field>
+  </md-list-item>
+  <h3 md-subheader>Document saved at</h3>
+  <md-divider></md-divider>
+  <md-list-item class="storages" fxLayout="row" fxLayoutAlign="end center">
+    <md-chip-list>
+      <md-chip *ngFor="let storage of storages"
+          [mdTooltip]="storage.tooltip">
+        <md-icon>{{storage.icon}}</md-icon>
+      </md-chip>
+    </md-chip-list>
+  </md-list-item>
+  <h3 md-subheader>Connection</h3>
+  <md-divider></md-divider>
+  <!--<md-list-item fxLayout="row" fxLayoutAlign="end center">
+    <span fxLayout="row" fsLayoutAlign="end center">
+      <span>Signaling</span>
+      <md-icon>check</md-icon>
+    </span>
+    <span fxLayout="row" fsLayoutAlign="end center">
+      Network
+      <md-icon>check</md-icon>
+    </span>
+  </md-list-item>-->
+  <!--<md-list-item fxLayout="row" fxLayoutAlign="end center">
+    <button md-raised-button color="accent">Disconnect</button>
     <mute-invite-bot></mute-invite-bot>
+  </md-list-item>-->
+  <h3 md-subheader>Collaborators</h3>
+  <md-divider></md-divider>
   <mute-collaborators fxFlex></mute-collaborators>
-</div>
+</md-list>

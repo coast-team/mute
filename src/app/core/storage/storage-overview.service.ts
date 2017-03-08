@@ -74,15 +74,15 @@ export class StorageOverviewService extends AbstractStorageService {
   }
 
   private merge (doc1: Doc, doc2: Doc) {
-    doc2.botContacts.forEach((bc2) => {
+    doc2.botIds.forEach((botId2) => {
       let found = false
-      doc1.botContacts.forEach((bc1) => {
-        if (bc2.apiURL === bc1.apiURL || bc2.p2pURL === bc1.p2pURL) {
+      doc1.botIds.forEach((botId1) => {
+        if (botId2 === botId1) {
           found = true
         }
       })
       if (!found) {
-        doc1.addBotContact(bc2)
+        doc1.addBotId(botId2)
       }
     })
   }

@@ -8,7 +8,7 @@ interface DocSerialize {
   id: string
   title: string
   parentId: string
-  botContacts: BotStorageCotact[]
+  botIds: string[]
   icon: string
 }
 
@@ -17,11 +17,11 @@ export class Doc extends File {
   private key: string
   private localStorage: LocalStorageService
 
-  public botContacts: Array<BotStorageCotact>
+  public botIds: string[]
 
   static deserialize (obj: DocSerialize, localStorage: LocalStorageService): Doc {
     const doc = new Doc(obj.id, obj.title, obj.parentId, localStorage, obj.icon)
-    doc.botContacts = obj.botContacts
+    doc.botIds = obj.botIds || []
     return doc
   }
 
@@ -34,7 +34,7 @@ export class Doc extends File {
   ) {
     super(title, parentId, icon)
     this.key = key
-    this.botContacts = new Array()
+    this.botIds = []
     if (localStorage !== undefined) {
       this.localStorage = localStorage
     }
@@ -44,8 +44,8 @@ export class Doc extends File {
     return this.key
   }
 
-  addBotContact (bot: BotStorageCotact) {
-    this.botContacts.push(bot)
+  addBotId (botId: string) {
+    this.botIds.push(botId)
   }
 
   delete (): Promise<void> {
@@ -61,7 +61,7 @@ export class Doc extends File {
   }
 
   isSaved () {
-    this.localStorage.get(this.id)
+    return this.localStorage.get(this.id)
       .then((doc) => doc !== undefined)
   }
 
@@ -70,7 +70,7 @@ export class Doc extends File {
       id: this.id,
       title: this.title,
       parentId: this.parentId,
-      botContacts: this.botContacts,
+      botIds: this.botIds,
       icon: this.icon
     }
   }
