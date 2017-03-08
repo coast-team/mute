@@ -1,5 +1,5 @@
 <md-toolbar #toolbarElm  color="primary">
-  <div fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
+  <div fxFlexFill fxLayout="row" fxLayoutAlign="space-between center">
     <button md-icon-button (click)="ui.toggleNav()">
       <md-icon>menu</md-icon>
     </button>
@@ -11,8 +11,8 @@
         (onDone)="updateTitle($event)">
     </mute-edit-field>
     <h2 *ngIf="!isDoc()" fxFlexAlign="center">{{rootFileTitle | async}}</h2>
-    <div fxLayout="row" fxLayoutAlign="end center">
-      <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
+    <div Layout="row" fxLayoutAlign="end center">
+      <mute-edit-field fxHide.xs='true' fxLayout="row" fxLayoutAlign="end center"
           width="15rem"
           textAlign="right"
           icon="account_circle"
