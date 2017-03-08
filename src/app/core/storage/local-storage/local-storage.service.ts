@@ -48,7 +48,13 @@ export class LocalStorageService extends AbstractStorageService {
     return new Promise((resolve, reject) => {
       this.db.getAttachment(doc.id, 'body')
         .then(
-          (body) => resolve(JSON.parse(body)),
+          (body) => {
+            const reader = new FileReader()
+            reader.onload = (event) => {
+              resolve(reader.result)
+            }
+            reader.readAsText(body)
+          },
           (err) => reject(err)
         )
     })
