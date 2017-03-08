@@ -16,6 +16,7 @@ import {
 export class EditFieldComponent implements OnInit, OnChanges {
 
   @Input() textAlign = 'center'
+  @Input() color = '#fff'
   @Input() width = '27rem'
   @Input() value = ''
   @Input() emptyValue: string
@@ -33,6 +34,7 @@ export class EditFieldComponent implements OnInit, OnChanges {
 
   ngOnInit () {
     this.editableElm.nativeElement.style.width = this.width
+    this.editableElm.nativeElement.style.color = this.color
     this.editableElm.nativeElement.style.textAlign = this.textAlign
     this.editableElm.nativeElement.value = this.value
   }

@@ -14,11 +14,10 @@ input {
   max-width: 27rem;
   overflow: hidden;
   border: none;
-  background-color: mat-color($primary);
+  background: rgba(0, 0, 0, 0);
   text-align: center;
   display: inline-block;
   width: auto;
-  color: #fff;
 }
 
 .bottom-line-container {

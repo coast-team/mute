@@ -1,4 +1,14 @@
-<mute-invite-bot></mute-invite-bot>
+
 <div fxLayout="column" fxLayoutAlign="start stretch">
+   <mute-edit-field fxHide.gt-xs='true' fxLayout="row" fxLayoutAlign="end center"
+          width="15rem"
+          textAlign="right"
+          icon="account_circle"
+          color="#000"
+          [value]="profile.onPseudonym | async"
+          [emptyValue]="profile.pseudonymDefault"
+          (onDone)="updatePseudo($event)">
+    </mute-edit-field>
+    <mute-invite-bot></mute-invite-bot>
   <mute-collaborators fxFlex></mute-collaborators>
 </div>
