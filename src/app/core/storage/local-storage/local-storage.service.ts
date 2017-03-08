@@ -65,7 +65,6 @@ export class LocalStorageService extends AbstractStorageService {
       this.db.put(doc.id, doc.serialize())
         .then(
           () => {
-            log.debug('Saved: ', doc.serialize())
             if (body !== undefined) {
               this.db.putAttachment(doc.id, 'body', JSON.stringify(body))
                 .then(

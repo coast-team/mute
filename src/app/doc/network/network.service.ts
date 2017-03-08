@@ -2,20 +2,17 @@
 import { Injectable } from '@angular/core'
 import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 import { create } from 'netflux'
-
-import { fetchIceServers } from './xirsysservers'
-import { BotStorageService } from '../../core/storage/bot-storage/bot-storage.service'
-import { environment } from '../../../environments/environment'
-const pb = require('./message_pb.js')
-
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
+
+import { environment } from '../../../environments/environment'
+import { XirsysService } from '../../core/xirsys/xirsys.service'
+const pb = require('./message_pb.js')
 
 @Injectable()
 export class NetworkService {
 
   private webChannel
   private key: string
-  private iceServers: Array<RTCIceServer>
 
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
@@ -36,7 +33,7 @@ export class NetworkService {
   private messageToSendToSubscription: Subscription
 
   constructor (
-    private botStorageService: BotStorageService
+    private xirsys: XirsysService
   ) {
     log.angular('NetworkService constructed')
 
@@ -50,20 +47,6 @@ export class NetworkService {
     this.peerJoinSubject = new ReplaySubject()
     this.peerLeaveSubject = new ReplaySubject()
 
-    // this.initWebChannel()
-
-    // Fetch ice servers
-    fetchIceServers()
-      .then((iceServers) => {
-        this.iceServers = iceServers
-        if (this.webChannel !== undefined) {
-          this.webChannel.settings.iceServers = iceServers
-        }
-      })
-      .catch((err) => {
-        log.warn('Could not fetch XirSys ice servers', err)
-      })
-
     // Leave webChannel before closing tab or browser
     window.addEventListener('beforeunload', () => {
       if (this.webChannel !== undefined) {
@@ -74,9 +57,6 @@ export class NetworkService {
 
   initWebChannel (): void {
     this.webChannel = create({signalingURL: environment.signalingURL})
-    if (this.iceServers !== undefined) {
-      this.webChannel.settings.iceServers = this.iceServers
-    }
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
@@ -111,7 +91,6 @@ export class NetworkService {
 
   set messageToSendToSource (source: Observable<SendToMessage>) {
     this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
-      log.debug('Message to be sent: ', sendToMessage)
       this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
     })
   }
@@ -176,18 +155,23 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-    return this.webChannel.join(key)
+    return this.xirsys.iceServers
+      .then((iceServers) => {
+        this.webChannel.settings.iceServers = iceServers
+      })
+      .catch((err) => {
+        log.warn('Could not fetch XirSys ice servers', err)
+      })
+      .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
         this.doorSubject.next(true)
         const created = this.members.length === 0
         this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
-        // if (key === this.botStorageService.currentBot.key) {
-        //   this.inviteBot(this.botStorageService.currentBot.url)
-        // }
       })
       .catch((reason) => {
         log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
+        return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
       })
   }
 

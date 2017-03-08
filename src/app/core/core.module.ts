@@ -7,6 +7,7 @@ import { LocalStorageService } from './storage/local-storage/local-storage.servi
 import { ProfileService } from './profile/profile.service'
 import { StorageOverviewService } from './storage/storage-overview.service'
 import { UiService } from './ui/ui.service'
+import { XirsysService } from './xirsys/xirsys.service'
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { UiService } from './ui/ui.service'
     LocalStorageService,
     ProfileService,
     StorageOverviewService,
-    UiService
+    UiService,
+    XirsysService
   ]
 })
 export class CoreModule {
