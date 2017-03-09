@@ -1,6 +1,7 @@
 import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
+import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
@@ -18,6 +19,8 @@ import { MuteCore } from 'mute-core'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
+  private doc: Doc
+
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited = false
 
@@ -34,8 +37,8 @@ export class DocComponent implements OnDestroy, OnInit {
 
   ngOnInit () {
     this.route.data
-      .subscribe((data: {doc: string}) => {
-        // log.debug('Resolver gives: ', data)
+      .subscribe((data: {doc: Doc}) => {
+        this.doc = data.doc
       })
     this.route.params.subscribe((params: Params) => {
       log.angular('DocComponent init')
@@ -46,9 +49,15 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.clean()
       }
       this.network.initWebChannel()
-      this.muteCore = new MuteCore(42)
-      this.muteCore.joinSource = this.network.onJoin
+
+      // TODO: Retrieve previous id for this document if existing
+      const ids = new Int32Array(1)
+      window.crypto.getRandomValues(ids)
+      const id: number = ids[0]
+
+      this.muteCore = new MuteCore(id)
       this.muteCore.messageSource = this.network.onMessage
+      this.network.initSource = this.muteCore.onInit
       this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
       this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
       this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
@@ -61,9 +70,10 @@ export class DocComponent implements OnDestroy, OnInit {
       this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
       this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-      // this.syncStorage.joinSource = this.network.onJoin
-      // this.syncStorage.stateSource = this.muteCore.syncService.onState
-      this.network.join(key)
+      this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
+      this.syncStorage.stateSource = this.muteCore.syncService.onState
+
+      this.muteCore.init(key)
       this.inited = true
     })
     this.ui.onDocNavToggle.subscribe((open: boolean) => {

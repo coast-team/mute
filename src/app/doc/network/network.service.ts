@@ -14,6 +14,8 @@ export class NetworkService {
   private webChannel
   private key: string
 
+  private disposeSubject: Subject<void>
+
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
@@ -38,6 +40,8 @@ export class NetworkService {
     log.angular('NetworkService constructed')
 
     // Initialize subjects
+    this.disposeSubject = new Subject<void>()
+
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.doorSubject = new Subject()
@@ -73,6 +77,14 @@ export class NetworkService {
       const networkMessage = new NetworkMessage(msg.getService(), id, isBroadcast, msg.getContent())
       this.messageSubject.next(networkMessage)
     }
+  }
+
+  set initSource (source: Observable<string>) {
+    source
+      .takeUntil(this.disposeSubject)
+      .subscribe((key: string) => {
+        this.join(key)
+      })
   }
 
   set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
@@ -133,6 +145,7 @@ export class NetworkService {
       this.webChannel.leave()
       this.leaveSubject.next()
 
+      this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
       this.leaveSubject.complete()
@@ -140,6 +153,7 @@ export class NetworkService {
       this.peerLeaveSubject.complete()
       this.doorSubject.complete()
 
+      this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
       this.leaveSubject = new Subject()
