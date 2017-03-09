@@ -6,7 +6,7 @@
     <mute-edit-field *ngIf="isDoc()" fxLayout="row" fxLayoutAlign="end center"
         class="doc-title"
         [selectAll]="false"
-        value="Untitled document"
+        [value]="rootFileTitle | async"
         emptyValue="Untitled document"
         (onDone)="updateTitle($event)">
     </mute-edit-field>

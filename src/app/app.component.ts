@@ -6,6 +6,7 @@ import { environment } from '../environments/environment'
 import { UiService } from './core/ui/ui.service'
 import { ProfileService } from './core/profile/profile.service'
 import { File } from './core/File'
+import { Doc } from './core/Doc'
 
 @Component({
   selector: 'mute-root',
@@ -52,6 +53,8 @@ export class AppComponent implements OnInit {
   }
 
   updateTitle (title: string) {
-    log.debug('New title: ' + title)
+    const doc = this.ui.activeFile as Doc
+    doc.title = title
+    doc.save()
   }
 }

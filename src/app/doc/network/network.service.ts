@@ -161,10 +161,7 @@ export class NetworkService {
           this.webChannel.settings.iceServers = iceServers
         }
       })
-      .then(() => {
-        log.debug('Start joining...')
-        return this.webChannel.join(key)
-      })
+      .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
         this.doorSubject.next(true)

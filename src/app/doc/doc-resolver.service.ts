@@ -19,29 +19,23 @@ export class DocResolverService implements Resolve<Doc> {
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Doc> {
     const urlKey = route.params['key']
     let activeFile = this.ui.activeFile as Doc
-    if (activeFile && activeFile instanceof Doc) {
-      if (urlKey === activeFile.id) {
-        return this.localStorage.get(activeFile.id)
-          .then((localDoc: Doc) => {
-            if (localDoc === null) {
-              activeFile.save()
-            }
-            return activeFile
-          })
-      } else {
-        return this.localStorage.get(urlKey)
-          .then((localDoc: Doc) => {
-            if (localDoc === null) {
-              activeFile = this.localStorage.createDoc(urlKey)
-            }
-            this.ui.setActiveFile(activeFile)
-            return activeFile
-          })
-      }
+    if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {
+      return this.localStorage.get(activeFile.id)
+        .then((localDoc: Doc) => {
+          if (localDoc === null) {
+            activeFile.save()
+          }
+          return activeFile
+        })
     } else {
-      activeFile = this.localStorage.createDoc(urlKey)
-      this.ui.setActiveFile(activeFile)
-      return Promise.resolve(activeFile)
+      return this.localStorage.get(urlKey)
+        .then((localDoc: Doc) => {
+          if (localDoc === null) {
+            localDoc = this.localStorage.createDoc(urlKey)
+          }
+          this.ui.setActiveFile(localDoc)
+          return localDoc
+        })
     }
   }
 }
