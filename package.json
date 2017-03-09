@@ -13,7 +13,7 @@
     "pregh-deploy": "npm run build -- --env ghpages --aot",
     "gh-deploy": "ngh --message \"$(git rev-parse HEAD)\"",
     "commitmsg": "validate-commit-msg",
-    "commit": "git cz"
+    "commit": "git-cz"
   },
   "keywords": [],
   "contributors": [
@@ -80,7 +80,7 @@
   "repository": {},
   "config": {
     "commitizen": {
-      "path": "cz-conventional-changelog"
+      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }
