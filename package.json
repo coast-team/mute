@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
-    "protoc": "protoc/protoc-3.2.0rc2-linux-x86_64 --js_out=import_style=commonjs,binary:. src/app/doc/network/message.proto src/app/doc/editor/cursor/cursor.proto",
+    "protoc": "protoc/protoc-3.2.0-linux-x86_64 --js_out=import_style=commonjs,binary:. src/app/doc/network/message.proto src/app/doc/editor/cursor/cursor.proto",
     "pregh-deploy": "npm run build -- --env ghpages --aot",
     "gh-deploy": "ngh --message \"$(git rev-parse HEAD)\"",
     "commitmsg": "validate-commit-msg",
