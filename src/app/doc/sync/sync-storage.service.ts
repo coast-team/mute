@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable, Observer } from 'rxjs'
 
+import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
 
 import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
@@ -9,7 +10,7 @@ import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
 @Injectable()
 export class SyncStorageService {
 
-  private key: string
+  private doc: Doc
 
   private storedStateObservable: Observable<State>
   private storedStateObservers: Observer<State>[] = []
@@ -20,10 +21,10 @@ export class SyncStorageService {
     })
   }
 
-  set initSource (source: Observable<string>) {
-    source.subscribe((key: string) => {
-      this.key = key
-      this.localStorageService.get(this.key)
+  set initSource (source: Observable<Doc>) {
+    source.subscribe((doc: Doc) => {
+      this.doc = doc
+      this.localStorageService.getBody(doc)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
             .map((richLogootSOp: any): RichLogootSOperation | null => {
@@ -49,7 +50,7 @@ export class SyncStorageService {
       .filter((states: State[]) => states.length > 0)
       .subscribe((states: State[]) => {
         const lastIndex = states.length - 1
-        // this.localStorageService.put(this.key, states[lastIndex])
+        this.localStorageService.save(this.doc, states[lastIndex])
       })
   }
 

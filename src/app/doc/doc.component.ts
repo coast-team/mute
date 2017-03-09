@@ -1,6 +1,7 @@
 import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 
+import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
@@ -18,6 +19,8 @@ import { MuteCore } from 'mute-core'
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
 
+  private doc: Doc
+
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited = false
 
@@ -34,8 +37,9 @@ export class DocComponent implements OnDestroy, OnInit {
 
   ngOnInit () {
     this.route.data
-      .subscribe((data: {doc: string}) => {
+      .subscribe((data: {doc: Doc}) => {
         log.debug('Resolver gives: ', data)
+        this.doc = data.doc
       })
     this.route.params.subscribe((params: Params) => {
       log.angular('DocComponent init')
@@ -67,7 +71,7 @@ export class DocComponent implements OnDestroy, OnInit {
       this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
       this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-      this.syncStorage.initSource = this.muteCore.onInit
+      this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
       this.syncStorage.stateSource = this.muteCore.syncService.onState
 
       this.muteCore.init(key)

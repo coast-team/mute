@@ -51,7 +51,8 @@ export class LocalStorageService extends AbstractStorageService {
           (body) => {
             const reader = new FileReader()
             reader.onload = (event) => {
-              resolve(reader.result)
+              const json = JSON.parse(reader.result)
+              resolve(json)
             }
             reader.readAsText(body)
           },
