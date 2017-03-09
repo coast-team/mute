@@ -8,4 +8,21 @@
 md-card {
   margin: 2rem 0 0 0;
   padding: 0;
+
+  h3 {
+    font-weight: unset;
+    white-space: normal;
+    line-height: 3rem;
+    max-height: 9rem;
+    overflow: hidden;
+    hyphens: auto;
+  }
+
+  .divider {
+    border: 0;
+    height: 1px;
+    margin: 0;
+    width: 100%;
+    background-image: linear-gradient(to left, #fff, $color-divider, #fff);
+  }
 }

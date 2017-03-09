@@ -3,21 +3,20 @@
 
   <div fxFlex="95%" fxLayout="column" fxLayoutAlign="start center">
     <div fxFlexFill fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
-      <md-card fxFlex="200px" *ngFor="let doc of docs" fxFlexOffset="20px" fxFlexOffset.xs="0">
+      <md-card fxLayout="column" fxLayoutAlign="top stretch" fxFlex="200px" *ngFor="let doc of docs" fxFlexOffset="20px" fxFlexOffset.xs="0">
         <button fxFlexFill md-button (click) = "openDoc(doc)">
-          <h3>{{doc.title | slice:0:12}}</h3>
-          <p>Key: {{doc.id}}</p>
+          <h3>{{doc.title}}</h3>
         </button>
-        <hr style="margin-top: 0;">
-        <button md-icon-button (click)="deleteDoc(doc)" mdTooltip="Delete document">
-          <md-icon>delete</md-icon>
+        <hr class="divider">
+        <button fxFlexAlign="end" md-icon-button (click)="deleteDoc(doc)" mdTooltip="Delete">
+          <md-icon color="accent">delete</md-icon>
         </button>
       </md-card>
     </div>
   </div>
   <div fxFlex fxFlexAlign="start" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
     <button md-icon-button (click)="deleteAllDocs()" mdTooltip="Delete all">
-      <md-icon>delete_forever</md-icon>
+      <md-icon color="accent">delete_forever</md-icon>
     </button>
   </div>
 
