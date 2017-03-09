@@ -30,7 +30,7 @@
       "scripts": [
         "../node_modules/loglevel/dist/loglevel.min.js",
         "../node_modules/bragi-browser/dist/bragi.min.js",
-        "../node_modules/rsvp/dist/rsvp-2.0.4.min.js",
+        "../node_modules/jio/node_modules/rsvp/dist/rsvp-2.0.4.min.js",
         "../node_modules/jio/dist/jio-latest.min.js"
       ],
       "environmentSource": "environments/environment.ts",
