@@ -4,16 +4,11 @@ md-list {
   text-align: right;
 
   mute-edit-field {
-    margin-right: 20px;
     font-size: 2rem;
   }
 
   h3 {
     text-align: left;
-  }
-
-  md-chip-list {
-    margin-top: 10px;
   }
 
   .storages {
@@ -24,5 +19,25 @@ md-list {
         margin: 0;
       }
     }
+  }
+
+  md-divider {
+    margin-bottom: 10px;
+  }
+
+  .connection {
+
+    .title {
+      line-height: 2.5rem;
+    }
+
+    .indicator {
+      margin-left: 5px;
+    }
+  }
+
+  md-progress-circle {
+    width: 24px;
+    height: 24px;
   }
 }

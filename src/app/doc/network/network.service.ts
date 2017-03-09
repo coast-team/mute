@@ -157,12 +157,14 @@ export class NetworkService {
     this.key = key
     return this.xirsys.iceServers
       .then((iceServers) => {
-        this.webChannel.settings.iceServers = iceServers
+        if (iceServers !== null) {
+          this.webChannel.settings.iceServers = iceServers
+        }
       })
-      .catch((err) => {
-        log.warn('Could not fetch XirSys ice servers', err)
+      .then(() => {
+        log.debug('Start joining...')
+        return this.webChannel.join(key)
       })
-      .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
         this.doorSubject.next(true)

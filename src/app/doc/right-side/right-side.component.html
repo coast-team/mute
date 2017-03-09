@@ -1,5 +1,5 @@
 <md-list>
-  <md-list-item fxHide.gt-xs='true'>
+  <md-list-item fxHide.gt-xs='true' fxLayout="row" fxLayoutAlign="end center">
    <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
           width="15rem"
           textAlign="right"
@@ -10,7 +10,7 @@
           (onDone)="updatePseudo($event)">
     </mute-edit-field>
   </md-list-item>
-  <h3 md-subheader>Document saved at</h3>
+  <h3 md-subheader>Document saved in</h3>
   <md-divider></md-divider>
   <md-list-item class="storages" fxLayout="row" fxLayoutAlign="end center">
     <md-chip-list>
@@ -22,21 +22,39 @@
   </md-list-item>
   <h3 md-subheader>Connection</h3>
   <md-divider></md-divider>
-  <!--<md-list-item fxLayout="row" fxLayoutAlign="end center">
-    <span fxLayout="row" fsLayoutAlign="end center">
-      <span>Signaling</span>
-      <md-icon>check</md-icon>
-    </span>
-    <span fxLayout="row" fsLayoutAlign="end center">
-      Network
-      <md-icon>check</md-icon>
-    </span>
-  </md-list-item>-->
-  <!--<md-list-item fxLayout="row" fxLayoutAlign="end center">
-    <button md-raised-button color="accent">Disconnect</button>
+  <md-list-item class="connection">
+    <div fxFlexFill fxLayout="row" fxLayoutAlign="space-around stretch">
+      <div fxLayout="row" fsLayoutAlign="center center">
+        <span class="title">Signaling</span>
+        <div class="indicator">
+          <md-icon *ngIf="signalingOk">check</md-icon>
+          <md-progress-circle *ngIf="!signalingOk"
+              color="warn"
+              mode="indeterminate"
+          >
+          </md-progress-circle>
+        </div>
+      </div>
+      <div fxLayout="row" fsLayoutAlign="center center">
+        <span class="title">Network</span>
+        <div class="indicator">
+          <md-icon *ngIf="networkOk">check</md-icon>
+          <md-progress-circle *ngIf="!networkOk"
+              color="warn"
+              mode="indeterminate"
+          >
+          </md-progress-circle>
+        </div>
+      </div>
+      </div>
+  </md-list-item>
+  <md-list-item fxLayout="row" fxLayoutAlign="end center">
+    <!--<button md-raised-button color="accent">Disconnect</button>-->
     <mute-invite-bot></mute-invite-bot>
-  </md-list-item>-->
+  </md-list-item>
   <h3 md-subheader>Collaborators</h3>
   <md-divider></md-divider>
-  <mute-collaborators fxFlex></mute-collaborators>
+  <md-list-item>
+    <mute-collaborators fxFlexFill></mute-collaborators>
+  </md-list-item>
 </md-list>

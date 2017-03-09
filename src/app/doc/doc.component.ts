@@ -61,9 +61,8 @@ export class DocComponent implements OnDestroy, OnInit {
       this.richCollaboratorsService.collaboratorLeaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
       this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-      this.syncStorage.joinSource = this.network.onJoin
-      this.syncStorage.stateSource = this.muteCore.syncService.onState
-
+      // this.syncStorage.joinSource = this.network.onJoin
+      // this.syncStorage.stateSource = this.muteCore.syncService.onState
       this.network.join(key)
       this.inited = true
     })

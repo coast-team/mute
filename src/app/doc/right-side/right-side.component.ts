@@ -19,6 +19,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
   private onDoorSubscription: Subscription
 
   public storages: Storage[]
+  public signalingOk: boolean
+  public networkOk: boolean
 
   constructor (
     private route: ActivatedRoute,
@@ -29,6 +31,8 @@ export class RightSideComponent implements OnDestroy, OnInit {
     public profile: ProfileService
   ) {
     this.storages = []
+    this.signalingOk = false
+    this.networkOk = false
   }
 
   ngOnInit () {
@@ -49,8 +53,12 @@ export class RightSideComponent implements OnDestroy, OnInit {
           })
         })
       })
-    this.onDoorSubscription = this.networkService.onDoor.subscribe(() => {
+    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
+      this.signalingOk = opened
       this.changeDetectorRef.detectChanges()
+    })
+    this.networkService.onJoin.subscribe((event) => {
+      this.networkOk = true
     })
   }
 

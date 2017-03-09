@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: false,
-  signalingURL: 'http://signal2.loria.fr',
+  signalingURL: 'wss://sigver-coastteam.rhcloud.com:8443',
   storages: [
     {
       apiURL: 'http://localhost:8080',

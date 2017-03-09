@@ -1,8 +1,8 @@
-<div fxLayout="row" fxLayoutAlign="end center" fxLayoutWrap="true" class="container">
-  <span *ngFor="let collab of collaborators"
+<md-chip-list>
+  <md-chip fxFlexOffset="10px" *ngFor="let collab of collaborators"
       [style.background-color]="collab.color"
       [@peerArriving]="'active'"
   >
     {{collab.pseudo}}
-  </span>
-</div>
+  </md-chip>
+</md-chip-list>
