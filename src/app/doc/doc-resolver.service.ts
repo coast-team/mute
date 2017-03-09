@@ -20,21 +20,22 @@ export class DocResolverService implements Resolve<Doc> {
     const urlKey = route.params['key']
     let activeFile = this.ui.activeFile as Doc
     if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {
+      log.debug('here')
       return this.localStorage.get(activeFile.id)
-        .then((localDoc: Doc) => {
-          if (localDoc === null) {
-            activeFile.save()
-          }
+        .catch((err) => {
+          activeFile.save()
           return activeFile
         })
     } else {
       return this.localStorage.get(urlKey)
         .then((localDoc: Doc) => {
-          if (localDoc === null) {
-            localDoc = this.localStorage.createDoc(urlKey)
-          }
           this.ui.setActiveFile(localDoc)
           return localDoc
+        })
+        .catch((err) => {
+          activeFile = this.localStorage.createDoc(urlKey)
+          this.ui.setActiveFile(activeFile)
+          return activeFile
         })
     }
   }
