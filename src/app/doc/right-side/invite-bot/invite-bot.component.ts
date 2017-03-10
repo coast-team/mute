@@ -41,10 +41,10 @@ export class InviteBotComponent implements OnInit {
   private network: NetworkService
 
   @ViewChild('ipElm') ipElm
-  public btnActive: boolean = true
-  public inputActive: boolean = false
-  public error: boolean = false
-  public errorMessage: string = 'Invalid ip address or host name'
+  public btnActive = true
+  public inputActive = false
+  public error = false
+  public errorMessage = 'Invalid ip address or host name'
 
   constructor (network: NetworkService) {
     this.network = network
@@ -62,13 +62,13 @@ export class InviteBotComponent implements OnInit {
     if (event.toState === 'void') {
       this.btnActive = true
     } else if (event.toState === 'active') {
-      this.ipElm.focus()
+      this.ipElm.nativeElement.focus()
     }
   }
 
-  validate () {
-    log.debug('Event: ', this.ipElm.value)
-    if (this.ipElm.value.match(`${this.regexIP}|${this.regexHostName}`)) {
+  validate (event) {
+    log.debug('Event: ', event)
+    if (this.ipElm.nativeElement.value.match(`${this.regexIP}|${this.regexHostName}`)) {
       this.error = false
     } else {
       this.error = true
@@ -81,7 +81,7 @@ export class InviteBotComponent implements OnInit {
 
   ok () {
     if (!this.error) {
-      this.network.inviteBot(this.ipElm.value)
+      this.network.inviteBot(this.ipElm.nativeElement.value)
     }
     this.inputActive = false
   }

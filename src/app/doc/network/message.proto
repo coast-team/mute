@@ -5,14 +5,10 @@ message Message {
   bytes content = 2;
 }
 
-message BotRequest {
+message BotProtocol {
   string key = 1;
 }
 
 message BotReponse {
-  ErrorCode error = 1;
-
-  enum ErrorCode {
-    DATABASE = 0;
-  }
+  string url = 1;
 }

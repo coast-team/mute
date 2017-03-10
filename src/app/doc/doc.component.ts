@@ -7,6 +7,7 @@ import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { UiService } from '../core/ui/ui.service'
+import { BotStorageService } from '../core/storage'
 
 import { MuteCore } from 'mute-core'
 
@@ -30,18 +31,29 @@ export class DocComponent implements OnDestroy, OnInit {
     private richCollaboratorsService: RichCollaboratorsService,
     private profile: ProfileService,
     private route: ActivatedRoute,
+    private botStorage: BotStorageService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     public ui: UiService
   ) {}
 
   ngOnInit () {
+    log.angular('DocComponent init')
     this.route.data
       .subscribe((data: {doc: Doc}) => {
         this.doc = data.doc
+        this.network.onJoin.subscribe(() => {
+          this.doc.botIds.map((botId) => {
+            return this.botStorage.getBotContact(botId)
+          })
+          .filter((botContact) => botContact !== undefined)
+          .forEach((botContact) => {
+            log.debug('Inviting: ', botContact.p2pURL)
+            this.network.inviteBot(botContact.p2pURL)
+          })
+        })
       })
     this.route.params.subscribe((params: Params) => {
-      log.angular('DocComponent init')
       const key = params['key'] // (+) converts string 'id' to a number
       if (this.inited) {
         // Need to clean the services before

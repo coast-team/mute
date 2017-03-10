@@ -13,6 +13,7 @@ export class NetworkService {
 
   private webChannel
   private key: string
+  private botUrls: string[]
 
   private disposeSubject: Subject<void>
 
@@ -38,6 +39,8 @@ export class NetworkService {
     private xirsys: XirsysService
   ) {
     log.angular('NetworkService constructed')
+
+    this.botUrls = []
 
     // Initialize subjects
     this.disposeSubject = new Subject<void>()
@@ -74,8 +77,22 @@ export class NetworkService {
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
       const msg = pb.Message.deserializeBinary(bytes)
-      const networkMessage = new NetworkMessage(msg.getService(), id, isBroadcast, msg.getContent())
-      this.messageSubject.next(networkMessage)
+      const serviceName = msg.getService()
+      if (serviceName === 'botprotocol') {
+        let msg = new pb.Message()
+        msg.setService('botprotocol')
+        let content = new pb.BotProtocol()
+        content.setKey(this.key)
+        msg.setContent(content.serializeBinary())
+        this.webChannel.sendTo(id, msg.serializeBinary())
+      } else if (serviceName === 'botresponse') {
+        log.debug('BotResponse')
+        const url = pb.BotResponse.deserializeBinary(msg.getContent()).getUrl()
+        this.botUrls.push(url)
+      } else {
+        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.getContent())
+        this.messageSubject.next(networkMessage)
+      }
     }
   }
 
@@ -190,16 +207,13 @@ export class NetworkService {
 
 
   inviteBot (url: string): void {
-    this.webChannel.invite(`ws://${url}`)
-      .then(() => {
-        log.info('network', `Sending the document key ${this.key} to the bot`)
-        const pbMsg = new pb.Message()
-        pbMsg.setService('Bot Storage')
-        const pbBotRequest = new pb.BotRequest()
-        pbBotRequest.setKey(this.key)
-        pbMsg.setContent(pbBotRequest.serializeBinary())
-        this.webChannel.send(pbMsg.serializeBinary())
-      })
+    if (!this.botUrls.includes(url)) {
+      const fullUrl = url.startsWith('ws') ? url : `ws://${url}`
+      this.webChannel.invite(fullUrl)
+        .then(() => {
+          log.info('network', `Bot ${fullUrl} has been invited`)
+        })
+    }
   }
 
   send (service: string, content: ArrayBuffer): void

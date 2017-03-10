@@ -49,6 +49,10 @@ export class BotStorageService extends AbstractStorageService {
     return this.bots.get(botId)[0]
   }
 
+  getBotContact (botId: string): BotStorageCotact {
+    return this.bots.get(botId)[1]
+  }
+
   getFiles (folder: Folder): Promise<File[]> {
     const bot = this.bots.get(folder.id)
     if (bot !== undefined) {
@@ -66,4 +70,5 @@ export class BotStorageService extends AbstractStorageService {
       return Promise.resolve([])
     }
   }
+
 }

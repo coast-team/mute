@@ -6,9 +6,11 @@ import {
   state,
   style,
   transition,
-  trigger
+  trigger,
+  OnDestroy
 } from '@angular/core'
 import { RichCollaborator, RichCollaboratorsService } from '../../../doc/rich-collaborators'
+import { Subscription } from 'rxjs/Rx'
 
 @Component({
   selector: 'mute-collaborators',
@@ -23,9 +25,12 @@ import { RichCollaborator, RichCollaboratorsService } from '../../../doc/rich-co
     ])
   ]
 })
-export class CollaboratorsComponent implements OnInit {
+export class CollaboratorsComponent implements OnInit, OnDestroy {
 
   private mapCollaborators: Map<number, RichCollaborator>
+  private collabChangeSubs: Subscription
+  private collabJoinSubs: Subscription
+  private collabLeaveSubs: Subscription
 
   constructor (
     private changeDetectorRef: ChangeDetectorRef,
@@ -35,20 +40,26 @@ export class CollaboratorsComponent implements OnInit {
   }
 
   ngOnInit (): void {
-    this.collabService.onCollaboratorChangePseudo.subscribe((collaborator: RichCollaborator) => {
+    this.collabChangeSubs = this.collabService.onCollaboratorChangePseudo.subscribe((collaborator: RichCollaborator) => {
       this.mapCollaborators.set(collaborator.id, collaborator)
       this.changeDetectorRef.detectChanges()
     })
 
-    this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
+    this.collabJoinSubs = this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
       this.mapCollaborators.set(collaborator.id, collaborator)
       this.changeDetectorRef.detectChanges()
     })
 
-    this.collabService.onCollaboratorLeave.subscribe((id: number) => {
+    this.collabLeaveSubs = this.collabService.onCollaboratorLeave.subscribe((id: number) => {
       this.mapCollaborators.delete(id)
       this.changeDetectorRef.detectChanges()
     })
+  }
+
+  ngOnDestroy () {
+    this.collabChangeSubs.unsubscribe()
+    this.collabJoinSubs.unsubscribe()
+    this.collabLeaveSubs.unsubscribe()
   }
 
   get collaborators (): RichCollaborator[] {
