@@ -87,6 +87,9 @@ export class DocComponent implements OnDestroy, OnInit {
       this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
       this.syncStorage.stateSource = this.muteCore.syncService.onState
 
+      this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
+        this.ui.digest = digest
+      })
     })
     this.ui.onDocNavToggle.subscribe((open: boolean) => {
       this.rightSidenavElm.opened = open

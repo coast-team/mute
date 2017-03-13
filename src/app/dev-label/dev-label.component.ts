@@ -1,10 +1,16 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { Http } from '@angular/http'
 import 'rxjs/add/operator/toPromise'
 
+import { UiService } from '../core/ui/ui.service'
+
 @Component({
   selector: 'mute-dev-label',
-  template: `Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)`,
+  template: `
+    Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)
+    <br>
+    Digest: {{digest}}
+    `,
   styles: [`
     :host {
       position: fixed;
@@ -14,12 +20,13 @@ import 'rxjs/add/operator/toPromise'
     }
   `]
 })
-export class DevLabelComponent {
+export class DevLabelComponent implements OnInit {
 
   url = 'https://github.com/coast-team/mute/tree/'
   shortID: string
+  digest: number
 
-  constructor (http: Http) {
+  constructor (private http: Http, private ui: UiService) {
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
       .toPromise()
       .then((response) => {
@@ -27,6 +34,12 @@ export class DevLabelComponent {
         this.shortID = response.json().commit.commit.message.substr(0, 7)
       })
       .catch((err) => console.log('DevLabelComponent could not fetch commit number: ', err))
+  }
+
+  ngOnInit (): void {
+    this.ui.onDocDigest.subscribe((digest: number) => {
+      this.digest = digest
+    })
   }
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { BehaviorSubject, Observable } from 'rxjs/Rx'
+import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
 
 import { AbstractStorageService } from '../storage'
 import { Folder } from '../Folder'
@@ -10,8 +10,10 @@ export class UiService {
 
   private activeFileSubject: BehaviorSubject<File | null>
 
-  private navToggleSubject: BehaviorSubject<boolean>
+  private docDigestSubject: Subject<number>
+
   private docNavToggleSubject: BehaviorSubject<boolean>
+  private navToggleSubject: BehaviorSubject<boolean>
   private toolbarTitleSubject: BehaviorSubject<string>
 
   public navOpened = false
@@ -20,6 +22,7 @@ export class UiService {
 
   constructor () {
     this.activeFileSubject = new BehaviorSubject(null)
+    this.docDigestSubject = new Subject()
     this.navToggleSubject = new BehaviorSubject<boolean>(this.navOpened)
     this.docNavToggleSubject = new BehaviorSubject<boolean>(this.docNavOpened)
     this.toolbarTitleSubject = new BehaviorSubject<string>(this.toolbarTitle)
@@ -78,6 +81,14 @@ export class UiService {
 
   set toolbarTitle (title) {
     this.toolbarTitleSubject.next(title)
+  }
+
+  set digest (digest: number) {
+    this.docDigestSubject.next(digest)
+  }
+
+  get onDocDigest (): Observable<number> {
+    return this.docDigestSubject.asObservable()
   }
 
 }
