@@ -21,6 +21,7 @@ import { MuteCore } from 'mute-core'
 export class DocComponent implements OnDestroy, OnInit {
 
   private doc: Doc
+  private key: string
 
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited = false
@@ -60,6 +61,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.network.cleanWebChannel()
         this.muteCore.clean()
       }
+      this.key = key
       this.network.initWebChannel()
 
       // TODO: Retrieve previous id for this document if existing
@@ -85,8 +87,6 @@ export class DocComponent implements OnDestroy, OnInit {
       this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
       this.syncStorage.stateSource = this.muteCore.syncService.onState
 
-      this.muteCore.init(key)
-      this.inited = true
     })
     this.ui.onDocNavToggle.subscribe((open: boolean) => {
       this.rightSidenavElm.opened = open
@@ -101,6 +101,11 @@ export class DocComponent implements OnDestroy, OnInit {
     log.angular('DocComponent destroyed')
     this.network.cleanWebChannel()
     this.muteCore.clean()
+  }
+
+  editorReady (): void {
+    this.muteCore.init(this.key)
+    this.inited = true
   }
 
 }

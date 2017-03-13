@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core'
+import { Component, EventEmitter, Injectable, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 // FIXME: Find a proper way to import the mode's files
@@ -31,6 +31,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
 
   @Input() docService: DocService
+  @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
   public innerWidth = window.innerWidth
@@ -91,6 +92,8 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     //       console.log(changeEvent.change)
     //     })
     //   })
+
+    this.isReady.next(undefined)
   }
 
   ngOnChanges (changes: SimpleChanges): void {
@@ -130,7 +133,11 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       this.editor.operation(updateDoc)
     })
 
-    this.isInited = true
+    if (this.isInited) {
+      this.isReady.next(undefined)
+    } else {
+      this.isInited = true
+    }
   }
 
   ngOnDestroy () {

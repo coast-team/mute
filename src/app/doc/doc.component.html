@@ -1,7 +1,7 @@
 <md-sidenav-container>
 
   <!-- Content -->
-  <mute-editor [docService]="muteCore.docService"></mute-editor>
+  <mute-editor [docService]="muteCore.docService" (isReady)="editorReady($event)"></mute-editor>
 
   <!-- Right Sidenav-->
   <md-sidenav align="end" mode="side" class="rightsidenav" #rightSidenavElm>
