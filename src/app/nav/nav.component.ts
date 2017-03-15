@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { Observable } from 'rxjs/Rx'
+import { Observable, Subject } from 'rxjs/Rx'
 
 import { StorageOverviewService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
@@ -15,7 +15,9 @@ import { UiService } from '../core/ui/ui.service'
 })
 export class NavComponent implements OnInit {
 
-  public files: Promise<File[]>
+  private filesSubject: Subject<File[]>
+
+  public files: Observable<File[]>
   public trash: Folder
 
   constructor (
@@ -28,16 +30,19 @@ export class NavComponent implements OnInit {
 
   ngOnInit () {
     log.angular('NavComponent init')
-    this.files = this.botStorage.getRootFolders()
+    this.trash = this.localStorage.trash
+    this.filesSubject = new Subject()
+    this.files = this.filesSubject.asObservable()
+    this.filesSubject.next([this.storageOverview.allDocs, this.localStorage.home])
+    this.botStorage.getRootFolders()
       .then((folders) => {
         const resFolders = [
           this.storageOverview.allDocs,
           this.localStorage.home
         ]
         folders.forEach((folder) => resFolders.push(folder))
-        return resFolders
+        this.filesSubject.next(resFolders)
       })
-    this.trash = this.localStorage.trash
   }
 
   newDoc () {

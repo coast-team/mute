@@ -14,7 +14,7 @@
     "gh-deploy": "ngh --message \"$(git rev-parse HEAD)\"",
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
-    "commit": "git-cz"
+    "cz": "git-cz"
   },
   "keywords": [],
   "contributors": [
