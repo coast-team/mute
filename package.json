@@ -12,6 +12,7 @@
     "protoc": "protoc/protoc-3.2.0-linux-x86_64 --js_out=import_style=commonjs,binary:. src/app/doc/network/message.proto src/app/doc/editor/cursor/cursor.proto",
     "pregh-deploy": "npm run build -- --env ghpages --aot --base-href '/mute/'",
     "gh-deploy": "ngh --message \"$(git rev-parse HEAD)\"",
+    "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "commit": "git-cz"
   },
