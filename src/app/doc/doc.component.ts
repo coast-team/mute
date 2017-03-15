@@ -1,5 +1,6 @@
 import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
+import { MuteCore } from 'mute-core'
 
 import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
@@ -8,8 +9,6 @@ import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { BotStorageService } from '../core/storage'
-
-import { MuteCore } from 'mute-core'
 
 @Component({
   selector: 'mute-doc',
@@ -26,7 +25,7 @@ export class DocComponent implements OnDestroy, OnInit {
   @ViewChild('rightSidenavElm') rightSidenavElm
   private inited = false
 
-  private muteCore: MuteCore
+  public muteCore: MuteCore
 
   constructor (
     private richCollaboratorsService: RichCollaboratorsService,

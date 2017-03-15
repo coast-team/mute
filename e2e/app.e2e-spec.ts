@@ -1,14 +1,14 @@
-import { MyProjectPage } from './app.po';
+import { MyProjectPage } from './app.po'
 
 describe('my-project App', () => {
-  let page: MyProjectPage;
+  let page: MyProjectPage
 
   beforeEach(() => {
-    page = new MyProjectPage();
-  });
+    page = new MyProjectPage()
+  })
 
   it('should display message saying app works', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
-  });
-});
+    page.navigateTo()
+    expect(page.getParagraphText()).toEqual('app works!')
+  })
+})

@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Injectable, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
+import { DocService } from 'mute-core'
+import { TextDelete, TextInsert }  from 'mute-structs'
+
 // FIXME: Find a proper way to import the mode's files
 require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
-import { TextDelete, TextInsert }  from 'mute-structs'
 
-import { DocService } from 'mute-core'
 
 @Component({
   selector: 'mute-editor',
@@ -22,7 +23,6 @@ import { DocService } from 'mute-core'
 @Injectable()
 export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
-  private editor: CodeMirror.Editor
   private isInited = false
 
   private docValueSubscription: Subscription
@@ -34,6 +34,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
+  public editor: CodeMirror.Editor
   public innerWidth = window.innerWidth
 
   constructor () {}
