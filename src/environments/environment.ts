@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: false,
-  signalingURL: 'wss://sigver-coastteam.rhcloud.com:8443',
+  signalingURL: 'ws://vps387425.ovh.net:8000',
   storages: [
     {
       apiURL: 'http://localhost:8080',
