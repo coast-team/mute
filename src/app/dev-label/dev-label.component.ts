@@ -4,6 +4,8 @@ import 'rxjs/add/operator/toPromise'
 
 import { UiService } from '../core/ui/ui.service'
 
+import * as mnemonic from 'mnemonicjs'
+
 @Component({
   selector: 'mute-dev-label',
   template: `
@@ -24,7 +26,7 @@ export class DevLabelComponent implements OnInit {
 
   url = 'https://github.com/coast-team/mute/tree/'
   shortID: string
-  digest: number
+  digest: string
 
   constructor (private http: Http, private ui: UiService) {
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
@@ -38,7 +40,7 @@ export class DevLabelComponent implements OnInit {
 
   ngOnInit (): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
-      this.digest = digest
+      this.digest = mnemonic.encode_int32(digest)
     })
   }
 
