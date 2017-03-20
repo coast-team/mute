@@ -12,5 +12,6 @@ md-sidenav-container {
   .rightsidenav {
     background-color: $color-bg !important;
     min-width: 32rem;
+    max-width: 32rem;
   }
 }
