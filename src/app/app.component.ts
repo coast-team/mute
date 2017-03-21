@@ -16,7 +16,6 @@ import { Doc } from './core/Doc'
 export class AppComponent implements OnInit {
 
   @ViewChild('toolbarElm') toolbarElm
-  @ViewChild('leftSidenavElm') leftSidenavElm
   public visible: boolean
   public rootFileTitle: Observable<string>
   public innerWidth = window.innerWidth
@@ -33,15 +32,7 @@ export class AppComponent implements OnInit {
       .pluck('title')
   }
 
-  ngOnInit () {
-    this.leftSidenavElm.onClose.subscribe(() => {
-      this.ui.navOpened = false
-    })
-    this.ui.onNavToggle.subscribe((open: boolean) => {
-      this.leftSidenavElm.opened = open
-    })
-    this.ui.openNav()
-  }
+  ngOnInit () { }
 
   isDoc () {
     // FIXME: find better way to distinguish 'doc' from 'docs'

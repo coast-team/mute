@@ -18,7 +18,6 @@ export class NavComponent implements OnInit {
   private filesSubject: Subject<File[]>
 
   public files: Observable<File[]>
-  public trash: Folder
 
   constructor (
     private router: Router,
@@ -26,21 +25,25 @@ export class NavComponent implements OnInit {
     public localStorage: LocalStorageService,
     public botStorage: BotStorageService,
     public ui: UiService,
-  ) { }
+  ) {
+    this.filesSubject = new Subject()
+    this.files = this.filesSubject.asObservable()
+  }
 
   ngOnInit () {
     log.angular('NavComponent init')
-    this.trash = this.localStorage.trash
-    this.filesSubject = new Subject()
-    this.files = this.filesSubject.asObservable()
-    this.filesSubject.next([this.storageOverview.allDocs, this.localStorage.home])
+    const resFolders = [
+      this.storageOverview.allDocs,
+      this.localStorage.home
+    ]
     this.botStorage.getRootFolders()
       .then((folders) => {
-        const resFolders = [
-          this.storageOverview.allDocs,
-          this.localStorage.home
-        ]
-        folders.forEach((folder) => resFolders.push(folder))
+        folders.forEach((folder) => resFolders[resFolders.length] = folder)
+        resFolders[resFolders.length] = this.localStorage.trash
+        this.filesSubject.next(resFolders)
+      })
+      .catch(() => {
+        resFolders[resFolders.length] = this.localStorage.trash
         this.filesSubject.next(resFolders)
       })
   }
@@ -52,6 +55,7 @@ export class NavComponent implements OnInit {
   }
 
   setActiveFile ({value}) {
+    log.debug('Setting active file: ', value)
     this.ui.setActiveFile(value)
   }
 

@@ -37,6 +37,7 @@ export class EditFieldComponent implements OnInit, OnChanges {
     this.editableElm.nativeElement.style.color = this.color
     this.editableElm.nativeElement.style.textAlign = this.textAlign
     this.editableElm.nativeElement.value = this.value
+    this.editableElm.nativeElement.blur()
   }
 
   ngOnChanges (changes: {value: SimpleChange}) {

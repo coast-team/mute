@@ -8,6 +8,7 @@ import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
 import { NetworkService } from './network/network.service'
 import { DocResolverService } from './doc-resolver.service'
+import { NavModule } from '../nav'
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { DocResolverService } from './doc-resolver.service'
   ],
   imports: [
     SharedModule,
+    NavModule,
     RightSideModule,
     RouterModule.forChild([
       {

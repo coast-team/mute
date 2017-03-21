@@ -1,10 +1,25 @@
 @import 'theme';
 @import 'variables';
 
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  align-content: stretch;
+  height: 100%;
+}
+
 md-card {
   height: auto;
-  margin: 10px auto;
-  height: 94%;
+  margin: 14px auto;
+  flex: 1 1 auto;
   cursor: text;
+  width: 100%;
+}
+
+.airbag {
+  height: 20px;
+  flex: 0 0 auto;
 }
 
