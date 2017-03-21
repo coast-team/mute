@@ -2,12 +2,17 @@
 @import 'variables';
 
 :host {
-  height: 100%;
+  flex: 1;
+  overflow: auto;
 }
 
 md-sidenav-container {
   background-color: $color-bg !important;
   height: 100%;
+
+  .leftsidenav {
+    min-width: 24rem;
+  }
 
   .rightsidenav {
     background-color: $color-bg !important;

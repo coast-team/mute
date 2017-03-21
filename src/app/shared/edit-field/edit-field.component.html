@@ -3,8 +3,9 @@
     (mouseleave)="toggleViewState()"
     (click)="edit()">
 
-  <div fxLayout="column" fxLayoutAlign="center center">
+  <div fxLayout="column" fxLayoutAlign="center center" cdkTrapFocus="false">
     <input type="text" #editableElm spellcheck="false"
+        autofocus="false"
         maxlength="128"
         (keydown)="done($event)"
         (blur)="done($event)"

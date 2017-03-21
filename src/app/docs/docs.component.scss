@@ -3,6 +3,10 @@
 :host {
   width: 100%;
   height: 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  height: 100%;
 }
 
 md-card {
@@ -24,5 +28,14 @@ md-card {
     margin: 0;
     width: 100%;
     background-image: linear-gradient(to left, #fff, $color-divider, #fff);
+  }
+}
+
+md-sidenav-container {
+  background-color: $color-bg !important;
+  height: 100%;
+
+  md-sidenav {
+    min-width: 24rem;
   }
 }

@@ -10,6 +10,7 @@ import { NetworkService } from './network/network.service'
 import { DocResolverService } from './doc-resolver.service'
 import { DocHistoryComponent } from './doc-history/doc-history.component'
 import { TimelineComponent } from './doc-history/timeline/timeline.component'
+import { NavModule } from '../nav'
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { TimelineComponent } from './doc-history/timeline/timeline.component'
   ],
   imports: [
     SharedModule,
+    NavModule,
     RightSideModule,
     RouterModule.forChild([
       {
