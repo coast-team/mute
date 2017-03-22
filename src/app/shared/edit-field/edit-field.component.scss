@@ -1,7 +1,13 @@
-@import 'theme';
 @import 'variables';
 
-:host {
+button, input {
+  font-size: 2.4rem;
+  font-family: $font-header;
+}
+
+button{
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   &:hover {
     cursor: text;
@@ -9,32 +15,5 @@
 }
 
 input {
-  padding: 0.4rem 0.4rem 0 0.4rem;
-  outline: none;
-  max-width: 27rem;
-  overflow: hidden;
-  border: none;
-  background: rgba(0, 0, 0, 0);
   text-align: center;
-  display: inline-block;
-  width: auto;
-  text-overflow: ellipsis;
-}
-
-.bottom-line-container {
-  display: inline-block;
-  height: 2px;
-  width: 100%;
-
-  .bottom-line {
-    display: block;
-    background-color: mat-color($accent);
-    height: 1px;
-    width: 0px;
-    transition: width .2s ease;
-  }
-}
-
-md-icon {
-  margin-left: 5px;
 }
