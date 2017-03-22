@@ -14,6 +14,7 @@
           routerLinkActive="" #rla="routerLinkActive"
           [checked]="rla.isActive"
           [value]="f"
+          (click)="onStorageClick()"
       >
         <span class="content" fxLayout="row" fxLayoutAlign="left center">
           <md-icon>{{f.icon}}</md-icon>

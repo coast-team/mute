@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
 import { Observable, Subject } from 'rxjs/Rx'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
 import { StorageOverviewService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
@@ -25,6 +26,7 @@ export class NavComponent implements OnInit {
     public localStorage: LocalStorageService,
     public botStorage: BotStorageService,
     public ui: UiService,
+    public media: ObservableMedia
   ) {
     this.filesSubject = new Subject()
     this.files = this.filesSubject.asObservable()
@@ -55,14 +57,12 @@ export class NavComponent implements OnInit {
   }
 
   setActiveFile ({value}) {
-    log.debug('Setting active file: ', value)
     this.ui.setActiveFile(value)
   }
 
-  // openDialog () {
-  //   let dialogRef = this.dialog.open(AddStorageDialogComponent)
-  //   // dialogRef.afterClosed().subscribe((result) => {
-  //   //   log.debug('RESULT is: ', result)
-  //   // })
-  // }
+  onStorageClick () {
+    if (this.media.isActive('xs')) {
+      this.ui.toggleNav()
+    }
+  }
 }
