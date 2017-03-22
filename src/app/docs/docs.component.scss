@@ -7,7 +7,7 @@
 }
 
 md-toolbar {
-  background-color: $bg-card !important;
+  background-color: mat-color($primary, 50) !important;
 }
 
 .doc-grid {

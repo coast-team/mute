@@ -8,8 +8,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
-$primary: mat-palette($mat-teal);
-$accent:  mat-palette($mat-orange, 700, A100, A400);
+$primary: mat-palette($mat-light-blue, 600, 200, 800);
+$accent:  mat-palette($mat-amber, A400, A700);
 
 // The warn palette is optional (defaults to red).
 $warn:    mat-palette($mat-red);
@@ -20,7 +20,7 @@ $mute-theme: mat-light-theme($primary, $accent, $warn);
 // Background color
 $mat-bg: map-get($mute-theme, background);
 $bg-status-bar: map-get($mat-bg, status-card);
-$bg-background: map-get($mat-bg, background);
+$bg-background: #ECEFF1; //map-get($mat-bg, background);
 $bg-hover: map-get($mat-bg, hover);
 $bg-card: map-get($mat-bg, card);
 $bg-dialog: map-get($mat-bg, dialog);
