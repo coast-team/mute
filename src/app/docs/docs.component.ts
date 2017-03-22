@@ -37,7 +37,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private botStorage: BotStorageService,
     public ui: UiService,
     private ref: ChangeDetectorRef,
-    private media: ObservableMedia
+    public media: ObservableMedia
   ) {
     this.snackBarSubject = new Subject()
   }

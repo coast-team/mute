@@ -3,7 +3,7 @@
   <!-- Left Sidenav-->
   <md-sidenav #leftSidenavElm class="leftsidenav"
       [mode]="sideNavMode"
-      opened="true"
+      [opened]="!this.media.isActive('xs')"
   >
     <mute-nav></mute-nav>
   </md-sidenav>
