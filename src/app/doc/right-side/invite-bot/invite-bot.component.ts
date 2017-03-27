@@ -2,12 +2,14 @@ import {
   Component,
   Injectable,
   OnInit,
-  ViewChild,
+  ViewChild } from '@angular/core'
+import {
   trigger,
   state,
   style,
-  transition,
-  animate } from '@angular/core'
+  animate,
+  transition
+} from '@angular/animations'
 
 import { NetworkService } from '../../../doc/network/network.service'
 
