@@ -1,14 +1,16 @@
 import {
-  animate,
   ChangeDetectorRef,
   Component,
   OnInit,
-  state,
-  style,
-  transition,
-  trigger,
   OnDestroy
 } from '@angular/core'
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations'
 import { RichCollaborator, RichCollaboratorsService } from '../../../doc/rich-collaborators'
 import { Subscription } from 'rxjs/Rx'
 

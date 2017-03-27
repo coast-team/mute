@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { NgModule } from '@angular/core'
 
 /* App Root */
@@ -17,6 +18,7 @@ import { DocsModule } from './docs'
   imports: [
     BrowserModule,
     CoreModule,
+    BrowserAnimationsModule,
     SharedModule,
     NavModule,
     DocsModule,

@@ -7,12 +7,14 @@ import {
   ViewChild,
   Input,
   Output,
+  ElementRef } from '@angular/core'
+import {
   trigger,
   state,
   style,
-  transition,
   animate,
-  ElementRef } from '@angular/core'
+  transition
+} from '@angular/animations'
 
 @Component({
   selector: 'mute-edit-field',
