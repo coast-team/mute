@@ -7,7 +7,8 @@ import {
   ViewChild,
   Input,
   Output,
-  ElementRef } from '@angular/core'
+  ElementRef,
+  ChangeDetectionStrategy } from '@angular/core'
 import {
   trigger,
   state,
@@ -20,6 +21,7 @@ import {
   selector: 'mute-edit-field',
   templateUrl: './edit-field.component.html',
   styleUrls: [ './edit-field.component.scss' ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('btnState', [
       state('active', style({transform: 'scale(1)'})),
