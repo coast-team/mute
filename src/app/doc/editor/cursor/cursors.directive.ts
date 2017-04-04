@@ -37,11 +37,11 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
   ngOnInit () {
     const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
 
-    this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
-      this.cmCursors.set(collaborator.id, new CmCursor(cmDoc, collaborator.color))
+    this.collabService.onJoin.subscribe((colab: RichCollaborator) => {
+      this.cmCursors.set(colab.id, new CmCursor(cmDoc, colab.color))
     })
 
-    this.collabService.onCollaboratorLeave.subscribe((id: number) => {
+    this.collabService.onLeave.subscribe((id: number) => {
       const cursor: CmCursor | undefined = this.cmCursors.get(id)
       if (cursor !== undefined) {
         if (cursor.cmBookmark !== null) {

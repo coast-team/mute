@@ -1,8 +1,22 @@
-<md-chip-list>
-  <md-chip fxFlexOffset="10px" *ngFor="let collab of collaborators"
+<ul fxLayout="row" fxLayoutAlign="start top" fxLayoutWrap="wrap">
+  <li fxFlexOffset="10px" disabled="true" *ngFor="let collab of collabService.collaborators"
+      [style.background-color]="collab.color"
+      [@peerArriving]="'active'"
+  >
+    {{collab.pseudo}}
+  </li>
+</ul>
+
+
+<!--
+  Chips on material v2.0.0-beta.2 has a bug:
+  editor loses focus, when the chip is gone or user pseudo has changed
+-->
+<!--<md-chip-list selectable="false">
+  <md-chip fxFlexOffset="10px" disabled="true" *ngFor="let collab of collaborators"
       [style.background-color]="collab.color"
       [@peerArriving]="'active'"
   >
     {{collab.pseudo}}
   </md-chip>
-</md-chip-list>
+</md-chip-list>-->

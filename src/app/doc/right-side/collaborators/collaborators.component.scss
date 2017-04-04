@@ -1,8 +1,15 @@
-md-chip {
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
   color: white !important;
   margin-bottom: 10px;
+  padding: 6px 8px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 7rem;
+  max-width: 12rem;
+  border-radius: 15px;
 }
