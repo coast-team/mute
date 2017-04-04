@@ -17,10 +17,10 @@ export class DocResolverService implements Resolve<Doc> {
   ) {}
 
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Doc> {
+    log.angular('Doc-Resolver.service')
     const urlKey = route.params['key']
     let activeFile = this.ui.activeFile as Doc
     if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {
-      log.debug('here')
       return this.localStorage.get(activeFile.id)
         .catch((err) => {
           activeFile.save()

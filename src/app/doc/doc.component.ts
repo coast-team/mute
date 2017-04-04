@@ -1,4 +1,4 @@
-import { Component, Injectable, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, Injectable, OnDestroy, OnInit, ViewChild, NgZone } from '@angular/core'
 import { ActivatedRoute, Params } from '@angular/router'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { Subscription } from 'rxjs/Rx'
@@ -34,6 +34,7 @@ export class DocComponent implements OnDestroy, OnInit {
   public rightSideNavMode = 'side'
 
   constructor (
+    private zone: NgZone,
     private route: ActivatedRoute,
     private richCollaboratorsService: RichCollaboratorsService,
     private profile: ProfileService,
@@ -92,26 +93,29 @@ export class DocComponent implements OnDestroy, OnInit {
       window.crypto.getRandomValues(ids)
       const id: number = ids[0]
 
-      this.muteCore = new MuteCore(id)
-      this.muteCore.messageSource = this.network.onMessage
-      this.network.initSource = this.muteCore.onInit
-      this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
-      this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
-      this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
+      this.zone.runOutsideAngular(() => {
+        this.muteCore = new MuteCore(id)
+        this.muteCore.messageSource = this.network.onMessage
+        this.network.initSource = this.muteCore.onInit
+        this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
+        this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
+        this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
 
-      this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
-      this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-      this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
-      this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
-      this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
-      this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
+        this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
+        this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
+        this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
 
-      this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-      this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
-      this.syncStorage.stateSource = this.muteCore.syncService.onState
+        this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
+        this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
+        this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
 
-      this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
-        this.ui.digest = digest
+        this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
+        this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
+        this.syncStorage.stateSource = this.muteCore.syncService.onState
+
+        this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
+          this.ui.digest = digest
+        })
       })
     })
   }
