@@ -1,12 +1,9 @@
-import { Collaborator } from 'mute-core'
-
-export class RichCollaborator extends Collaborator {
+export class RichCollaborator {
 
   constructor (
-    id: number,
-    pseudo: string,
+    public id: number,
+    public pseudo: string,
     readonly color: string,
   ) {
-    super(id, pseudo)
   }
 }

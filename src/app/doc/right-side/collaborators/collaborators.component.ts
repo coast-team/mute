@@ -1,8 +1,9 @@
 import {
-  ChangeDetectorRef,
   Component,
   OnInit,
-  OnDestroy
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
 } from '@angular/core'
 import {
   trigger,
@@ -11,13 +12,14 @@ import {
   animate,
   transition
 } from '@angular/animations'
-import { RichCollaborator, RichCollaboratorsService } from '../../../doc/rich-collaborators'
+import { RichCollaboratorsService } from '../../../doc/rich-collaborators'
 import { Subscription } from 'rxjs/Rx'
 
 @Component({
   selector: 'mute-collaborators',
   templateUrl: './collaborators.component.html',
   styleUrls: ['./collaborators.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('peerArriving', [
       state('active', style({transform: 'translateX(0)'})),
@@ -29,46 +31,30 @@ import { Subscription } from 'rxjs/Rx'
 })
 export class CollaboratorsComponent implements OnInit, OnDestroy {
 
-  private mapCollaborators: Map<number, RichCollaborator>
-  private collabChangeSubs: Subscription
-  private collabJoinSubs: Subscription
-  private collabLeaveSubs: Subscription
+  private onChangeSubs: Subscription
+  private onJoinSubs: Subscription
+  private onLeaveSubs: Subscription
 
   constructor (
-    private changeDetectorRef: ChangeDetectorRef,
-    private collabService: RichCollaboratorsService
-  ) {
-    this.mapCollaborators = new Map()
-  }
+    private collabService: RichCollaboratorsService,
+    private detectorRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit (): void {
-    this.collabChangeSubs = this.collabService.onCollaboratorChangePseudo.subscribe((collaborator: RichCollaborator) => {
-      this.mapCollaborators.set(collaborator.id, collaborator)
-      this.changeDetectorRef.detectChanges()
-    })
-
-    this.collabJoinSubs = this.collabService.onCollaboratorJoin.subscribe((collaborator: RichCollaborator) => {
-      this.mapCollaborators.set(collaborator.id, collaborator)
-      this.changeDetectorRef.detectChanges()
-    })
-
-    this.collabLeaveSubs = this.collabService.onCollaboratorLeave.subscribe((id: number) => {
-      this.mapCollaborators.delete(id)
-      this.changeDetectorRef.detectChanges()
-    })
+    this.onChangeSubs = this.collabService.onChange.subscribe(
+      () => this.detectorRef.markForCheck()
+    )
+    this.onJoinSubs = this.collabService.onJoin.subscribe(
+      () => this.detectorRef.markForCheck()
+    )
+    this.onLeaveSubs = this.collabService.onLeave.subscribe(
+      () => this.detectorRef.markForCheck()
+    )
   }
 
   ngOnDestroy () {
-    this.collabChangeSubs.unsubscribe()
-    this.collabJoinSubs.unsubscribe()
-    this.collabLeaveSubs.unsubscribe()
-  }
-
-  get collaborators (): RichCollaborator[] {
-    const collaborators: RichCollaborator[] = []
-    this.mapCollaborators.forEach((collaborator: RichCollaborator) => {
-      collaborators.push(collaborator)
-    })
-    return collaborators
+    this.onChangeSubs.unsubscribe()
+    this.onJoinSubs.unsubscribe()
+    this.onLeaveSubs.unsubscribe()
   }
 }
