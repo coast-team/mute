@@ -1,4 +1,19 @@
-import { Component, EventEmitter, Injectable, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  AfterViewInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  NgZone,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 import { DocService } from 'mute-core'
@@ -17,11 +32,11 @@ require('codemirror/mode/javascript/javascript')
     // Should find a proper way to do it.
     './editor.component.scss'
   ],
-  providers: []
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 @Injectable()
-export class EditorComponent implements OnChanges, OnDestroy, OnInit {
+export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewInit {
 
   private isInited = false
 
@@ -35,19 +50,25 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   @ViewChild('editorElt') editorElt
 
   public editor: CodeMirror.Editor
-  public innerWidth = window.innerWidth
 
-  constructor () {}
+  constructor (
+    private zone: NgZone,
+    private detectRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit () {
-    this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
-      lineNumbers: false,
-      lineWrapping: true,
-      autofocus: false,
-      mode: {name: 'gfm', globalVars: true}
-    })
+    this.detectRef.detach()
+  }
 
-    const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
+  ngAfterViewInit () {
+    this.zone.runOutsideAngular(() => {
+      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
+        lineNumbers: false,
+        lineWrapping: true,
+        autofocus: false,
+        mode: {name: 'gfm', globalVars: true}
+      })
+      const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
         this.editor.on('change', h)
       },
@@ -64,7 +85,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         return changeEvent.change.origin !== undefined && changeEvent.change.origin !== 'setValue'
       })
 
-    const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
+      const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .map((changeEvent: ChangeEvent) => {
         return [changeEvent]
       })
@@ -77,13 +98,13 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       })
       */
 
-    this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
-      return changeEvents.map( (changeEvent: ChangeEvent ) => {
-        return changeEvent.toTextOperations()
+      this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
+        return changeEvents.map( (changeEvent: ChangeEvent ) => {
+          return changeEvent.toTextOperations()
+        })
       })
-    })
 
-    this.docService.localTextOperationsSource = this.textOperationsObservable
+      this.docService.localTextOperationsSource = this.textOperationsObservable
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
@@ -94,7 +115,8 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     //     })
     //   })
 
-    this.isReady.next(undefined)
+      this.isReady.next(undefined)
+    })
   }
 
   ngOnChanges (changes: SimpleChanges): void {
