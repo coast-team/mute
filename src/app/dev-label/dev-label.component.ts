@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { Http } from '@angular/http'
 import 'rxjs/add/operator/toPromise'
 
@@ -9,7 +9,7 @@ import * as mnemonic from 'mnemonicjs'
 @Component({
   selector: 'mute-dev-label',
   template: `
-    Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)
+    Preview version: <a [href]='url' target="_blank">{{shortID}}</a>
     <br>
     Digest: {{digest}}
     `,
@@ -20,7 +20,8 @@ import * as mnemonic from 'mnemonicjs'
       bottom: 20px;
       right: 20px;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DevLabelComponent implements OnInit {
 
@@ -28,19 +29,24 @@ export class DevLabelComponent implements OnInit {
   shortID: string
   digest: string
 
-  constructor (private http: Http, private ui: UiService) {
+  constructor (
+    private http: Http,
+    private ui: UiService,
+    private detectRef: ChangeDetectorRef
+  ) {
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
       .toPromise()
       .then((response) => {
         this.url += response.json().commit.commit.message
         this.shortID = response.json().commit.commit.message.substr(0, 7)
       })
-      .catch((err) => console.log('DevLabelComponent could not fetch commit number: ', err))
+      .catch((err) => log.warn('DevLabelComponent could not fetch commit number: ', err))
   }
 
   ngOnInit (): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
+      this.detectRef.markForCheck()
     })
   }
 
