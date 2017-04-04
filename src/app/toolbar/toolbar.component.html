@@ -1,0 +1,49 @@
+<md-toolbar color="primary">
+  <div fxFlexFill fxLayout="row" fxLayoutAlign="space-between center">
+    <button md-icon-button (click)="ui.toggleNav()">
+      <md-icon>menu</md-icon>
+    </button>
+    <div *ngIf="isDocs(); then docs else doc"></div>
+  </div>
+
+  <!-- Toolbar content for Docs -->
+  <ng-template #docs>
+    <h2>{{rootFileTitle | async}}</h2>
+    <div fxFlex="30%" fxFlex.xs="0 0 auto" fxFlex.gt-md="20%"
+        fxLayout="row" fxLayoutAlign="end center">
+      <div class="profile" fxFlex="1 1 auto" fxHide.xs='true' fxLayout="row" fxLayoutAlign="end center">
+      <ng-container *ngTemplateOutlet="account"></ng-container>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Toolbar content for Doc -->
+  <ng-template #doc>
+    <mute-edit-field fxLayout="row" fxLayoutAlign="center center"
+        fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%"
+        [value]="rootFileTitle | async"
+        defaultValue="Untitled document"
+        (onDone)="updateTitle($event)">
+    </mute-edit-field>
+    <div fxFlex="30%" fxFlex.xs="0 0 auto" fxFlex.gt-md="20%"
+        fxLayout="row" fxLayoutAlign="end center">
+      <ng-container *ngTemplateOutlet="account"></ng-container>
+      <button md-icon-button (click)="ui.toggleDocNav()">
+        <md-icon>menu</md-icon>
+      </button>
+    </div>
+  </ng-template>
+
+  <!-- Account template common to docs and doc pages-->
+  <ng-template #account>
+    <div class="profile" fxFlex="1 1 auto" fxHide.xs='true' fxLayout="row" fxLayoutAlign="end center">
+      <mute-edit-field fxFlex="80%" fxLayout="row" fxLayoutAlign="end center"
+          [value]="profile.onPseudonym | async"
+          [defaultValue]="profile.pseudonymDefault"
+          (onDone)="updatePseudo($event)">
+      </mute-edit-field>
+      <md-icon>account_circle</md-icon>
+    </div>
+  </ng-template>
+
+</md-toolbar>

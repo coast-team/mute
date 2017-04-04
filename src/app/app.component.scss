@@ -1,5 +1,3 @@
-@import 'variables';
-
 :host {
   height: 100%;
   width: 100%;
@@ -7,19 +5,4 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-}
-
-md-toolbar {
-
-  h2 {
-    margin: 0;
-    font-size: 2.4rem;
-    font-family: $font-header;
-    font-weight: initial;
-  }
-
-  .profile {
-    margin-right: 10px;
-  }
-
 }
