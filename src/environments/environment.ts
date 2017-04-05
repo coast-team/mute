@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  devLabel: false,
+  devLabel: true,
   signalingURL: 'ws://vps387425.ovh.net:8000',
   storages: [
     {
