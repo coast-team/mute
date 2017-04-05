@@ -16,7 +16,7 @@ import * as mnemonic from 'mnemonicjs'
     Digest: {{digest}}
     <br>
     Exports: <button (click)="exportLog()">Log</button> <button (click)="exportTree()">Tree</button>
-    <a #link [href]="objectURL" [download]="filename">
+    <a #link [(href)]="objectURL" [download]="filename">
     `,
   styles: [`
     :host {
@@ -25,8 +25,7 @@ import * as mnemonic from 'mnemonicjs'
       bottom: 20px;
       right: 20px;
     }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `]
 })
 export class DevLabelComponent implements OnInit {
 
@@ -75,6 +74,9 @@ export class DevLabelComponent implements OnInit {
     db.getAttachment(docID, 'body').then((body) => {
       this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
       const clickEvent = new MouseEvent('click')
+
+      this.detectRef.detectChanges()
+
       setTimeout(() => {
         this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
       }, 1000)
@@ -87,6 +89,9 @@ export class DevLabelComponent implements OnInit {
     this.filename = `tree-${docID}-${this.digest}.json`
     const blob = new Blob([this.tree], { type : 'text\/json' })
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
+
+    this.detectRef.detectChanges()
+
     const clickEvent = new MouseEvent('click')
     setTimeout(() => {
       this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
