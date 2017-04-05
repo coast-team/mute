@@ -117,6 +117,10 @@ export class DocComponent implements OnDestroy, OnInit {
           this.ui.digest = digest
         })
       })
+
+      this.muteCore.docService.onDocTree.subscribe((tree: string) => {
+        this.ui.tree = tree
+      })
     })
   }
 

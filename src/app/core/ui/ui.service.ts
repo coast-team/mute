@@ -11,6 +11,7 @@ export class UiService {
   private activeFileSubject: BehaviorSubject<File | null>
 
   private docDigestSubject: Subject<number>
+  private docTreeSubject: Subject<string>
 
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
@@ -21,6 +22,7 @@ export class UiService {
   constructor () {
     this.activeFileSubject = new BehaviorSubject(null)
     this.docDigestSubject = new Subject()
+    this.docTreeSubject = new Subject()
     this.navToggleSubject = new Subject<void>()
     this.docNavToggleSubject = new Subject<void>()
     this.toolbarTitleSubject = new BehaviorSubject<string>(this.toolbarTitle)
@@ -65,6 +67,14 @@ export class UiService {
 
   get onDocDigest (): Observable<number> {
     return this.docDigestSubject.asObservable()
+  }
+
+  set tree (tree: string) {
+    this.docTreeSubject.next(tree)
+  }
+
+  get onDocTree (): Observable<string> {
+    return this.docTreeSubject.asObservable()
   }
 
 }
