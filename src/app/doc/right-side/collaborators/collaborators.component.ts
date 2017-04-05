@@ -36,7 +36,7 @@ export class CollaboratorsComponent implements OnInit, OnDestroy {
   private onLeaveSubs: Subscription
 
   constructor (
-    private collabService: RichCollaboratorsService,
+    public collabService: RichCollaboratorsService,
     private detectorRef: ChangeDetectorRef
   ) {}
 
