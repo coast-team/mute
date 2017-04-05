@@ -28,6 +28,7 @@ export class DevLabelComponent implements OnInit {
   url = 'https://github.com/coast-team/mute/tree/'
   shortID: string
   digest: string
+  tree: string
 
   constructor (
     private http: Http,
@@ -47,6 +48,10 @@ export class DevLabelComponent implements OnInit {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
       this.detectRef.markForCheck()
+    })
+
+    this.ui.onDocTree.subscribe((tree: string) => {
+      this.tree = tree
     })
   }
 
