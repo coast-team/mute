@@ -15,7 +15,7 @@ import * as mnemonic from 'mnemonicjs'
     <br>
     Digest: {{digest}}
     <br>
-    Exports: <button (click)="exportLog()">Log</button>
+    Exports: <button (click)="exportLog()">Log</button> <button (click)="exportTree()">Tree</button>
     <a #link [href]="objectURL" [download]="filename">
     `,
   styles: [`
@@ -79,6 +79,18 @@ export class DevLabelComponent implements OnInit {
         this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
       }, 1000)
     })
+  }
+
+  exportTree (): void {
+    const urlParts: string[] = window.location.href.split('/')
+    const docID = urlParts[urlParts.length - 1]
+    this.filename = `tree-${docID}-${this.digest}.json`
+    const blob = new Blob([this.tree], { type : 'text\/json' })
+    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
+    const clickEvent = new MouseEvent('click')
+    setTimeout(() => {
+      this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+    }, 1000)
   }
 
 }
