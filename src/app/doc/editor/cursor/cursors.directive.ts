@@ -44,7 +44,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
     this.collabService.onLeave.subscribe((id: number) => {
       const cursor: CmCursor | undefined = this.cmCursors.get(id)
       if (cursor !== undefined) {
-        if (cursor.cmBookmark !== null) {
+        if (cursor.cmBookmark !== undefined) {
           cursor.cmBookmark.clear()
         }
         cursor.stopClotting()
