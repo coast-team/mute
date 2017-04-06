@@ -30,14 +30,13 @@ import * as mnemonic from 'mnemonicjs'
 export class DevLabelComponent implements OnInit {
 
   @ViewChild('link') link: ElementRef
+  private tree: string
 
-  url = 'https://github.com/coast-team/mute/tree/'
-  shortID: string
-  digest: string
-  tree: string
-
-  objectURL: SafeResourceUrl
-  filename: string
+  public url = 'https://github.com/coast-team/mute/tree/'
+  public shortID: string
+  public digest: string
+  public objectURL: SafeResourceUrl
+  public filename: string
 
   constructor (
     private sanitizer: DomSanitizer,
@@ -58,7 +57,7 @@ export class DevLabelComponent implements OnInit {
   ngOnInit (): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
-      this.detectRef.markForCheck()
+      this.detectRef.detectChanges()
     })
 
     this.ui.onDocTree.subscribe((tree: string) => {

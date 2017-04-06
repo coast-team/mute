@@ -1,5 +1,5 @@
 <ul fxLayout="row" fxLayoutAlign="start top" fxLayoutWrap="wrap">
-  <li fxFlexOffset="10px" disabled="true" *ngFor="let collab of collabService.collaborators"
+  <li fxFlexOffset="10px" disabled="true" *ngFor="let collab of collaborators | async"
       [style.background-color]="collab.color"
       [@peerArriving]="'active'"
   >
