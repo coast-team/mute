@@ -37,8 +37,8 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
   ngOnInit () {
     const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
 
-    this.collabService.onJoin.subscribe((colab: RichCollaborator) => {
-      this.cmCursors.set(colab.id, new CmCursor(cmDoc, colab.color))
+    this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
+      this.cmCursors.set(collab.id, new CmCursor(cmDoc, collab.color))
     })
 
     this.collabService.onLeave.subscribe((id: number) => {
@@ -90,6 +90,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
       .subscribe((msg: NetworkMessage) => {
         const pbCursor = pb.Cursor.deserializeBinary(msg.content)
         const cursor = this.cmCursors.get(msg.id)
+        log.debug('')
         if (cursor !== undefined) {
           let pos: any
           if (pbCursor.getContentCase() === pb.Cursor.ContentCase.VISIBLE) {
@@ -105,9 +106,13 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
             const identifier = new Identifier(pbPosition.getBaseList(), pbPosition.getLast())
             pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + pbPosition.getIndex())
           }
-          const oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
-          const newCoords = this.cmEditor.cursorCoords(pos, 'local')
-          cursor.translate({x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top})
+          if (!cursor.created) {
+            cursor.create(pos)
+          } else {
+            const oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
+            const newCoords = this.cmEditor.cursorCoords(pos, 'local')
+            cursor.translate({x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top})
+          }
           cursor.show()
           cursor.restartClotting()
         }
@@ -119,18 +124,26 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
 
 class CmCursor {
 
+  private clotIntervalID: number
+  private clotTimeoutID: number
+  private cmDoc: CodeMirror.Doc
+
+  public created: boolean
   public domElm: HTMLElement
   public cmBookmark: any
 
-  private clotIntervalID: number
-  private clotTimeoutID: number
 
   constructor (cmDoc: CodeMirror.Doc, color: string) {
+    this.created = false
+    this.cmDoc = cmDoc
     this.domElm = document.createElement('span')
-    this.cmBookmark = cmDoc.setBookmark({line: 0, ch: 0}, {widget: this.domElm})
     this.domElm.className = 'peerCursor'
     this.domElm.style.backgroundColor = color
     this.hide()
+  }
+
+  create (pos) {
+    this.cmBookmark = this.cmDoc.setBookmark(pos, {widget: this.domElm})
   }
 
   translate (coords) {
