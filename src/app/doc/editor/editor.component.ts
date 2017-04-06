@@ -120,47 +120,49 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
   }
 
   ngOnChanges (changes: SimpleChanges): void {
-    if (this.isInited) {
-      this.docValueSubscription.unsubscribe()
-      this.remoteOperationsSubscription.unsubscribe()
-    }
-
-    // First ngOnChanges is called before ngOnInit
-    // This observable is not ready yet
-    if (this.textOperationsObservable !== undefined) {
-      this.docService.localTextOperationsSource = this.textOperationsObservable
-    }
-
-    this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
-      this.editor.setValue(str)
-    })
-
-    this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
-
-      const updateDoc: () => void = () => {
-        const doc: CodeMirror.Doc = this.editor.getDoc()
-
-        log.info('operation:editor', 'applied: ', textOperations)
-
-        textOperations.forEach( (textOperation: any) => {
-          const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
-          if (textOperation instanceof TextInsert) {
-            doc.replaceRange(textOperation.content, from)
-          } else if (textOperation instanceof TextDelete) {
-            const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-            doc.replaceRange('', from, to)
-          }
-        })
+    this.zone.runOutsideAngular(() => {
+      if (this.isInited) {
+        this.docValueSubscription.unsubscribe()
+        this.remoteOperationsSubscription.unsubscribe()
       }
 
-      this.editor.operation(updateDoc)
-    })
+      // First ngOnChanges is called before ngOnInit
+      // This observable is not ready yet
+      if (this.textOperationsObservable !== undefined) {
+        this.docService.localTextOperationsSource = this.textOperationsObservable
+      }
 
-    if (this.isInited) {
-      this.isReady.next(undefined)
-    } else {
-      this.isInited = true
-    }
+      this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
+        this.editor.setValue(str)
+      })
+
+      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
+
+        const updateDoc: () => void = () => {
+          const doc: CodeMirror.Doc = this.editor.getDoc()
+
+          log.info('operation:editor', 'applied: ', textOperations)
+
+          textOperations.forEach( (textOperation: any) => {
+            const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
+            if (textOperation instanceof TextInsert) {
+              doc.replaceRange(textOperation.content, from)
+            } else if (textOperation instanceof TextDelete) {
+              const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
+              doc.replaceRange('', from, to)
+            }
+          })
+        }
+
+        this.editor.operation(updateDoc)
+      })
+
+      if (this.isInited) {
+        this.isReady.next(undefined)
+      } else {
+        this.isInited = true
+      }
+    })
   }
 
   ngOnDestroy () {

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, ChangeDetectorRef } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 
 import { Collaborator } from 'mute-core'
@@ -13,15 +13,19 @@ export class RichCollaboratorsService {
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
   private changeSubject: Subject<{collab: RichCollaborator, prop: string}>
+  private collaboratorsSubject: Subject<RichCollaborator[]>
 
   private colors: Map<number, string>
 
   public collaborators: RichCollaborator[]
 
-  constructor () {
+  constructor (
+    private changeDetector: ChangeDetectorRef
+  ) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.changeSubject = new Subject()
+    this.collaboratorsSubject = new Subject()
 
     this.colors = new Map()
     this.collaborators = []
@@ -39,6 +43,10 @@ export class RichCollaboratorsService {
     return this.leaveSubject.asObservable()
   }
 
+  get onCollaborators (): Observable<RichCollaborator[]> {
+    return this.collaboratorsSubject.asObservable()
+  }
+
   set pseudoChangeSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
       const color: string = this.getColor(collab.id)
@@ -46,6 +54,8 @@ export class RichCollaboratorsService {
         if (rc.id === collab.id) {
           rc.pseudo = collab.pseudo
           this.changeSubject.next({collab: rc, prop: 'pseudo'})
+          this.collaboratorsSubject.next(this.collaborators)
+          this.changeDetector.detectChanges()
           break
         }
       }
@@ -58,6 +68,9 @@ export class RichCollaboratorsService {
       const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
       this.collaborators[this.collaborators.length] = newRCollab
       this.joinSubject.next(newRCollab)
+      log.debug('MUTE CORE SEND JOIN')
+      this.collaboratorsSubject.next(this.collaborators)
+      this.changeDetector.detectChanges()
     })
   }
 
@@ -68,6 +81,8 @@ export class RichCollaboratorsService {
         if (this.collaborators[i].id === id) {
           this.collaborators.splice(i, 1)
           this.leaveSubject.next(id)
+          this.collaboratorsSubject.next(this.collaborators)
+          this.changeDetector.detectChanges()
           break
         }
       }

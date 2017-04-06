@@ -1,9 +1,7 @@
 import {
   Component,
-  OnInit,
-  OnDestroy,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  Input
 } from '@angular/core'
 import {
   trigger,
@@ -12,8 +10,8 @@ import {
   animate,
   transition
 } from '@angular/animations'
-import { RichCollaboratorsService } from '../../../doc/rich-collaborators'
-import { Subscription } from 'rxjs/Rx'
+import { RichCollaborator } from '../../../doc/rich-collaborators'
+import { Observable } from 'rxjs/Rx'
 
 @Component({
   selector: 'mute-collaborators',
@@ -29,32 +27,9 @@ import { Subscription } from 'rxjs/Rx'
     ])
   ]
 })
-export class CollaboratorsComponent implements OnInit, OnDestroy {
+export class CollaboratorsComponent {
 
-  private onChangeSubs: Subscription
-  private onJoinSubs: Subscription
-  private onLeaveSubs: Subscription
+  @Input() collaborators: Observable<RichCollaborator[]>
 
-  constructor (
-    public collabService: RichCollaboratorsService,
-    private detectorRef: ChangeDetectorRef
-  ) {}
-
-  ngOnInit (): void {
-    this.onChangeSubs = this.collabService.onChange.subscribe(
-      () => this.detectorRef.markForCheck()
-    )
-    this.onJoinSubs = this.collabService.onJoin.subscribe(
-      () => this.detectorRef.markForCheck()
-    )
-    this.onLeaveSubs = this.collabService.onLeave.subscribe(
-      () => this.detectorRef.markForCheck()
-    )
-  }
-
-  ngOnDestroy () {
-    this.onChangeSubs.unsubscribe()
-    this.onJoinSubs.unsubscribe()
-    this.onLeaveSubs.unsubscribe()
-  }
+  constructor () {}
 }

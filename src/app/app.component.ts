@@ -9,15 +9,8 @@ import { environment } from '../environments/environment'
 })
 export class AppComponent {
 
-  public visible: boolean
+  public visible = environment.devLabel
 
   constructor (
-  ) {
-    this.visible = environment.devLabel
-  }
-
-  isVisible () {
-    log.debug('Dev-Label: Detect change run...')
-    return this.visible
-  }
+  ) { }
 }
