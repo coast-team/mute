@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 import { DocHistoryComponent } from './doc-history.component'
 
 describe('DocHistoryComponent', () => {
-  let component: DocHistoryComponent;
+  let component: DocHistoryComponent
   let fixture: ComponentFixture<DocHistoryComponent>
 
   beforeEach(async(() => {

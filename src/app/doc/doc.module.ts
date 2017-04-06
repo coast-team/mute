@@ -8,14 +8,16 @@ import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
 import { NetworkService } from './network/network.service'
 import { DocResolverService } from './doc-resolver.service'
-import { DocHistoryComponent } from './history/doc-history/doc-history.component'
+import { DocHistoryComponent } from './doc-history/doc-history.component'
+import { TimelineComponent } from './doc-history/timeline/timeline.component'
 
 @NgModule({
   declarations: [
     DocComponent,
     EditorComponent,
     CursorsDirective,
-    DocHistoryComponent
+    TimelineComponent,
+    DocHistoryComponent,
   ],
   imports: [
     SharedModule,
@@ -29,7 +31,7 @@ import { DocHistoryComponent } from './history/doc-history/doc-history.component
         }
       },
       {
-        path: 'doc-history/:key',
+        path: 'doc/history/:key',
         component: DocHistoryComponent,
         resolve: {
           doc: DocResolverService
