@@ -68,7 +68,6 @@ export class RichCollaboratorsService {
       const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
       this.collaborators[this.collaborators.length] = newRCollab
       this.joinSubject.next(newRCollab)
-      log.debug('MUTE CORE SEND JOIN')
       this.collaboratorsSubject.next(this.collaborators)
       this.changeDetector.detectChanges()
     })

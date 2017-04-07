@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild, NgZone } from '@angular/core'
 import { Http } from '@angular/http'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 
@@ -12,11 +12,14 @@ import * as mnemonic from 'mnemonicjs'
   selector: 'mute-dev-label',
   template: `
     Preview version: <a [href]='url' target="_blank">{{shortID}}</a>
-    <br>
+    <br />
     Digest: {{digest}}
-    <br>
+    <br />
+    Changes: <span #detectChanges>0</span>
+    <br />
     Exports: <button (click)="exportLog()">Log</button> <button (click)="exportTree()">Tree</button>
-    <a #link [(href)]="objectURL" [download]="filename">
+    <a #link [href]="objectURL" [download]="filename">
+    <br *ngIf="detectChangesRun()" />
     `,
   styles: [`
     :host {
@@ -25,11 +28,15 @@ import * as mnemonic from 'mnemonicjs'
       bottom: 20px;
       right: 20px;
     }
+    button {
+      padding: 0;
+    }
   `]
 })
 export class DevLabelComponent implements OnInit {
 
   @ViewChild('link') link: ElementRef
+  @ViewChild('detectChanges') detectChanges: ElementRef
   private tree: string
 
   public url = 'https://github.com/coast-team/mute/tree/'
@@ -37,14 +44,17 @@ export class DevLabelComponent implements OnInit {
   public digest: string
   public objectURL: SafeResourceUrl
   public filename: string
+  public nbOfDetectChanges: number
 
   constructor (
     private sanitizer: DomSanitizer,
     private http: Http,
     private renderer: Renderer,
+    private zone: NgZone,
     private ui: UiService,
     private detectRef: ChangeDetectorRef
   ) {
+    this.nbOfDetectChanges = 0
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
       .toPromise()
       .then((response) => {
@@ -73,12 +83,9 @@ export class DevLabelComponent implements OnInit {
     db.getAttachment(docID, 'body').then((body) => {
       this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
       const clickEvent = new MouseEvent('click')
-
       this.detectRef.detectChanges()
 
-      setTimeout(() => {
-        this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
-      }, 1000)
+      this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
     })
   }
 
@@ -88,13 +95,15 @@ export class DevLabelComponent implements OnInit {
     this.filename = `tree-${docID}-${this.digest}.json`
     const blob = new Blob([this.tree], { type : 'text\/json' })
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
-
     this.detectRef.detectChanges()
 
     const clickEvent = new MouseEvent('click')
-    setTimeout(() => {
-      this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
-    }, 1000)
+    this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+  }
+
+  detectChangesRun () {
+    this.detectChanges.nativeElement.innerHTML = ++this.nbOfDetectChanges
+    return false
   }
 
 }
