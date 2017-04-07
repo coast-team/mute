@@ -59,7 +59,6 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.activeFileSubs = this.ui.onActiveFile
       .filter((file: File) => file instanceof Folder)
       .subscribe((folder: Folder) => {
-        log.debug('New active file: ', folder.id)
         this.activeFolder = folder
         folder.getFiles()
           .then((docs: Doc[]) => {
@@ -86,7 +85,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   deleteAllDocs (): void {
     const snackMsg = (this.activeFolder.id !== 'trash') ?
       'All document moved to tash' : 'All document deleted'
-    log.debug('deleteAllDocs from ', this.activeFolder )
     this.activeFolder.delete()
       .then(() => {
         this.docs = []

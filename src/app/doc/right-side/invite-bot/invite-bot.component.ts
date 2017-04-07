@@ -69,7 +69,6 @@ export class InviteBotComponent implements OnInit {
   }
 
   validate (event) {
-    log.debug('Event: ', event)
     if (this.ipElm.nativeElement.value.match(`${this.regexIP}|${this.regexHostName}`)) {
       this.error = false
     } else {

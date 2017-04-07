@@ -78,7 +78,6 @@ export class LocalStorageService extends AbstractStorageService {
   }
 
   delete (doc: Doc): Promise < any > {
-    log.debug('deleting: ', doc)
     if (doc.parentId === 'local') {
       doc.parentId = 'trash'
       return doc.save()
@@ -104,7 +103,6 @@ export class LocalStorageService extends AbstractStorageService {
             (data: Object[]) => {
               data.forEach((obj: any) => {
                 obj.value.parentId = 'trash'
-                log.debug('Moving the document into trash: ', obj)
                 this.db.put(obj.value.id, obj.value)
               })
               resolve()

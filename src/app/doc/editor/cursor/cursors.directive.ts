@@ -90,7 +90,6 @@ export class CursorsDirective extends ServiceIdentifier implements OnChanges, On
       .subscribe((msg: NetworkMessage) => {
         const pbCursor = pb.Cursor.deserializeBinary(msg.content)
         const cursor = this.cmCursors.get(msg.id)
-        log.debug('')
         if (cursor !== undefined) {
           let pos: any
           if (pbCursor.getContentCase() === pb.Cursor.ContentCase.VISIBLE) {
