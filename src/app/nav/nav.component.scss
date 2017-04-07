@@ -14,7 +14,7 @@
   height: 1px;
   width: 100%;
   margin: 1rem 0 2rem 0;
-  background-image: linear-gradient(to left, #fff, $color-divider, #fff);
+  background-image: linear-gradient(to left, $bg-card, $fg-divider, $bg-card);
 }
 
 h1 {

@@ -47,13 +47,10 @@ export class StorageOverviewService extends AbstractStorageService {
         return []
       })
       .then((botFiles) => {
-        log.debug('Bot files: ', botFiles)
         const files: File[] = []
         localFiles.forEach((f1: File) => {
           files.push(f1)
-          log.debug('Local file:  ' + f1.id, f1)
           botFiles.forEach((f2: File) => {
-            log.debug('Bot file: ' + f2.id, f2)
             if (f1.id === f2.id) {
               this.merge(f1 as Doc, f2 as Doc)
             } else {

@@ -1,6 +1,5 @@
 {
   "project": {
-    "version": "1.0.0-rc.1",
     "name": "mute"
   },
   "apps": [
@@ -18,7 +17,6 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "mute",
-      "mobile": false,
       "styles": [
         "styles.scss"
       ],
@@ -30,7 +28,7 @@
       "scripts": [
         "../node_modules/loglevel/dist/loglevel.min.js",
         "../node_modules/bragi-browser/dist/bragi.min.js",
-        "../node_modules/rsvp/dist/rsvp-2.0.4.min.js",
+        "assets/rsvp-2.0.4.nexedi_fork.min.js",
         "../node_modules/jio/dist/jio-latest.min.js"
       ],
       "environmentSource": "environments/environment.ts",
@@ -38,6 +36,7 @@
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
         "demo": "environments/environment.demo.ts",
+        "ovh": "environments/environment.ovh.ts",
         "ghpages": "environments/environment.ghpages.ts"
       }
     }

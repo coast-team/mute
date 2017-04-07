@@ -1,34 +1,45 @@
-<!-- Content -->
-<div fxFlexFill fxLayout="row" fxLayoutAlign="center start">
+<md-sidenav-container fxFlex>
 
-  <div fxFlex="95%" fxLayout="column" fxLayoutAlign="start center">
-    <div fxFlexFill fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
-      <md-card fxLayout="column" fxLayoutAlign="top stretch" fxFlex="200px" *ngFor="let doc of docs" fxFlexOffset="20px" fxFlexOffset.xs="0">
-        <button fxFlexFill md-button (click) = "openDoc(doc)">
-          <h3>{{doc.title}}</h3>
-        </button>
-        <hr class="divider">
-        <button fxFlexAlign="end" md-icon-button (click)="deleteDoc(doc)" mdTooltip="Delete">
-          <md-icon color="accent">delete</md-icon>
-        </button>
+  <!-- Left Sidenav-->
+  <md-sidenav #leftSidenavElm class="leftsidenav"
+      [mode]="sideNavMode"
+      [opened]="!this.media.isActive('xs')"
+  >
+    <mute-nav></mute-nav>
+  </md-sidenav>
+
+  <!-- Content -->
+  <div fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
+    <md-toolbar>
+      <span fxFlex="1 1 auto"></span>
+      <button md-icon-button
+          (click)="deleteAllDocs()"
+          mdTooltip="Delete all"
+      >
+        <md-icon>delete_forever</md-icon>
+      </button>
+    </md-toolbar>
+
+    <div class="doc-grid"
+        fxLayoutWrap
+        fxLayout="row"
+        fxLayoutAlign="start top"
+        fxLayoutAlign.xs="stretch top"
+    >
+      <md-card *ngFor="let doc of docs"
+          fxLayout="column"
+          fxFlex="200px"
+          fxFlex.xs="1 0 auto">
+          <button fxFlex="1 1 auto" md-button (click) = "openDoc(doc)">
+            <h3>{{doc.title}}</h3>
+          </button>
+          <hr class="divider">
+          <button fxFlexAlign="end" md-icon-button (click)="deleteDoc(doc)" mdTooltip="Delete">
+            <md-icon>delete</md-icon>
+          </button>
       </md-card>
     </div>
-  </div>
-  <div fxFlex fxFlexAlign="start" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center start" fxLayoutAlign.xs="start stretch" fxLayoutWrap="true">
-    <button md-icon-button (click)="deleteAllDocs()" mdTooltip="Delete all">
-      <md-icon color="accent">delete_forever</md-icon>
-    </button>
+
   </div>
 
-</div>
-
-<!--<div fxFlexFill fxLayout="row" fxLayoutAlign="center center">
-  <div *ngIf='isStorageServiceSelected() && !hasDocuments'>
-    <span>No documents stored at {{getStorageServiceName()}}. Create the first: </span>
-    <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
-  </div>
-  <div *ngIf='!isStorageServiceSelected()'>
-    <span>No storage selected. Pick one on the left or just create a new document: </span>
-    <button md-raised-button color="accent" (click)="newDoc()">New Document</button>
-  </div>
-</div>-->
+</md-sidenav-container>

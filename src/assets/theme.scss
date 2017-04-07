@@ -8,14 +8,38 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
-$primary: mat-palette($mat-blue);
-$accent:  mat-palette($mat-orange, 700, A100, A400);
+$primary: mat-palette($mat-light-blue, 600, 200, 800);
+$accent:  mat-palette($mat-amber, A400, A700);
 
 // The warn palette is optional (defaults to red).
 $warn:    mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $mute-theme: mat-light-theme($primary, $accent, $warn);
+
+// Background color
+$mat-bg: map-get($mute-theme, background);
+$bg-status-bar: map-get($mat-bg, status-card);
+$bg-background: #ECEFF1; //map-get($mat-bg, background);
+$bg-hover: map-get($mat-bg, hover);
+$bg-card: map-get($mat-bg, card);
+$bg-dialog: map-get($mat-bg, dialog);
+$bg-disabled-button: map-get($mat-bg, disabled-button);
+$bg-raised-button: map-get($mat-bg, raised-button);
+
+// Foreground color
+$mat-fg: map-get($mute-theme, foreground);
+$fg-base: map-get($mat-fg, base);
+$fg-divider: map-get($mat-fg, divider);
+$fg-dividers: map-get($mat-fg, dividers);
+$fg-disabled: map-get($mat-fg, disabled);
+$fg-disabled-button: map-get($mat-fg, disabled-button);
+$fg-disabled-text: map-get($mat-fg, disabled-text);
+$fg-hint-text: map-get($mat-fg, hint-text);
+$fg-secondary-text: map-get($mat-fg, secondary-text);
+$fg-icon: map-get($mat-fg, icon);
+$fg-icons: map-get($mat-fg, icons);
+$fg-text: map-get($mat-fg, text);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component

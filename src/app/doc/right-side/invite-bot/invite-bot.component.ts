@@ -2,12 +2,14 @@ import {
   Component,
   Injectable,
   OnInit,
-  ViewChild,
+  ViewChild } from '@angular/core'
+import {
   trigger,
   state,
   style,
-  transition,
-  animate } from '@angular/core'
+  animate,
+  transition
+} from '@angular/animations'
 
 import { NetworkService } from '../../../doc/network/network.service'
 
@@ -67,7 +69,6 @@ export class InviteBotComponent implements OnInit {
   }
 
   validate (event) {
-    log.debug('Event: ', event)
     if (this.ipElm.nativeElement.value.match(`${this.regexIP}|${this.regexHostName}`)) {
       this.error = false
     } else {

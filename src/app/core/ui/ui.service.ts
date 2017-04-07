@@ -11,20 +11,20 @@ export class UiService {
   private activeFileSubject: BehaviorSubject<File | null>
 
   private docDigestSubject: Subject<number>
+  private docTreeSubject: Subject<string>
 
-  private docNavToggleSubject: BehaviorSubject<boolean>
-  private navToggleSubject: BehaviorSubject<boolean>
+  private docNavToggleSubject: Subject<void>
+  private navToggleSubject: Subject<void>
   private toolbarTitleSubject: BehaviorSubject<string>
 
-  public navOpened = false
-  public docNavOpened = true
   public activeFile: File|null
 
   constructor () {
     this.activeFileSubject = new BehaviorSubject(null)
     this.docDigestSubject = new Subject()
-    this.navToggleSubject = new BehaviorSubject<boolean>(this.navOpened)
-    this.docNavToggleSubject = new BehaviorSubject<boolean>(this.docNavOpened)
+    this.docTreeSubject = new Subject()
+    this.navToggleSubject = new Subject<void>()
+    this.docNavToggleSubject = new Subject<void>()
     this.toolbarTitleSubject = new BehaviorSubject<string>(this.toolbarTitle)
   }
 
@@ -37,42 +37,20 @@ export class UiService {
     this.activeFileSubject.next(file)
   }
 
-  get onNavToggle (): Observable<boolean> {
+  get onNavToggle (): Observable<void> {
     return this.navToggleSubject.asObservable()
   }
 
-  openNav (): void {
-    this.navOpened = true
-    this.navToggleSubject.next(true)
-  }
-
-  closeNav (): void {
-    this.navOpened = false
-    this.navToggleSubject.next(false)
-  }
-
   toggleNav (): void {
-    this.navOpened = !this.navOpened
-    this.navToggleSubject.next(this.navOpened)
+    this.navToggleSubject.next()
   }
 
-  get onDocNavToggle (): Observable<boolean> {
+  get onDocNavToggle (): Observable<void> {
     return this.docNavToggleSubject.asObservable()
   }
 
-  openDocNav (): void {
-    this.docNavToggleSubject.next(true)
-    this.docNavOpened = true
-  }
-
-  closeDocNav (): void {
-    this.docNavToggleSubject.next(false)
-    this.docNavOpened = false
-  }
-
   toggleDocNav (): void {
-    this.docNavOpened = !this.docNavOpened
-    this.docNavToggleSubject.next(this.docNavOpened)
+    this.docNavToggleSubject.next()
   }
 
   get onToolbarTitle (): Observable<string> {
@@ -89,6 +67,14 @@ export class UiService {
 
   get onDocDigest (): Observable<number> {
     return this.docDigestSubject.asObservable()
+  }
+
+  set tree (tree: string) {
+    this.docTreeSubject.next(tree)
+  }
+
+  get onDocTree (): Observable<string> {
+    return this.docTreeSubject.asObservable()
   }
 
 }

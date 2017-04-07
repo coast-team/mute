@@ -4,12 +4,14 @@ import { RouterModule } from '@angular/router'
 
 import { SharedModule } from '../shared'
 import { DocsComponent } from './docs.component'
+import { NavModule } from '../nav'
 
 @NgModule({
   declarations: [ DocsComponent ],
   imports: [
     CommonModule,
     SharedModule,
+    NavModule,
     RouterModule.forChild([
       {
         path: 'docs',

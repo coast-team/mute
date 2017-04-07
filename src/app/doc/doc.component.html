@@ -1,10 +1,21 @@
-<md-sidenav-container>
+<md-sidenav-container #sidenavElm>
+
+  <!-- Left Sidenav-->
+  <md-sidenav #leftSidenavElm class="leftsidenav"
+      mode="over"
+  >
+    <mute-nav></mute-nav>
+  </md-sidenav>
 
   <!-- Content -->
-  <mute-editor [docService]="muteCore.docService" (isReady)="editorReady($event)"></mute-editor>
+  <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
 
   <!-- Right Sidenav-->
-  <md-sidenav align="end" mode="side" class="rightsidenav" #rightSidenavElm>
+  <md-sidenav #rightSidenavElm class="rightsidenav"
+      align="end"
+      [opened]="!this.media.isActive('xs')"
+      [mode]="rightSideNavMode"
+  >
     <mute-right-side></mute-right-side>
   </md-sidenav>
 

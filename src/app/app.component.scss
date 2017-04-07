@@ -1,33 +1,8 @@
-@import 'variables';
-
 :host {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  height: 100%;
-}
-
-md-toolbar {
-
-  h2 {
-    margin: 0;
-    font-size: 2.4rem;
-    font-family: $font-header;
-    font-weight: initial;
-  }
-
-  .doc-title {
-    font-family: $font-header;
-    font-size: 2.4rem;
-  }
-
-}
-
-md-sidenav-container {
-  background-color: $color-bg !important;
-
-  md-sidenav {
-    min-width: 24rem;
-  }
 }

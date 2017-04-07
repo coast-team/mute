@@ -1,4 +1,19 @@
-import { Component, EventEmitter, Injectable, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Injectable,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  AfterViewInit,
+  Output,
+  SimpleChanges,
+  ViewChild,
+  NgZone,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
 import { DocService } from 'mute-core'
@@ -17,11 +32,11 @@ require('codemirror/mode/javascript/javascript')
     // Should find a proper way to do it.
     './editor.component.scss'
   ],
-  providers: []
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 @Injectable()
-export class EditorComponent implements OnChanges, OnDestroy, OnInit {
+export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewInit {
 
   private isInited = false
 
@@ -35,19 +50,25 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   @ViewChild('editorElt') editorElt
 
   public editor: CodeMirror.Editor
-  public innerWidth = window.innerWidth
 
-  constructor () {}
+  constructor (
+    private zone: NgZone,
+    private detectRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit () {
-    this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
-      lineNumbers: false,
-      lineWrapping: true,
-      autofocus: false,
-      mode: {name: 'gfm', globalVars: true}
-    })
+    this.detectRef.detach()
+  }
 
-    const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
+  ngAfterViewInit () {
+    this.zone.runOutsideAngular(() => {
+      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
+        lineNumbers: false,
+        lineWrapping: true,
+        autofocus: false,
+        mode: {name: 'gfm', globalVars: true}
+      })
+      const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
         this.editor.on('change', h)
       },
@@ -64,7 +85,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         return changeEvent.change.origin !== undefined && changeEvent.change.origin !== 'setValue'
       })
 
-    const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
+      const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
       .map((changeEvent: ChangeEvent) => {
         return [changeEvent]
       })
@@ -77,13 +98,13 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       })
       */
 
-    this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
-      return changeEvents.map( (changeEvent: ChangeEvent ) => {
-        return changeEvent.toTextOperations()
+      this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
+        return changeEvents.map( (changeEvent: ChangeEvent ) => {
+          return changeEvent.toTextOperations()
+        })
       })
-    })
 
-    this.docService.localTextOperationsSource = this.textOperationsObservable
+      this.docService.localTextOperationsSource = this.textOperationsObservable
 
     // multipleOperationsStream.subscribe(
     //   (changeEvents: ChangeEvent[]) => {
@@ -94,51 +115,54 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     //     })
     //   })
 
-    this.isReady.next(undefined)
+      this.isReady.next(undefined)
+    })
   }
 
   ngOnChanges (changes: SimpleChanges): void {
-    if (this.isInited) {
-      this.docValueSubscription.unsubscribe()
-      this.remoteOperationsSubscription.unsubscribe()
-    }
-
-    // First ngOnChanges is called before ngOnInit
-    // This observable is not ready yet
-    if (this.textOperationsObservable !== undefined) {
-      this.docService.localTextOperationsSource = this.textOperationsObservable
-    }
-
-    this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
-      this.editor.setValue(str)
-    })
-
-    this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
-
-      const updateDoc: () => void = () => {
-        const doc: CodeMirror.Doc = this.editor.getDoc()
-
-        log.info('operation:editor', 'applied: ', textOperations)
-
-        textOperations.forEach( (textOperation: any) => {
-          const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
-          if (textOperation instanceof TextInsert) {
-            doc.replaceRange(textOperation.content, from)
-          } else if (textOperation instanceof TextDelete) {
-            const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-            doc.replaceRange('', from, to)
-          }
-        })
+    this.zone.runOutsideAngular(() => {
+      if (this.isInited) {
+        this.docValueSubscription.unsubscribe()
+        this.remoteOperationsSubscription.unsubscribe()
       }
 
-      this.editor.operation(updateDoc)
-    })
+      // First ngOnChanges is called before ngOnInit
+      // This observable is not ready yet
+      if (this.textOperationsObservable !== undefined) {
+        this.docService.localTextOperationsSource = this.textOperationsObservable
+      }
 
-    if (this.isInited) {
-      this.isReady.next(undefined)
-    } else {
-      this.isInited = true
-    }
+      this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
+        this.editor.setValue(str)
+      })
+
+      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
+
+        const updateDoc: () => void = () => {
+          const doc: CodeMirror.Doc = this.editor.getDoc()
+
+          log.info('operation:editor', 'applied: ', textOperations)
+
+          textOperations.forEach( (textOperation: any) => {
+            const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
+            if (textOperation instanceof TextInsert) {
+              doc.replaceRange(textOperation.content, from)
+            } else if (textOperation instanceof TextDelete) {
+              const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
+              doc.replaceRange('', from, to)
+            }
+          })
+        }
+
+        this.editor.operation(updateDoc)
+      })
+
+      if (this.isInited) {
+        this.isReady.next(undefined)
+      } else {
+        this.isInited = true
+      }
+    })
   }
 
   ngOnDestroy () {

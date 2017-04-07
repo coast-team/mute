@@ -8,6 +8,7 @@ import { LocalStorageService } from '../../core/storage/local-storage/local-stor
 import { BotStorageService } from '../../core/storage/bot-storage/bot-storage.service'
 import { Doc } from '../../core/Doc'
 import { BotStorageCotact } from '../../core/storage/bot-storage/BotStorageContact'
+import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 
 @Component({
   selector: 'mute-right-side',
@@ -21,9 +22,11 @@ export class RightSideComponent implements OnDestroy, OnInit {
   public storages: Storage[]
   public signalingOk: boolean
   public networkOk: boolean
+  public collaborators: any
 
   constructor (
     private route: ActivatedRoute,
+    private collabService: RichCollaboratorsService,
     private changeDetectorRef: ChangeDetectorRef,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
@@ -33,6 +36,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
     this.storages = []
     this.signalingOk = false
     this.networkOk = false
+    this.collaborators = collabService.onCollaborators
   }
 
   ngOnInit () {

@@ -7,32 +7,21 @@
       vertical="true"
       (change)="setActiveFile($event)"
   >
-    <md-button-toggle *ngFor="let f of files | async"
-        [routerLink]="'docs/' + f.id"
-        routerLinkActive="" #rla="routerLinkActive"
-        [checked]="rla.isActive"
-        [value]="f"
-        [ngClass]="{'divider': f.id === 'trash'}"
-    >
-      <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{f.icon}}</md-icon>
-        {{f.title}}
-      </span>
-    </md-button-toggle>
+    <ng-container *ngFor="let f of files | async">
+      <hr *ngIf="f.id === 'trash'" class='divider' />
+      <md-button-toggle
+          [routerLink]="'/docs/' + f.id"
+          routerLinkActive="" #rla="routerLinkActive"
+          [checked]="rla.isActive"
+          [value]="f"
+          (click)="onStorageClick()"
+      >
+        <span class="content" fxLayout="row" fxLayoutAlign="left center">
+          <md-icon>{{f.icon}}</md-icon>
+          {{f.title}}
+        </span>
+      </md-button-toggle>
+    </ng-container>
 
-    <!-- Trash -->
-    <hr class='divider' />
-    <md-button-toggle
-        [routerLink]="'docs/' + trash.id"
-        routerLinkActive="" #rla="routerLinkActive"
-        [checked]="rla.isActive"
-        [value]="trash"
-    >
-      <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{trash.icon}}</md-icon>
-        {{trash.title}}
-      </span>
-    </md-button-toggle>
   </md-button-toggle-group>
-
 </div>

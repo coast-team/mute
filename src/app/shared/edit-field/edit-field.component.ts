@@ -6,93 +6,87 @@ import {
   OnChanges,
   ViewChild,
   Input,
-  Output } from '@angular/core'
+  Output,
+  ElementRef,
+  ChangeDetectionStrategy } from '@angular/core'
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations'
 
 @Component({
   selector: 'mute-edit-field',
   templateUrl: './edit-field.component.html',
-  styleUrls: [ './edit-field.component.scss' ]
+  styleUrls: [ './edit-field.component.scss' ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('btnState', [
+      state('active', style({transform: 'scale(1)'})),
+      state('void', style({transform: 'scale(0)'})),
+      transition(':enter', animate('100ms ease-in')),
+      transition(':leave', animate('100ms ease-out'))
+    ]),
+    trigger('inputState', [
+      state('active', style({transform: 'scale(1)'})),
+      state('void', style({transform: 'scale(0)'})),
+      transition(':enter', animate('100ms ease-in')),
+      transition(':leave', animate('100ms ease-out'))
+    ])
+  ]
 })
 export class EditFieldComponent implements OnInit, OnChanges {
 
-  @Input() textAlign = 'center'
-  @Input() color = '#fff'
-  @Input() width = '27rem'
   @Input() value = ''
-  @Input() emptyValue: string
-  @Input() icon = ''
-  @Input() selectAll = true
+  @Input() defaultValue: string
   @Output() onDone = new EventEmitter<string>()
 
-  @ViewChild('editableElm') editableElm
-  @ViewChild('bottomLine') bottomLine
-  public viewState = true
-  public preEditState = false
+  @ViewChild('inputElm') private inputElm: ElementRef
+
   public editState = false
+  public viewState = true
 
   constructor () { }
 
   ngOnInit () {
-    this.editableElm.nativeElement.style.width = this.width
-    this.editableElm.nativeElement.style.color = this.color
-    this.editableElm.nativeElement.style.textAlign = this.textAlign
-    this.editableElm.nativeElement.value = this.value
   }
 
   ngOnChanges (changes: {value: SimpleChange}) {
-    if (changes.value.currentValue !== this.editableElm.nativeElement.value) {
-      this.editableElm.nativeElement.value = changes.value.currentValue
-    }
-  }
-
-  iconSet () {
-    return this.icon !== ''
-  }
-
-  toggleViewState () {
-    if (!this.editState) {
-      this.preEditState = false
-      this.bottomLine.nativeElement.style.width = 0
-    }
-  }
-
-  togglePreEditState () {
-    if (!this.editState) {
-      this.viewState = false
-      this.bottomLine.nativeElement.style.height = '1px'
-      this.bottomLine.nativeElement.style.width = '100%'
-    }
+    // if (changes.value.currentValue !== this.editableElm.value) {
+    //   this.editableElm.value = changes.value.currentValue
+    // }
   }
 
   edit () {
-    this.bottomLine.nativeElement.style.height = '2px'
-    if (this.bottomLine.nativeElement.style.width !== '100%') {
-      this.bottomLine.nativeElement.style.width = '100%'
-    }
-    if (this.viewState) {
-      this.viewState = false
-    }
-    if (this.selectAll) {
-      this.editableElm.nativeElement.select()
-    }
-    this.editState = true
+    this.viewState = false
   }
 
   done (event) {
     if (event.type === 'keydown' && event.keyCode === 13) {
-      this.editableElm.nativeElement.blur()
+      this.inputElm.nativeElement.blur()
     } else if (this.editState && event.type === 'blur') {
+      const newValue = this.inputElm.nativeElement.value
+      this.value = newValue === '' ? this.defaultValue : newValue
+      this.onDone.emit(this.value)
       this.editState = false
-      this.preEditState = false
-      this.bottomLine.nativeElement.style.width = 0
-      const currentValue = this.editableElm.nativeElement.value
-      if (currentValue === '') {
-        this.editableElm.nativeElement.value = this.emptyValue
-      }
-      if (this.value !== currentValue) {
-        this.value = currentValue
-        this.onDone.emit(currentValue)
-      }
+    }
+  }
+
+  btnStateDone (event) {
+    if (event.toState === 'void') {
+      this.editState = true
+    }
+  }
+
+  inputStateDone (event) {
+    if (event.toState === 'void') {
+      this.viewState = true
+    } else if (event.toState === 'active') {
+      this.inputElm.nativeElement.value = this.value
+      this.inputElm.nativeElement.focus()
+      this.inputElm.nativeElement.select()
     }
   }
 }

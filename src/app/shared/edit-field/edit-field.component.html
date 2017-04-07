@@ -1,18 +1,17 @@
-<div fxLayout="row" fxLayoutAlign="end center"
-    (mouseenter)="togglePreEditState()"
-    (mouseleave)="toggleViewState()"
-    (click)="edit()">
-
-  <div fxLayout="column" fxLayoutAlign="center center">
-    <input type="text" #editableElm spellcheck="false"
-        maxlength="128"
-        (keydown)="done($event)"
-        (blur)="done($event)"
-    />
-    <span class="bottom-line-container">
-      <span #bottomLine class="bottom-line"></span>
-    </span>
-  </div>
-
-  <md-icon *ngIf="iconSet()">{{icon}}</md-icon>
-</div>
+<button md-button *ngIf="this.viewState"
+    (click)="edit()"
+    [@btnState]="'active'"
+    (@btnState.done)="btnStateDone($event)"
+>{{value}}</button>
+<md-input-container *ngIf="this.editState"
+    dividerColor="accent"
+    floatPlaceholder="never"
+    [@inputState]="'active'"
+    (@inputState.done)="inputStateDone($event)"
+>
+  <input #inputElm mdInput
+      [value]="value"
+      (keydown)="done($event)"
+      (blur)="done($event)"
+  />
+</md-input-container>

@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
+import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
 import { MdSnackBar } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
 import { AbstractStorageService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
@@ -16,13 +17,18 @@ import { UiService } from '../core/ui/ui.service'
 })
 export class DocsComponent implements OnDestroy, OnInit {
 
+  @ViewChild('leftSidenavElm') leftSidenavElm
+
   private activeFileSubs: Subscription
   private hasDocuments: boolean
+  private mediaSubscription: Subscription
+  private activeMediaQuery: string
 
   private snackBarSubject: Subject<string>
   private activeFolder: Folder
 
   public docs: Doc[]
+  public sideNavMode = 'side'
 
   constructor (
     private router: Router,
@@ -30,13 +36,25 @@ export class DocsComponent implements OnDestroy, OnInit {
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
     public ui: UiService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    public media: ObservableMedia
   ) {
     this.snackBarSubject = new Subject()
   }
 
   ngOnInit () {
     log.angular('DocsComponent init')
+
+    this.mediaSubscription = this.media.subscribe((change: MediaChange) => {
+      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
+      if ( change.mqAlias === 'xs') {
+        this.sideNavMode = 'over'
+      }
+    })
+
+    this.ui.onNavToggle.subscribe(() => {
+      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+    })
 
     this.activeFileSubs = this.ui.onActiveFile
       .filter((file: File) => file instanceof Folder)
@@ -48,7 +66,6 @@ export class DocsComponent implements OnDestroy, OnInit {
             this.ref.detectChanges()
           })
       })
-    this.ui.openNav()
 
     this.snackBarSubject
       .throttleTime(500)
@@ -62,12 +79,12 @@ export class DocsComponent implements OnDestroy, OnInit {
   ngOnDestroy () {
     this.snackBarSubject.complete()
     this.activeFileSubs.unsubscribe()
+    this.mediaSubscription.unsubscribe()
   }
 
   deleteAllDocs (): void {
     const snackMsg = (this.activeFolder.id !== 'trash') ?
       'All document moved to tash' : 'All document deleted'
-    log.debug('deleteAllDocs from ', this.activeFolder )
     this.activeFolder.delete()
       .then(() => {
         this.docs = []

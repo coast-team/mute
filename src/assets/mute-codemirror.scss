@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'theme';
 
 /**
 * CodeMirror style here, because it is not working in the proper Component css.
@@ -6,8 +7,10 @@
 .CodeMirror {
   font-family: $font-light, serif;
   font-size: 1.6rem;
-  height: auto;
+  height: 100%;
   padding: 10px;
+  background-color: $bg-card;
+  color: $fg-text;
 
   .CodeMirror-vscrollbar {
     display: none !important;

@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild, NgZone } from '@angular/core'
 import { Http } from '@angular/http'
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
+
 import 'rxjs/add/operator/toPromise'
 
 import { UiService } from '../core/ui/ui.service'
@@ -9,9 +11,15 @@ import * as mnemonic from 'mnemonicjs'
 @Component({
   selector: 'mute-dev-label',
   template: `
-    Preview version (Nightly build: <a [href]='url' target="_blank">{{shortID}}</a>)
-    <br>
+    Preview version: <a [href]='url' target="_blank">{{shortID}}</a>
+    <br />
     Digest: {{digest}}
+    <br />
+    Changes: <span #detectChanges>0</span>
+    <br />
+    Exports: <button (click)="exportLog()">Log</button> <button (click)="exportTree()">Tree</button>
+    <a #link [href]="objectURL" [download]="filename">
+    <br *ngIf="detectChangesRun()" />
     `,
   styles: [`
     :host {
@@ -20,28 +28,82 @@ import * as mnemonic from 'mnemonicjs'
       bottom: 20px;
       right: 20px;
     }
+    button {
+      padding: 0;
+    }
   `]
 })
 export class DevLabelComponent implements OnInit {
 
-  url = 'https://github.com/coast-team/mute/tree/'
-  shortID: string
-  digest: string
+  @ViewChild('link') link: ElementRef
+  @ViewChild('detectChanges') detectChanges: ElementRef
+  private tree: string
 
-  constructor (private http: Http, private ui: UiService) {
+  public url = 'https://github.com/coast-team/mute/tree/'
+  public shortID: string
+  public digest: string
+  public objectURL: SafeResourceUrl
+  public filename: string
+  public nbOfDetectChanges: number
+
+  constructor (
+    private sanitizer: DomSanitizer,
+    private http: Http,
+    private renderer: Renderer,
+    private zone: NgZone,
+    private ui: UiService,
+    private detectRef: ChangeDetectorRef
+  ) {
+    this.nbOfDetectChanges = 0
     http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
       .toPromise()
       .then((response) => {
         this.url += response.json().commit.commit.message
         this.shortID = response.json().commit.commit.message.substr(0, 7)
       })
-      .catch((err) => console.log('DevLabelComponent could not fetch commit number: ', err))
+      .catch((err) => log.warn('DevLabelComponent could not fetch commit number: ', err))
   }
 
   ngOnInit (): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
+      this.detectRef.detectChanges()
     })
+
+    this.ui.onDocTree.subscribe((tree: string) => {
+      this.tree = tree
+    })
+  }
+
+  exportLog (): void {
+    const urlParts: string[] = window.location.href.split('/')
+    const docID = urlParts[urlParts.length - 1]
+    this.filename = `log-${docID}-${this.digest}.json`
+    let db = jIO.createJIO({ type: 'query',  sub_storage: { type: 'indexeddb', database: 'mute' } })
+    db.getAttachment(docID, 'body').then((body) => {
+      this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
+      const clickEvent = new MouseEvent('click')
+      this.detectRef.detectChanges()
+
+      this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+    })
+  }
+
+  exportTree (): void {
+    const urlParts: string[] = window.location.href.split('/')
+    const docID = urlParts[urlParts.length - 1]
+    this.filename = `tree-${docID}-${this.digest}.json`
+    const blob = new Blob([this.tree], { type : 'text\/json' })
+    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
+    this.detectRef.detectChanges()
+
+    const clickEvent = new MouseEvent('click')
+    this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+  }
+
+  detectChangesRun () {
+    this.detectChanges.nativeElement.innerHTML = ++this.nbOfDetectChanges
+    return false
   }
 
 }
