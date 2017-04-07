@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
+import { DocResolverService } from '../doc-resolver.service'
+import { SharedModule } from '../../shared'
 import { TimelineComponent } from './timeline/timeline.component'
 import { DocHistoryComponent } from './doc-history.component'
 
@@ -8,7 +11,18 @@ import { DocHistoryComponent } from './doc-history.component'
     DocHistoryComponent,
     TimelineComponent
   ],
-  imports: []
+  imports: [
+    SharedModule,
+    RouterModule.forChild([
+      {
+        path: 'doc/history/:key',
+        component: DocHistoryComponent,
+        resolve: {
+          doc: DocResolverService
+        }
+      }
+    ])
+  ]
 })
 export class DocHistoryModule {
   constructor () {
