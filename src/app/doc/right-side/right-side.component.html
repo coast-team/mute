@@ -25,22 +25,22 @@
         <span class="title">Signaling</span>
         <div class="indicator">
           <md-icon *ngIf="signalingOk">check</md-icon>
-          <md-progress-circle *ngIf="!signalingOk"
+          <md-progress-spinner *ngIf="!signalingOk"
               color="warn"
               mode="indeterminate"
           >
-          </md-progress-circle>
+          </md-progress-spinner>
         </div>
       </div>
       <!--<div fxLayout="row" fsLayoutAlign="center center">
         <span class="title">Network</span>
         <div class="indicator">
           <md-icon *ngIf="networkOk">check</md-icon>
-          <md-progress-circle *ngIf="!networkOk"
+          <md-progress-spinner *ngIf="!networkOk"
               color="warn"
               mode="indeterminate"
           >
-          </md-progress-circle>
+          </md-progress-spinner>
         </div>
       </div>-->
     </div>

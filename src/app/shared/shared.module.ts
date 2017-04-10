@@ -1,6 +1,19 @@
+import {
+  MdInputModule,
+  MdButtonModule,
+  MdButtonToggleModule,
+  MdCardModule,
+  MdSliderModule,
+  MdSidenavModule,
+  MdListModule,
+  MdProgressSpinnerModule,
+  MdSnackBarModule,
+  MdToolbarModule,
+  MdIconModule,
+  MdTooltipModule,
+  MdChipsModule } from '@angular/material'
 import { NgModule } from '@angular/core'
 import 'hammerjs/hammer'
-import { MaterialModule } from '@angular/material'
 import { CommonModule } from '@angular/common'
 import { FlexLayoutModule } from '@angular/flex-layout'
 
@@ -9,13 +22,37 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
 @NgModule({
   imports: [
     CommonModule,
-    MaterialModule,
+    MdInputModule,
+    MdButtonModule,
+    MdButtonToggleModule,
+    MdCardModule,
+    MdSliderModule,
+    MdSidenavModule,
+    MdListModule,
+    MdProgressSpinnerModule,
+    MdSnackBarModule,
+    MdToolbarModule,
+    MdIconModule,
+    MdTooltipModule,
+    MdChipsModule,
     FlexLayoutModule
   ],
   declarations: [ EditFieldComponent ],
   exports: [
     CommonModule,
-    MaterialModule,
+    MdInputModule,
+    MdButtonModule,
+    MdButtonToggleModule,
+    MdCardModule,
+    MdSliderModule,
+    MdSidenavModule,
+    MdListModule,
+    MdProgressSpinnerModule,
+    MdSnackBarModule,
+    MdToolbarModule,
+    MdIconModule,
+    MdTooltipModule,
+    MdChipsModule,
     FlexLayoutModule,
     EditFieldComponent
   ]
