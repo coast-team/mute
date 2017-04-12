@@ -13,7 +13,7 @@ interface Window {
   muteTest: {
     insert: (index: number, text: string) => void,
     delete: (index: number, length: number) => void
-    getText: (index: number, length?: number) => string
+    getText: (index?: number, length?: number) => string
   }
 }
 

@@ -187,8 +187,12 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
       delete: (index: number, length: number) => {
         doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
       },
-      getText: (index: number, length?: number) => {
-        return this.editor.getValue().substr(index, length)
+      getText: (index?: number, length?: number) => {
+        if (index) {
+          return this.editor.getValue().substr(index, length)
+        } else {
+          return this.editor.getValue()
+        }
       }
     }
   }
