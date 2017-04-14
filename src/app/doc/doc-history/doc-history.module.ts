@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
+import { FormsModule } from '@angular/forms'
 
 import { DocResolverService } from '../doc-resolver.service'
 import { SharedModule } from '../../shared'
@@ -13,6 +14,7 @@ import { DocHistoryComponent } from './doc-history.component'
   ],
   imports: [
     SharedModule,
+    FormsModule,
     RouterModule.forChild([
       {
         path: 'doc/history/:key',

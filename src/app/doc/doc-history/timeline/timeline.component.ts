@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable, Input } from '@angular/core'
+import { Component, OnInit, Injectable, Input, Output, EventEmitter } from '@angular/core'
 
 @Component({
   selector: 'mute-timeline',
@@ -8,11 +8,19 @@ import { Component, OnInit, Injectable, Input } from '@angular/core'
 @Injectable()
 export class TimelineComponent implements OnInit {
 
-  @Input() nbVersions: number
+  @Input() currentOp: number
+  @Input() nbOperations: number
+  @Output() onSlide: EventEmitter<Number>
 
-  constructor () { }
+  constructor () {
+    this.onSlide = new EventEmitter<number>()
+  }
 
-  ngOnInit () {
+  ngOnInit () {}
+
+  updateOperation (event: any) {
+    this.currentOp = event.value
+    this.onSlide.emit(this.currentOp)
   }
 
 }
