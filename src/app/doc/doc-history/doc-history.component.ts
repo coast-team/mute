@@ -28,12 +28,12 @@ export class DocHistoryComponent implements OnInit {
 
   private isInited = false
   private operations: (TextDelete | TextInsert)[]
-  private currentOp: number
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
 
   public editor: CodeMirror.Editor
+  public currentOp: number
 
   constructor (
     private zone: NgZone
