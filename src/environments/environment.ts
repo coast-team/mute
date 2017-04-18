@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
+  fetchIceServers: true,
   signalingURL: 'ws://vps387425.ovh.net:8000',
   storages: [
     {

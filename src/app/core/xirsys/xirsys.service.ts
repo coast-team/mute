@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Observable, BehaviorSubject } from 'rxjs/Rx'
 
+import { environment } from '../../../environments/environment'
+
 const NUMBER_OF_UDP_TURN_TO_USE = 1
 const NUMBER_OF_TCP_TURN_TO_USE = 1
 const NUMBER_OF_STAN_TO_USE = 1
@@ -20,7 +22,8 @@ export class XirsysService {
   }
 
   private fetchIceServers (): Promise<RTCIceServer[]> {
-    return fetch(atob('aHR0cHM6Ly9zZXJ2aWNlLnhpcnN5cy5jb20vaWNlP2lkZW50PWthbGl0aW5' +
+    if (environment.fetchIceServers) {
+      return fetch(atob('aHR0cHM6Ly9zZXJ2aWNlLnhpcnN5cy5jb20vaWNlP2lkZW50PWthbGl0aW5' +
       'lJnNlY3JldD04MmI4ZmMzMi0yODA4LTExZTYtODNhNS04MTk1YzU4OTBiN2QmZG9tYWluPWxvcmlhLmZyJ' +
       'mFwcGxpY2F0aW9uPWRlZmF1bHQmcm9vbT1kZWZhdWx0JnNlY3VyZT0x'), {
         method: 'GET',
@@ -57,5 +60,8 @@ export class XirsysService {
         this.iceServersFetched = iceServers
         return iceServers
       })
+    } else {
+      return Promise.resolve([])
+    }
   }
 }
