@@ -2,6 +2,7 @@
 
 md-list {
   text-align: right;
+  height: 100%;
 
   mute-edit-field {
     font-size: 2rem;
@@ -36,8 +37,12 @@ md-list {
     }
   }
 
-  md-progress-circle {
+  md-progress-spinner {
     width: 24px;
     height: 24px;
+  }
+
+  .collaborators {
+    height: 100%;
   }
 }

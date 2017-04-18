@@ -68,6 +68,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
         autofocus: false,
         mode: {name: 'gfm', globalVars: true}
       })
+
+      // For Quentin's test
+      this.setupGlobalForTests()
+
       const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
         this.editor.on('change', h)
@@ -172,6 +176,25 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
 
   focus () {
     this.editor.focus()
+  }
+
+  setupGlobalForTests () {
+    const doc = this.editor.getDoc() as any
+    window.muteTest = {
+      insert: (index: number, text: string) => {
+        doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
+      },
+      delete: (index: number, length: number) => {
+        doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
+      },
+      getText: (index?: number, length?: number) => {
+        if (index) {
+          return this.editor.getValue().substr(index, length)
+        } else {
+          return this.editor.getValue()
+        }
+      }
+    }
   }
 }
 

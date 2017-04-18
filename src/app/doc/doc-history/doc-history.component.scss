@@ -1,0 +1,15 @@
+@import 'theme';
+@import 'variables';
+
+:host {
+  flex-direction: column;
+  align-items: center;
+}
+
+md-card {
+  width: 800px;
+  /*height: auto;
+  margin: 10px auto;
+  height: 94%;
+  cursor: text;*/
+}
