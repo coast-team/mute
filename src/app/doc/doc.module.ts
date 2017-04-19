@@ -9,17 +9,19 @@ import { EditorComponent } from './editor/editor.component'
 import { NetworkService } from './network/network.service'
 import { DocResolverService } from './doc-resolver.service'
 import { NavModule } from '../nav'
+import { DocHistoryModule } from './doc-history/doc-history.module'
 
 @NgModule({
   declarations: [
     DocComponent,
     EditorComponent,
-    CursorsDirective
+    CursorsDirective,
   ],
   imports: [
     SharedModule,
     NavModule,
     RightSideModule,
+    DocHistoryModule,
     RouterModule.forChild([
       {
         path: 'doc/:key',
