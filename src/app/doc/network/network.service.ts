@@ -192,6 +192,7 @@ export class NetworkService {
           this.webChannel.settings.iceServers = iceServers
         }
       })
+      .catch((err) => log.warn('Xirsys Error', err))
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
