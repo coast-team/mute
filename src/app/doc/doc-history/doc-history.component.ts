@@ -6,12 +6,14 @@ import {
   ViewChild,
   ElementRef,
   NgZone } from '@angular/core'
+import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
-import { OPERATIONS } from './mock-operations'
-
 import * as CodeMirror from 'codemirror'
 
+import { Doc } from '../../core/Doc'
+import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { OPERATIONS } from './mock-operations'
 
 require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
@@ -20,7 +22,7 @@ require('codemirror/mode/javascript/javascript')
   selector: 'mute-doc-history',
   templateUrl: './doc-history.component.html',
   styleUrls: ['./doc-history.component.scss'],
-  providers: []
+  providers: [DocHistoryService]
 })
 
 @Injectable()
@@ -36,7 +38,9 @@ export class DocHistoryComponent implements OnInit {
   public currentOp: number
 
   constructor (
-    private zone: NgZone
+    private zone: NgZone,
+    private route: ActivatedRoute,
+    private docHistory: DocHistoryService
   ) { }
 
   countOperations (): number {
@@ -45,6 +49,13 @@ export class DocHistoryComponent implements OnInit {
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
+    this.route.data.subscribe((data: {doc: Doc}) => {
+      this.docHistory.getOperations(data.doc)
+        .then((ops: (Delete | Insert)[]) => {
+          log.debug('Operations: ', ops)
+          // From here you can use the array of operations
+        })
+    })
     this.operations = OPERATIONS
     this.currentOp = this.operations.length
     const elm1 = document.getElementById('textArea')
