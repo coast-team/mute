@@ -29,7 +29,7 @@
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
     "@angular/core": "^4.0.0",
-    "@angular/flex-layout": "2.0.0-beta.7",
+    "@angular/flex-layout": "2.0.0-beta.8",
     "@angular/forms": "^4.0.0",
     "@angular/http": "^4.0.0",
     "@angular/material": "2.0.0-beta.3",
@@ -55,7 +55,7 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.0",
+    "@angular/cli": "1.0.1",
     "@angular/compiler-cli": "^4.0.0",
     "@types/codemirror": "^0.0.38",
     "@types/jasmine": "2.5.38",
