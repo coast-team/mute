@@ -6,10 +6,6 @@
   overflow: hidden;
 }
 
-md-toolbar {
-  background-color: mat-color($primary, 50) !important;
-}
-
 .doc-grid {
   overflow: auto;
 }
@@ -26,14 +22,33 @@ md-card {
     max-height: 9rem;
     overflow: hidden;
     hyphens: auto;
+    margin: 0;
   }
 
-  .divider {
-    border: 0;
-    height: 1px;
-    margin: 0;
-    width: 100%;
-    background-image: linear-gradient(to left, $bg-card, $fg-divider, $bg-card);
+  .delete-btn {
+    position: absolute;
+    top: 125px;
+    left: 175px;
+  }
+
+  .doc-meta-data {
+    font-size: 1.2rem;
+    line-height: 2rem;
+    margin: 10px;
+
+    .meta-title {
+      color: $fg-secondary-text;
+      width: 50px;
+      text-align: left;
+      margin-right: 15px;
+    }
+
+    md-icon {
+      margin-right: 5px;
+      width: 18px;
+      height: 18px;
+      font-size: 18px
+    }
   }
 }
 
@@ -43,5 +58,33 @@ md-sidenav-container {
 
   md-sidenav {
     min-width: 24rem;
+  }
+
+  .rightsidenav {
+    background-color: $bg-background !important;
+
+    .divider {
+      border: 0;
+      height: 1px;
+      width: 100%;
+      margin: 1rem 0 2rem 0;
+      background-color: $fg-divider;
+    }
+
+    .content {
+      margin-top: 10px;
+
+      .line {
+
+        &.global-actions {
+          padding: 0 20px 0 0;
+        }
+
+        .secondary-text {
+          margin-right: 20px;
+          color: $fg-secondary-text;
+        }
+      }
+    }
   }
 }

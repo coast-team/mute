@@ -1,12 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { Observable, Subject } from 'rxjs/Rx'
+import { BehaviorSubject, Subscription } from 'rxjs/Rx'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
-import { StorageOverviewService, LocalStorageService, BotStorageService } from '../core/storage'
+import { BotTuple, FakeStorageService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
-import { File } from '../core/File'
-// import { AddStorageDialogComponent } from './add-storage-dialog/add-storage-dialog.component'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({
@@ -14,40 +12,60 @@ import { UiService } from '../core/ui/ui.service'
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss']
 })
-export class NavComponent implements OnInit {
+export class NavComponent implements OnInit, OnDestroy {
+  private botStorageSubs: Subscription
 
-  private filesSubject: Subject<File[]>
-
-  public files: Observable<File[]>
+  public allDocuments: Folder
+  public local: Folder
+  public botFoldersSubject: BehaviorSubject<Folder[]>
+  public trash: Folder
+  public activeFolder: Folder
 
   constructor (
-    private router: Router,
-    public storageOverview: StorageOverviewService,
+    public router: Router,
+    public fakeStorage: FakeStorageService,
     public localStorage: LocalStorageService,
     public botStorage: BotStorageService,
     public ui: UiService,
     public media: ObservableMedia
   ) {
-    this.filesSubject = new Subject()
-    this.files = this.filesSubject.asObservable()
+    this.allDocuments = this.fakeStorage.allDocs
+    this.botFoldersSubject = new BehaviorSubject([])
+    this.local = this.localStorage.home
+    this.trash = this.localStorage.trash
+    switch (this.router.url) {
+    case `/docs/${this.allDocuments.id}`:
+      this.activeFolder = this.allDocuments
+      break
+    case `/docs/${this.local.id}`:
+      this.activeFolder = this.local
+      break
+    case `/docs/${this.trash.id}`:
+      this.activeFolder = this.trash
+      break
+    }
   }
 
   ngOnInit () {
     log.angular('NavComponent init')
-    const resFolders = [
-      this.storageOverview.allDocs,
-      this.localStorage.home
-    ]
-    this.botStorage.getRootFolders()
-      .then((folders) => {
-        folders.forEach((folder) => resFolders[resFolders.length] = folder)
-        resFolders[resFolders.length] = this.localStorage.trash
-        this.filesSubject.next(resFolders)
+    this.botStorageSubs = this.botStorage.onBots
+      .subscribe((bots: BotTuple[]) => {
+        const botsFolders = bots.map((botTuple) => botTuple[1])
+        botsFolders.forEach((botFolder: Folder) => {
+          if (this.router.url === `/docs/${botFolder.id}`) {
+            this.activeFolder = botFolder
+            this.ui.setActiveFile(botFolder)
+          }
+        })
+        this.botFoldersSubject.next(botsFolders)
       })
-      .catch(() => {
-        resFolders[resFolders.length] = this.localStorage.trash
-        this.filesSubject.next(resFolders)
-      })
+    if (this.activeFolder) {
+      this.ui.setActiveFile(this.activeFolder)
+    }
+  }
+
+  ngOnDestroy () {
+    this.botStorageSubs.unsubscribe()
   }
 
   newDoc () {
@@ -57,6 +75,7 @@ export class NavComponent implements OnInit {
   }
 
   setActiveFile ({value}) {
+    log.debug('Active file changed to ', value)
     this.ui.setActiveFile(value)
   }
 

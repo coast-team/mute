@@ -1,56 +1,31 @@
-<div fxLayout="column" fxLayouAlign="start end">
-  <md-list dense>
-    <md-list-item fxHide.gt-xs='true' fxLayout="row" fxLayoutAlign="end center">
-    <mute-edit-field fxLayout="row" fxLayoutAlign="end center"
-            [value]="profile.onPseudonym | async"
-            [defaultValue]="profile.pseudonymDefault"
-            (onDone)="updatePseudo($event)">
-      </mute-edit-field>
-      <md-icon>account_circle</md-icon>
-    </md-list-item>
-    <h3 md-subheader>Document saved in</h3>
-    <md-divider></md-divider>
-    <md-list-item class="storages" fxLayout="row" fxLayoutAlign="end center">
-      <md-chip-list>
-        <md-chip *ngFor="let storage of storages"
-            [mdTooltip]="storage.tooltip">
-          <md-icon>{{storage.icon}}</md-icon>
-        </md-chip>
-      </md-chip-list>
-    </md-list-item>
-    <h3 md-subheader>Connection</h3>
-    <md-divider></md-divider>
-    <md-list-item class="connection">
-      <div fxFlexFill fxLayout="row" fxLayoutAlign="space-around stretch">
-        <div fxLayout="row" fsLayoutAlign="center center">
-          <span class="title">Signaling</span>
-          <div class="indicator">
-            <md-icon *ngIf="signalingOk">check</md-icon>
-            <md-progress-spinner *ngIf="!signalingOk"
-                color="warn"
-                mode="indeterminate"
-            >
-            </md-progress-spinner>
-          </div>
-        </div>
-        <!--<div fxLayout="row" fsLayoutAlign="center center">
-          <span class="title">Network</span>
-          <div class="indicator">
-            <md-icon *ngIf="networkOk">check</md-icon>
-            <md-progress-spinner *ngIf="!networkOk"
-                color="warn"
-                mode="indeterminate"
-            >
-            </md-progress-spinner>
-          </div>
-        </div>-->
-      </div>
-    </md-list-item>
-    <md-list-item fxLayout="row" fxLayoutAlign="end center">
-      <mute-invite-bot></mute-invite-bot>
-    </md-list-item>
-    <h3 md-subheader>Collaborators</h3>
-    <md-divider></md-divider>
-  </md-list>
+<div fxLayout="column" fxLayouAlign="start stretch">
+  <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px" class="actions">
+    <a md-mini-fab [routerLink]="['/doc/history', docKey]" color="accent"
+      mdTooltip="See Revision History"
+      class="action"
+    >
+      <md-icon>history</md-icon>
+    </a>
+    <mute-invite-bot mdTooltip="Invite Bot" class="action"></mute-invite-bot>
+  </div>
+  <hr class='divider' />
+  <div fxLayout="row" fxLayoutAlign="start center" class="line">
+    <span class='meta-title'>Location</span>
+    <md-icon *ngFor="let icon of storageIcons" class="storage-icon">
+      {{icon}}
+    </md-icon>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="line">
+    <span class="meta-title">Signaling</span>
+    <div class="indicator">
+      <md-icon *ngIf="signalingOk">check</md-icon>
+      <md-progress-spinner *ngIf="!signalingOk"
+          color="warn"
+          mode="indeterminate"
+      >
+      </md-progress-spinner>
+    </div>
+  </div>
+  <hr class='divider' />
   <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
 </div>

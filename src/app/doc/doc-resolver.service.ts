@@ -17,25 +17,31 @@ export class DocResolverService implements Resolve<Doc> {
   ) {}
 
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Doc> {
-    log.angular('Doc-Resolver.service')
     const urlKey = route.params['key']
     let activeFile = this.ui.activeFile as Doc
+
+    // If user come from another part of the application
     if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {
-      return this.localStorage.get(activeFile.id)
+      return activeFile.isSaved()
+        .then(() => activeFile)
         .catch((err) => {
+          log.warn('Cannot find document ' + activeFile.id, err)
           activeFile.save()
           return activeFile
         })
+
+    // If user come here directly via URL
     } else {
       return this.localStorage.get(urlKey)
-        .then((localDoc: Doc) => {
-          this.ui.setActiveFile(localDoc)
-          return localDoc
+        .then((doc: Doc) => {
+          this.ui.setActiveFile(doc)
+          return doc
         })
         .catch((err) => {
-          activeFile = this.localStorage.createDoc(urlKey)
-          this.ui.setActiveFile(activeFile)
-          return activeFile
+          log.warn(`${err.message}: createing a new document with ${urlKey} as key`)
+          const doc = this.localStorage.createDoc(urlKey)
+          this.ui.setActiveFile(doc)
+          return doc
         })
     }
   }
