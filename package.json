@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
-    "build": "ng build",
-    "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
+    "build": "ng build --prod -oh none",
+    "postbuild": "zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
