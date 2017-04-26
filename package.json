@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
     "build": "ng build",
-    "postbuild": "gzip dist/*.js dist/*.css --keep",
+    "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
