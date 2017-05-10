@@ -43,21 +43,19 @@ export class DocHistoryComponent implements OnInit {
     private docHistory: DocHistoryService
   ) { }
 
-  countOperations (): number {
-    return this.operations.length
-  }
-
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe((data: {doc: Doc}) => {
       this.docHistory.getOperations(data.doc)
         .then((ops: (Delete | Insert)[]) => {
           log.debug('Operations: ', ops)
-          // From here you can use the array of operations
+          this.operations = ops
+          this.currentOp = this.operations.length
+          this.showLastVersion()
         })
     })
-    this.operations = OPERATIONS
-    this.currentOp = this.operations.length
+    // this.operations = OPERATIONS
+    // this.currentOp = this.operations.length
     const elm1 = document.getElementById('textArea')
     const elm2 = this.editorElt.nativeElement
     /*
@@ -87,20 +85,28 @@ export class DocHistoryComponent implements OnInit {
         lineWrapping: true
       })
     })
-
-    this.editor.getDoc() as any
-    const doc = this.editor.getDoc() as any
-    this.operations.forEach( (textOperation: any) => {
-      const offset = textOperation.offset
-      if (textOperation instanceof TextInsert) {
-        doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
-      } else if (textOperation instanceof TextDelete) {
-        doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
-      }
-    })
   }
 
   onTimelineChange (val: number) {
+//    this.currentOp = val
     this.currentOp = val
+  }
+
+  countOperations (): number {
+    return this.operations ? this.operations.length : 0
+  }
+
+  showLastVersion () {
+    if (this.operations) {
+      const doc = this.editor.getDoc() as any
+      this.operations.forEach( (textOperation: any) => {
+        const offset = textOperation.offset
+        if (textOperation instanceof TextInsert) {
+          doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
+        } else if (textOperation instanceof TextDelete) {
+          doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
+        }
+      })
+    }
   }
 }
