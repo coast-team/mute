@@ -29,13 +29,14 @@ require('codemirror/mode/javascript/javascript')
 export class DocHistoryComponent implements OnInit {
 
   private isInited = false
-  private operations: (TextDelete | TextInsert)[]
+  private operations: (Delete | Insert)[]
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
 
   public editor: CodeMirror.Editor
   public currentOp: number
+  private oldValue: number
 
   constructor (
     private zone: NgZone,
@@ -51,7 +52,8 @@ export class DocHistoryComponent implements OnInit {
           log.debug('Operations: ', ops)
           this.operations = ops
           this.currentOp = this.operations.length
-          this.showLastVersion()
+          this.applyOperations(0, this.operations.length - 1)
+          this.oldValue = this.currentOp
         })
     })
     // this.operations = OPERATIONS
@@ -79,7 +81,7 @@ export class DocHistoryComponent implements OnInit {
     */
     this.zone.runOutsideAngular(() => {
       this.editor = CodeMirror(elm1, {
-        value: 'this is a sample text',
+        value: '',
         mode: 'gfm',
         readOnly: 'true',
         lineWrapping: true
@@ -88,25 +90,62 @@ export class DocHistoryComponent implements OnInit {
   }
 
   onTimelineChange (val: number) {
-//    this.currentOp = val
-    this.currentOp = val
+    // If the current version of the doc is already displayed, do nothing.
+    if (this.currentOp !== val) {
+      this.currentOp = val
+      const indexOperation = val - 1
+      // If we want to see a recent version of the doc (move the slide from left to right)
+      if (this.currentOp >= this.oldValue) {
+        this.applyOperation(this.operations[indexOperation])
+        log.debug('normal: ', this.operations[indexOperation])
+      } else {
+        const reversedOperation = this.createReversedOperation(this.operations[this.currentOp])
+        log.debug('reversed: ', reversedOperation)
+        if (reversedOperation) {
+          this.applyOperation(reversedOperation)
+        }
+      }
+      this.oldValue = this.currentOp
+    }
+  }
+
+  createReversedOperation (textOperation: (Delete | Insert)) {
+    const doc = this.editor.getDoc() as any
+    const offset = textOperation.offset
+    if (textOperation instanceof TextInsert) {
+      return new TextDelete(offset, textOperation.content.length)
+    } else if (textOperation instanceof TextDelete) {
+      return new TextInsert(offset, '')
+    }
+    return null
+  }
+
+  applyOperations (begin: number, end: number) {
+    if (this.operations) {
+      const doc = this.editor.getDoc() as any
+      for (let i = begin; i <= end; i++) {
+        this.applyOperation(this.operations[i])
+      }
+    }
+  }
+
+  applyOperation (textOperation: any) {
+    const doc = this.editor.getDoc() as any
+    const offset = textOperation.offset
+    if (textOperation instanceof TextInsert) {
+      doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
+    } else if (textOperation instanceof TextDelete) {
+      doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
+    }
   }
 
   countOperations (): number {
     return this.operations ? this.operations.length : 0
   }
 
-  showLastVersion () {
-    if (this.operations) {
-      const doc = this.editor.getDoc() as any
-      this.operations.forEach( (textOperation: any) => {
-        const offset = textOperation.offset
-        if (textOperation instanceof TextInsert) {
-          doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
-        } else if (textOperation instanceof TextDelete) {
-          doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
-        }
-      })
-    }
+  onInputChange (event: any) {
+    const value = event.target.value
+    this.currentOp = value < this.countOperations() ? value : this.countOperations()
+    log.debug('NEED TO IMPLEMENTS ON INPUT', '')
   }
 }
