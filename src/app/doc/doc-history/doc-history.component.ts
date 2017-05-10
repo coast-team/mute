@@ -54,6 +54,7 @@ export class DocHistoryComponent implements OnInit {
           this.showLastVersion()
         })
     })
+
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
     const elm1 = document.getElementById('textArea')

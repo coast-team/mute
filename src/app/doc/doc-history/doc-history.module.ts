@@ -6,11 +6,13 @@ import { DocResolverService } from '../doc-resolver.service'
 import { SharedModule } from '../../shared'
 import { TimelineComponent } from './timeline/timeline.component'
 import { DocHistoryComponent } from './doc-history.component'
+import { CollaboratorsComponent } from './collaborators/collaborators.component'
 
 @NgModule({
   declarations: [
     DocHistoryComponent,
-    TimelineComponent
+    TimelineComponent,
+    CollaboratorsComponent
   ],
   imports: [
     SharedModule,

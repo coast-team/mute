@@ -8,8 +8,29 @@
 
 md-card {
   width: 800px;
-  /*height: auto;
+  height: auto;
   margin: 10px auto;
   height: 94%;
-  cursor: text;*/
+  cursor: text;
 }
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+md-sidenav-container {
+  background-color: $bg-background !important;
+  height: 100%;
+
+  .leftsidenav {
+    min-width: 24rem;
+  }
+
+  .rightsidenav {
+    background-color: $bg-background !important;
+    min-width: 32rem;
+    max-width: 32rem;
+  }
+}
+

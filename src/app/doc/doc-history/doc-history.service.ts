@@ -44,6 +44,12 @@ export class DocHistoryService {
         })
     })
   }
+
+
+  getAuthors (doc: Doc): [number, string][] {
+    return AUTHORS
+  }
+
 }
 
 export interface Delete extends TextDelete {
@@ -55,3 +61,4 @@ export interface Insert extends TextInsert {
   authorId: number,
   authorName: string
 }
+
