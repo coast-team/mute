@@ -3,6 +3,6 @@
     box-sizing: border-box;
 }
 
-#mute-timeline-slider {
+.mute-timeline-slider {
     width: 100%;
 }
