@@ -2,8 +2,12 @@
 
 
   <div class="content">
-
-    <mute-timeline [nbOperations]="countOperations()" [currentOp]="currentOp" (onSlide)="onTimelineChange($event)"></mute-timeline>
+    <mute-timeline 
+      [nbOperations]="countOperations()" 
+      [currentOp]="currentOp" 
+      (onSlide)="showVersion($event)"
+      [delay]="100">
+    </mute-timeline>
 
     <md-input-container>
       <input mdInput placeholder="Current operation" [value]="currentOp" (keyup.enter)="onInputChange($event)">
@@ -12,11 +16,11 @@
     <md-card fxFlex="760px" fxFlex.md="75%" fxFlex.sm="85%" fxFlex.xs="100%">
       <div #editorElt id="textArea"></div>
     </md-card>
-
   </div>
 
   <md-sidenav class="rightsidenav" mode="side" opened="true" align="end">
     <mute-collaborators></mute-collaborators>
+    <mute-history-controls (onControls)="onControlsChange($event)"></mute-history-controls>
   </md-sidenav>
 
 </md-sidenav-container>

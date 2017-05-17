@@ -7,12 +7,14 @@ import { SharedModule } from '../../shared'
 import { TimelineComponent } from './timeline/timeline.component'
 import { DocHistoryComponent } from './doc-history.component'
 import { CollaboratorsComponent } from './collaborators/collaborators.component'
+import { HistoryControlsComponent } from './history-controls/history-controls.component'
 
 @NgModule({
   declarations: [
     DocHistoryComponent,
     TimelineComponent,
-    CollaboratorsComponent
+    CollaboratorsComponent,
+    HistoryControlsComponent
   ],
   imports: [
     SharedModule,

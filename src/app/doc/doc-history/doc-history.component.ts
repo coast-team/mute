@@ -10,9 +10,11 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
-
+import { TimelineComponent }  from './timeline/timeline.component'
 import { Doc } from '../../core/Doc'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { CONTROLS } from './history-controls/controls'
+
 import { OPERATIONS } from './mock-operations'
 
 require('codemirror/mode/gfm/gfm')
@@ -33,7 +35,7 @@ export class DocHistoryComponent implements OnInit {
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
-
+  @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
   public editor: CodeMirror.Editor
   public currentOp: number
 
@@ -86,10 +88,6 @@ export class DocHistoryComponent implements OnInit {
     })
   }
 
-  onTimelineChange (numOperation: number) {
-    this.showVersion(numOperation)
-  }
-
   /**
    * numOperations corresponds to a numero between
    * 1 and countOperation().
@@ -129,5 +127,23 @@ export class DocHistoryComponent implements OnInit {
     indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
     indexOp = indexOp <= 0 ? 1 : indexOp
     this.showVersion(indexOp)
+  }
+
+  onControlsChange (controlType: number) {
+    // log.angular('controls', controlType)
+    switch (controlType) {
+    case CONTROLS.PLAY:
+      this.timelineComponent.play()
+      break
+    case CONTROLS.PAUSE:
+      this.timelineComponent.pause()
+      break
+    case CONTROLS.FAST_FORWARD:
+      this.timelineComponent.goToEnd()
+      break
+    case CONTROLS.FAST_REWIND:
+      this.timelineComponent.goToBegin()
+      break
+    }
   }
 }
