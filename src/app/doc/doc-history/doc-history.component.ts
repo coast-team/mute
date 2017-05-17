@@ -12,6 +12,7 @@ import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
 
 import { Doc } from '../../core/Doc'
+import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
 import { OPERATIONS } from './mock-operations'
 
@@ -30,12 +31,14 @@ export class DocHistoryComponent implements OnInit {
 
   private isInited = false
   private operations: (Delete | Insert)[]
+  public docAuthors: Author[]
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
 
   public editor: CodeMirror.Editor
   public currentOp: number
+
 
   constructor (
     private zone: NgZone,
@@ -50,8 +53,17 @@ export class DocHistoryComponent implements OnInit {
         .then((ops: (Delete | Insert)[]) => {
           this.operations = ops
           this.showVersion(this.operations.length)
+
         })
+
+      this.docHistory.getAuthors(data.doc)
+        .then((docAuths: Author[]) => {
+          this.docAuthors = docAuths
+          this.mockTextColors()
+        })
+
     })
+
 
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
@@ -130,4 +142,16 @@ export class DocHistoryComponent implements OnInit {
     indexOp = indexOp <= 0 ? 1 : indexOp
     this.showVersion(indexOp)
   }
+
+  mockTextColors () {
+    const doc = this.editor.getDoc()
+    let cpt = 0
+    doc.eachLine((l) => {
+      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % this.docAuthors.length].getColor()
+      doc.markText({line: cpt, ch: (Math.floor(Math.random() * 10))},
+       {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
+      cpt += (Math.floor(Math.random() * 10))
+    })
+  }
+
 }

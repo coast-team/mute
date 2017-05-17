@@ -7,6 +7,7 @@ import { DocService } from 'mute-core/lib'
 import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
 import { AUTHORS } from './mock-authors'
+import { Author } from '../../core/Author'
 
 @Injectable()
 export class DocHistoryService {
@@ -46,8 +47,24 @@ export class DocHistoryService {
   }
 
 
-  getAuthors (doc: Doc): [number, string][] {
-    return AUTHORS
+  getAuthors (doc: Doc): Promise<Author[]> {
+    return new Promise((resolve, reject) => {
+      let docAuthors: Author[] = []
+      this.getOperations(doc)
+          .then((ops: (Delete | Insert)[]) => {
+            for (let o of ops) {
+              let author: Author = new Author(o.authorName, o.authorId, 'rgb(' + (Math.floor(Math.random() * 256)) +
+                ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')')
+
+              if (docAuthors.filter((e) => {
+                return e.getId() === author.getId()
+              }).length === 0) {
+                docAuthors.push(author)
+              }
+            }
+            resolve(docAuthors)
+          })
+    })
   }
 
 }
