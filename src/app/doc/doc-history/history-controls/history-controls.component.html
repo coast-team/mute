@@ -4,4 +4,12 @@
     <md-icon (click)="onClickPlay($event)">{{ isPlaying ? 'pause' : 'play_arrow' }}</md-icon>
     <md-icon (click)="onClickFastForward($event)" >fast_forward</md-icon>
   </div>
+
+  <button
+    md-raised-button
+    color="accent"
+    (click)='showEditor()'>
+    Return to Edition
+  </button>
+
 </md-card>

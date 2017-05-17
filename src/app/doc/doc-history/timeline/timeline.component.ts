@@ -55,7 +55,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy () {
-    this.pause()
+    if (this.subscriptionPlayer) {
+      this.pause()
+    }
   }
 
   updateStep (event: any) {

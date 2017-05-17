@@ -1,5 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core'
 import { CONTROLS } from './controls'
+import { ActivatedRoute, Router } from '@angular/router'
+import { Doc } from '../../../core/Doc'
 
 @Component({
   selector: 'mute-history-controls',
@@ -9,14 +11,17 @@ import { CONTROLS } from './controls'
 export class HistoryControlsComponent implements OnInit {
 
   isPlaying: boolean
+  private docId
   @Output() onControls: EventEmitter<Number>
 
-  constructor () {
+  constructor (private route: ActivatedRoute, private router: Router) {
     this.onControls = new EventEmitter<number>()
   }
 
   ngOnInit () {
     this.isPlaying = false
+    this.route.data
+      .subscribe(({doc}: {doc: Doc}) => {this.docId = doc.id})
   }
 
   onClickPlay (event: any) {
@@ -30,6 +35,11 @@ export class HistoryControlsComponent implements OnInit {
 
   onClickFastRewind (event: any) {
     this.onControls.emit(CONTROLS.FAST_REWIND)
+  }
+
+  showEditor () {
+    console.log(this.docId)
+    this.router.navigate(['/doc/' + this.docId])
   }
 
 }
