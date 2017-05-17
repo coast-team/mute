@@ -23,7 +23,8 @@ export class CollaboratorsComponent implements OnInit {
             let author = {
               authorId: o.authorId,
               authorName: o.authorName,
-              authorColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'
+              authorColor: 'rgb(' + (Math.floor(Math.random() * 256)) +
+               ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'
             }
 
             if (this.docAuthors.filter((e) => {

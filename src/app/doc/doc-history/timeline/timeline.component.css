@@ -1,9 +1,8 @@
 :host {
     width: 100%;
-    padding: 50px 2%;
     box-sizing: border-box;
 }
 
-#mute-timeline-slider {
+.mute-timeline-slider {
     width: 100%;
 }

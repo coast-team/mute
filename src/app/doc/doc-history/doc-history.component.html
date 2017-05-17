@@ -6,7 +6,7 @@
     <mute-timeline [nbOperations]="countOperations()" [currentOp]="currentOp" (onSlide)="onTimelineChange($event)"></mute-timeline>
 
     <md-input-container>
-      <input mdInput placeholder="Current operation" [value]="currentOp" (keyup)="onInputChange($event)">
+      <input mdInput placeholder="Current operation" [value]="currentOp" (keyup.enter)="onInputChange($event)">
     </md-input-container>
 
     <md-card fxFlex="760px" fxFlex.md="75%" fxFlex.sm="85%" fxFlex.xs="100%">
