@@ -1,0 +1,7 @@
+<md-card>
+  <div class="controls-buttons" fxFlexFill fxLayout="row" fxLayoutAlign="space-around">
+    <md-icon (click)="onClickFastRewind($event)">fast_rewind</md-icon>
+    <md-icon (click)="onClickPlay($event)">{{ isPlaying ? 'pause' : 'play_arrow' }}</md-icon>
+    <md-icon (click)="onClickFastForward($event)" >fast_forward</md-icon>
+  </div>
+</md-card>

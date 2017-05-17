@@ -2,7 +2,7 @@
   <md-slider thumbLabel
     class="mute-timeline-slider"
     min="1" max="{{nbOperations}}" 
-    (input)="updateOperation($event)" 
+    (input)="updateOperation($event.value)" 
     value={{currentOp}}
     step="{{step}}">
   </md-slider>

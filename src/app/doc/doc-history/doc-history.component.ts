@@ -10,10 +10,12 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
-
+import { TimelineComponent }  from './timeline/timeline.component'
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { CONTROLS } from './history-controls/controls'
+
 import { OPERATIONS } from './mock-operations'
 
 require('codemirror/mode/gfm/gfm')
@@ -35,7 +37,7 @@ export class DocHistoryComponent implements OnInit {
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
-
+  @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
   public editor: CodeMirror.Editor
   public currentOp: number
 
@@ -49,6 +51,13 @@ export class DocHistoryComponent implements OnInit {
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe((data: {doc: Doc}) => {
+
+      this.docHistory.getAuthors(data.doc)
+        .then((docAuths: Author[]) => {
+          this.docAuthors = docAuths
+          this.mockTextColors()
+        })
+
       this.docHistory.getOperations(data.doc)
         .then((ops: (Delete | Insert)[]) => {
           this.operations = ops
@@ -56,11 +65,6 @@ export class DocHistoryComponent implements OnInit {
 
         })
 
-      this.docHistory.getAuthors(data.doc)
-        .then((docAuths: Author[]) => {
-          this.docAuthors = docAuths
-          this.mockTextColors()
-        })
 
     })
 
@@ -98,10 +102,6 @@ export class DocHistoryComponent implements OnInit {
     })
   }
 
-  onTimelineChange (numOperation: number) {
-    this.showVersion(numOperation)
-  }
-
   /**
    * numOperations corresponds to a numero between
    * 1 and countOperation().
@@ -115,6 +115,7 @@ export class DocHistoryComponent implements OnInit {
       doc.setValue(generatedText)
       this.currentOp = numOperation
     }
+    this.mockTextColors()
   }
 
   generateText (beginOp: number, endOp: number): String {
@@ -146,12 +147,34 @@ export class DocHistoryComponent implements OnInit {
   mockTextColors () {
     const doc = this.editor.getDoc()
     let cpt = 0
+    let length = 0
     doc.eachLine((l) => {
-      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % this.docAuthors.length].getColor()
+      if (this.docAuthors) {
+        length = this.docAuthors.length
+      }
+      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
       doc.markText({line: cpt, ch: (Math.floor(Math.random() * 10))},
        {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
       cpt += (Math.floor(Math.random() * 10))
     })
+  }
+
+  onControlsChange (controlType: number) {
+    // log.angular('controls', controlType)
+    switch (controlType) {
+    case CONTROLS.PLAY:
+      this.timelineComponent.play()
+      break
+    case CONTROLS.PAUSE:
+      this.timelineComponent.pause()
+      break
+    case CONTROLS.FAST_FORWARD:
+      this.timelineComponent.goToEnd()
+      break
+    case CONTROLS.FAST_REWIND:
+      this.timelineComponent.goToBegin()
+      break
+    }
   }
 
 }
