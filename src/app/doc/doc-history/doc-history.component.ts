@@ -37,6 +37,7 @@ export class DocHistoryComponent implements OnInit {
   public editor: CodeMirror.Editor
   public currentOp: number
   private oldValue: number
+  private authors: [number, string][] = []
 
   constructor (
     private zone: NgZone,
@@ -49,7 +50,6 @@ export class DocHistoryComponent implements OnInit {
     this.route.data.subscribe((data: {doc: Doc}) => {
       this.docHistory.getOperations(data.doc)
         .then((ops: (Delete | Insert)[]) => {
-          log.debug('Operations: ', ops)
           this.operations = ops
           this.currentOp = this.operations.length
           this.applyOperations(0, this.operations.length - 1)

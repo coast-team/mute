@@ -10,17 +10,30 @@ import { Doc } from '../../../core/Doc'
 })
 export class CollaboratorsComponent implements OnInit {
 
-  docAuthors
+  docAuthors: any[] = []
   doc
 
   constructor (private docHistoryService: DocHistoryService, private route: ActivatedRoute) { }
 
   ngOnInit () {
     this.route.data.subscribe((data: {doc: Doc}) => {
-      this.doc = data
-    })
+      this.docHistoryService.getOperations(data.doc)
+        .then((ops: (Delete | Insert)[]) => {
+          for (let o of ops) {
+            let author = {
+              authorId: o.authorId,
+              authorName: o.authorName,
+              authorColor: 'rgb(' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')'
+            }
 
-    this.docAuthors = this.docHistoryService.getAuthors(this.doc)
+            if (this.docAuthors.filter((e) => {
+              return e.authorId === author.authorId
+            }).length === 0) {
+              this.docAuthors.push(author)
+            }
+          }
+        })
+    })
   }
 
 }

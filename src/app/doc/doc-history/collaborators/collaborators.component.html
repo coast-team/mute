@@ -1,7 +1,8 @@
 <div fxLayout="column" fxLayouAlign="start end">
   <md-list dense>
-    <md-list-item *ngFor="let author of docAuthors">
-      {{ author[1] }}
+    <md-list-item *ngFor="let author of docAuthors" [style.color] = "author.authorColor">
+      {{ author.authorName }}
+      
     </md-list-item>
   </md-list>
 </div>
