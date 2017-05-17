@@ -36,7 +36,6 @@ export class DocHistoryComponent implements OnInit {
 
   public editor: CodeMirror.Editor
   public currentOp: number
-  private oldValue: number
 
   constructor (
     private zone: NgZone,
@@ -51,9 +50,7 @@ export class DocHistoryComponent implements OnInit {
         .then((ops: (Delete | Insert)[]) => {
           log.debug('Operations: ', ops)
           this.operations = ops
-          this.currentOp = this.operations.length
-          this.applyOperations(0, this.operations.length - 1)
-          this.oldValue = this.currentOp
+          this.showVersion(this.operations.length)
         })
     })
 
@@ -90,54 +87,38 @@ export class DocHistoryComponent implements OnInit {
     })
   }
 
-  onTimelineChange (val: number) {
-    // If the current version of the doc is already displayed, do nothing.
-    if (this.currentOp !== val) {
-      this.currentOp = val
-      const indexOperation = val - 1
-      // If we want to see a recent version of the doc (move the slide from left to right)
-      if (this.currentOp >= this.oldValue) {
-        this.applyOperation(this.operations[indexOperation])
-        log.debug('normal: ', this.operations[indexOperation])
-      } else {
-        const reversedOperation = this.createReversedOperation(this.operations[this.currentOp])
-        log.debug('reversed: ', reversedOperation)
-        if (reversedOperation) {
-          this.applyOperation(reversedOperation)
-        }
-      }
-      this.oldValue = this.currentOp
-    }
+  onTimelineChange (numOperation: number) {
+    this.showVersion(numOperation)
   }
 
-  createReversedOperation (textOperation: (Delete | Insert)) {
-    const doc = this.editor.getDoc() as any
-    const offset = textOperation.offset
-    if (textOperation instanceof TextInsert) {
-      return new TextDelete(offset, textOperation.content.length)
-    } else if (textOperation instanceof TextDelete) {
-      return new TextInsert(offset, '')
-    }
-    return null
-  }
-
-  applyOperations (begin: number, end: number) {
-    if (this.operations) {
+  /**
+   * numOperations corresponds to a numero between
+   * 1 and countOperation().
+   */
+  showVersion (numOperation: number) {
+    if (this.currentOp !== numOperation) {
       const doc = this.editor.getDoc() as any
-      for (let i = begin; i <= end; i++) {
-        this.applyOperation(this.operations[i])
-      }
+      // Generate string content depending on operations
+      const generatedText = this.generateText(0, numOperation - 1)
+      // just replace the content of editor the generated text.
+      doc.setValue(generatedText)
+      this.currentOp = numOperation
     }
   }
 
-  applyOperation (textOperation: any) {
-    const doc = this.editor.getDoc() as any
-    const offset = textOperation.offset
-    if (textOperation instanceof TextInsert) {
-      doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
-    } else if (textOperation instanceof TextDelete) {
-      doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
+  generateText (beginOp: number, endOp: number): String {
+    let textContent = ''
+    for (let i = beginOp; i <= endOp; i++) {
+      const currentOp = this.operations[i]
+      if (currentOp instanceof TextInsert) {
+        textContent = textContent.slice(0, currentOp.offset) +
+        currentOp.content + textContent.slice(currentOp.offset)
+      } else if (currentOp instanceof TextDelete) {
+        textContent = textContent.slice(0, currentOp.offset) +
+        textContent.slice(currentOp.offset + currentOp.length, textContent.length)
+      }
     }
+    return textContent
   }
 
   countOperations (): number {
@@ -145,8 +126,9 @@ export class DocHistoryComponent implements OnInit {
   }
 
   onInputChange (event: any) {
-    const value = event.target.value
-    this.currentOp = value < this.countOperations() ? value : this.countOperations()
-    log.debug('NEED TO IMPLEMENTS ON INPUT', '')
+    let indexOp = event.target.value
+    indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
+    indexOp = indexOp <= 0 ? 1 : indexOp
+    this.showVersion(indexOp)
   }
 }
