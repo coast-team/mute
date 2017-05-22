@@ -1,46 +1,59 @@
 <md-sidenav-container fxFlex>
 
   <!-- Left Sidenav-->
-  <md-sidenav #leftSidenavElm class="leftsidenav"
-      [mode]="sideNavMode"
-      [opened]="!this.media.isActive('xs')"
-  >
+  <md-sidenav #leftSidenavElm [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
     <mute-nav></mute-nav>
   </md-sidenav>
 
   <!-- Content -->
   <div fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
-    <md-toolbar>
-      <span fxFlex="1 1 auto"></span>
-      <button md-icon-button
-          (click)="deleteAllDocs()"
-          mdTooltip="Delete all"
-      >
-        <md-icon>delete_forever</md-icon>
-      </button>
-    </md-toolbar>
 
-    <div class="doc-grid"
-        fxLayoutWrap
-        fxLayout="row"
-        fxLayoutAlign="start top"
-        fxLayoutAlign.xs="stretch top"
-    >
-      <md-card *ngFor="let doc of docs"
-          fxLayout="column"
-          fxFlex="200px"
-          fxFlex.xs="1 0 auto">
-          <button fxFlex="1 1 auto" md-button (click) = "openDoc(doc)">
+    <div class="doc-grid" fxLayoutWrap fxLayout="row" fxLayoutAlign="start top" fxLayoutAlign.xs="stretch top">
+      <md-card *ngFor="let doc of docs; let i = index"
+        fxLayout="column" fxFlex="200px" fxFlex.xs="1 0 auto"
+        (mouseenter)="setVisible(i)"
+        (mouseleave)="setHidden(i)"
+      >
+        <button fxFlex="1 1 auto" md-button (click)="openDoc(doc)">
             <h3>{{doc.title}}</h3>
-            <span >&#9919; {{doc.id}}</span>
           </button>
-          <hr class="divider">
-          <button fxFlexAlign="end" md-icon-button (click)="deleteDoc(doc)" mdTooltip="Delete">
-            <md-icon>delete</md-icon>
-          </button>
+
+        <div fxFlexAlign="start" fxLayout="column" class="doc-meta-data" fxLayoutAlign="start start">
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <span class='meta-title'>Key</span>
+            <span>{{doc.id}}</span>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <span class='meta-title'>Location</span>
+            <md-icon *ngFor="let icon of doc.getStorageIcons()">
+              {{icon}}
+            </md-icon>
+          </div>
+        </div>
+        <button [fxHide]="!visibleBtns[i]" md-mini-fab class="delete-btn"
+          mdTooltip="Delete"
+          (click)="deleteDoc(doc)"
+        >
+          <md-icon>delete</md-icon>
+        </button>
       </md-card>
     </div>
 
   </div>
+
+  <!-- Right Sidenav-->
+  <md-sidenav #rightSidenavElm class="rightsidenav" [mode]="sideNavMode" align="end" [opened]="!this.media.isActive('xs')">
+    <div fxLayout="column" fxLayoutAlign="start stretch" class="content">
+      <div fxLayout="row" fxLayoutAlign="end center" class="line global-actions">
+        <button md-mini-fab (click)="deleteAllDocs()" mdTooltip="Delete all" color="accent">
+          <md-icon>delete_forever</md-icon>
+        </button>
+      </div>
+      <hr class='divider' />
+      <div fxLayout="row" fxLayoutAlign="start center" class="line">
+        <span class="secondary-text">Number of documents</span><span>{{docs.length}}</span>
+      </div>
+    </div>
+  </md-sidenav>
 
 </md-sidenav-container>

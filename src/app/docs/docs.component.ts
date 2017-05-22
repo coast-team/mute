@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
-import { MdSnackBar } from '@angular/material'
+import { MdSnackBar, MdMenuTrigger, MdMenu } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
-import { AbstractStorageService, LocalStorageService, BotStorageService } from '../core/storage'
+import { LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
 import { File } from '../core/File'
 import { Doc } from '../core/Doc'
@@ -18,9 +18,9 @@ import { UiService } from '../core/ui/ui.service'
 export class DocsComponent implements OnDestroy, OnInit {
 
   @ViewChild('leftSidenavElm') leftSidenavElm
+  @ViewChild('rightSidenavElm') rightSidenavElm
 
   private activeFileSubs: Subscription
-  private hasDocuments: boolean
   private mediaSubscription: Subscription
   private activeMediaQuery: string
 
@@ -28,6 +28,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   private activeFolder: Folder
 
   public docs: Doc[]
+  public visibleBtns: boolean[]
   public sideNavMode = 'side'
 
   constructor (
@@ -40,6 +41,8 @@ export class DocsComponent implements OnDestroy, OnInit {
     public media: ObservableMedia
   ) {
     this.snackBarSubject = new Subject()
+    this.docs = []
+    this.visibleBtns = []
   }
 
   ngOnInit () {
@@ -56,11 +59,15 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.leftSidenavElm.opened = !this.leftSidenavElm.opened
     })
 
+    this.ui.onDocNavToggle.subscribe(() => {
+      this.rightSidenavElm.opened = !this.rightSidenavElm.opened
+    })
+
     this.activeFileSubs = this.ui.onActiveFile
       .filter((file: File) => file instanceof Folder)
       .subscribe((folder: Folder) => {
         this.activeFolder = folder
-        folder.getFiles()
+        folder.fetchFiles()
           .then((docs: Doc[]) => {
             this.docs = docs
             this.ref.detectChanges()
@@ -71,7 +78,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       .throttleTime(500)
       .subscribe((message: string) => {
         this.snackBar.open(message, 'close', {
-          duration: 3000
+          duration: 5000
         })
       })
   }
@@ -84,33 +91,28 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   deleteAllDocs (): void {
     const snackMsg = (this.activeFolder.id !== 'trash') ?
-      'All document moved to tash' : 'All document deleted'
-    this.activeFolder.delete()
+      'All documents moved to tash' : 'All documents deleted'
+    this.activeFolder.deleteFiles()
       .then(() => {
         this.docs = []
-        this.hasDocuments = false
         this.snackBarSubject.next(snackMsg)
-        this.ref.detectChanges()
       })
-      .catch((err) => {
-        log.warn('deleteAllDocs error: ', err)
-        this.snackBarSubject.next(err)
-      })
+      .catch((err: Error) => this.snackBarSubject.next(err.message))
   }
 
   deleteDoc (doc: Doc): void {
-    const snackMsg = (doc.parentId !== 'trash') ?
-      'Document moved to tash' : 'Document deleted'
+    let snackMsg
+    if (doc.localFolder && doc.localFolder.id !== 'trash') {
+      snackMsg = 'Document moved to trash'
+    } else {
+      snackMsg = 'Document deleted'
+    }
     doc.delete()
       .then(() => {
         this.docs = this.docs.filter((d: Doc) => doc.id !== d.id)
-        this.hasDocuments = (this.docs.length > 0)
-        this.ref.detectChanges()
         this.snackBarSubject.next(snackMsg)
       })
-      .catch((err: Error) => {
-        this.snackBarSubject.next(err.message)
-      })
+      .catch((err: Error) => this.snackBarSubject.next(err.message))
   }
 
   openDoc (doc: Doc) {
@@ -129,5 +131,13 @@ export class DocsComponent implements OnDestroy, OnInit {
       key += MASK[Math.round(Math.random() * (MASK.length - 1))]
     }
     this.router.navigate(['doc/' + key])
+  }
+
+  setVisible (index: number) {
+    this.visibleBtns[index] = true
+  }
+
+  setHidden (index: number) {
+    this.visibleBtns[index] = false
   }
 }

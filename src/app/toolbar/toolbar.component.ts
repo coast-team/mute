@@ -1,24 +1,24 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core'
 import { Observable } from 'rxjs/Rx'
+import { Router } from '@angular/router'
 
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
-import { Doc } from '../core/Doc'
 
 @Component({
   selector: 'mute-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
+
+  @Input('state') state
 
   public rootFileTitle: Observable<string>
 
   constructor (
-    private router: Router,
     public ui: UiService,
+    private router: Router,
     public profile: ProfileService
   ) { }
 
@@ -37,7 +37,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   updateTitle (title: string) {
-    const doc = this.ui.activeFile as Doc
+    const doc = this.ui.activeFile as any
     doc.title = title
     doc.save()
   }

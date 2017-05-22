@@ -1,55 +1,54 @@
-import { AbstractStorageService } from './storage/AbstractStorageService'
 import { LocalStorageService } from './storage/local-storage/local-storage.service'
 import { Folder } from './Folder'
+import { FolderBot } from './storage/bot-storage/FolderBot'
 import { File } from './File'
-import { BotStorageCotact } from './storage/bot-storage/BotStorageContact'
+import { BotInfo } from './storage/bot-storage/BotInfo'
 
-interface DocSerialize {
+export interface DocSerialize {
   id: string
   title: string
-  parentId: string
-  botIds: string[]
-  icon: string
+  bot: BotInfo
+  localFolderId: string
 }
 
 export class Doc extends File {
-
   private key: string
   private localStorage: LocalStorageService
 
-  public botIds: string[]
+  public bot: BotInfo
+  public localFolder: Folder
+  public botFolder: FolderBot
 
-  static deserialize (obj: DocSerialize, localStorage: LocalStorageService): Doc {
-    const doc = new Doc(obj.id, obj.title, obj.parentId, localStorage, obj.icon)
-    doc.botIds = obj.botIds || []
+  static deserialize (obj: DocSerialize, localStorage: LocalStorageService, localFolder: Folder): Doc {
+    const doc = new Doc(obj.id, obj.title, localStorage, localFolder)
+    doc.bot = obj.bot
     return doc
   }
+
+  constructor (key: string, title: string, localStorage: LocalStorageService)
+
+  constructor (key: string, title: string, localStorage: LocalStorageService, localFolder: Folder)
 
   constructor (
     key: string,
     title: string,
-    parentId: string,
-    localStorage?: LocalStorageService,
-    icon = ''
+    localStorage: LocalStorageService,
+    localFolder: Folder = undefined
   ) {
-    super(title, parentId, icon)
+    super(title)
     this.key = key
-    this.botIds = []
-    if (localStorage !== undefined) {
-      this.localStorage = localStorage
-    }
+    this.localFolder = localFolder
+    this.localStorage = localStorage
   }
 
-  get id () {
-    return this.key
-  }
-
-  addBotId (botId: string) {
-    this.botIds.push(botId)
-  }
+  get id () { return this.key }
 
   delete (): Promise<void> {
-    return this.localStorage.delete(this)
+    if (this.localFolder) {
+      return this.localStorage.delete(this)
+    } else {
+      return Promise.reject(new Error('The document is not in the local storage, thus cannot be deleted.'))
+    }
   }
 
   getBody (): any {
@@ -60,19 +59,30 @@ export class Doc extends File {
     return this.localStorage.save(this, body)
   }
 
-  isSaved () {
+  isSaved (): Promise<boolean> {
     return this.localStorage.get(this.id)
-      .then((doc) => doc !== undefined)
+      .then(() => true)
+      .catch((err) => false)
   }
 
   serialize (): DocSerialize {
     return {
       id: this.id,
       title: this.title,
-      parentId: this.parentId,
-      botIds: this.botIds,
-      icon: this.icon
+      bot: this.bot,
+      localFolderId: this.localFolder.id
     }
+  }
+
+  getStorageIcons () {
+    const icons: string[] = []
+    if (this.localFolder) {
+      icons[0] = this.localFolder.icon
+    }
+    if (this.botFolder) {
+      icons[icons.length] = this.botFolder.icon
+    }
+    return icons
   }
 
 }

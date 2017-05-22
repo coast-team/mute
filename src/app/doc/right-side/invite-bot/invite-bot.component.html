@@ -1,4 +1,16 @@
-<button
+<button md-mini-fab [mdMenuTriggerFor]="menu" color="accent">
+  <md-icon>adb</md-icon>
+</button>
+<md-menu #menu="mdMenu">
+  <button md-menu-item *ngFor="let bot of bots"
+    (click)="inviteBot(bot.p2pURL)"
+  >
+    {{bot.title}}
+  </button>
+  <button md-menu-item>New Bot</button>
+</md-menu>
+
+<!--<button
   md-raised-button
   color="accent"
   *ngIf="btnActive"
@@ -22,4 +34,4 @@
   </md-input-container>
   <button md-icon-button (click)="ok()"><md-icon>done</md-icon></button>
   <button md-icon-button (click)="cancel()"><md-icon>cancel</md-icon></button>
-</div>
+</div>-->

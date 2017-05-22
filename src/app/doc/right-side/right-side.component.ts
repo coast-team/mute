@@ -7,7 +7,6 @@ import { ProfileService } from '../../core/profile/profile.service'
 import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
 import { BotStorageService } from '../../core/storage/bot-storage/bot-storage.service'
 import { Doc } from '../../core/Doc'
-import { BotStorageCotact } from '../../core/storage/bot-storage/BotStorageContact'
 import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 
 @Component({
@@ -19,10 +18,11 @@ export class RightSideComponent implements OnDestroy, OnInit {
 
   private onDoorSubscription: Subscription
 
-  public storages: Storage[]
+  public storageIcons: string[]
   public signalingOk: boolean
   public networkOk: boolean
   public collaborators: any
+  public docKey: string
 
   constructor (
     private route: ActivatedRoute,
@@ -33,30 +33,20 @@ export class RightSideComponent implements OnDestroy, OnInit {
     private networkService: NetworkService,
     public profile: ProfileService
   ) {
-    this.storages = []
+    this.storageIcons = []
     this.signalingOk = false
     this.networkOk = false
     this.collaborators = collabService.onCollaborators
   }
 
   ngOnInit () {
-    this.route.data
-      .subscribe(({doc}: {doc: Doc}) => {
-        doc.isSaved()
-          .then(() => {
-            this.storages.push({
-              tooltip: this.localStorage.home.title,
-              icon: this.localStorage.home.icon
-            })
-          })
-        doc.botIds.forEach((botId: string) => {
-          const botFolder = this.botStorage.getBotFolder(botId)
-          this.storages.push({
-            tooltip: botFolder.title,
-            icon: botFolder.icon
-          })
+    this.route.data.subscribe(({doc}: {doc: Doc}) => {
+      doc.isSaved()
+        .then(() => {
+          this.storageIcons = doc.getStorageIcons()
+          this.docKey = doc.id
         })
-      })
+    })
     this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
       this.signalingOk = opened
       this.changeDetectorRef.detectChanges()
@@ -77,9 +67,4 @@ export class RightSideComponent implements OnDestroy, OnInit {
   updatePseudo (pseudo: string) {
     this.profile.pseudonym = pseudo
   }
-}
-
-interface Storage {
-  tooltip: string
-  icon: string
 }

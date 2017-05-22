@@ -12,6 +12,8 @@ import {
 } from '@angular/animations'
 
 import { NetworkService } from '../../../doc/network/network.service'
+import { BotStorageService, BotTuple } from '../../../core/storage/bot-storage/bot-storage.service'
+import { BotInfo } from '../../../core/storage/bot-storage/BotInfo'
 
 @Component({
   selector: 'mute-invite-bot',
@@ -40,19 +42,27 @@ export class InviteBotComponent implements OnInit {
   private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])' +
                     '(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}(\:[0-9]{1,5})?$'
 
-  private network: NetworkService
-
   @ViewChild('ipElm') ipElm
   public btnActive = true
   public inputActive = false
   public error = false
   public errorMessage = 'Invalid ip address or host name'
+  public bots: BotInfo[]
 
-  constructor (network: NetworkService) {
-    this.network = network
+  constructor (
+    private network: NetworkService,
+    private botStorage: BotStorageService
+  ) {
+    this.bots = []
   }
 
-  ngOnInit () { }
+  ngOnInit () {
+    this.botStorage.onBots.subscribe((bots: BotTuple[]) => {
+      bots.forEach((bot: BotTuple) => {
+        this.bots.push(bot[0])
+      })
+    })
+  }
 
   btnStateDone (event) {
     if (event.toState === 'void') {
@@ -89,6 +99,10 @@ export class InviteBotComponent implements OnInit {
 
   cancel () {
     this.inputActive = false
+  }
+
+  inviteBot (url: string) {
+    this.network.inviteBot(url)
   }
 
 }

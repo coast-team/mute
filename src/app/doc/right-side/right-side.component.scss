@@ -1,48 +1,43 @@
 @import 'variables';
+@import 'theme';
 
-md-list {
-  text-align: right;
+.divider {
+  border: 0;
+  height: 1px;
+  width: 100%;
+  margin: 1rem 0 2rem 0;
+  background-color: $fg-divider;
+}
+
+.actions {
+  margin: 20px 20px 20px 0;
+}
+
+.storage-icon {
+  margin-right: 10px;
+}
+
+.line {
+  margin-bottom: 10px;
+  height: 30px;
+}
+
+.meta-title {
+  color: $fg-secondary-text;
+  width: 80px;
+  text-align: left;
+  margin-right: 15px;
+}
+
+.collaborators {
   height: 100%;
+}
 
-  mute-edit-field {
-    font-size: 2rem;
-  }
+md-progress-spinner {
+  width: 24px;
+  height: 24px;
+}
 
-  h3 {
-    text-align: left;
-  }
-
-  .storages {
-    md-chip {
-      margin: 0 7px;
-
-      &:last-child {
-        margin: 0;
-      }
-    }
-  }
-
-  md-divider {
-    margin-bottom: 10px;
-  }
-
-  .connection {
-
-    .title {
-      line-height: 2.5rem;
-    }
-
-    .indicator {
-      margin-left: 5px;
-    }
-  }
-
-  md-progress-spinner {
-    width: 24px;
-    height: 24px;
-  }
-
-  .collaborators {
-    height: 100%;
-  }
+mute-edit-field {
+  font-size: 2rem;
 }
