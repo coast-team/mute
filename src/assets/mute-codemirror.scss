@@ -7,8 +7,8 @@
 .CodeMirror {
   font-family: $font, serif;
   font-size: 1.6rem;
+  min-height: 700px;
   height: 100%;
-  padding: 10px;
   background-color: $bg-card;
   color: $fg-text;
 

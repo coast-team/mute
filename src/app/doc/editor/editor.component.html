@@ -1,9 +1,9 @@
 <md-card
-    [ngStyle]="{'width': '800px'}"
-    [ngStyle.md]="{'width': '75%'}"
-    [ngStyle.sm]="{'width': '85%'}"
-    [ngStyle.xs]="{'width': '98%', 'margin-bottom': 0}"
-    fxFlex.xs="100%">
+    style="width: 800px"
+    style.md="width: 75%"
+    style.sm="width: 85%"
+    style.xs="width: 98%; margin-bottom: 0"
+>
   <textarea #editorElt muteCursors [cmEditor]="editor" [docService]="docService"></textarea>
 </md-card>
 <div fxShow fxHide.xs="true" class="airbag"></div>

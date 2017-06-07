@@ -6,7 +6,6 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  AfterViewInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -36,7 +35,7 @@ require('codemirror/mode/javascript/javascript')
 })
 
 @Injectable()
-export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewInit {
+export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private isInited = false
 
@@ -52,15 +51,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
   public editor: CodeMirror.Editor
 
   constructor (
-    private zone: NgZone,
-    private detectRef: ChangeDetectorRef
+    private zone: NgZone
   ) {}
 
   ngOnInit () {
-    this.detectRef.detach()
-  }
-
-  ngAfterViewInit () {
     this.zone.runOutsideAngular(() => {
       this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
         lineNumbers: false,
