@@ -35,9 +35,14 @@ Then, run `docker build -t 'coast-team/mute' .` to build the container image.
 
 You can start a new container using the following command `docker run -it -p 80:80 coast-team/mute`.
 
+## Note on Service Worker
+
+The application actually use
+[`sw-precache`](https://github.com/GoogleChrome/sw-precache).
+In order to deploy the app:
+  ng build -prod -aot
+  npm run precache
 
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-

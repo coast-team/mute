@@ -15,7 +15,8 @@
     "gh-deploy": "ngh --message \"$(git rev-parse HEAD)\"",
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
-    "cz": "git-cz"
+    "cz": "git-cz",
+    "sw": "sw-precache --verbose --config=sw-precache-config.js"
   },
   "keywords": [],
   "contributors": [
@@ -41,6 +42,7 @@
     "core-js": "^2.4.1",
     "google-protobuf": "^3.2.0",
     "hammerjs": "^2.0.8",
+    "http-server": "^0.10.0",
     "jio": "git+https://github.com/Nexedi/jio.git",
     "loglevel": "^1.4.1",
     "material-design-icons": "^3.0.1",
@@ -74,6 +76,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.1.0",
+    "sw-precache": "^5.1.1",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
     "tslint-eslint-rules": "^3.2.3",
