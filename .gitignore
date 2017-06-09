@@ -39,5 +39,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Config Files for Firebase
+.firebaserc
+firebase.json
+
 # Other
 src/environments/environment.ovh.ts

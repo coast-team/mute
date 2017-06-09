@@ -16,7 +16,9 @@
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
-    "sw": "sw-precache --verbose --config=sw-precache-config.js"
+    "sw": "sw-precache --verbose --config=sw-precache-config.js",
+    "deploy-sw": "ng build -prod -aot && npm run sw && firebase deploy",
+    "dev": "ng build -prod -aot && npm run sw && cd dist/ && angularserver"
   },
   "keywords": [],
   "contributors": [
