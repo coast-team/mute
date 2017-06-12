@@ -29,12 +29,16 @@ export class CollaboratorCursor {
       this.bookmark.clear()
     }
     this.bookmark = this.cm.getDoc().setBookmark(pos, {insertLeft: true})
+    this.domElm.style.transitionDuration = '.14s'
     this.domElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
   }
 
-  updateCursor () {
+  update (linesNb: number, firstLineLength: number) {
     if (this.bookmark !== undefined && this.previousPos !== this.bookmark.find()) {
       const newCoords = this.cm.cursorCoords(this.bookmark.find(), 'local')
+      if (linesNb === 1 && firstLineLength < 6) {
+        this.domElm.style.transitionDuration = '.05s'
+      }
       this.domElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
     }
   }

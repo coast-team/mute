@@ -143,8 +143,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     })
 
     // Fixme: bind this event after first sync, otherwise its called many unnecessary times
-    CodeMirror.on(this.cm, 'change', () => {
-      this.cursors.forEach((cursor) => cursor.updateCursor())
+    CodeMirror.on(this.cm, 'change', (instance: CodeMirror.Editor, changeObj: any) => {
+      this.cursors.forEach((cursor) => {
+        cursor.update(changeObj.text.length, changeObj.text[0].length)
+      })
     })
 
     CodeMirror.on(this.cm, 'keydown', (instance, event: KeyboardEvent) => {
