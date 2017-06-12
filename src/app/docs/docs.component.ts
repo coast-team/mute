@@ -84,10 +84,10 @@ export class DocsComponent implements OnDestroy, OnInit {
           duration: 5000
         })
       })
-    
+
     this.serviceWorker.registerSW()
 
-    this.serviceWorker.observableState.subscribe(message => {
+    this.serviceWorker.observableState.subscribe((message) => {
       this.snackBarSubject.next(message)
     })
 
