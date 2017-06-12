@@ -1,179 +1,160 @@
-import { Directive, Injectable, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core'
+import { Directive, Injectable, Input, OnChanges, OnInit, OnDestroy } from '@angular/core'
+import { Subscription } from 'rxjs'
+import * as CodeMirror from 'codemirror'
+import { DocService, NetworkMessage } from 'mute-core'
+import { TextDelete, TextInsert, Identifier } from 'mute-structs'
+
+import { CollaboratorCursor } from './CollaboratorCursor'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { NetworkService } from '../../network/'
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
 
-import { Subscription } from 'rxjs'
-
-import * as CodeMirror from 'codemirror'
-import { DocService, NetworkMessage } from 'mute-core'
-import { Identifier } from 'mute-structs'
-
 const pb = require('./cursor_pb.js')
 
-@Injectable() @Directive({ selector: '[muteCursors]' })
-export class CursorsDirective extends ServiceIdentifier implements OnChanges, OnInit {
+@Directive({
+  selector: '[muteCursors]'
+})
 
-  @Input() cmEditor: CodeMirror.Editor
-  @Input() docService: DocService
+@Injectable()
+export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDestroy {
 
-  private messageSubscription: Subscription
+  @Input() cm: CodeMirror.Editor
+  @Input() mcDocService: DocService
 
-  private cmCursors: Map<number, CmCursor> // CodeMirror cursors of other peers
-  private isInited = false
+  private networkMsgSubs: Subscription
+
+  private cmDoc: CodeMirror.Doc
+  private cursors: Map<number, CollaboratorCursor> // CodeMirror cursors of other peers
+
+  // Preconstructed Protocol Buffer objects for sending the position of my cursor
   private pbCursor: any
-  private pbPosition: any // My cursor
+  private pbPosition: any
 
   constructor (
     private collabService: RichCollaboratorsService,
     private network: NetworkService
   ) {
     super('Cursor')
-    this.cmCursors = new Map()
+    this.cursors = new Map()
     this.pbPosition = new pb.Position()
     this.pbCursor = new pb.Cursor()
   }
 
   ngOnInit () {
-    const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
+    this.cmDoc = this.cm.getDoc()
 
+    // When a new peer joins
     this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
-      this.cmCursors.set(collab.id, new CmCursor(cmDoc, collab.color))
+      this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab.color))
     })
 
+    // When the peer leaves
     this.collabService.onLeave.subscribe((id: number) => {
-      const cursor: CmCursor | undefined = this.cmCursors.get(id)
+      const cursor = this.cursors.get(id)
       if (cursor !== undefined) {
-        if (cursor.cmBookmark !== undefined) {
-          cursor.cmBookmark.clear()
-        }
-        cursor.stopClotting()
-        this.cmCursors.delete(id)
+        cursor.clear()
+        this.cursors.delete(id)
       }
     })
 
-    const updateCursor = (): void => {
-      const cursor: {index: number, last?: number, base?: number[]} | null =
-        this.docService.idFromIndex(cmDoc.indexFromPos(cmDoc.getCursor()))
-      if (cursor === null) {
-        this.pbCursor.setVisible(true)
-      } else {
-        this.pbPosition.setIndex(cursor.index)
-        this.pbPosition.setLast(cursor.last)
-        this.pbPosition.setBaseList(cursor.base)
-        this.pbCursor.setPosition(this.pbPosition)
-      }
-      this.network.send(this.id, this.pbCursor.serializeBinary())
-    }
-
-    CodeMirror.on(this.cmEditor, 'blur', () => {
+    // When the editor looses the focus (my cursor disappeared)
+    CodeMirror.on(this.cm, 'blur', () => {
       this.pbCursor.setVisible(false)
       this.network.send(this.id, this.pbCursor.serializeBinary())
-      CodeMirror.off(cmDoc, 'cursorActivity', updateCursor)
     })
 
-    CodeMirror.on(this.cmEditor, 'focus', () => {
-      updateCursor()
-      CodeMirror.on(cmDoc, 'cursorActivity', updateCursor)
-    })
-  }
+    // Send my cursor position to the network on certain events
+    this.listenEventsForCursorChange()
 
-  ngOnChanges (changes: SimpleChanges): void {
-    const cmDoc: CodeMirror.Doc = this.cmEditor.getDoc()
-
-    if (this.isInited) {
-      this.messageSubscription.unsubscribe()
-    }
-
-    this.messageSubscription = this.network.onMessage
+    // On message from the network
+    this.networkMsgSubs = this.network.onMessage
       .filter((msg: NetworkMessage) => msg.service === this.id)
       .subscribe((msg: NetworkMessage) => {
-        const pbCursor = pb.Cursor.deserializeBinary(msg.content)
-        const cursor = this.cmCursors.get(msg.id)
+        const pbMsg = pb.Cursor.deserializeBinary(msg.content)
+        const cursor = this.cursors.get(msg.id)
         if (cursor !== undefined) {
-          let pos: any
-          if (pbCursor.getContentCase() === pb.Cursor.ContentCase.VISIBLE) {
-            if (pbCursor.getVisible()) {
-              const lastLine = cmDoc.lastLine()
-              pos = {line: lastLine, pos: cmDoc.getLine(lastLine).length}
-            } else {
-              cursor.hide()
-              return
-            }
-          } else {
-            const pbPosition = pbCursor.getPosition()
-            const identifier = new Identifier(pbPosition.getBaseList(), pbPosition.getLast())
-            pos = cmDoc.posFromIndex(this.docService.indexFromId(identifier) + pbPosition.getIndex())
+          let newPos: CodeMirror.Position
+          switch (pbMsg.getContentCase()) {
+            case pb.Cursor.ContentCase.VISIBLE:
+              if (pbMsg.getVisible()) {
+                const lastLine = this.cmDoc.lastLine()
+                newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
+                cursor.show()
+              } else {
+                cursor.hide()
+                return
+              }
+              break
+            case pb.Cursor.ContentCase.POSITION:
+              cursor.show()
+              const pbPosition = pbMsg.getPosition()
+              const identifier = new Identifier(pbPosition.getBaseList(), pbPosition.getLast())
+              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbPosition.getIndex())
+              break
           }
-          if (!cursor.created) {
-            cursor.create(pos)
-          } else {
-            const oldCoords = this.cmEditor.cursorCoords(cursor.cmBookmark.find(), 'local')
-            const newCoords = this.cmEditor.cursorCoords(pos, 'local')
-            cursor.translate({x: newCoords.left - oldCoords.left, y: newCoords.top - oldCoords.top})
-          }
-          cursor.show()
-          cursor.restartClotting()
+          cursor.translate(newPos)
         }
       })
-
-    this.isInited = true
-  }
-}
-
-class CmCursor {
-
-  private clotIntervalID: number
-  private clotTimeoutID: number
-  private cmDoc: CodeMirror.Doc
-
-  public created: boolean
-  public domElm: HTMLElement
-  public cmBookmark: any
-
-
-  constructor (cmDoc: CodeMirror.Doc, color: string) {
-    this.created = false
-    this.cmDoc = cmDoc
-    this.domElm = document.createElement('span')
-    this.domElm.className = 'peerCursor'
-    this.domElm.style.backgroundColor = color
-    this.hide()
   }
 
-  create (pos) {
-    this.cmBookmark = this.cmDoc.setBookmark(pos, {widget: this.domElm})
+  ngOnDestroy () {
+    this.networkMsgSubs.unsubscribe()
   }
 
-  translate (coords) {
-    this.domElm.style.transform = `translate(${Math.round(coords.x)}px, ${Math.round(coords.y)}px)`
+  isMovementKey (keyCode) {
+    return 33 <= keyCode && keyCode <= 40
   }
 
-  restartClotting (): void {
-    this.stopClotting()
-    this.clotTimeoutID = window.setTimeout(() => {
-      this.clotIntervalID = window.setInterval(() => {
-        if (this.domElm.className.includes('clotted')) {
-          this.domElm.className = this.domElm.className.replace(' clotted', '')
-        } else {
-          this.domElm.className += ' clotted'
+  sendMyCursorPos = () => {
+    const cursor: { index: number, last?: number, base?: number[] } | null =
+      this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(this.cmDoc.getCursor()))
+    if (cursor === null) {
+      this.pbCursor.setVisible(true)
+    } else {
+      this.pbPosition.setIndex(cursor.index)
+      this.pbPosition.setLast(cursor.last)
+      this.pbPosition.setBaseList(cursor.base)
+      this.pbCursor.setPosition(this.pbPosition)
+    }
+    this.network.send(this.id, this.pbCursor.serializeBinary())
+  }
+
+  listenEventsForCursorChange () {
+    let movedByMouse = false
+
+    CodeMirror.on(this.cm, 'keyup', (instance: CodeMirror.Editor, event: KeyboardEvent) => {
+      if (this.isMovementKey(event.keyCode)) {
+        this.sendMyCursorPos()
+      }
+    })
+
+    CodeMirror.on(this.cm, 'mousedown', () => {
+      movedByMouse = true
+    })
+
+    CodeMirror.on(this.cm, 'cursorActivity', (instance: CodeMirror.Editor, event: KeyboardEvent) => {
+      if (movedByMouse) {
+        movedByMouse = false
+        if (!this.cmDoc.getSelection()) {
+          this.sendMyCursorPos()
         }
-      }, 600)
-    }, 400)
-  }
+      }
+      // this.sendMyCursorPos()
+    })
 
-  stopClotting (): void {
-    this.domElm.className = this.domElm.className.replace(' clotted', '')
-    window.clearInterval(this.clotIntervalID)
-    window.clearTimeout(this.clotTimeoutID)
-  }
+    // Fixme: bind this event after first sync, otherwise its called many unnecessary times
+    CodeMirror.on(this.cm, 'change', () => {
+      this.cursors.forEach((cursor) => cursor.updateCursor())
+    })
 
-  hide (): void {
-    this.domElm.style.display = 'none'
-    this.stopClotting()
-  }
+    CodeMirror.on(this.cm, 'keydown', (instance, event: KeyboardEvent) => {
+      if (this.isMovementKey(event.keyCode)) {
+        movedByMouse = false
+      }
+    })
 
-  show (): void {
-    this.domElm.style.display = 'inline'
+    CodeMirror.on(this.cm, 'beforeChange', () => { movedByMouse = false })
+
+    CodeMirror.on(this.cm, 'touchstart', () => { movedByMouse = true })
   }
 }

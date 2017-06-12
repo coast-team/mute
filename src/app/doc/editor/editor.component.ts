@@ -59,9 +59,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
         lineNumbers: false,
         lineWrapping: true,
-        autofocus: false,
+        cursorBlinkRate: 400,
+        cursorScrollMargin: 100,
         mode: {name: 'gfm', globalVars: true}
-      })
+      } as any)
 
       // For Quentin's test
       this.setupGlobalForTests()
