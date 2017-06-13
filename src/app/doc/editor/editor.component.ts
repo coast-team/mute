@@ -220,7 +220,7 @@ class ChangeEvent {
       textOperations.push(new TextInsert(index, text))
     }
 
-    log.info('operation:editor', 'generated: ', textOperations)
+    // log.info('operation:editor', 'generated: ', textOperations)
     return textOperations
   }
 
