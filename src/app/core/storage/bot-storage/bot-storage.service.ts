@@ -56,6 +56,11 @@ export class BotStorageService implements StorageServiceInterface {
     return this.botsSubject.asObservable()
   }
 
+  check (bot: BotInfo): Promise<boolean> {
+    return this.http.get(`${bot.apiURL}/name`).toPromise()
+      .then(() => true)
+  }
+
   fetchFiles (folder: FolderBot): Promise<File[]> {
     return this.http.get(`${folder.bot.apiURL}/docs`)
       .toPromise()

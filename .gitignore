@@ -7,6 +7,9 @@
 # dependencies
 /node_modules
 
+# NPM
+package-lock.json
+
 # IDEs and editors
 /.idea
 .project

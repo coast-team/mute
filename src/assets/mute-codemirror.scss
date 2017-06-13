@@ -1,23 +1,40 @@
 @import 'variables';
 @import 'theme';
 
+/* My cursor animation */
+@keyframes myCursor {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
 /**
 * CodeMirror style here, because it is not working in the proper Component css.
 */
 .CodeMirror {
-  font-family: $font-light, serif;
+  font-family: $font, serif;
   font-size: 1.6rem;
+  min-height: 700px;
   height: 100%;
-  padding: 10px;
   background-color: $bg-card;
   color: $fg-text;
+  line-height: 2.8rem;
+
+  .CodeMirror-cursor {
+    border-left: 2px solid black;
+  }
+
+  .marked {
+    background-color: lightseagreen;
+  }
 
   .CodeMirror-vscrollbar {
     display: none !important;
   }
 
-  .CodeMirror-line {
-    line-height: 2.4rem;
+  .CodeMirror-scroll {
+    overflow: auto !important;
+    min-height: 700px;
+    height: 100%;
   }
 
   .cm-header {
@@ -81,19 +98,13 @@
   .cm-keyword, .cm-def, .cm-operator {
     font-family: monospace;
   }
+}
 
-
-  .peerCursor {
-    display: inline-block;
-    position: absolute;
-    background-color: orange;
-    width: 2px;
-    height: 1.6em;
-    transition: all .1s linear;
-
-    &.clotted {
-      height: 0em;
-      margin-top: 0.8em;
-    }
-  }
+.collaborator-cursor {
+  position: absolute;
+  top: 4px;
+  display: inline-block;
+  border-left: 2px solid;
+  height: 19px;
+  transition: transform .12s linear;
 }
