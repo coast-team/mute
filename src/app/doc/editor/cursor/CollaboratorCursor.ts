@@ -45,7 +45,7 @@ export class CollaboratorCursor {
     if (this.bookmark !== undefined && this.previousPos !== this.bookmark.find()) {
       const newCoords = this.cm.cursorCoords(this.bookmark.find(), 'local')
       if (linesNb === 1 && firstLineLength < 6) {
-        this.domElm.style.transitionDuration = '.02s'
+        this.domElm.style.transitionDuration = '0s'
       }
       this.domElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
     }
