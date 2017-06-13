@@ -4,7 +4,7 @@
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host=152.81.65.18",
+    "start": "ng serve --host=0.0.0.0",
     "build": "ng build --prod -oh none",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
