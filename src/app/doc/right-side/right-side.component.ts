@@ -57,7 +57,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
       this.networkOk = true
     })
     this.networkService.onLine.subscribe((event) => {
-      this.onLineOk = true
+      this.onLineOk = event.valueOf()
     })
   }
 

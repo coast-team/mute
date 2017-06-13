@@ -192,11 +192,16 @@ export class NetworkService {
     }
   }
 
-  join (key): Promise<void> { // TODO
+  join (key): Promise<void> {
+    this.key = key
+
+    // TODO Move the network verification
     if ( navigator.onLine ) {
       this.onLineSubject.next(true)
+    } else {
+      this.onLineSubject.next(false)
     }
-    this.key = key
+
     return this.xirsys.iceServers
       .then((iceServers) => {
         if (iceServers !== null) {
@@ -216,7 +221,6 @@ export class NetworkService {
         return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
       })
   }
-
 
   inviteBot (url: string): void {
     if (!this.botUrls.includes(url)) {
