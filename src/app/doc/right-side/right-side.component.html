@@ -16,10 +16,32 @@
     </md-icon>
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="line">
+    <span class="meta-title">Network</span>
+    <div class="indicator">
+      <md-icon *ngIf="onLineOk">check</md-icon>
+      <md-progress-spinner *ngIf="!onLineOk"
+          color="warn"
+          mode="indeterminate"
+      >
+      </md-progress-spinner>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="line">
     <span class="meta-title">Signaling</span>
     <div class="indicator">
       <md-icon *ngIf="signalingOk">check</md-icon>
       <md-progress-spinner *ngIf="!signalingOk"
+          color="warn"
+          mode="indeterminate"
+      >
+      </md-progress-spinner>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="line">
+    <span class="meta-title">Network</span>
+    <div class="indicator">
+      <md-icon *ngIf="networkOk">check</md-icon>
+      <md-progress-spinner *ngIf="!networkOk"
           color="warn"
           mode="indeterminate"
       >

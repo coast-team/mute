@@ -20,6 +20,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
 
   public storageIcons: string[]
   public signalingOk: boolean
+  public onLineOk: boolean
   public networkOk: boolean
   public collaborators: any
   public docKey: string
@@ -36,6 +37,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
     this.storageIcons = []
     this.signalingOk = false
     this.networkOk = false
+    this.onLineOk = false
     this.collaborators = collabService.onCollaborators
   }
 
@@ -53,6 +55,9 @@ export class RightSideComponent implements OnDestroy, OnInit {
     })
     this.networkService.onJoin.subscribe((event) => {
       this.networkOk = true
+    })
+    this.networkService.onLine.subscribe((event) => {
+      this.onLineOk = true
     })
   }
 

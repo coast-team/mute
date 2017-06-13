@@ -21,6 +21,7 @@ export class NetworkService {
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
   private doorSubject: Subject<boolean>
+  private onLineSubject: Subject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -48,6 +49,7 @@ export class NetworkService {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.doorSubject = new Subject()
+    this.onLineSubject = new Subject()
 
     this.messageSubject = new ReplaySubject()
 
@@ -140,6 +142,10 @@ export class NetworkService {
     return this.joinSubject.asObservable()
   }
 
+  get onLine (): Observable<boolean> {
+    return this.onLineSubject.asObservable()
+  }
+
   get onLeave (): Observable<number> {
     return this.leaveSubject.asObservable()
   }
@@ -165,6 +171,7 @@ export class NetworkService {
       this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
+      this.onLineSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
@@ -173,6 +180,7 @@ export class NetworkService {
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
+      this.onLineSubject = new Subject()
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
@@ -184,7 +192,10 @@ export class NetworkService {
     }
   }
 
-  join (key): Promise<void> {
+  join (key): Promise<void> { // TODO
+    if ( navigator.onLine ) {
+      this.onLineSubject.next(true)
+    }
     this.key = key
     return this.xirsys.iceServers
       .then((iceServers) => {
