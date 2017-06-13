@@ -102,6 +102,7 @@
 
 .collaborator-cursor {
   position: absolute;
+  z-index: 1000;
   top: 4px;
   display: inline-block;
   border-left: 2px solid;
