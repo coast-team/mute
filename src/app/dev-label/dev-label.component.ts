@@ -11,7 +11,7 @@ import * as mnemonic from 'mnemonicjs'
 @Component({
   selector: 'mute-dev-label',
   template: `
-    Preview version: <a [href]='url' target="_blank">{{shortID}}</a>
+    Preview version: <a [href]='url' target="_blank" rel="noopener">{{shortID}}</a>
     <br />
     Digest: {{digest}}
     <br />
