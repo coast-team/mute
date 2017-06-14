@@ -53,15 +53,23 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     // When a new peer joins
     this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
-      this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab.color))
+      this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
     })
 
     // When the peer leaves
     this.collabService.onLeave.subscribe((id: number) => {
       const cursor = this.cursors.get(id)
       if (cursor !== undefined) {
-        cursor.clear()
+        cursor.clearAll()
         this.cursors.delete(id)
+      }
+    })
+
+    // When the peer changes his pseudo
+    this.collabService.onChange.subscribe(({collab}: {collab: RichCollaborator}) => {
+      const cursor = this.cursors.get(collab.id)
+      if (cursor !== undefined) {
+        cursor.updatePseudo(collab.pseudo)
       }
     })
 
@@ -86,12 +94,12 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
           if (pbMsg.getState() === pb.State.HIDDEN) {
             // When cursor should be hidden
 
-            cursor.hide()
+            cursor.hideCursor()
           } else if (pbMsg.getState() === pb.State.FROM) {
             // When cursor update only
 
             cursor.clearSelection()
-            cursor.show()
+            cursor.showCursor()
             let newPos: CodeMirror.Position
             if (pbMsg.hasFrom()) {
               const pbFrom = pbMsg.getFrom()
@@ -101,7 +109,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
               const lastLine = this.cmDoc.lastLine()
               newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
-            cursor.translate(newPos)
+            cursor.translateCursorOnRemoteChange(newPos)
           } else {
             // When cursor & selection update
 
@@ -123,7 +131,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
               const lastLine = this.cmDoc.lastLine()
               toPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
-            cursor.translate(pbMsg.getState() === pb.State.SELECTION_FROM ? fromPos : toPos, false)
+            cursor.translateCursorOnRemoteChange(pbMsg.getState() === pb.State.SELECTION_FROM ? fromPos : toPos, false)
             cursor.updateSelection(fromPos, toPos)
           }
         }
@@ -219,7 +227,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     // Fixme: bind this event after first sync, otherwise its called many unnecessary times
     CodeMirror.on(this.cm, 'change', (instance: CodeMirror.Editor, changeObj: any) => {
       this.cursors.forEach((cursor) => {
-        cursor.update(changeObj.text.length, changeObj.text[0].length)
+        cursor.translateCursorOnLocalChange(changeObj.text.length, changeObj.text[0].length)
       })
     })
 

@@ -1,53 +1,86 @@
 import * as CodeMirror from 'codemirror'
 
+import { RichCollaborator } from '../../rich-collaborators/'
+
 export class CollaboratorCursor {
 
   private selectionCSS: string
 
   private cm: CodeMirror.Editor
   private isHidden = true
-  private previousPos
+  private previousBookmarkPos
   private selection: CodeMirror.TextMarker
+  private pseudoElmWidth: string
+  private pseudoTimeout: any
 
-  // DOM html element for cursor visualisation
-  private domElm: HTMLElement
+  // DOM html element for cursor and pseudo visualisation
+  private cursorElm: HTMLElement
+  private pseudoElm: HTMLElement
 
-  // CodeMirror TextMakrer bookmark object. Cursor indicator on Code
+  // CodeMirror TextMakrer bookmark object. Cursor indicator for Codemirror
   private bookmark: any
 
 
-  constructor (cm: CodeMirror.Editor, color: string) {
+  constructor (cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
-    this.selectionCSS = `background-color: ${color};`
-    this.domElm = document.createElement('span')
-    this.domElm.className = 'collaborator-cursor'
-    this.domElm.style.borderLeftColor = color
-    this.domElm.style.display = 'none'
-    this.cm.getWrapperElement().appendChild(this.domElm)
+    this.selectionCSS = `background-color: ${collab.color};`
+
+    // HTML element for cursor
+    this.cursorElm = document.createElement('span')
+    this.cursorElm.className = 'collaborator-cursor'
+    this.cursorElm.style.borderLeftColor = collab.color
+    this.cursorElm.style.display = 'none'
+    this.cursorElm.onmouseenter = this.resetPseudoTimeout.bind(this)
+
+    // HTML element for pseudo
+    this.pseudoElm = document.createElement('span')
+    this.pseudoElm.className = 'collaborator-pseudo'
+    this.pseudoElm.style.backgroundColor = collab.color
+    this.pseudoElm.style.width = '0'
+    this.updatePseudo(collab.pseudo)
+
+    this.cursorElm.appendChild(this.pseudoElm)
+    this.cm.getWrapperElement().appendChild(this.cursorElm)
   }
 
-  translate (pos: CodeMirror.Position, isAnimated = true) {
-    this.previousPos = pos
+  resetPseudoTimeout () {
+    this.pseudoElm.style.width = this.pseudoElmWidth
+    clearTimeout(this.pseudoTimeout)
+    this.pseudoTimeout = setTimeout(() => {
+      this.pseudoElm.style.width = '0'
+    }, 1500)
+  }
+
+  updatePseudo (pseudo: string) {
+    this.pseudoElm.innerHTML = `&nbsp;&nbsp;${pseudo}`
+    this.pseudoElmWidth = `${pseudo.length * 7}px`
+  }
+
+  translateCursorOnRemoteChange (pos: CodeMirror.Position, isAnimated = true) {
+    this.previousBookmarkPos = pos
     const newCoords = this.cm.cursorCoords(pos, 'local')
     if (this.bookmark !== undefined) {
       this.bookmark.clear()
     }
     this.bookmark = this.cm.getDoc().setBookmark(pos, {insertLeft: true})
     if (isAnimated) {
-      this.domElm.style.transitionDuration = '.12s'
+      this.cursorElm.style.transitionDuration = '.12s'
     } else {
-      this.domElm.style.transitionDuration = '0s'
+      this.cursorElm.style.transitionDuration = '0.03s'
     }
-    this.domElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+    this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+    this.resetPseudoTimeout()
   }
 
-  update (linesNb: number, firstLineLength: number) {
-    if (this.bookmark !== undefined && this.previousPos !== this.bookmark.find()) {
-      const newCoords = this.cm.cursorCoords(this.bookmark.find(), 'local')
+  translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
+    const currentBookmarkPos = this.bookmark.find()
+    if (this.bookmark !== undefined && this.previousBookmarkPos !== currentBookmarkPos) {
+      const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
       if (linesNb === 1 && firstLineLength < 6) {
-        this.domElm.style.transitionDuration = '0s'
+        this.cursorElm.style.transitionDuration = '0.03s'
       }
-      this.domElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+      this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+      this.resetPseudoTimeout()
     }
   }
 
@@ -60,28 +93,28 @@ export class CollaboratorCursor {
     })
   }
 
-  hide (): void {
+  hideCursor (): void {
     if (!this.isHidden) {
-      this.domElm.style.display = 'none'
+      this.cursorElm.style.display = 'none'
       this.clearSelection()
       this.isHidden = true
     }
   }
 
-  show (): void {
+  showCursor (): void {
     if (this.isHidden) {
-      this.domElm.style.display = 'inline-block'
+      this.cursorElm.style.display = 'inline-block'
       this.isHidden = false
     }
   }
 
-  clear () {
+  clearAll () {
     if (this.bookmark !== undefined) {
       this.bookmark.clear()
       this.bookmark = undefined
     }
     this.clearSelection()
-    this.cm.getWrapperElement().removeChild(this.domElm)
+    this.cm.getWrapperElement().removeChild(this.cursorElm)
   }
 
   clearSelection () {
@@ -91,8 +124,8 @@ export class CollaboratorCursor {
     }
   }
 
-  isPosChanged () {
-    return this.bookmark !== undefined && this.previousPos !== this.bookmark.find()
+  private isPosChanged () {
+    return this.bookmark !== undefined && this.previousBookmarkPos !== this.bookmark.find()
   }
 }
 
