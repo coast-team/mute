@@ -73,14 +73,16 @@ export class CollaboratorCursor {
   }
 
   translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
-    const currentBookmarkPos = this.bookmark.find()
-    if (this.bookmark !== undefined && this.previousBookmarkPos !== currentBookmarkPos) {
-      const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
-      if (linesNb === 1 && firstLineLength < 6) {
-        this.cursorElm.style.transitionDuration = '0.03s'
+    if (this.bookmark !== undefined) {
+      const currentBookmarkPos = this.bookmark.find()
+      if (this.previousBookmarkPos !== currentBookmarkPos) {
+        const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
+        if (linesNb === 1 && firstLineLength < 6) {
+          this.cursorElm.style.transitionDuration = '0.03s'
+        }
+        this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+        this.resetPseudoTimeout()
       }
-      this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
-      this.resetPseudoTimeout()
     }
   }
 
