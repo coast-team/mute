@@ -32,6 +32,10 @@ export class ToolbarComponent implements OnInit {
     return this.router.url.includes('/docs')
   }
 
+  isHistory () {
+    return this.router.url.includes('history')
+  }
+
   updatePseudo (pseudo: string) {
     this.profile.pseudonym = pseudo
   }

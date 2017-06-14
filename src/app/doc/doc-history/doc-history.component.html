@@ -1,10 +1,16 @@
 <md-sidenav-container>
 
+  <!-- Left Sidenav-->
+  <md-sidenav #leftSidenavElm class="leftsidenav"
+      mode="over"
+  >
+    <mute-nav></mute-nav>
+  </md-sidenav>
 
   <div class="content">
-    <mute-timeline 
-      [nbOperations]="countOperations()" 
-      [currentOp]="currentOp" 
+    <mute-timeline
+      [nbOperations]="countOperations()"
+      [currentOp]="currentOp"
       (onSlide)="showVersion($event)"
       [delay]="100">
     </mute-timeline>

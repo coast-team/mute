@@ -8,6 +8,7 @@ import { TimelineComponent } from './timeline/timeline.component'
 import { DocHistoryComponent } from './doc-history.component'
 import { CollaboratorsComponent } from './collaborators/collaborators.component'
 import { HistoryControlsComponent } from './history-controls/history-controls.component'
+import { NavModule } from '../../nav'
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { HistoryControlsComponent } from './history-controls/history-controls.co
   ],
   imports: [
     SharedModule,
+    NavModule,
     FormsModule,
     RouterModule.forChild([
       {

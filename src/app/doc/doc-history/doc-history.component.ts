@@ -10,11 +10,13 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
+
 import { TimelineComponent }  from './timeline/timeline.component'
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
 import { CONTROLS } from './history-controls/controls'
+import { UiService } from '../../core/ui/ui.service'
 
 import { OPERATIONS } from './mock-operations'
 
@@ -38,6 +40,7 @@ export class DocHistoryComponent implements OnInit {
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
   @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
+  @ViewChild('leftSidenavElm') leftSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
 
@@ -45,7 +48,8 @@ export class DocHistoryComponent implements OnInit {
   constructor (
     private zone: NgZone,
     private route: ActivatedRoute,
-    private docHistory: DocHistoryService
+    private docHistory: DocHistoryService,
+    public ui: UiService,
   ) { }
 
   ngOnInit () {
@@ -65,8 +69,10 @@ export class DocHistoryComponent implements OnInit {
 
         })
 
-
+    this.ui.onNavToggle.subscribe(() => {
+      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
     })
+  })
 
 
     // this.operations = OPERATIONS
