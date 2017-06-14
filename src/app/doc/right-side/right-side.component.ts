@@ -54,6 +54,9 @@ export class RightSideComponent implements OnDestroy, OnInit {
       if (opened === 'false' && this.networkStatus === 'loading') {
         this.networkStatus = 'false'
       }
+      if (opened === 'true') {
+        this.onLineStatus = 'online'
+      }
       this.changeDetectorRef.detectChanges()
     })
 
