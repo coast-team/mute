@@ -141,4 +141,13 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.visibleBtns[index] = false
   }
 
+  copyToClipboard (doc: Doc) { // Workaround, but not pretty
+    let aux = document.createElement('input')
+    aux.setAttribute('value', doc.id.toString())
+    document.body.appendChild(aux)
+    aux.select()
+    document.execCommand('copy')
+    document.body.removeChild(aux)
+  }
+
 }

@@ -6,12 +6,15 @@ import { SharedModule } from '../shared'
 import { DocsComponent } from './docs.component'
 import { NavModule } from '../nav'
 
+import { ClipboardModule } from 'ngx-clipboard'
+
 @NgModule({
   declarations: [ DocsComponent ],
   imports: [
     CommonModule,
     SharedModule,
     NavModule,
+    ClipboardModule,
     RouterModule.forChild([
       {
         path: 'docs',

@@ -36,6 +36,12 @@
         >
           <md-icon>delete</md-icon>
         </button>
+        <button [fxHide]="!visibleBtns[i]" md-mini-fab class="copy-btn"
+          mdTooltip="Copy to clipboard"
+          (click)="copyToClipboard(doc)"
+        >
+          <md-icon>content_copy</md-icon>
+        </button>
       </md-card>
     </div>
 
