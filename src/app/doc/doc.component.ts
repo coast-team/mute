@@ -26,6 +26,7 @@ export class DocComponent implements OnDestroy, OnInit {
   @ViewChild('leftSidenavElm') leftSidenavElm
   private doc: Doc
   private mediaSubscription: Subscription
+  private networkSubscription: Subscription
   private activeMediaQuery: string
   private inited = false
 
@@ -64,16 +65,17 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.route.data.subscribe((data: {doc: Doc}) => {
       this.doc = data.doc
-      // this.network.onJoin.subscribe(() => {
-      //   this.doc.botIds.map((botId) => {
-      //     return this.botStorage.getBotContact(botId)
-      //   })
-      //   .filter((botContact) => botContact !== undefined)
-      //   .forEach((botContact) => {
-      //     log.debug('Inviting: ', botContact.p2pURL)
-      //     this.network.inviteBot(botContact.p2pURL)
-      //   })
-      // })
+      this.networkSubscription = this.network.onJoin.subscribe(() => {
+        if (this.doc.bot) {
+          this.botStorage.check(this.doc.bot)
+            .then(() => {
+              this.network.inviteBot(this.doc.bot.p2pURL)
+            })
+            .catch((err) => {
+              log.warn('Could not invite previously added bot', err)
+            })
+        }
+      })
 
       if (this.inited) {
         // Need to clean the services before

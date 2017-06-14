@@ -7,21 +7,59 @@
       vertical="true"
       (change)="setActiveFile($event)"
   >
-    <ng-container *ngFor="let f of files | async">
-      <hr *ngIf="f.id === 'trash'" class='divider' />
-      <md-button-toggle
-          [routerLink]="'/docs/' + f.id"
-          routerLinkActive="" #rla="routerLinkActive"
-          [checked]="rla.isActive"
-          [value]="f"
-          (click)="onStorageClick()"
-      >
-        <span class="content" fxLayout="row" fxLayoutAlign="left center">
-          <md-icon>{{f.icon}}</md-icon>
-          {{f.title}}
-        </span>
-      </md-button-toggle>
-    </ng-container>
 
+    <!-- All documents folder -->
+    <md-button-toggle
+          [routerLink]="'/docs/' + allDocuments.id"
+          [value]="allDocuments"
+          [checked]="activeFolder === allDocuments"
+          (click)="onStorageClick()"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{allDocuments.icon}}</md-icon>
+        {{allDocuments.title}}
+      </span>
+    </md-button-toggle>
+
+    <!-- Local Storage folder -->
+    <md-button-toggle
+          [routerLink]="'/docs/' + local.id"
+          [checked]="activeFolder === local"
+          [value]="local"
+          (click)="onStorageClick()"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{local.icon}}</md-icon>
+        {{local.title}}
+      </span>
+    </md-button-toggle>
+
+    <!-- Bots' folders -->
+    <md-button-toggle
+        *ngFor="let botFolder of botFoldersSubject.asObservable() | async; let isLast = last"
+        [routerLink]="'/docs/' + botFolder.id"
+        [checked]="activeFolder === botFolder"
+        [value]="botFolder"
+        (click)="onStorageClick()"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{botFolder.icon}}</md-icon>
+        {{botFolder.title}}
+      </span>
+    </md-button-toggle>
+
+    <!-- Trash folder -->
+    <hr class='divider' />
+    <md-button-toggle
+          [routerLink]="'/docs/' + trash.id"
+          [checked]="activeFolder === trash"
+          [value]="trash"
+          (click)="onStorageClick()"
+    >
+      <span class="content" fxLayout="row" fxLayoutAlign="left center">
+        <md-icon>{{trash.icon}}</md-icon>
+        {{trash.title}}
+      </span>
+    </md-button-toggle>
   </md-button-toggle-group>
 </div>

@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
 import { RightSideComponent } from './right-side.component'
 import { CollaboratorsModule } from './collaborators'
@@ -14,7 +15,8 @@ import { HistoryToolsComponent } from './history-tools/history-tools.component'
   ],
   imports: [
     SharedModule,
-    CollaboratorsModule
+    CollaboratorsModule,
+    RouterModule
   ],
   exports: [ RightSideComponent ],
   providers: [ ]

@@ -1,34 +1,31 @@
-import { AbstractStorageService } from './storage/AbstractStorageService'
-import { LocalStorageService } from './storage/local-storage/local-storage.service'
+import { StorageServiceInterface } from './storage/StorageServiceInterface'
 import { File } from './File'
 
 export class Folder extends File {
+  private service: StorageServiceInterface
 
-  private linkName: string
-
-  public storage: AbstractStorageService
+  public route: string
+  public icon: string
 
   constructor (
-    linkName: string,
+    route: string,
     title: string,
-    parentId: string,
-    storage: AbstractStorageService,
-    icon = ''
+    icon: string,
+    service: StorageServiceInterface
   ) {
-    super(title, parentId, icon)
-    this.linkName = linkName
-    this.storage = storage
+    super(title)
+    this.route = route
+    this.icon = icon
+    this.service = service
   }
 
-  get id (): string {
-    return this.linkName
+  get id (): string { return this.route }
+
+  fetchFiles (): Promise<File[]> {
+    return this.service.fetchFiles(this)
   }
 
-  delete (): Promise<void> {
-    return this.storage.deleteAll(this)
-  }
-
-  getFiles (): Promise<File[]> {
-    return this.storage.getFiles(this)
+  deleteFiles (): Promise<any>  {
+    return this.service.deleteFiles(this)
   }
 }

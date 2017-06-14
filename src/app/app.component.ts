@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Router } from '@angular/router'
 
 import { environment } from '../environments/environment'
 
@@ -12,5 +13,6 @@ export class AppComponent {
   public visible = environment.devLabel
 
   constructor (
+    private router: Router
   ) { }
 }
