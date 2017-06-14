@@ -1,11 +1,8 @@
 <div fxLayout="column" fxLayouAlign="start stretch">
   <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px" class="actions">
-    <a md-mini-fab [routerLink]="['/doc/history', docKey]" color="accent"
-      mdTooltip="See Revision History"
+    <a md-raised-button [routerLink]="['/doc/history', docKey]" color="accent"
       class="action"
-    >
-      <md-icon>history</md-icon>
-    </a>
+    >See revision history</a>
     <mute-invite-bot mdTooltip="Invite Bot" class="action"></mute-invite-bot>
   </div>
   <hr class='divider' />

@@ -1,0 +1,27 @@
+@import 'variables';
+
+md-list {
+  text-align: right;
+  height: 100%;
+
+  mute-edit-field {
+    font-size: 2rem;
+  }
+
+  h3 {
+    text-align: left;
+  }
+
+  md-divider {
+    margin-bottom: 10px;
+  }
+
+  md-progress-spinner {
+    width: 24px;
+    height: 24px;
+  }
+
+  .collaborators {
+    height: 100%;
+  }
+}

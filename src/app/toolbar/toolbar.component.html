@@ -14,7 +14,7 @@
         <md-icon>account_circle</md-icon>
         |
       </div>
-      <button md-icon-button (click)="ui.toggleDocNav()">
+      <button *ngIf="!isHistory()" md-icon-button (click)="ui.toggleDocNav()">
         <md-icon>menu</md-icon>
       </button>
     </div>
@@ -26,6 +26,16 @@
   </ng-template>
 
   <!-- Toolbar content for Doc -->
+  <ng-template #doc>
+    <mute-edit-field fxLayout="row" fxLayoutAlign="center center"
+        fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%"
+        [value]="rootFileTitle | async"
+        defaultValue="Untitled document"
+        (onDone)="updateTitle($event)">
+    </mute-edit-field>
+  </ng-template>
+
+  <!-- Toolbar content for Doc History -->
   <ng-template #doc>
     <mute-edit-field fxLayout="row" fxLayoutAlign="center center"
         fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%"

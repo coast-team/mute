@@ -8,7 +8,7 @@
       "outDir": "dist",
       "assets": [
         "assets/fonts",
-        "assets/favicons",
+        "assets/icons",
         "assets/*",
         "manifest.json"
       ],
