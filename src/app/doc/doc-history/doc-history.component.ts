@@ -6,12 +6,19 @@ import {
   ViewChild,
   ElementRef,
   NgZone } from '@angular/core'
+import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
-import { OPERATIONS } from './mock-operations'
-
 import * as CodeMirror from 'codemirror'
 
+import { TimelineComponent }  from './timeline/timeline.component'
+import { Doc } from '../../core/Doc'
+import { Author } from '../../core/Author'
+import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { CONTROLS } from './history-controls/controls'
+import { UiService } from '../../core/ui/ui.service'
+
+import { OPERATIONS } from './mock-operations'
 
 require('codemirror/mode/gfm/gfm')
 require('codemirror/mode/javascript/javascript')
@@ -20,33 +27,56 @@ require('codemirror/mode/javascript/javascript')
   selector: 'mute-doc-history',
   templateUrl: './doc-history.component.html',
   styleUrls: ['./doc-history.component.scss'],
-  providers: []
+  providers: [DocHistoryService]
 })
 
 @Injectable()
 export class DocHistoryComponent implements OnInit {
 
   private isInited = false
-  private operations: (TextDelete | TextInsert)[]
+  private operations: (Delete | Insert)[]
+  public docAuthors: Author[]
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
-
+  @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
+  @ViewChild('leftSidenavElm') leftSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
 
-  constructor (
-    private zone: NgZone
-  ) { }
 
-  countOperations (): number {
-    return this.operations.length
-  }
+  constructor (
+    private zone: NgZone,
+    private route: ActivatedRoute,
+    private docHistory: DocHistoryService,
+    public ui: UiService,
+  ) { }
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
-    this.operations = OPERATIONS
-    this.currentOp = this.operations.length
+    this.route.data.subscribe((data: {doc: Doc}) => {
+
+      this.docHistory.getAuthors(data.doc)
+        .then((docAuths: Author[]) => {
+          this.docAuthors = docAuths
+          this.mockTextColors()
+        })
+
+      this.docHistory.getOperations(data.doc)
+        .then((ops: (Delete | Insert)[]) => {
+          this.operations = ops
+          this.showVersion(this.operations.length)
+
+        })
+
+    this.ui.onNavToggle.subscribe(() => {
+      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+    })
+  })
+
+
+    // this.operations = OPERATIONS
+    // this.currentOp = this.operations.length
     const elm1 = document.getElementById('textArea')
     const elm2 = this.editorElt.nativeElement
     /*
@@ -70,26 +100,87 @@ export class DocHistoryComponent implements OnInit {
     */
     this.zone.runOutsideAngular(() => {
       this.editor = CodeMirror(elm1, {
-        value: 'this is a sample text',
+        value: '',
         mode: 'gfm',
         readOnly: 'true',
         lineWrapping: true
       })
     })
+  }
 
-    this.editor.getDoc() as any
-    const doc = this.editor.getDoc() as any
-    this.operations.forEach( (textOperation: any) => {
-      const offset = textOperation.offset
-      if (textOperation instanceof TextInsert) {
-        doc.replaceRange(textOperation.content, doc.posFromIndex(offset), null, '+input')
-      } else if (textOperation instanceof TextDelete) {
-        doc.replaceRange('', doc.posFromIndex(offset), doc.posFromIndex(offset + textOperation.length), '+input')
+  /**
+   * numOperations corresponds to a numero between
+   * 1 and countOperation().
+   */
+  showVersion (numOperation: number) {
+    if (this.currentOp !== numOperation) {
+      const doc = this.editor.getDoc() as any
+      // Generate string content depending on operations
+      const generatedText = this.generateText(0, numOperation - 1)
+      // just replace the content of editor the generated text.
+      doc.setValue(generatedText)
+      this.currentOp = numOperation
+    }
+    this.mockTextColors()
+  }
+
+  generateText (beginOp: number, endOp: number): String {
+    let textContent = ''
+    for (let i = beginOp; i <= endOp; i++) {
+      const currentOp = this.operations[i]
+      if (currentOp instanceof TextInsert) {
+        textContent = textContent.slice(0, currentOp.offset) +
+        currentOp.content + textContent.slice(currentOp.offset)
+      } else if (currentOp instanceof TextDelete) {
+        textContent = textContent.slice(0, currentOp.offset) +
+        textContent.slice(currentOp.offset + currentOp.length, textContent.length)
       }
+    }
+    return textContent
+  }
+
+  countOperations (): number {
+    return this.operations ? this.operations.length : 0
+  }
+
+  onInputChange (event: any) {
+    let indexOp = event.target.value
+    indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
+    indexOp = indexOp <= 0 ? 1 : indexOp
+    this.showVersion(indexOp)
+  }
+
+  mockTextColors () {
+    const doc = this.editor.getDoc()
+    let cpt = 0
+    let length = 0
+    doc.eachLine((l) => {
+      if (this.docAuthors) {
+        length = this.docAuthors.length
+      }
+      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
+      doc.markText({line: cpt, ch: (Math.floor(Math.random() * 10))},
+       {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
+      cpt += (Math.floor(Math.random() * 10))
     })
   }
 
-  onTimelineChange (val: number) {
-    this.currentOp = val
+  onControlsChange (controlType: number) {
+    // log.angular('controls', controlType)
+    switch (controlType) {
+    case CONTROLS.PLAY:
+      this.timelineComponent.play()
+      break
+    case CONTROLS.PAUSE:
+      this.timelineComponent.pause()
+      break
+    case CONTROLS.FAST_FORWARD:
+      this.timelineComponent.goToEnd()
+      break
+    case CONTROLS.FAST_REWIND:
+      this.timelineComponent.goToBegin()
+      break
+    }
   }
+
 }

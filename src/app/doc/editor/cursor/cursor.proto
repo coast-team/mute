@@ -1,19 +1,20 @@
 syntax = "proto3";
 
 message Cursor {
-  oneof content {
-    Position position = 1;
-    /**
-     * If false then the cursor is not visible in the editor (no focus).
-     * Otherwise it is visible and it is at the end of the document.
-     */
-    bool visible = 2;
-  }
+  Position from = 1;
+  Position to = 2;
+  State state = 3;
 }
 
-// Cursor is visible in the editor and is not at the end of the document
+enum State {
+  HIDDEN = 0;
+  FROM = 1;
+  SELECTION_FROM = 2;
+  SELECTION_TO = 3;
+}
+
 message Position {
-  repeated double base = 2;
-  int32 last = 3;
-  int32 index = 4;
+  repeated double base = 1;
+  int32 last = 2;
+  int32 index = 3;
 }

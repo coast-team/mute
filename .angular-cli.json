@@ -7,8 +7,8 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets",
-        "favicon.ico",
+        "assets/fonts",
+        "assets/favicons",
         "manifest.json"
       ],
       "index": "index.html",

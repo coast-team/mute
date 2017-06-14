@@ -3,8 +3,7 @@ import { Observable, Subject } from 'rxjs'
 
 import { Collaborator } from 'mute-core'
 import { RichCollaborator } from './RichCollaborator'
-
-import * as randomMC from 'random-material-color'
+import { COLORS } from './colors'
 
 
 @Injectable()
@@ -15,7 +14,7 @@ export class RichCollaboratorsService {
   private changeSubject: Subject<{collab: RichCollaborator, prop: string}>
   private collaboratorsSubject: Subject<RichCollaborator[]>
 
-  private colors: Map<number, string>
+  private availableColors: string[]
 
   public collaborators: RichCollaborator[]
 
@@ -27,7 +26,7 @@ export class RichCollaboratorsService {
     this.changeSubject = new Subject()
     this.collaboratorsSubject = new Subject()
 
-    this.colors = new Map()
+    this.availableColors = COLORS.slice()
     this.collaborators = []
   }
 
@@ -49,7 +48,6 @@ export class RichCollaboratorsService {
 
   set pseudoChangeSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      const color: string = this.getColor(collab.id)
       for (const rc of this.collaborators) {
         if (rc.id === collab.id) {
           rc.pseudo = collab.pseudo
@@ -64,7 +62,7 @@ export class RichCollaboratorsService {
 
   set joinSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      const color: string = this.getColor(collab.id)
+      const color = this.pickColor()
       const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
       this.collaborators[this.collaborators.length] = newRCollab
       this.joinSubject.next(newRCollab)
@@ -75,9 +73,9 @@ export class RichCollaboratorsService {
 
   set leaveSource (source: Observable<number>) {
     source.subscribe((id: number) => {
-      this.colors.delete(id)
       for (let i = 0; i < this.collaborators.length; i++) {
         if (this.collaborators[i].id === id) {
+          this.recycleColor(this.collaborators[i].color)
           this.collaborators.splice(i, 1)
           this.leaveSubject.next(id)
           this.collaboratorsSubject.next(this.collaborators)
@@ -85,23 +83,27 @@ export class RichCollaboratorsService {
           break
         }
       }
-    },
-    () => {},
-    () => {
-      this.colors.forEach((color: string, id: number) => {
-        this.colors.delete(id)
-        this.leaveSubject.next(id)
-      })
     })
   }
 
-  getColor (id: number): string {
-    if (this.colors.has(id)) {
-      return this.colors.get(id)
+  pickColor (): string {
+    if (this.availableColors.length !== 0) {
+      const index = Math.floor(Math.random() * this.availableColors.length)
+      for (let i = 0; i < this.availableColors.length; i++) {
+        if (i === index) {
+          const color = this.availableColors[index]
+          this.availableColors.splice(i, 1)
+          return color
+        }
+      }
     } else {
-      const color: string = randomMC.getColor({ shades: ['900', '800'] })
-      this.colors.set(id, color)
-      return color
+      return COLORS[Math.floor(Math.random() * COLORS.length)]
+    }
+  }
+
+  recycleColor (color: string) {
+    if (!this.availableColors.includes(color)) {
+      this.availableColors.push(color)
     }
   }
 }
