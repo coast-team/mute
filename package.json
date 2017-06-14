@@ -5,8 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
-    "start-sw": "npm run build --env=dev && npm run sw && lite-server --baseDir='dist'",
-    "build": "ng build --prod -oh none",
+    "start-sw": "npm run build -- --env=dev && lite-server --baseDir='dist'",
+    "build": "npm run sw && ng build --prod -oh none",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
@@ -18,7 +18,7 @@
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "sw": "sw-precache --verbose --config=sw-precache.conf.js",
-    "firebase-sw-deploy": "ng build -prod -aot && npm run sw && firebase deploy"
+    "firebase-sw-deploy": "ng build --prod && npm run sw && firebase deploy"
   },
   "keywords": [],
   "contributors": [
