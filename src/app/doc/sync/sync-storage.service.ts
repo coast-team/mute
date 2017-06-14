@@ -56,7 +56,7 @@ export class SyncStorageService {
       })
   }
 
-  get onStoredState(): Observable<State> {
+  get onStoredState (): Observable<State> {
     return this.storedStateObservable
   }
 }
