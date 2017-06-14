@@ -9,6 +9,7 @@
       "assets": [
         "assets/fonts",
         "assets/favicons",
+        "assets/*",
         "manifest.json"
       ],
       "index": "index.html",

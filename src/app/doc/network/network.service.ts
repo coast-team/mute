@@ -20,8 +20,8 @@ export class NetworkService {
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
-  private doorSubject: Subject<boolean>
-  private onLineSubject: Subject<boolean>
+  private doorSubject: Subject<string>
+  private onLineSubject: Subject<string>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -74,7 +74,7 @@ export class NetworkService {
     this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
 
     // On door closed
-    this.webChannel.onClose = () => this.doorSubject.next(false)
+    this.webChannel.onClose = () => this.doorSubject.next('false')
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
@@ -142,7 +142,7 @@ export class NetworkService {
     return this.joinSubject.asObservable()
   }
 
-  get onLine (): Observable<boolean> {
+  get onLine (): Observable<string> {
     return this.onLineSubject.asObservable()
   }
 
@@ -158,7 +158,7 @@ export class NetworkService {
     return this.peerLeaveSubject.asObservable()
   }
 
-  get onDoor (): Observable<boolean> {
+  get onDoor (): Observable<string> {
     return this.doorSubject.asObservable()
   }
 
@@ -171,7 +171,7 @@ export class NetworkService {
       this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
-      // this.onLineSubject.complete()
+      this.onLineSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
@@ -180,11 +180,11 @@ export class NetworkService {
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
-      // this.onLineSubject = new Subject()
+      this.onLineSubject = new Subject()
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
-      this.doorSubject = new Subject<boolean>()
+      this.doorSubject = new Subject<string>()
 
       this.messageToBroadcastSubscription.unsubscribe()
       this.messageToSendRandomlySubscription.unsubscribe()
@@ -205,12 +205,13 @@ export class NetworkService {
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
-        this.doorSubject.next(true)
+        this.doorSubject.next('true')
         const created = this.members.length === 0
         this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
       })
       .catch((reason) => {
         log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
+        this.doorSubject.next('false')
         return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
       })
   }
@@ -227,7 +228,9 @@ export class NetworkService {
 
   testConnection (): void {
     if (navigator.onLine) {
-      this.onLineSubject.next(true)
+      this.onLineSubject.next('online')
+    } else {
+      this.onLineSubject.next('offline')
     }
   }
 
@@ -253,7 +256,7 @@ export class NetworkService {
     if (!this.webChannel.isOpen()) {
       return this.webChannel().open(key)
         .then(() => {
-          this.doorSubject.next(true)
+          this.doorSubject.next('true')
         })
     }
     return Promise.resolve()
@@ -265,7 +268,7 @@ export class NetworkService {
   closeDoor (): void {
     if (this.webChannel.isOpen()) {
       this.webChannel.close()
-      this.doorSubject.next(false)
+      this.doorSubject.next('false')
     }
   }
 }
