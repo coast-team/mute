@@ -171,7 +171,7 @@ export class NetworkService {
       this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
-      this.onLineSubject.complete()
+      // this.onLineSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
@@ -180,7 +180,7 @@ export class NetworkService {
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
-      this.onLineSubject = new Subject()
+      // this.onLineSubject = new Subject()
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
@@ -194,14 +194,6 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-
-    // TODO Move the network verification
-    if ( navigator.onLine ) {
-      this.onLineSubject.next(true)
-    } else {
-      this.onLineSubject.next(false)
-    }
-
     return this.xirsys.iceServers
       .then((iceServers) => {
         if (iceServers !== null) {
@@ -209,6 +201,7 @@ export class NetworkService {
         }
       })
       .catch((err) => log.warn('Xirsys Error', err))
+      .then(() => this.testConnection())
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
@@ -229,6 +222,12 @@ export class NetworkService {
         .then(() => {
           log.info('network', `Bot ${fullUrl} has been invited`)
         })
+    }
+  }
+
+  testConnection (): void {
+    if (navigator.onLine) {
+      this.onLineSubject.next(true)
     }
   }
 
