@@ -140,7 +140,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         const updateDoc: () => void = () => {
           const doc: CodeMirror.Doc = this.editor.getDoc()
 
-          log.info('operation:editor', 'applied: ', textOperations)
+          // log.info('operation:editor', 'applied: ', textOperations)
 
           textOperations.forEach( (textOperation: any) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
