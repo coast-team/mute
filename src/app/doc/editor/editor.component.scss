@@ -3,20 +3,14 @@
 
 :host {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 md-card {
-  margin: 14px 0;
+  margin: 14px auto;
+  max-width: 800px;
 }
 
 .airbag {
   height: 20px;
   flex: 0 0 auto;
-}
-
-.marked {
-  background-color: lightseagreen;
 }
