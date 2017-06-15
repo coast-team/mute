@@ -80,6 +80,8 @@ export class DocHistoryComponent implements OnInit {
       this.ui.onDocNavToggle.subscribe(() => {
         this.rightSidenavElm.opened = !this.rightSidenavElm.opened
       })
+
+      this.currentOp = 0
     })
 
 

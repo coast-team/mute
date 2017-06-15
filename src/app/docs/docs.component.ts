@@ -143,7 +143,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   copyToClipboard (doc: Doc) { // Workaround, but not pretty
     let aux = document.createElement('input')
-    aux.setAttribute('value', doc.id.toString())
+    aux.setAttribute('value', 'https://' + window.location.hostname + '/doc/' + doc.id.toString())
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')
