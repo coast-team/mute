@@ -1,4 +1,12 @@
 <div fxLayout="column" fxLayouAlign="start stretch">
+  <div fxHide fxShow.xs="true" fxLayout="row" fxLayoutAlign="end center" class="pseudo">
+    <mute-edit-field
+        [value]="profile.onPseudonym | async"
+        [defaultValue]="profile.pseudonymDefault"
+        (onDone)="updatePseudo($event)">
+    </mute-edit-field>
+    <md-icon>account_circle</md-icon>
+  </div>
   <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px" class="actions">
     <a md-raised-button [routerLink]="['/doc/history', docKey]" color="accent"
       class="action"
