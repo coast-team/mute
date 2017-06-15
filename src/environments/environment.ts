@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   devLabel: true,
   fetchIceServers: true,
-  signalingURL: 'wss://www.cedit.re:10473',
+  signalingURL: 'wss://www.coedit.re:10473',
   storages: [
     {
       apiURL: 'http://localhost:8080',

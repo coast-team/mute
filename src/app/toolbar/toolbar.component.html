@@ -14,7 +14,7 @@
         <md-icon>account_circle</md-icon>
         |
       </div>
-      <button *ngIf="!isHistory()" md-icon-button (click)="ui.toggleDocNav()">
+      <button *ngIf="isHistory()" md-icon-button (click)="ui.toggleDocNav()">
         <md-icon>menu</md-icon>
       </button>
     </div>

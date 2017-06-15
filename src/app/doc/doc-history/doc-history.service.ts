@@ -53,6 +53,7 @@ export class DocHistoryService {
       this.getOperations(doc)
           .then((ops: (Delete | Insert)[]) => {
             for (let o of ops) {
+              // log.debug(o.authorName)
               let author: Author = new Author(o.authorName, o.authorId, 'rgb(' + (Math.floor(Math.random() * 256)) +
                 ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')')
 

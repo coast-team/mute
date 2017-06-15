@@ -17,6 +17,7 @@ import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
 import { CONTROLS } from './history-controls/controls'
 import { UiService } from '../../core/ui/ui.service'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
 import { OPERATIONS } from './mock-operations'
 
@@ -40,16 +41,20 @@ export class DocHistoryComponent implements OnInit {
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
   @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
+  @ViewChild('sidenavElm') sidenavElm
   @ViewChild('leftSidenavElm') leftSidenavElm
+  @ViewChild('rightSidenavElm') rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
 
+  public rightSideNavMode = 'side'
 
   constructor (
     private zone: NgZone,
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
+    public media: ObservableMedia
   ) { }
 
   ngOnInit () {
@@ -59,7 +64,6 @@ export class DocHistoryComponent implements OnInit {
       this.docHistory.getAuthors(data.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
-          this.mockTextColors()
         })
 
       this.docHistory.getOperations(data.doc)
@@ -71,6 +75,10 @@ export class DocHistoryComponent implements OnInit {
 
       this.ui.onNavToggle.subscribe(() => {
         this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+      })
+
+      this.ui.onDocNavToggle.subscribe(() => {
+        this.rightSidenavElm.opened = !this.rightSidenavElm.opened
       })
     })
 

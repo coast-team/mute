@@ -1,4 +1,4 @@
-<md-sidenav-container>
+<md-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
   <md-sidenav #leftSidenavElm class="leftsidenav"
@@ -24,7 +24,11 @@
     </md-card>
   </div>
 
-  <md-sidenav class="rightsidenav" mode="side" opened="true" align="end">
+  <md-sidenav #rightSidenavElm class="rightsidenav"
+    align="end"
+    [opened]="!this.media.isActive('xs')"
+    [mode]="rightSideNavMode"
+  >
 
     <mute-collaborators [docAuthors]="docAuthors"></mute-collaborators>
     <mute-history-controls (onControls)="onControlsChange($event)"></mute-history-controls>
