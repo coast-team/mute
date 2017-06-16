@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { CONTROLS } from './controls'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Doc } from '../../../core/Doc'
+import { UiService } from '../../../core/ui/ui.service'
 
 @Component({
   selector: 'mute-history-controls',
@@ -10,20 +11,23 @@ import { Doc } from '../../../core/Doc'
 })
 export class HistoryControlsComponent implements OnInit {
 
-  private docId
-  private isPlaying: boolean
+  private doc: Doc
+  public isPlaying: boolean
   @Input() currentOp: number
   @Input() nbOperations: number
   @Output() onControls: EventEmitter<Number>
 
-  constructor (private route: ActivatedRoute, private router: Router) {
+  constructor (
+    private route: ActivatedRoute,
+    private router: Router,
+    public ui: UiService) {
     this.onControls = new EventEmitter<number>()
   }
 
   ngOnInit () {
     this.isPlaying = false
     this.route.data
-      .subscribe(({doc}: {doc: Doc}) => {this.docId = doc.id})
+      .subscribe(({doc}: {doc: Doc}) => {this.doc = doc})
   }
 
   onClickPlay (event: any) {
@@ -46,8 +50,8 @@ export class HistoryControlsComponent implements OnInit {
   }
 
   showEditor () {
-    console.log(this.docId)
-    this.router.navigate(['/doc/' + this.docId])
+    this.ui.setActiveFile(this.doc)
+    this.router.navigate(['/doc/' + this.doc.id])
   }
 
 }
