@@ -31,7 +31,11 @@
   >
 
     <mute-collaborators [docAuthors]="docAuthors"></mute-collaborators>
-    <mute-history-controls (onControls)="onControlsChange($event)"></mute-history-controls>
+    <mute-history-controls 
+      (onControls)="onControlsChange($event)" 
+      [nbOperations]="countOperations()"
+      [currentOp]="currentOp">
+    </mute-history-controls>
   </md-sidenav>
 
 </md-sidenav-container>

@@ -12,6 +12,7 @@ import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
 
 import { TimelineComponent }  from './timeline/timeline.component'
+import { HistoryControlsComponent } from './history-controls/history-controls.component'
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
@@ -41,6 +42,7 @@ export class DocHistoryComponent implements OnInit {
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
   @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
+  @ViewChild(HistoryControlsComponent) historyControlsComponent: HistoryControlsComponent
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('leftSidenavElm') leftSidenavElm
   @ViewChild('rightSidenavElm') rightSidenavElm

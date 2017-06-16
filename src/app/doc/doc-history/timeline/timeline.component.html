@@ -11,7 +11,7 @@
     class="mute-timeline-slider"
     min="0"
     (input)="updateStep($event)"
-    max="100"
-    step="20">
+    max="{{ nbOperations }}"
+    step="{{ stepSize }}">
   </md-slider>
 </div>
