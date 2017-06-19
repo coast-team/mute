@@ -10,6 +10,7 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
+import { Observable } from 'rxjs'
 
 import { TimelineComponent }  from './timeline/timeline.component'
 import { HistoryControlsComponent } from './history-controls/history-controls.component'
@@ -125,6 +126,21 @@ export class DocHistoryComponent implements OnInit {
    * 1 and countOperation().
    */
   showVersion (numOperation: number) {
+    let begin = 0
+    let end = 0
+    // TODO Refactoring to avoid those tests
+    if (this.currentOp === this.countOperations()) {
+      begin = this.operations[this.currentOp - 1].offset
+    } else {
+      begin = this.operations[this.currentOp].offset
+    }
+
+    if (numOperation === this.countOperations()) {
+      end = this.operations[numOperation - 1].offset
+    } else {
+      end = this.operations[numOperation].offset
+    }
+
     if (this.currentOp !== numOperation) {
       const doc = this.editor.getDoc() as any
       // Generate string content depending on operations
@@ -133,7 +149,10 @@ export class DocHistoryComponent implements OnInit {
       doc.setValue(generatedText)
       this.currentOp = numOperation
     }
-    this.mockTextColors()
+
+    // this.mockTextColors()
+    this.animateText(begin, end)
+    this.colorizeDifferences(begin, end)
   }
 
   generateText (beginOp: number, endOp: number): String {
@@ -149,6 +168,17 @@ export class DocHistoryComponent implements OnInit {
       }
     }
     return textContent
+  }
+
+  destroyText (begin, end) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end + 1)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: red' })
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slideout;'
+       + 'animation-duration: 0.5s;' })
   }
 
   countOperations (): number {
@@ -175,6 +205,23 @@ export class DocHistoryComponent implements OnInit {
        {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
       cpt += (Math.floor(Math.random() * 10))
     })
+  }
+
+  colorizeDifferences (begin: number, end: number) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end + 1)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: green' })
+  }
+
+  animateText (begin: number, end: number) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slidein;'
+       + 'animation-duration: 0.5s;' })
   }
 
   onControlsChange (controlType: number) {

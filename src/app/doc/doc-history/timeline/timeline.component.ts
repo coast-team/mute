@@ -50,7 +50,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   goToBegin () {
-    this.currentOp = 1
+    this.currentOp = 0
     this.onSlide.emit(this.currentOp)
   }
 

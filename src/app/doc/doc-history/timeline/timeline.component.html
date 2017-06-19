@@ -1,7 +1,7 @@
 <div id="mute-timeline">
   <md-slider thumbLabel
     class="mute-timeline-slider"
-    min="1" max="{{nbOperations}}" 
+    min="0" max="{{nbOperations}}" 
     (input)="updateOperation($event.value)" 
     value={{currentOp}}
     step="{{step}}">

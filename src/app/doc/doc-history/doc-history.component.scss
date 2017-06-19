@@ -46,5 +46,30 @@ md-sidenav-container {
     max-width: 32rem;
     padding: 10px;
   }
+
+  @keyframes slidein {
+  from {
+    font-size: 0%;
+    opacity: 0;
+  }
+
+  to {
+    font-size: 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes slideout {
+  from {
+    font-size: 100%;
+    opacity: 1;
+  }
+
+  to {
+    font-size: 0%;
+    opacity: 0;
+  }
+}
+
 }
 
