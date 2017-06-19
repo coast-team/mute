@@ -75,7 +75,8 @@ export class CollaboratorCursor {
   translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
     if (this.bookmark !== undefined) {
       const currentBookmarkPos = this.bookmark.find()
-      if (this.previousBookmarkPos !== currentBookmarkPos) {
+      if (this.previousBookmarkPos.line !== currentBookmarkPos.line ||
+          this.previousBookmarkPos.ch !== currentBookmarkPos.ch) {
         const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
         if (linesNb === 1 && firstLineLength < 6) {
           this.cursorElm.style.transitionDuration = '0.03s'

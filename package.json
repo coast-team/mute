@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
-    "start-sw": "ng build --prod --env=dev && npm run sw && cd dist && live-server --port=4200 --host=0.0.0.0 --entry-file=/index.html",
+    "start-sw": "ng build --prod --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "build": "ng build --prod -oh none && sw-precache --verbose --config=sw-precache.conf.js",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
