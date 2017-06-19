@@ -37,7 +37,6 @@
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
         "demo": "environments/environment.demo.ts",
-        "ovh": "environments/environment.ovh.ts",
         "ghpages": "environments/environment.ghpages.ts"
       }
     }

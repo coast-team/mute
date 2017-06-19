@@ -55,10 +55,10 @@
     "zone.js": "^0.8.12"
   },
   "devDependencies": {
-    "@angular/cli": "1.1.1",
+    "@angular/cli": "1.1.2",
     "@angular/compiler-cli": "^4.2.2",
     "@angular/language-service": "^4.2.2",
-    "@types/codemirror": "^0.0.38",
+    "@types/codemirror": "^0.0.40",
     "@types/jasmine": "2.5.45",
     "@types/node": "^6.0.78",
     "codelyzer": "~3.0.1",
