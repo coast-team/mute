@@ -49,12 +49,12 @@ md-sidenav-container {
 
   @keyframes slidein {
   from {
-    font-size: 0%;
+    letter-spacing: -10px;
     opacity: 0;
   }
 
   to {
-    font-size: 100%;
+    letter-spacing: normal;
     opacity: 1;
   }
 }

@@ -226,11 +226,13 @@ export class NetworkService {
     }
   }
 
-  testConnection (): void {
+  testConnection (): boolean {
     if (navigator.onLine) {
       this.onLineSubject.next('online')
+      return true
     } else {
       this.onLineSubject.next('offline')
+      return false
     }
   }
 

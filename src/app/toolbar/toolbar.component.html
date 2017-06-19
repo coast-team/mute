@@ -12,8 +12,26 @@
             (onDone)="updatePseudo($event)">
         </mute-edit-field>
         <md-icon>account_circle</md-icon>
-        |
       </div>
+        |
+        <button md-icon-button [mdMenuTriggerFor]="networkMenu">
+          <md-icon>cloud</md-icon>
+        </button>
+        <md-menu #networkMenu="mdMenu">
+          <button md-menu-item>Network</button>
+          <button md-menu-item>Signaling</button>
+          <button md-menu-item>P2P Net</button>
+        </md-menu>
+      <div class="indicator" [ngSwitch]="onLineStatus">
+        <md-icon *ngSwitchCase="'online'">check</md-icon>
+        <md-icon *ngSwitchCase="'offline'">clear</md-icon>
+        <md-progress-spinner *ngSwitchCase="'loading'"
+          color="warn"
+          mode="indeterminate"
+        >
+        </md-progress-spinner>
+      </div>
+        |
       <button md-icon-button (click)="ui.toggleDocNav()">
         <md-icon>info</md-icon>
       </button>

@@ -221,7 +221,7 @@ export class DocHistoryComponent implements OnInit {
     let pos2 = doc.posFromIndex(end)
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slidein;'
-       + 'animation-duration: 0.5s;' })
+       + 'animation-duration: 0.300s;' })
   }
 
   onControlsChange (controlType: number) {
