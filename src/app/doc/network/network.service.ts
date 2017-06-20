@@ -88,7 +88,6 @@ export class NetworkService {
         msg.setContent(content.serializeBinary())
         this.webChannel.sendTo(id, msg.serializeBinary())
       } else if (serviceName === 'botresponse') {
-        log.debug('BotResponse')
         const url = pb.BotResponse.deserializeBinary(msg.getContent()).getUrl()
         this.botUrls.push(url)
       } else {

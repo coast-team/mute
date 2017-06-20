@@ -69,7 +69,7 @@ export class DocComponent implements OnDestroy, OnInit {
         if (this.doc.bot) {
           this.botStorage.check(this.doc.bot)
             .then(() => {
-              this.network.inviteBot(this.doc.bot.p2pURL)
+              this.network.inviteBot(this.doc.bot.wsURL)
             })
             .catch((err) => {
               log.warn('Could not invite previously added bot', err)

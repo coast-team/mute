@@ -5,9 +5,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
-    "start-sw": "ng build --prod --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
-    "build": "ng build --prod -oh none && sw-precache --verbose --config=sw-precache.conf.js",
-    "postbuild": "zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
+    "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
+    "build": "ng build --prod -oh none",
+    "postbuild": "npm run sw && zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
@@ -55,10 +55,10 @@
     "zone.js": "^0.8.12"
   },
   "devDependencies": {
-    "@angular/cli": "1.1.1",
+    "@angular/cli": "1.1.2",
     "@angular/compiler-cli": "^4.2.2",
     "@angular/language-service": "^4.2.2",
-    "@types/codemirror": "^0.0.38",
+    "@types/codemirror": "^0.0.40",
     "@types/jasmine": "2.5.45",
     "@types/node": "^6.0.78",
     "codelyzer": "~3.0.1",
