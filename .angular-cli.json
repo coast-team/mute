@@ -36,6 +36,7 @@
       "environments": {
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
+        "ovhdev": "environments/environment.ovhdev.ts",
         "demo": "environments/environment.demo.ts",
         "ghpages": "environments/environment.ghpages.ts"
       }
