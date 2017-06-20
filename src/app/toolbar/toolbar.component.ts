@@ -65,15 +65,14 @@ export class ToolbarComponent implements OnInit {
     this.connectivity.onLine.subscribe((state) => {
       if (state) {
         this.snackBarSubject.next('You are online')
-        this.connectionState = true
         this.onLineStatus = true
       } else {
         this.snackBarSubject.next('You are offline')
-        this.connectionState = false
         this.onLineStatus = false
         this.signalingStatus = false
         this.networkStatus = false
       }
+      this.updateConnectionState()
     })
 
     this.serviceWorker.registerSW()
@@ -91,6 +90,7 @@ export class ToolbarComponent implements OnInit {
         this.onLineStatus = true
       }
       this.changeDetectorRef.detectChanges()
+      this.updateConnectionState()
     })
 
     this.networkService.onLine.subscribe((event) => {
@@ -99,13 +99,16 @@ export class ToolbarComponent implements OnInit {
         this.networkStatus = false
         this.signalingStatus = false
       }
+      this.updateConnectionState()
     })
 
     this.networkService.onJoin.subscribe((event) => {
       this.networkStatus = true
+      this.updateConnectionState()
     })
 
   }
+
 
   isDocs () {
     return this.router.url.includes('/docs')
@@ -127,6 +130,18 @@ export class ToolbarComponent implements OnInit {
     const doc = this.ui.activeFile as any
     doc.title = title
     doc.save()
+  }
+
+  updateConnectionState () {
+    if (this.signalingStatus && this.onLineStatus && this.networkStatus) {
+        this.connectionState = true
+      } else if (this.signalingStatus === undefined ||
+        this.signalingStatus === undefined ||
+        this.signalingStatus === undefined) {
+          this.connectionState = undefined
+      } else {
+        this.connectionState = false
+      }
   }
 
 }
