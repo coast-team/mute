@@ -9,9 +9,6 @@ export const environment = {
   fetchIceServers: true,
   signalingURL: 'wss://www.coedit.re:20443',
   storages: [
-    {
-      apiURL: 'http://localhost:8080',
-      p2pURL: 'ws://localhost:9000'
-    }
+    {secure: false, host: 'localhost', port: 20000}
   ]
 }

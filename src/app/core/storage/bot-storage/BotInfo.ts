@@ -4,14 +4,24 @@ export class BotInfo {
   private route: string
 
   public title: string
-  public apiURL: string
-  public p2pURL: string
+  private secure: boolean
+  private hostPort: string
 
-  constructor (title, apiURL, p2pURL) {
+  constructor (title: string, secure: boolean, hostPort: string) {
     this.title = title
-    this.apiURL = apiURL
-    this.p2pURL = p2pURL
+    this.secure = secure
+    this.hostPort = hostPort
     this.route = 'bs-' + encodeURI(title.toLowerCase())
+  }
+
+  get httpURL () {
+    const protocol =  this.secure ? 'https' : 'http'
+    return `${protocol}://${this.hostPort}`
+  }
+
+  get wsURL () {
+    const protocol =  this.secure ? 'wss' : 'ws'
+    return `${protocol}://${this.hostPort}`
   }
 
   get id () { return this.route }

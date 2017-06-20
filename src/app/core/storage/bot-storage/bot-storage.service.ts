@@ -28,16 +28,19 @@ export class BotStorageService implements StorageServiceInterface {
 
     // Fetch all storage bots
     const promises = new Array<Promise<void>>()
-    environment.storages.forEach(({apiURL, p2pURL}) => {
+    environment.storages.forEach(({secure, host, port}) => {
+      const protocol = secure ? 'https' : 'http'
+      const hostPort = `${host}:${port}`
+      const url = `${protocol}://${hostPort}`
       promises.push(
-        this.http.get(`${apiURL}/name`).toPromise()
+        this.http.get(`${url}/name`).toPromise()
           .then((response) => {
-            const bot = new BotInfo(response.text(), apiURL, p2pURL)
+            const bot = new BotInfo(response.text(), secure, hostPort)
             const folder = new FolderBot(bot, 'cloud', this)
             return [bot, folder]
           })
           .catch((err) => {
-            log.warn(`Bot storage ${apiURL} is unavailable`, err)
+            log.warn(`Bot storage ${url} is unavailable`, err)
             return undefined
           })
       )
@@ -57,12 +60,12 @@ export class BotStorageService implements StorageServiceInterface {
   }
 
   check (bot: BotInfo): Promise<boolean> {
-    return this.http.get(`${bot.apiURL}/name`).toPromise()
+    return this.http.get(`${bot.httpURL}/name`).toPromise()
       .then(() => true)
   }
 
   fetchFiles (folder: FolderBot): Promise<File[]> {
-    return this.http.get(`${folder.bot.apiURL}/docs`)
+    return this.http.get(`${folder.bot.httpURL}/docs`)
       .toPromise()
       .then((response) => response.json())
       .then((keys: Array<Object>) => {
