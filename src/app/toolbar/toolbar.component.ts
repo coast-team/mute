@@ -25,7 +25,7 @@ export class ToolbarComponent implements OnInit {
   private onDoorSubscription: Subscription
   private serviceWorker: ServiceWorkerRegister
   private snackBarSubject: Subject<string>
-  private connectionState: boolean
+  public connectionState: boolean
   public signalingStatus: boolean
   public onLineStatus: boolean
   public networkStatus: boolean

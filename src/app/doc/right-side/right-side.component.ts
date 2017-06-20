@@ -43,6 +43,9 @@ export class RightSideComponent implements OnDestroy, OnInit {
           this.docKey = doc.id
         })
     })
+    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
+      this.changeDetectorRef.detectChanges()
+    })
   }
 
   ngOnDestroy () {
