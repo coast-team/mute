@@ -133,7 +133,8 @@ export class ToolbarComponent implements OnInit {
   }
 
   updateConnectionState () {
-    if (this.signalingStatus && this.onLineStatus && this.networkStatus) {
+    if (this.isDoc()) {
+      if (this.signalingStatus && this.onLineStatus && this.networkStatus) {
         this.connectionState = true
       } else if (this.signalingStatus === undefined ||
         this.signalingStatus === undefined ||
@@ -142,6 +143,9 @@ export class ToolbarComponent implements OnInit {
       } else {
         this.connectionState = false
       }
+    } else {
+      this.connectionState = this.onLineStatus
+    }
   }
 
 }

@@ -19,6 +19,10 @@
         </button>
         
         <md-card class="networkState">
+          <md-card-header>
+            <md-card-title>Status</md-card-title>
+          </md-card-header>
+          <md-card-content>
           <md-list>
             <md-list-item>
               <div class="indicator" [ngSwitch]="onLineStatus">
@@ -32,7 +36,8 @@
               </div>
               Network
             </md-list-item>
-
+            
+            <md-divider *ngIf="isDoc()"></md-divider>
             <md-list-item *ngIf="isDoc()">
               <div class="indicator" [ngSwitch]="signalingStatus">
                 <md-icon *ngSwitchCase="true">check</md-icon>
@@ -45,8 +50,9 @@
               </div>
                Signaling
             </md-list-item>
-
-            <md-list-item *ngIf="isDoc()">
+            
+            <md-divider *ngIf="isDoc()"></md-divider>
+            <md-list-item *ngIf="isDoc()">  
               <div class="indicator" [ngSwitch]="networkStatus">
                 <md-icon *ngSwitchCase="true">check</md-icon>
                 <md-icon *ngSwitchCase="false">clear</md-icon>
@@ -59,8 +65,9 @@
               P2P Net
             </md-list-item>
           </md-list>
+          </md-card-content>
         </md-card>
-        
+
       <div class="indicator" [ngSwitch]="connectionState">
         <md-icon *ngSwitchCase="true">check</md-icon>
         <md-icon *ngSwitchCase="false">clear</md-icon>
