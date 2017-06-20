@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core'
-import { Observable, Subject } from 'rxjs/Rx'
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { Router } from '@angular/router'
 
 import { UiService } from '../core/ui/ui.service'
@@ -22,12 +22,18 @@ export class ToolbarComponent implements OnInit {
 
   public rootFileTitle: Observable<string>
 
+  private onDoorSubscription: Subscription
   private serviceWorker: ServiceWorkerRegister
   private snackBarSubject: Subject<string>
+  private connectionState: boolean
+  public signalingStatus: boolean
+  public onLineStatus: boolean
+  public networkStatus: boolean
 
   constructor (
     public ui: UiService,
-    private network: NetworkService,
+    private networkService: NetworkService,
+    private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
     public profile: ProfileService,
     private snackBar: MdSnackBar,
@@ -35,6 +41,10 @@ export class ToolbarComponent implements OnInit {
   ) {
     this.snackBarSubject = new Subject()
     this.serviceWorker = new ServiceWorkerRegister
+    this.connectionState = undefined
+    this.signalingStatus = undefined
+    this.onLineStatus = undefined
+    this.networkStatus = undefined
   }
 
   ngOnInit () {
@@ -51,11 +61,18 @@ export class ToolbarComponent implements OnInit {
       })
 
     this.connectivity.launchTest()
+
     this.connectivity.onLine.subscribe((state) => {
       if (state) {
         this.snackBarSubject.next('You are online')
+        this.connectionState = true
+        this.onLineStatus = true
       } else {
         this.snackBarSubject.next('You are offline')
+        this.connectionState = false
+        this.onLineStatus = false
+        this.signalingStatus = false
+        this.networkStatus = false
       }
     })
 
@@ -65,10 +82,37 @@ export class ToolbarComponent implements OnInit {
       this.snackBarSubject.next(message)
     })
 
+    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
+      this.signalingStatus = opened
+      if (opened === false && this.networkStatus === undefined) {
+        this.networkStatus = false
+      }
+      if (opened === true) {
+        this.onLineStatus = true
+      }
+      this.changeDetectorRef.detectChanges()
+    })
+
+    this.networkService.onLine.subscribe((event) => {
+      this.onLineStatus = event.valueOf()
+      if (event.valueOf() === false) {
+        this.networkStatus = false
+        this.signalingStatus = false
+      }
+    })
+
+    this.networkService.onJoin.subscribe((event) => {
+      this.networkStatus = true
+    })
+
   }
 
   isDocs () {
     return this.router.url.includes('/docs')
+  }
+
+  isDoc () {
+    return this.router.url.includes('/doc/')
   }
 
   isHistory () {

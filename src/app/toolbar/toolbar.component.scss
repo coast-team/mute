@@ -5,6 +5,11 @@
   z-index: 1000;
 }
 
+md-progress-spinner {
+    width: 24px;
+    height: 24px;
+  }
+
 md-toolbar {
 
   h2 {
@@ -23,10 +28,33 @@ md-toolbar {
     }
   }
 
-  md-progress-spinner {
-    width: 24px;
-    height: 24px;
-    margin: 8px;
+  .indicator {
+    margin-right: 8px;
   }
+
+  .networkState {
+    visibility: hidden;
+    position: fixed;
+    top: 70px;
+    right: 30px;
+  }
+
+  .networkIcon:hover + .networkState {
+    visibility: visible;
+    
+    animation-name: toggleCard;
+    animation-duration: 0.150s;
+  }
+
+  @keyframes toggleCard {
+    from {
+      opacity: 0;
+      }
+    to {
+      opacity: 1;
+    }
+}
+
+  
 
 }

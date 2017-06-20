@@ -30,6 +30,6 @@ export class ConnectivityService {
   launchTest () {
     let intervalID = setInterval(() => {
       this.testConnection(this.previousState)
-    }, 10000)
+    }, 5000)
   }
 }

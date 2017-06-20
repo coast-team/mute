@@ -20,42 +20,6 @@
       {{icon}}
     </md-icon>
   </div>
-  <div fxLayout="row" fxLayoutAlign="start center" class="line">
-    <span class="meta-title">Online</span>
-    <div class="indicator" [ngSwitch]="onLineStatus">
-      <md-icon *ngSwitchCase="'online'">check</md-icon>
-      <md-icon *ngSwitchCase="'offline'">clear</md-icon>
-      <md-progress-spinner *ngSwitchCase="'loading'"
-          color="warn"
-          mode="indeterminate"
-      >
-      </md-progress-spinner>
-    </div>
-  </div>
-  <div fxLayout="row" fxLayoutAlign="start center" class="line">
-    <span class="meta-title">Signaling</span>
-    <div class="indicator" [ngSwitch]="signalingStatus">
-      <md-icon *ngSwitchCase="'true'">check</md-icon>
-      <md-icon *ngSwitchCase="'false'">clear</md-icon>
-      <md-progress-spinner *ngSwitchCase="'loading'"
-          color="warn"
-          mode="indeterminate"
-      >
-      </md-progress-spinner>
-    </div>
-  </div>
-  <div fxLayout="row" fxLayoutAlign="start center" class="line">
-    <span class="meta-title">Network</span>
-    <div class="indicator" [ngSwitch]="networkStatus">
-      <md-icon *ngSwitchCase="'true'">check</md-icon>
-      <md-progress-spinner *ngSwitchCase="'loading'"
-          color="warn"
-          mode="indeterminate"
-      >
-      </md-progress-spinner>
-      <md-icon *ngSwitchCase="'false'">clear</md-icon>
-    </div>
-  </div>
   <hr class='divider' />
   <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
 </div>

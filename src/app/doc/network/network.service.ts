@@ -20,8 +20,8 @@ export class NetworkService {
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
-  private doorSubject: Subject<string>
-  private onLineSubject: Subject<string>
+  private doorSubject: Subject<boolean>
+  private onLineSubject: Subject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -74,7 +74,7 @@ export class NetworkService {
     this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
 
     // On door closed
-    this.webChannel.onClose = () => this.doorSubject.next('false')
+    this.webChannel.onClose = () => this.doorSubject.next(false)
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
@@ -142,7 +142,7 @@ export class NetworkService {
     return this.joinSubject.asObservable()
   }
 
-  get onLine (): Observable<string> {
+  get onLine (): Observable<boolean> {
     return this.onLineSubject.asObservable()
   }
 
@@ -158,7 +158,7 @@ export class NetworkService {
     return this.peerLeaveSubject.asObservable()
   }
 
-  get onDoor (): Observable<string> {
+  get onDoor (): Observable<boolean> {
     return this.doorSubject.asObservable()
   }
 
@@ -184,7 +184,7 @@ export class NetworkService {
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
-      this.doorSubject = new Subject<string>()
+      this.doorSubject = new Subject<boolean>()
 
       this.messageToBroadcastSubscription.unsubscribe()
       this.messageToSendRandomlySubscription.unsubscribe()
@@ -205,13 +205,13 @@ export class NetworkService {
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
-        this.doorSubject.next('true')
+        this.doorSubject.next(true)
         const created = this.members.length === 0
         this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
       })
       .catch((reason) => {
         log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
-        this.doorSubject.next('false')
+        this.doorSubject.next(false)
         return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
       })
   }
@@ -228,10 +228,10 @@ export class NetworkService {
 
   testConnection (): boolean {
     if (navigator.onLine) {
-      this.onLineSubject.next('online')
+      this.onLineSubject.next(true)
       return true
     } else {
-      this.onLineSubject.next('offline')
+      this.onLineSubject.next(false)
       return false
     }
   }
@@ -258,7 +258,7 @@ export class NetworkService {
     if (!this.webChannel.isOpen()) {
       return this.webChannel().open(key)
         .then(() => {
-          this.doorSubject.next('true')
+          this.doorSubject.next(true)
         })
     }
     return Promise.resolve()
@@ -270,7 +270,7 @@ export class NetworkService {
   closeDoor (): void {
     if (this.webChannel.isOpen()) {
       this.webChannel.close()
-      this.doorSubject.next('false')
+      this.doorSubject.next(false)
     }
   }
 }
