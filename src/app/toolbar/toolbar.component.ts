@@ -81,12 +81,12 @@ export class ToolbarComponent implements OnInit {
       this.snackBarSubject.next(message)
     })
 
-    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
+    this.networkService.onDoor.subscribe((opened) => {
       this.signalingStatus = opened
-      if (opened === false && this.networkStatus === undefined) {
+      if (!opened && this.networkStatus === undefined) {
         this.networkStatus = false
       }
-      if (opened === true) {
+      if (opened) {
         this.onLineStatus = true
       }
       this.changeDetectorRef.detectChanges()
@@ -95,7 +95,7 @@ export class ToolbarComponent implements OnInit {
 
     this.networkService.onLine.subscribe((event) => {
       this.onLineStatus = event.valueOf()
-      if (event.valueOf() === false) {
+      if (!event.valueOf()) {
         this.networkStatus = false
         this.signalingStatus = false
       }

@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs/Rx'
 @Component({
   selector: 'mute-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  styleUrls: ['./timeline.component.scss']
 })
 @Injectable()
 export class TimelineComponent implements OnInit, OnDestroy {

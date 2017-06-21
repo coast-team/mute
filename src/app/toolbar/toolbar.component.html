@@ -6,78 +6,64 @@
     <div *ngIf="isDocs(); then docs else doc"></div>
     <div fxLayout="row" fxLayoutAlign="end center">
       <div class="profile" fxFlex="1 1 auto" fxHide.xs='true' fxLayout="row" fxLayoutAlign="end center">
-        <mute-edit-field fxFlex="80%" fxLayout="row" fxLayoutAlign="end center"
-            [value]="profile.onPseudonym | async"
-            [defaultValue]="profile.pseudonymDefault"
-            (onDone)="updatePseudo($event)">
+        <mute-edit-field fxFlex="80%" fxLayout="row" fxLayoutAlign="end center" [value]="profile.onPseudonym | async" [defaultValue]="profile.pseudonymDefault"
+          (onDone)="updatePseudo($event)">
         </mute-edit-field>
         <md-icon>account_circle</md-icon>
       </div>
-        |
-        <button md-icon-button class="networkIcon">
+      |
+      <button md-icon-button class="networkIcon">
           <md-icon>cloud</md-icon>
         </button>
-        
-        <md-card class="networkState">
-          <md-card-header>
-            <md-card-title>Status</md-card-title>
-          </md-card-header>
-          <md-card-content>
+
+      <md-card class="networkState">
+        <md-card-header>
+          <md-card-title>Status</md-card-title>
+        </md-card-header>
+        <md-card-content>
           <md-list>
             <md-list-item>
               <div class="indicator" [ngSwitch]="onLineStatus">
                 <md-icon *ngSwitchCase="true">check</md-icon>
                 <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined"
-                  color="warn"
-                  mode="indeterminate"
-                  >
+                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
                 </md-progress-spinner>
               </div>
               Network
             </md-list-item>
-            
+
             <md-divider *ngIf="isDoc()"></md-divider>
             <md-list-item *ngIf="isDoc()">
               <div class="indicator" [ngSwitch]="signalingStatus">
                 <md-icon *ngSwitchCase="true">check</md-icon>
                 <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined"
-                  color="warn"
-                  mode="indeterminate"
-                  >
+                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
                 </md-progress-spinner>
               </div>
-               Signaling
+              Signaling
             </md-list-item>
-            
+
             <md-divider *ngIf="isDoc()"></md-divider>
-            <md-list-item *ngIf="isDoc()">  
+            <md-list-item *ngIf="isDoc()">
               <div class="indicator" [ngSwitch]="networkStatus">
                 <md-icon *ngSwitchCase="true">check</md-icon>
                 <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined"
-                  color="warn"
-                  mode="indeterminate"
-                  >
+                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
                 </md-progress-spinner>
               </div>
               P2P Net
             </md-list-item>
           </md-list>
-          </md-card-content>
-        </md-card>
+        </md-card-content>
+      </md-card>
 
       <div class="indicator" [ngSwitch]="connectionState">
         <md-icon *ngSwitchCase="true">check</md-icon>
         <md-icon *ngSwitchCase="false">clear</md-icon>
-        <md-progress-spinner *ngSwitchCase="undefined"
-          color="warn"
-          mode="indeterminate"
-        >
+        <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
         </md-progress-spinner>
       </div>
-        |
+      |
       <button md-icon-button (click)="ui.toggleDocNav()">
         <md-icon>info</md-icon>
       </button>
@@ -91,21 +77,15 @@
 
   <!-- Toolbar content for Doc -->
   <ng-template #doc>
-    <mute-edit-field fxLayout="row" fxLayoutAlign="center center"
-        fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%"
-        [value]="rootFileTitle | async"
-        defaultValue="Untitled document"
-        (onDone)="updateTitle($event)">
+    <mute-edit-field fxLayout="row" fxLayoutAlign="center center" fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%" [value]="rootFileTitle | async"
+      defaultValue="Untitled document" (onDone)="updateTitle($event)">
     </mute-edit-field>
   </ng-template>
 
   <!-- Toolbar content for Doc History -->
   <ng-template #doc>
-    <mute-edit-field fxLayout="row" fxLayoutAlign="center center"
-        fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%"
-        [value]="rootFileTitle | async"
-        defaultValue="Untitled document"
-        (onDone)="updateTitle($event)">
+    <mute-edit-field fxLayout="row" fxLayoutAlign="center center" fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%" [value]="rootFileTitle | async"
+      defaultValue="Untitled document" (onDone)="updateTitle($event)">
     </mute-edit-field>
   </ng-template>
 
