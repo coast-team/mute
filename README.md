@@ -21,7 +21,9 @@ Proceeds the following steps:
 2. Build MUTE static files ([how to](#build)).
 3. Serve static files.
 
-> If you serve MUTE via HTTPS, the Signaling server should also be secure, i. e. available via `wss` protocol.
+> TIP: If you serve MUTE via HTTPS, the Signaling server should also be secure, i. e. available via `wss` protocol.
+
+> TIP: You may find NGINX configuration example in the `conf` folder
 
 ## Build
 Before building the project (creating the static files) you may need to specify a few building parameters in `src/environments/environments.prod.ts`:
