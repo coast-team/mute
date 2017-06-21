@@ -30,11 +30,21 @@ md-card {
   }
   margin: 2px;
   .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    @media (max-width: 600px) {
+      flex-direction: column;
+    }
+    
     max-height: 0;
-    height: 0;
     transition-property: all;
     transition-duration: 1.5s;
     button {
+
+      transition-delay: 200ms;
+      transition-property: all;
+      transition-duration: 200ms;
       opacity: 0;
       visibility: hidden;
     }
@@ -45,12 +55,9 @@ md-card {
 md-card:hover {
   .actions{
     opacity: 1;
-    height: auto;
     max-height: 30em;
-    button {
-      transition-delay: 200ms;
-      transition-property: all;
-      transition-duration: 200ms; 
+    
+    button { 
       opacity: 1;
       visibility: visible;
     }
