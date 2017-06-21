@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild, NgZone } from '@angular/core'
 import { Http } from '@angular/http'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
+import { hash } from '../../lastcommithash'
 
 import 'rxjs/add/operator/toPromise'
 
@@ -48,20 +49,13 @@ export class DevLabelComponent implements OnInit {
 
   constructor (
     private sanitizer: DomSanitizer,
-    private http: Http,
     private renderer: Renderer,
-    private zone: NgZone,
     private ui: UiService,
     private detectRef: ChangeDetectorRef
   ) {
     this.nbOfDetectChanges = 0
-    http.get('https://api.github.com/repos/coast-team/mute/branches/gh-pages')
-      .toPromise()
-      .then((response) => {
-        this.url += response.json().commit.commit.message
-        this.shortID = response.json().commit.commit.message.substr(0, 7)
-      })
-      .catch((err) => log.warn('DevLabelComponent could not fetch commit number: ', err))
+    this.url += hash
+    this.shortID = (hash as any).substr(0, 7)
   }
 
   ngOnInit (): void {
