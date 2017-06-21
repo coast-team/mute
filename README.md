@@ -18,7 +18,7 @@ MUTE comes with a default free STAN server (already deployed on the Internet). T
 Proceeds the following steps:
 
 1. Deploy Signaling server ([how to](https://github.com/coast-team/sigver)).
-2. Build MUTE static files ([how to](#Build)).
+2. Build MUTE static files ([how to](#build)).
 3. Serve static files.
 
 > If you serve MUTE via HTTPS, the Signaling server should also be secure, i. e. available via `wss` protocol.
