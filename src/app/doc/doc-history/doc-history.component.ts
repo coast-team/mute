@@ -212,7 +212,7 @@ export class DocHistoryComponent implements OnInit {
     let pos1 = doc.posFromIndex(begin)
     let pos2 = doc.posFromIndex(end + 1)
     doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: green' })
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
   }
 
   animateText (begin: number, end: number) {
