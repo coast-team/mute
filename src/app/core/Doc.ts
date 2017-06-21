@@ -13,6 +13,8 @@ export interface DocSerialize {
 
 export class Doc extends File {
   private key: string
+  private sync: boolean
+  private syncDate: Date
   private localStorage: LocalStorageService
 
   public bot: BotInfo
@@ -36,6 +38,8 @@ export class Doc extends File {
     localFolder: Folder = undefined
   ) {
     super(title)
+    this.sync = false
+    this.syncDate = new Date()
     this.key = key
     this.localFolder = localFolder
     this.localStorage = localStorage
@@ -71,6 +75,13 @@ export class Doc extends File {
       title: this.title,
       bot: this.bot,
       localFolderId: this.localFolder.id
+    }
+  }
+
+  setSync (sync: boolean) {
+    this.sync = sync
+    if (sync) {
+      this.syncDate = new Date()
     }
   }
 

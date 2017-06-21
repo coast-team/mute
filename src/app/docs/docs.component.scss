@@ -4,58 +4,66 @@
 :host {
   flex: 1;
   overflow: hidden;
-}
-
-.doc-grid {
-  overflow: auto;
+  align-items: flex-start;
 }
 
 md-card {
-  margin: 2rem;
-  padding: 0;
-  height: 150px;
-
-  h3 {
-    font-weight: unset;
-    white-space: normal;
-    line-height: 3rem;
-    max-height: 9rem;
-    overflow: hidden;
-    hyphens: auto;
-    margin: 0;
+  md-card-title {
+    font-weight: bold;
   }
 
-  .delete-btn {
-    position: absolute;
-    top: 125px;
-    left: 175px;
+  .locationIcon {
+    position: relative;
+    top: 7px;
   }
 
-  .copy-btn {
-    position: absolute;
-    top: 125px;
-    left: 135px;
-  }
-
-  .doc-meta-data {
-    font-size: 1.2rem;
-    line-height: 2rem;
-    margin: 10px;
-
-    .meta-title {
-      color: $fg-secondary-text;
-      width: 50px;
-      text-align: left;
-      margin-right: 15px;
-    }
-
+  .status {
+    background-color: #9D9D9D;
+    margin-bottom: 10px; 
     md-icon {
-      margin-right: 5px;
-      width: 18px;
-      height: 18px;
-      font-size: 18px
+      position: relative;
+      top: 6px;
+      left: 8px;
+      color: white;
+    }
+    
+  }
+  margin: 2px;
+  .actions {
+    max-height: 0;
+    height: 0;
+    transition-property: all;
+    transition-duration: 1.5s;
+    button {
+      opacity: 0;
+      visibility: hidden;
     }
   }
+ 
+}
+
+md-card:hover {
+  .actions{
+    opacity: 1;
+    height: auto;
+    max-height: 30em;
+    button {
+      transition-delay: 200ms;
+      transition-property: all;
+      transition-duration: 200ms; 
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.noDoc {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 120px;
+  font-family: Roboto; 
+  font-size: xx-large;
+  color: #9E9E9E;
 }
 
 .leftsidenav {
