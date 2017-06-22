@@ -55,7 +55,6 @@ export class DocHistoryComponent implements OnInit {
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe((data: {doc: Doc}) => {
-
       this.docHistory.getAuthors(data.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
@@ -69,10 +68,10 @@ export class DocHistoryComponent implements OnInit {
 
         })
 
-    this.ui.onNavToggle.subscribe(() => {
-      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+      this.ui.onNavToggle.subscribe(() => {
+        this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+      })
     })
-  })
 
 
     // this.operations = OPERATIONS
