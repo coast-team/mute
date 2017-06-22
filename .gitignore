@@ -33,8 +33,6 @@ package-lock.json
 npm-debug.log
 testem.log
 /typings
-/src/lastcommithash.ts
-/src/environments/environment.demo.ts
 
 # e2e
 /e2e/*.js
