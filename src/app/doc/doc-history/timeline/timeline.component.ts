@@ -40,9 +40,9 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   play () {
-      this.subscriptionPlayer = this.player.subscribe( (t) => {
-        this.updateOperation(this.currentOp + this.step)
-      })
+    this.subscriptionPlayer = this.player.subscribe( (t) => {
+      this.updateOperation(this.currentOp + this.step)
+    })
   }
 
   pause () {

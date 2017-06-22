@@ -139,7 +139,7 @@ export class ToolbarComponent implements OnInit {
       } else if (this.signalingStatus === undefined ||
         this.signalingStatus === undefined ||
         this.signalingStatus === undefined) {
-          this.connectionState = undefined
+        this.connectionState = undefined
       } else {
         this.connectionState = false
       }
