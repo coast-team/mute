@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0",
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
-    "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
+    "prebuild": "rm -f src/lastcommithash.ts && echo \"export const hash = '$(git log -n 1 --pretty=format:'%H')'\" >> src/lastcommithash.ts",
     "build": "ng build --prod -oh none",
     "postbuild": "npm run sw && zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
