@@ -17,7 +17,8 @@
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "sw": "sw-precache --verbose --config=sw-precache.conf.js",
-    "firebase-sw-deploy": "npm run build && firebase deploy"
+    "firebase-sw-deploy": "npm run build && firebase deploy",
+    "generate-native": "nativefier --name 'Mute' 'https://coedit.re/'"
   },
   "keywords": [],
   "contributors": [
