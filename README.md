@@ -67,6 +67,13 @@ Before building the project (creating the static files) you may need to specify 
 ```
 Once the configurations are set, run `npm run build` command to build the project for production. The build artifacts will be stored in the `dist/` directory.
 
+### Desktop app
+To create MUTE desktop distribution, execute:
+```
+npm run build-desktop
+```
+The executable will be stored in the `dist-desktop/` directory.
+
 ### Docker image
 
 A basic `Dockerfile` is provided. It is based on the official [NGINX](https://hub.docker.com/_/nginx/) container (built on top of [Alpine Linux](https://alpinelinux.org/)) that will serve the packaged angular application.
