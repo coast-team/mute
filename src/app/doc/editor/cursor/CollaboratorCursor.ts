@@ -52,8 +52,9 @@ export class CollaboratorCursor {
   }
 
   updatePseudo (pseudo: string) {
-    this.pseudoElm.innerHTML = `&nbsp;&nbsp;${pseudo}`
-    this.pseudoElmWidth = `${pseudo.length * 7}px`
+    this.pseudoElm.innerHTML = `&nbsp;${pseudo}`
+    log.debug('new pseudo', this.pseudoElm.style)
+    this.pseudoElmWidth = `${15 + pseudo.length * 5}px`
   }
 
   translateCursorOnRemoteChange (pos: CodeMirror.Position, isAnimated = true) {
