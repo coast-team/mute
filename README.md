@@ -26,7 +26,7 @@ Proceeds the following steps:
 > TIP: You may find NGINX configuration example in the `conf` folder
 
 ## Build
-Before building the project (creating the static files) you may need to specify a few building parameters in `src/environments/environments.prod.ts`:
+Before building the project (creating the static files) you may need to specify a few building parameters in `src/environments/environment.prod.ts`:
 
 ```javascript
 {
