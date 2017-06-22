@@ -18,7 +18,7 @@
     "cz": "git-cz",
     "sw": "sw-precache --verbose --config=sw-precache.conf.js",
     "firebase-sw-deploy": "npm run build && firebase deploy",
-    "generate-native": "nativefier --name 'Mute' 'https://coedit.re/'"
+    "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
   "contributors": [
