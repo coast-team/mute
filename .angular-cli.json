@@ -7,8 +7,9 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
-        "assets",
-        "favicon.ico"
+        "assets/fonts",
+        "assets/icons",
+        "manifest.json"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -35,8 +36,8 @@
       "environments": {
         "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts",
+        "ovhdev": "environments/environment.ovhdev.ts",
         "demo": "environments/environment.demo.ts",
-        "ovh": "environments/environment.ovh.ts",
         "ghpages": "environments/environment.ghpages.ts"
       }
     }

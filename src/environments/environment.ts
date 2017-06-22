@@ -7,11 +7,8 @@ export const environment = {
   production: false,
   devLabel: true,
   fetchIceServers: true,
-  signalingURL: 'ws://vps387425.ovh.net:8000',
+  signalingURL: 'wss://www.coedit.re:20443',
   storages: [
-    {
-      apiURL: 'http://localhost:8080',
-      p2pURL: 'ws://localhost:9000'
-    }
+    {secure: false, host: 'localhost', port: 20000}
   ]
 }

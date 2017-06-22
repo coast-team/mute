@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core'
-import { Http } from '@angular/http'
+import { HttpModule } from '@angular/http'
 import { CommonModule } from '@angular/common'
 
 import { BotStorageService } from './storage/bot-storage/bot-storage.service'
@@ -11,12 +11,12 @@ import { XirsysService } from './xirsys/xirsys.service'
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    HttpModule
   ],
   exports: [],
   declarations: [],
   providers: [
-    Http,
     BotStorageService,
     LocalStorageService,
     ProfileService,

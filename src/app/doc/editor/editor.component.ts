@@ -6,7 +6,6 @@ import {
   OnChanges,
   OnDestroy,
   OnInit,
-  AfterViewInit,
   Output,
   SimpleChanges,
   ViewChild,
@@ -36,7 +35,7 @@ require('codemirror/mode/javascript/javascript')
 })
 
 @Injectable()
-export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewInit {
+export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private isInited = false
 
@@ -52,22 +51,18 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
   public editor: CodeMirror.Editor
 
   constructor (
-    private zone: NgZone,
-    private detectRef: ChangeDetectorRef
+    private zone: NgZone
   ) {}
 
   ngOnInit () {
-    this.detectRef.detach()
-  }
-
-  ngAfterViewInit () {
     this.zone.runOutsideAngular(() => {
       this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
         lineNumbers: false,
         lineWrapping: true,
-        autofocus: false,
+        cursorBlinkRate: 400,
+        cursorScrollMargin: 100,
         mode: {name: 'gfm', globalVars: true}
-      })
+      } as any)
 
       // For Quentin's test
       this.setupGlobalForTests()
@@ -145,7 +140,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit, AfterViewI
         const updateDoc: () => void = () => {
           const doc: CodeMirror.Doc = this.editor.getDoc()
 
-          log.info('operation:editor', 'applied: ', textOperations)
+          // log.info('operation:editor', 'applied: ', textOperations)
 
           textOperations.forEach( (textOperation: any) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
@@ -225,7 +220,7 @@ class ChangeEvent {
       textOperations.push(new TextInsert(index, text))
     }
 
-    log.info('operation:editor', 'generated: ', textOperations)
+    // log.info('operation:editor', 'generated: ', textOperations)
     return textOperations
   }
 

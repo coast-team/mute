@@ -7,6 +7,9 @@
 # dependencies
 /node_modules
 
+# NPM
+package-lock.json
+
 # IDEs and editors
 /.idea
 .project
@@ -38,6 +41,10 @@ testem.log
 #System Files
 .DS_Store
 Thumbs.db
+
+# Config Files for Firebase
+.firebaserc
+firebase.json
 
 # Other
 src/environments/environment.ovh.ts

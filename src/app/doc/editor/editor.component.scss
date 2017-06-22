@@ -2,17 +2,15 @@
 @import 'variables';
 
 :host {
-  display: flex;
-  flex-direction: column;
   height: 100%;
 }
 
 md-card {
   margin: 14px auto;
+  max-width: 800px;
 }
 
 .airbag {
   height: 20px;
   flex: 0 0 auto;
 }
-
