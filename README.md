@@ -25,6 +25,10 @@ Proceeds the following steps:
 
 > TIP: You may find NGINX configuration example in the `conf` folder
 
+**Examples**:
+- [Demo deployment on Raspberry Pi](https://github.com/coast-team/mute/wiki/Deploy:-Raspberry-Pi)
+- [Production deployment with NGINX on Ubuntu 16.04](https://github.com/coast-team/mute/wiki/Deploy:-Production)
+
 ## Build
 Before building the project (creating the static files) you may need to specify a few building parameters in `src/environments/environment.prod.ts`:
 
