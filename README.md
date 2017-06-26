@@ -43,6 +43,7 @@ export const environment = {
   // in the bottom right corner of the application window
   devLabel: true,
 
+<<<<<<< HEAD
   // STUN/TURN servers for WebRTC
   // Can be an empty array: []
   // See https://developer.mozilla.org/en/docs/Web/API/RTCIceServer/urls
@@ -51,6 +52,16 @@ export const environment = {
       urls: 'stun.l.google.com:19302'
     }
   ],
+=======
+  // Addresses and credentials for stun and turn servers
+  // Stun server doesn't require credentials but turn does.
+  iceServers: [ 
+    {
+      url: string,
+      username: string,
+      password: string
+    },
+>>>>>>> feat(turn-server): Delete xirsys dependancies by adding personnalize TurnServer
 
   // Signaling server URL
   // See https://github.com/coast-team/sigver
