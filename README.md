@@ -41,9 +41,14 @@ Before building the project (creating the static files) you may need to specify 
   // in the bottom right corner of the application window.
   devLabel: boolean,
 
-  // If true MUTE will use free TURN server. Its payload is limited and
-  // it is mainly aimed for testing.
-  fetchIceServers: boolean,
+  // Addresses and credentials for stun and turn servers
+  // Stun server doesn't require credentials but turn does.
+  iceServers: [ 
+    {
+      url: string,
+      username: string,
+      password: string
+    },
 
   // WebSocket Signaling server URL (e.g. 'wss://mysignaling.com').
   signalingURL: string,

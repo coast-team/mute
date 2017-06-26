@@ -5,7 +5,6 @@ import { create } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
-import { XirsysService } from '../../core/xirsys/xirsys.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
@@ -37,7 +36,6 @@ export class NetworkService {
   private messageToSendToSubscription: Subscription
 
   constructor (
-    private xirsys: XirsysService
   ) {
     log.angular('NetworkService constructed')
 
@@ -193,13 +191,13 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-    return this.xirsys.iceServers
+    return this.fetchServer()
       .then((iceServers) => {
         if (iceServers !== null) {
           this.webChannel.settings.iceServers = iceServers
         }
       })
-      .catch((err) => log.warn('Xirsys Error', err))
+      .catch((err) => log.warn('IceServer Error', err))
       .then(() => this.testConnection())
       .then(() => this.webChannel.join(key))
       .then(() => {
@@ -223,6 +221,12 @@ export class NetworkService {
           log.info('network', `Bot ${fullUrl} has been invited`)
         })
     }
+  }
+
+  fetchServer (): Promise<RTCIceServer[]> {
+    return new Promise((resolve, reject) => {
+      resolve(environment.iceServers)
+    })
   }
 
   testConnection (): boolean {
