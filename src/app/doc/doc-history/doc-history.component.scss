@@ -8,11 +8,11 @@ $padding-left-right: 2%;
 }
 
 md-card {
+  display: inline-block;
   width: 800px;
-  height: auto;
   margin: 10px auto;
-  height: 94%;
   cursor: text;
+  overflow: auto;
 }
 
 .content {
