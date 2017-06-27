@@ -1,0 +1,37 @@
+@charset "UTF-8";
+span.cm-formatting {
+  transition: opacity .3s; }
+
+span.cm-formatting-hidden.cm-formatting-em, span.cm-formatting-hidden.cm-formatting-strong, span.cm-formatting-hidden.cm-formatting-strikethrough, span.cm-formatting-hidden.cm-formatting-quote, span.cm-formatting-hidden.cm-formatting-code, span.cm-formatting-hidden.cm-formatting-header, span.cm-formatting-hidden.cm-formatting-link, span.cm-formatting-hidden.cm-formatting-escape-char, span.cm-formatting-hidden.cm-formatting-hmd-stdheader {
+  width: 0px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  display: inline-block; }
+
+/* adding some CodeMirror-not-implemented styles' default style */
+span.cm-inline-code,
+span.cm-math {
+  color: #900; }
+
+div.HyperMD-hover > .HyperMD-hover-content {
+  background-color: #fff;
+  padding: .5em; }
+  div.HyperMD-hover > .HyperMD-hover-content p {
+    margin: .2em 0; }
+
+.HyperMD-goback {
+  width: 1px; }
+
+div.HyperMD-goback-button {
+  background-color: #ddd;
+  color: #333;
+  text-align: center;
+  cursor: pointer; }
+
+span.hmd-link-icon:after {
+  content: "»"; }
+
+span.hmd-fold-math {
+  display: inline-block;
+  vertical-align: middle; }
