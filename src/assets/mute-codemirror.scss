@@ -1,6 +1,6 @@
 @import 'variables';
 @import 'theme';
-@import 'app/doc/editor/hypermd/mode/hypermd.css';
+@import '~hypermd/hypermd/mode/hypermd.css';
 
 /* My cursor animation */
 @keyframes myCursor {

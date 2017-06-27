@@ -15,9 +15,6 @@ import {
 } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
-
-// FIXME: Find a proper way to import these in order to use hypermd
-// HyperMD does not exist on npmjs
 import * as MathJax from 'mathjax'
 import 'codemirror/addon/mode/overlay'
 import 'codemirror/addon/edit/continuelist'
@@ -25,18 +22,18 @@ import 'codemirror/mode/meta'
 import 'codemirror/mode/xml/xml'
 import 'codemirror/mode/markdown/markdown'
 import 'codemirror/mode/gfm/gfm'
-import './hypermd/mode/hypermd.js'
-import './hypermd/addon/hide-token.js'
-import './hypermd/addon/cursor-debounce.js'
-import './hypermd/addon/fold.js'
+import 'hypermd/hypermd/mode/hypermd.js'
+import 'hypermd/hypermd/addon/hide-token'
+import 'hypermd/hypermd/addon/cursor-debounce'
+import 'hypermd/hypermd/addon/fold'
 // FIXME: Error, MathJax is not defined
-//import './hypermd/addon/fold-math.js'
-import './hypermd/addon/readlink.js'
-import './hypermd/addon/click.js'
-import './hypermd/addon/hover.js'
-import './hypermd/addon/paste.js'
+// import 'hypermd/hypermd/addon/fold-math.js'
+import 'hypermd/hypermd/addon/readlink'
+import 'hypermd/hypermd/addon/click'
+import 'hypermd/hypermd/addon/hover'
+import 'hypermd/hypermd/addon/paste'
 // FIXME: This load does not work yet
-//import './hypermd/addon/paste-image.js'
+// import 'hypermd/hypermd/addon/paste-image.js'
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert }  from 'mute-structs'
 
@@ -82,23 +79,22 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         lineWrapping: true,
         cursorBlinkRate: 400,
         cursorScrollMargin: 100,
-        //mode: {name: 'gfm', globalVars: true},
-        theme: "hypermd-light",
-        mode: "text/x-hypermd",
+        // mode: {name: 'gfm', globalVars: true},
+        theme: 'hypermd-light',
+        mode: 'text/x-hypermd',
         extraKeys: {
-            "Enter": "newlineAndIndentContinueMarkdownList"
+          Enter: 'newlineAndIndentContinueMarkdownList'
         },
-        hmdHideToken: "(profile-1)",
+        hmdHideToken: '(profile-1)',
         hmdCursorDebounce: true,
         hmdAutoFold: 200,
         hmdPaste: true,
         hmdFoldMath: { interval: 200, preview: true }
       } as any)
 
-      let tmp: any = this.editor;
-      
-      tmp.hmdHoverInit();
-      tmp.hmdClickInit();
+      let tmp: any = this.editor
+      tmp.hmdHoverInit()
+      tmp.hmdClickInit()
 
       // For Quentin's test
       this.setupGlobalForTests()

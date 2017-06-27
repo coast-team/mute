@@ -43,6 +43,7 @@
     "core-js": "^2.4.1",
     "google-protobuf": "^3.3.0",
     "hammerjs": "^2.0.8",
+    "hypermd": "git+https://github.com/menou2u/HyperMD.git",
     "netflux": "latest",
     "jio": "git+https://github.com/Nexedi/jio.git",
     "mnemonicjs": "git+https://github.com/oster/mnemonic.js.git",
