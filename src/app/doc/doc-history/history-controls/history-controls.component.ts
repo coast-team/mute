@@ -11,7 +11,6 @@ import { UiService } from '../../../core/ui/ui.service'
 })
 export class HistoryControlsComponent implements OnInit {
 
-  private doc: Doc
   public isPlaying: boolean
   @Input() currentOp: number
   @Input() nbOperations: number
@@ -26,8 +25,6 @@ export class HistoryControlsComponent implements OnInit {
 
   ngOnInit () {
     this.isPlaying = false
-    this.route.data
-      .subscribe(({doc}: {doc: Doc}) => {this.doc = doc})
   }
 
   onClickPlay (event: any) {
@@ -47,10 +44,5 @@ export class HistoryControlsComponent implements OnInit {
 
   onClickFastRewind (event: any) {
     this.onControls.emit(CONTROLS.FAST_REWIND)
-  }
-
-  showEditor () {
-    this.ui.setActiveFile(this.doc)
-    this.router.navigate(['/doc/' + this.doc.id])
   }
 }

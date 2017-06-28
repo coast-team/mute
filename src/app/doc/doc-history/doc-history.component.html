@@ -38,7 +38,8 @@
     [mode]="rightSideNavMode"
   >
 
-    <mute-collaborators [docAuthors]="docAuthors">
+    <mute-collaborators [docAuthors]="docAuthors"
+    (change)="onToggle($event)">
     </mute-collaborators>
     
     <md-card class="button-card">
