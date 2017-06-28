@@ -39,6 +39,7 @@ export class DocHistoryComponent implements OnInit {
   private isInited = false
   private operations: (Delete | Insert)[]
   public docAuthors: Author[]
+  private state = false
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
@@ -152,9 +153,12 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = numOperation
     }
 
-    // this.mockTextColors()
-    this.animateText(begin, end)
-    this.colorizeDifferences(begin, end)
+    if (this.state) {
+      this.animateText(begin, end)
+      this.colorizeDifferences(begin, end)
+    } else {
+      this.mockTextColors()
+    }
   }
 
   generateText (beginOp: number, endOp: number): String {
@@ -249,6 +253,11 @@ export class DocHistoryComponent implements OnInit {
       this.timelineComponent.goToBegin()
       break
     }
+  }
+
+  onToggle (state: boolean) {
+    this.state = state
+    this.showVersion(this.currentOp)
   }
 
   showEditor () {

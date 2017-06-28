@@ -13,6 +13,7 @@ import {
   MdIconModule,
   MdTooltipModule,
   MdMenuModule,
+  MdSlideToggleModule,
   MdChipsModule } from '@angular/material'
 import { NgModule } from '@angular/core'
 import 'hammerjs/hammer'
@@ -39,6 +40,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTooltipModule,
     MdChipsModule,
     MdMenuModule,
+    MdSlideToggleModule,
     FlexLayoutModule
   ],
   declarations: [ EditFieldComponent ],
@@ -59,6 +61,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTooltipModule,
     MdChipsModule,
     MdMenuModule,
+    MdSlideToggleModule,
     FlexLayoutModule,
     EditFieldComponent
   ]

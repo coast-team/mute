@@ -1,8 +1,23 @@
-<md-card fxLayout="column" fxLayouAlign="start end">
-  <md-list dense>
+<md-card fxLayout="column">
+  <div class="slider">
+    Authors
+    <md-slide-toggle #displayMode (change)="onChange($event)"></md-slide-toggle>
+    Additons/Deletions
+  </div>
+
+
+  <md-list dense *ngIf="displayMode.checked">
+    <md-list-item [style.color] = "'#4CAF50'">
+      Addition
+    </md-list-item>
+    <md-list-item [style.color] = "'#E57373'">
+      Deletion
+    </md-list-item>
+  </md-list>
+
+  <md-list dense *ngIf="!displayMode.checked">
     <md-list-item *ngFor="let author of docAuthors" [style.color] = "author.getColor()">
       {{ author.authorName }}
-      
     </md-list-item>
   </md-list>
 </md-card>
