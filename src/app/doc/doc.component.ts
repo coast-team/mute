@@ -123,6 +123,9 @@ export class DocComponent implements OnDestroy, OnInit {
     this.network.cleanWebChannel()
     this.muteCore.clean()
     this.mediaSubscription.unsubscribe()
+    if (true) {
+      this.doc.setSync(true)
+    }
   }
 
   editorReady (): void {

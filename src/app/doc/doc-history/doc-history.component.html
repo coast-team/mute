@@ -1,4 +1,4 @@
-<md-sidenav-container>
+<md-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
   <md-sidenav #leftSidenavElm class="leftsidenav"
@@ -12,7 +12,7 @@
       [nbOperations]="countOperations()"
       [currentOp]="currentOp"
       (onSlide)="showVersion($event)"
-      [delay]="100">
+      [delay]="300">
     </mute-timeline>
 
     <md-input-container>
@@ -24,10 +24,18 @@
     </md-card>
   </div>
 
-  <md-sidenav class="rightsidenav" mode="side" opened="true" align="end">
+  <md-sidenav #rightSidenavElm class="rightsidenav"
+    align="end"
+    [opened]="!this.media.isActive('xs')"
+    [mode]="rightSideNavMode"
+  >
 
     <mute-collaborators [docAuthors]="docAuthors"></mute-collaborators>
-    <mute-history-controls (onControls)="onControlsChange($event)"></mute-history-controls>
+    <mute-history-controls 
+      (onControls)="onControlsChange($event)" 
+      [nbOperations]="countOperations()"
+      [currentOp]="currentOp">
+    </mute-history-controls>
   </md-sidenav>
 
 </md-sidenav-container>

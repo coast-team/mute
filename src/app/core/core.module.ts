@@ -7,7 +7,6 @@ import { LocalStorageService } from './storage/local-storage/local-storage.servi
 import { ProfileService } from './profile/profile.service'
 import { FakeStorageService } from './storage/fake-storage/fake-storage.service'
 import { UiService } from './ui/ui.service'
-import { XirsysService } from './xirsys/xirsys.service'
 
 @NgModule({
   imports: [
@@ -21,8 +20,7 @@ import { XirsysService } from './xirsys/xirsys.service'
     LocalStorageService,
     ProfileService,
     FakeStorageService,
-    UiService,
-    XirsysService
+    UiService
   ]
 })
 export class CoreModule {

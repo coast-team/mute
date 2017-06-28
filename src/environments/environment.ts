@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
-  fetchIceServers: true,
+  iceServers: [],
   signalingURL: 'wss://www.coedit.re:20443',
   storages: [
     {secure: false, host: 'localhost', port: 20000}

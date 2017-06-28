@@ -4,7 +4,7 @@ import { Observable, Subscription } from 'rxjs/Rx'
 @Component({
   selector: 'mute-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css']
+  styleUrls: ['./timeline.component.scss']
 })
 @Injectable()
 export class TimelineComponent implements OnInit, OnDestroy {
@@ -13,9 +13,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() delay: number
   @Input() nbOperations: number
   @Output() onSlide: EventEmitter<Number>
+
   player: any
   private subscriptionPlayer: Subscription
   step: number
+  stepSize: number
 
   constructor () {
     this.onSlide = new EventEmitter<number>()
@@ -23,6 +25,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   ngOnInit () {
     this.step = 1
+    this.stepSize = 1
     this.player = Observable.timer(0, this.delay)
   }
 
@@ -37,15 +40,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   play () {
-    this.subscriptionPlayer = this.player.subscribe( (t) => this.updateOperation(this.currentOp + this.step))
+    this.subscriptionPlayer = this.player.subscribe( (t) => {
+      this.updateOperation(this.currentOp + this.step)
+    })
   }
 
-  pause ( ) {
+  pause () {
     this.subscriptionPlayer.unsubscribe()
   }
 
   goToBegin () {
-    this.currentOp = 1
+    this.currentOp = 0
     this.onSlide.emit(this.currentOp)
   }
 

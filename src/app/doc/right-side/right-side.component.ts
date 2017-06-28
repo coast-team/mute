@@ -19,8 +19,6 @@ export class RightSideComponent implements OnDestroy, OnInit {
   private onDoorSubscription: Subscription
 
   public storageIcons: string[]
-  public signalingOk: boolean
-  public networkOk: boolean
   public collaborators: any
   public docKey: string
 
@@ -34,8 +32,6 @@ export class RightSideComponent implements OnDestroy, OnInit {
     public profile: ProfileService
   ) {
     this.storageIcons = []
-    this.signalingOk = false
-    this.networkOk = false
     this.collaborators = collabService.onCollaborators
   }
 
@@ -48,11 +44,7 @@ export class RightSideComponent implements OnDestroy, OnInit {
         })
     })
     this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
-      this.signalingOk = opened
       this.changeDetectorRef.detectChanges()
-    })
-    this.networkService.onJoin.subscribe((event) => {
-      this.networkOk = true
     })
   }
 

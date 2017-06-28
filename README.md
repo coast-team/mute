@@ -33,39 +33,49 @@ Proceeds the following steps:
 Before building the project (creating the static files) you may need to specify a few building parameters in `src/environments/environment.prod.ts`:
 
 ```javascript
-{
-  // Production or dev modes.
-  production: boolean, 
+// src/environments/environment.prod.ts
+
+export const environment = {
+  // Production or dev modes
+  production: true,
 
   // If true, shows some information and a few controls for debugging
-  // in the bottom right corner of the application window.
-  devLabel: boolean,
+  // in the bottom right corner of the application window
+  devLabel: true,
 
-  // If true MUTE will use free TURN server. Its payload is limited and
-  // it is mainly aimed for testing.
-  fetchIceServers: boolean,
+  // STUN/TURN servers for WebRTC
+  // Can be an empty array: []
+  // See https://developer.mozilla.org/en/docs/Web/API/RTCIceServer/urls
+  iceServers: [
+    {
+      urls: 'stun.l.google.com:19302'
+    }
+  ],
 
-  // WebSocket Signaling server URL (e.g. 'wss://mysignaling.com').
-  signalingURL: string,
+  // Signaling server URL
+  // See https://github.com/coast-team/sigver
+  signalingURL: 'wss://www.coedit.re:10443',
 
-  // Whether MUTE should try to look for a Bot Storage.
-  // Can be an empty array: [].
+  // Whether MUTE should try to look for a Bot Storage
+  // Can be an empty array: []
   // See https://github.com/coast-team/mute-bot-storage
   storages: [
     {
-      // Whether the mute bot storage server is secure (https, wss)
-      secure: boolean,
-
-      // Server hostname or IP address
-      host: 'localhost',
-
-      // Server port
-      port: 20000
+      secure: true, // If true: https & wss protocols are used
+      host: 'www.coedit.re', // Server hostname or IP address
+      port: 11443 // Server port
     }
   ]
 }
 ```
 Once the configurations are set, run `npm run build` command to build the project for production. The build artifacts will be stored in the `dist/` directory.
+
+### Desktop app
+To create MUTE desktop distribution, execute:
+```
+npm run build-desktop
+```
+The executable will be stored in the `dist-desktop/` directory.
 
 ### Docker image
 

@@ -8,11 +8,11 @@ $padding-left-right: 2%;
 }
 
 md-card {
+  display: inline-block;
   width: 800px;
-  height: auto;
   margin: 10px auto;
-  height: 94%;
   cursor: text;
+  overflow: auto;
 }
 
 .content {
@@ -46,5 +46,30 @@ md-sidenav-container {
     max-width: 32rem;
     padding: 10px;
   }
+
+  @keyframes slidein {
+  from {
+    letter-spacing: -10px;
+    opacity: 0;
+  }
+
+  to {
+    letter-spacing: normal;
+    opacity: 1;
+  }
+}
+
+@keyframes slideout {
+  from {
+    font-size: 100%;
+    opacity: 1;
+  }
+
+  to {
+    font-size: 0%;
+    opacity: 0;
+  }
+}
+
 }
 

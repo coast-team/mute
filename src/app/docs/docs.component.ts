@@ -8,7 +8,6 @@ import { LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
 import { File } from '../core/File'
 import { Doc } from '../core/Doc'
-import { ServiceWorkerRegister } from '../core/ServiceWorkerRegister'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({
@@ -24,7 +23,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   private activeFileSubs: Subscription
   private mediaSubscription: Subscription
   private activeMediaQuery: string
-  private serviceWorker: ServiceWorkerRegister
 
   private snackBarSubject: Subject<string>
   private activeFolder: Folder
@@ -45,7 +43,6 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.snackBarSubject = new Subject()
     this.docs = []
     this.visibleBtns = []
-    this.serviceWorker = new ServiceWorkerRegister
   }
 
   ngOnInit () {
@@ -84,14 +81,6 @@ export class DocsComponent implements OnDestroy, OnInit {
           duration: 5000
         })
       })
-
-    this.serviceWorker.registerSW()
-
-    this.serviceWorker.observableState.subscribe((message) => {
-      this.snackBarSubject.next(message)
-    })
-
-
   }
 
   ngOnDestroy () {
@@ -150,6 +139,15 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   setHidden (index: number) {
     this.visibleBtns[index] = false
+  }
+
+  shareDoc (doc: Doc) { // Workaround, but not pretty
+    let aux = document.createElement('input')
+    aux.setAttribute('value', 'https://' + window.location.hostname + '/doc/' + doc.id.toString())
+    document.body.appendChild(aux)
+    aux.select()
+    document.execCommand('copy')
+    document.body.removeChild(aux)
   }
 
 }

@@ -6,36 +6,48 @@
   </md-sidenav>
 
   <!-- Content -->
-  <div fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
+  <div fxLayout="column">
 
-    <div class="doc-grid" fxLayoutWrap fxLayout="row" fxLayoutAlign="start top" fxLayoutAlign.xs="stretch top">
+    <div class="doc-grid" fxLayoutWrap fxLayout="row" >
+      <h3 class="noDoc" *ngIf="docs.length === 0">You don't have any document!</h3>
       <md-card *ngFor="let doc of docs; let i = index"
-        fxLayout="column" fxFlex="200px" fxFlex.xs="1 0 auto"
-        (mouseenter)="setVisible(i)"
-        (mouseleave)="setHidden(i)"
+        fxLayout="column" fxFlex.xs="1 0 150px"
       >
-        <button fxFlex="1 1 auto" md-button (click)="openDoc(doc)">
-            <h3>{{doc.title}}</h3>
-          </button>
+      <md-card-header>
+        <div *ngIf="doc.sync; else elseBlock" md-card-avatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
+        <ng-template #elseBlock><div md-card-avatar class="status"><md-icon mdTooltip="Document Non-Sync">cloud_off</md-icon></div></ng-template>
+        <md-card-title>
+          {{doc.title}}
+        </md-card-title>
+        <md-card-subtitle>
+          {{ doc.syncDate | date:'short'}}
+        </md-card-subtitle>
+      </md-card-header>
 
-        <div fxFlexAlign="start" fxLayout="column" class="doc-meta-data" fxLayoutAlign="start start">
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <span class='meta-title'>Key</span>
-            <span>{{doc.id}}</span>
-          </div>
-          <div fxLayout="row" fxLayoutAlign="start center">
-            <span class='meta-title'>Location</span>
-            <md-icon *ngFor="let icon of doc.getStorageIcons()">
-              {{icon}}
-            </md-icon>
-          </div>
+      <md-card-content>
+        <div>
+          Key: 
+          {{doc.id}}
         </div>
-        <button [fxHide]="!visibleBtns[i]" md-mini-fab class="delete-btn"
-          mdTooltip="Delete"
-          (click)="deleteDoc(doc)"
-        >
+        <div>
+          Location: 
+          <md-icon class="locationIcon" *ngFor="let icon of doc.getStorageIcons()">
+            {{icon}}
+          </md-icon>
+        </div>
+      </md-card-content>
+      <md-divider></md-divider>
+      <md-card-actions class="actions">
+        <button md-button (click)="openDoc(doc)"><md-icon>mode_edit</md-icon>OPEN</button>
+        <button md-button (click)="shareDoc(doc)"><md-icon>share</md-icon>SHARE</button>
+        <button md-button (click)="deleteDoc(doc)">
           <md-icon>delete</md-icon>
+          DELETE
         </button>
+      </md-card-actions>
+
+      
+
       </md-card>
     </div>
 

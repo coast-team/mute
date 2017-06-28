@@ -5,7 +5,6 @@ import { create } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
-import { XirsysService } from '../../core/xirsys/xirsys.service'
 const pb = require('./message_pb.js')
 
 @Injectable()
@@ -21,6 +20,7 @@ export class NetworkService {
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
   private doorSubject: Subject<boolean>
+  private onLineSubject: Subject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -36,7 +36,6 @@ export class NetworkService {
   private messageToSendToSubscription: Subscription
 
   constructor (
-    private xirsys: XirsysService
   ) {
     log.angular('NetworkService constructed')
 
@@ -48,6 +47,7 @@ export class NetworkService {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.doorSubject = new Subject()
+    this.onLineSubject = new Subject()
 
     this.messageSubject = new ReplaySubject()
 
@@ -139,6 +139,10 @@ export class NetworkService {
     return this.joinSubject.asObservable()
   }
 
+  get onLine (): Observable<boolean> {
+    return this.onLineSubject.asObservable()
+  }
+
   get onLeave (): Observable<number> {
     return this.leaveSubject.asObservable()
   }
@@ -164,6 +168,7 @@ export class NetworkService {
       this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
+      this.onLineSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
@@ -172,6 +177,7 @@ export class NetworkService {
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
+      this.onLineSubject = new Subject()
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
@@ -185,13 +191,14 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-    return this.xirsys.iceServers
+    return this.fetchServer()
       .then((iceServers) => {
         if (iceServers !== null) {
           this.webChannel.settings.iceServers = iceServers
         }
       })
-      .catch((err) => log.warn('Xirsys Error', err))
+      .catch((err) => log.warn('IceServer Error', err))
+      .then(() => this.testConnection())
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
@@ -201,10 +208,10 @@ export class NetworkService {
       })
       .catch((reason) => {
         log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
+        this.doorSubject.next(false)
         return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
       })
   }
-
 
   inviteBot (url: string): void {
     if (!this.botUrls.includes(url)) {
@@ -213,6 +220,22 @@ export class NetworkService {
         .then(() => {
           log.info('network', `Bot ${fullUrl} has been invited`)
         })
+    }
+  }
+
+  fetchServer (): Promise<RTCIceServer[]> {
+    return new Promise((resolve, reject) => {
+      resolve(environment.iceServers)
+    })
+  }
+
+  testConnection (): boolean {
+    if (navigator.onLine) {
+      this.onLineSubject.next(true)
+      return true
+    } else {
+      this.onLineSubject.next(false)
+      return false
     }
   }
 

@@ -10,13 +10,16 @@ import { ActivatedRoute, Params } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
+import { Observable } from 'rxjs'
 
 import { TimelineComponent }  from './timeline/timeline.component'
+import { HistoryControlsComponent } from './history-controls/history-controls.component'
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
 import { CONTROLS } from './history-controls/controls'
 import { UiService } from '../../core/ui/ui.service'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
 import { OPERATIONS } from './mock-operations'
 
@@ -40,16 +43,21 @@ export class DocHistoryComponent implements OnInit {
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
   @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
+  @ViewChild(HistoryControlsComponent) historyControlsComponent: HistoryControlsComponent
+  @ViewChild('sidenavElm') sidenavElm
   @ViewChild('leftSidenavElm') leftSidenavElm
+  @ViewChild('rightSidenavElm') rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
 
+  public rightSideNavMode = 'side'
 
   constructor (
     private zone: NgZone,
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
+    public media: ObservableMedia
   ) { }
 
   ngOnInit () {
@@ -58,7 +66,6 @@ export class DocHistoryComponent implements OnInit {
       this.docHistory.getAuthors(data.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
-          this.mockTextColors()
         })
 
       this.docHistory.getOperations(data.doc)
@@ -71,6 +78,12 @@ export class DocHistoryComponent implements OnInit {
       this.ui.onNavToggle.subscribe(() => {
         this.leftSidenavElm.opened = !this.leftSidenavElm.opened
       })
+
+      this.ui.onDocNavToggle.subscribe(() => {
+        this.rightSidenavElm.opened = !this.rightSidenavElm.opened
+      })
+
+      this.currentOp = 0
     })
 
 
@@ -112,6 +125,21 @@ export class DocHistoryComponent implements OnInit {
    * 1 and countOperation().
    */
   showVersion (numOperation: number) {
+    let begin = 0
+    let end = 0
+    // TODO Refactoring to avoid those tests
+    if (this.currentOp === this.countOperations()) {
+      begin = this.operations[this.currentOp - 1].offset
+    } else {
+      begin = this.operations[this.currentOp].offset
+    }
+
+    if (numOperation === this.countOperations()) {
+      end = this.operations[numOperation - 1].offset
+    } else {
+      end = this.operations[numOperation].offset
+    }
+
     if (this.currentOp !== numOperation) {
       const doc = this.editor.getDoc() as any
       // Generate string content depending on operations
@@ -120,7 +148,10 @@ export class DocHistoryComponent implements OnInit {
       doc.setValue(generatedText)
       this.currentOp = numOperation
     }
-    this.mockTextColors()
+
+    // this.mockTextColors()
+    this.animateText(begin, end)
+    this.colorizeDifferences(begin, end)
   }
 
   generateText (beginOp: number, endOp: number): String {
@@ -136,6 +167,17 @@ export class DocHistoryComponent implements OnInit {
       }
     }
     return textContent
+  }
+
+  destroyText (begin, end) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end + 1)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: red' })
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slideout;'
+       + 'animation-duration: 0.5s;' })
   }
 
   countOperations (): number {
@@ -162,6 +204,23 @@ export class DocHistoryComponent implements OnInit {
        {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
       cpt += (Math.floor(Math.random() * 10))
     })
+  }
+
+  colorizeDifferences (begin: number, end: number) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end + 1)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
+  }
+
+  animateText (begin: number, end: number) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end)
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slidein;'
+       + 'animation-duration: 0.300s;' })
   }
 
   onControlsChange (controlType: number) {

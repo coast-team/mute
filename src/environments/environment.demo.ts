@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   devLabel: false,
-  fetchIceServers: false,
+  iceServers: [],
   signalingURL: 'ws://192.168.0.100:8000',
   storages: []
 }

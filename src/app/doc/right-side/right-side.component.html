@@ -20,17 +20,6 @@
       {{icon}}
     </md-icon>
   </div>
-  <div fxLayout="row" fxLayoutAlign="start center" class="line">
-    <span class="meta-title">Signaling</span>
-    <div class="indicator">
-      <md-icon *ngIf="signalingOk">check</md-icon>
-      <md-progress-spinner *ngIf="!signalingOk"
-          color="warn"
-          mode="indeterminate"
-      >
-      </md-progress-spinner>
-    </div>
-  </div>
   <hr class='divider' />
   <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
 </div>
