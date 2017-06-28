@@ -93,7 +93,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         hmdAutoFold: 200,
         hmdPaste: true,
         hmdFoldMath: { interval: 200, preview: true },
-        //hmdPasteImage: true,
+        // hmdPasteImage: true,
       } as any)
 
       let tmp: any = this.editor
