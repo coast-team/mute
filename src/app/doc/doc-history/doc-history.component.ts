@@ -6,7 +6,7 @@ import {
   ViewChild,
   ElementRef,
   NgZone } from '@angular/core'
-import { ActivatedRoute, Params } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
@@ -49,6 +49,7 @@ export class DocHistoryComponent implements OnInit {
   @ViewChild('rightSidenavElm') rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
+  private doc: Doc
 
   public rightSideNavMode = 'side'
 
@@ -57,12 +58,14 @@ export class DocHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
-    public media: ObservableMedia
+    public media: ObservableMedia,
+    private router: Router
   ) { }
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe((data: {doc: Doc}) => {
+      this.doc = data.doc
       this.docHistory.getAuthors(data.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
@@ -115,7 +118,7 @@ export class DocHistoryComponent implements OnInit {
         value: '',
         mode: 'gfm',
         readOnly: 'true',
-        lineWrapping: true
+        lineWrapping: true,
       })
     })
   }
@@ -184,6 +187,13 @@ export class DocHistoryComponent implements OnInit {
     return this.operations ? this.operations.length : 0
   }
 
+  countMax (): number {
+    if (this.countOperations() === 0) {
+      return 0
+    }
+    return Math.floor(this.countOperations() / 2)
+  }
+
   onInputChange (event: any) {
     let indexOp = event.target.value
     indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
@@ -239,6 +249,11 @@ export class DocHistoryComponent implements OnInit {
       this.timelineComponent.goToBegin()
       break
     }
+  }
+
+  showEditor () {
+    this.ui.setActiveFile(this.doc)
+    this.router.navigate(['/doc/' + this.doc.id])
   }
 
 }

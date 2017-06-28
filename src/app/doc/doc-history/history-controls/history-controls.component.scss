@@ -1,11 +1,12 @@
-.controls-buttons md-icon {
-    cursor: pointer;
-}
-
 .controls-buttons {
-    margin-bottom: 10px !important;
-}
-
-md-card {
-    text-align: center;
-}
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    button {
+        margin: 5px;
+    }
+    md-icon {
+        cursor: pointer;
+    }
+} 
