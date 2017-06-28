@@ -2,12 +2,13 @@
 @import 'variables';
 
 :host {
-  height: 100%;
+  display: inline;
 }
 
 md-card {
   margin: 14px auto;
   max-width: 800px;
+  overflow: hidden;
 }
 
 .airbag {
