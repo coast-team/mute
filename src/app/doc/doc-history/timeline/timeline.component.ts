@@ -12,6 +12,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() currentOp: number
   @Input() delay: number
   @Input() nbOperations: number
+  @Input() max: number
   @Output() onSlide: EventEmitter<Number>
 
   player: any

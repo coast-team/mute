@@ -8,18 +8,26 @@
   </md-sidenav>
 
   <div class="content">
-    <mute-timeline
-      [nbOperations]="countOperations()"
-      [currentOp]="currentOp"
-      (onSlide)="showVersion($event)"
-      [delay]="300">
-    </mute-timeline>
 
-    <md-input-container>
-      <input mdInput placeholder="Current operation" [value]="currentOp" (keyup.enter)="onInputChange($event)">
-    </md-input-container>
+    <md-card class="history-tools" fxFlex="150px">
 
-    <md-card fxFlex="760px" fxFlex.md="75%" fxFlex.sm="85%" fxFlex.xs="100%">
+      <mute-history-controls 
+        (onControls)="onControlsChange($event)" 
+        [nbOperations]="countOperations()"
+        [currentOp]="currentOp">
+      </mute-history-controls>
+
+      <mute-timeline
+        [nbOperations]="countOperations()"
+        [max]="countMax()"
+        [currentOp]="currentOp"
+        (onSlide)="showVersion($event)"
+        [delay]="300">
+      </mute-timeline>
+
+    </md-card>
+    
+    <md-card>
       <div #editorElt id="textArea"></div>
     </md-card>
   </div>
@@ -30,12 +38,18 @@
     [mode]="rightSideNavMode"
   >
 
-    <mute-collaborators [docAuthors]="docAuthors"></mute-collaborators>
-    <mute-history-controls 
-      (onControls)="onControlsChange($event)" 
-      [nbOperations]="countOperations()"
-      [currentOp]="currentOp">
-    </mute-history-controls>
+    <mute-collaborators [docAuthors]="docAuthors">
+    </mute-collaborators>
+    
+    <md-card class="button-card">
+      <button
+        md-raised-button
+        color="accent"
+        (click)='showEditor()'>
+        Back to edition
+      </button>
+    </md-card>
+
   </md-sidenav>
 
 </md-sidenav-container>

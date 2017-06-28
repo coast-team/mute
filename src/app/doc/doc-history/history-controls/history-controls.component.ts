@@ -53,5 +53,4 @@ export class HistoryControlsComponent implements OnInit {
     this.ui.setActiveFile(this.doc)
     this.router.navigate(['/doc/' + this.doc.id])
   }
-
 }
