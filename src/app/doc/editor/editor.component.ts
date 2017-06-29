@@ -100,21 +100,21 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       instance.addKeyMap({
         // bold
         'Ctrl-B': (cm) => {
-            toggleStyle(cm, "**", "\\*\\*")
+          toggleStyle(cm, '**', '\\*\\*')
         },
         // italic
         'Ctrl-I': (cm) => {
-            toggleStyle(cm, "_", "_")
+          toggleStyle(cm, '_', '_')
         },
         // strikethrough
         'Ctrl-Alt-S': (cm) => {
-            toggleStyle(cm, "~~", "~~")
+          toggleStyle(cm, '~~', '~~')
         },
         // link
         'Ctrl-K': (cm) => {
-            let s = cm.getSelection(),
-                t = s.slice(0, 1) === '[' && s.slice(-1) === ['](url)'];
-            cm.replaceSelection(t ? s.slice(1, -1) : '[' + s + '](url)', 'around');
+          let s = cm.getSelection()
+          let t = s.slice(0, 1) === '[' && s.slice(-1) === ['](url)']
+          cm.replaceSelection(t ? s.slice(1, -1) : '[' + s + '](url)', 'around')
         }
       })
 
@@ -287,44 +287,43 @@ class ChangeEvent {
   }
 }
 
-function toggleStyle(cm: any, tokenSyntax: string, reTokenSyntax: string) : void {
-    const DEBUG: boolean = true;
+function toggleStyle (cm: any, tokenSyntax: string, reTokenSyntax: string): void {
+  const DEBUG = true
 
-    const selectedText = cm.getSelection();
+  const selectedText = cm.getSelection()
 
-    const reStyle: RegExp = new RegExp(".*" + reTokenSyntax + ".*" + reTokenSyntax + ".*");
+  const reStyle: RegExp = new RegExp('.*' + reTokenSyntax + '.*' + reTokenSyntax + '.*')
 
-    if (!selectedText.match(reStyle)) { // if not found, then the style does not exist yet
-        if (DEBUG) console.log("je trouve pas ton style")
-        cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around');
+  if (!selectedText.match(reStyle)) { // if not found, then the style does not exist yet
+    if (DEBUG) { console.log('there\'s not style on this selection') }
+    cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around')
+  } else { // otherwise
+    let subSelectedText = selectedText
+    let beginOuterText = ''
+    let endOuterText = ''
+    let beginTmp = ''
+    let endTmp = ''
+
+    while (subSelectedText.length > 2 * tokenSyntax.length + 1) {
+      if (DEBUG) { console.log('subSelectedText ' + subSelectedText) }
+
+      beginTmp = subSelectedText.slice(0, tokenSyntax.length)
+      endTmp = subSelectedText.slice(-tokenSyntax.length)
+
+      if (DEBUG) { console.log('beginTmp ' + beginTmp) }
+      if (DEBUG) { console.log('endTmp ' + endTmp) }
+      if (DEBUG) { console.log('just to be sure : ' + subSelectedText) }
+
+      if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
+        if (DEBUG) { console.log('FOUND') }
+        cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
+        return
+      }
+
+      beginOuterText = beginOuterText + beginTmp.slice(0, 1)
+      endOuterText = endTmp.slice(-1) + endOuterText
+      subSelectedText = subSelectedText.slice(1, -1)
+
     }
-    else { // otherwise
-        let subSelectedText = selectedText;
-        let beginOuterText = "";
-        let endOuterText = "";
-        let beginTmp = "";
-        let endTmp = "";
-
-        while (subSelectedText.length > 2*tokenSyntax.length + 1){
-            if (DEBUG) console.log("subSelectedText "+subSelectedText)
-
-            beginTmp = subSelectedText.slice(0,tokenSyntax.length);
-            endTmp = subSelectedText.slice(-tokenSyntax.length);
-
-            if (DEBUG) console.log("beginTmp "+beginTmp)
-            if (DEBUG) console.log("endTmp "+endTmp)
-            if (DEBUG) console.log("just to be sure : "+subSelectedText)
-
-            if (beginTmp === tokenSyntax && endTmp === tokenSyntax){
-                if (DEBUG) console.log("FOUND")
-                cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText);
-                return;
-            }
-
-            beginOuterText = beginOuterText + beginTmp.slice(0,1);
-            endOuterText = endTmp.slice(-1) + endOuterText;
-            subSelectedText = subSelectedText.slice(1, -1)
-
-        }
-    }
+  }
 }
