@@ -115,7 +115,7 @@ export class ToolbarComponent implements OnInit {
   }
 
   isDoc () {
-    return this.router.url.includes('/doc/')
+    return this.router.url.includes('/doc/') && !this.router.url.includes('/history/')
   }
 
   isHistory () {

@@ -223,7 +223,7 @@ export class DocHistoryComponent implements OnInit {
   colorizeDifferences (begin: number, end: number) {
     const doc = this.editor.getDoc()
     let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end + 1)
+    let pos2 = doc.posFromIndex(end)
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
   }
