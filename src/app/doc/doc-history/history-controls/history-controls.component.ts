@@ -14,13 +14,16 @@ export class HistoryControlsComponent implements OnInit {
   public isPlaying: boolean
   @Input() currentOp: number
   @Input() nbOperations: number
+  @Input() max: number
   @Output() onControls: EventEmitter<Number>
+  @Output() onSlide: EventEmitter<Number>
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
     public ui: UiService) {
-    this.onControls = new EventEmitter<number>()
+    this.onControls = new EventEmitter<number>(),
+    this.onSlide = new EventEmitter<number>()
   }
 
   ngOnInit () {
@@ -44,5 +47,9 @@ export class HistoryControlsComponent implements OnInit {
 
   onClickFastRewind (event: any) {
     this.onControls.emit(CONTROLS.FAST_REWIND)
+  }
+
+  updateStep (step: number) {
+    this.onSlide.emit(step)
   }
 }

@@ -8,27 +8,26 @@
   </md-sidenav>
 
   <div class="content">
+    <md-card class="matContent">
+      <div #editorElt id="textArea"></div>
 
-    <md-card class="history-tools" fxFlex="150px">
-
+      <md-divider></md-divider>
       <mute-history-controls 
         (onControls)="onControlsChange($event)" 
+        (onSlide)="updateStep($event)"
         [nbOperations]="countOperations()"
-        [currentOp]="currentOp">
+        [currentOp]="currentOp"
+        [max]="countMax()">
       </mute-history-controls>
 
       <mute-timeline
         [nbOperations]="countOperations()"
+        [step]="step"
         [max]="countMax()"
         [currentOp]="currentOp"
         (onSlide)="showVersion($event)"
         [delay]="300">
       </mute-timeline>
-
-    </md-card>
-    
-    <md-card>
-      <div #editorElt id="textArea"></div>
     </md-card>
   </div>
 
