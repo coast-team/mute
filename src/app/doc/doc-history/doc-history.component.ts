@@ -275,9 +275,4 @@ export class DocHistoryComponent implements OnInit {
     console.log(this.step)
   }
 
-  showEditor () {
-    this.ui.setActiveFile(this.doc)
-    this.router.navigate(['/doc/' + this.doc.id])
-  }
-
 }
