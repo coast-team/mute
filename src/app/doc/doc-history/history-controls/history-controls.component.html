@@ -8,4 +8,11 @@
     step="{{ stepSize }}"
     (input)="updateStep($event.value)">
   </md-slider>
+  <button
+      style="margin-left: auto"
+      md-raised-button
+      color="accent"
+      (click)='showEditor()'>
+      Back to edition
+  </button>
 </div>

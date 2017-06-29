@@ -52,4 +52,11 @@ export class HistoryControlsComponent implements OnInit {
   updateStep (step: number) {
     this.onSlide.emit(step)
   }
+
+  showEditor () {
+    this.route.data.subscribe((data: {doc: Doc}) => {
+      this.ui.setActiveFile(data.doc)
+      this.router.navigate(['/doc/' + data.doc.id])
+    })
+  }
 }
