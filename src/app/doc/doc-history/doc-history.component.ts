@@ -132,6 +132,7 @@ export class DocHistoryComponent implements OnInit {
   showVersion (numOperation: number) {
     let begin = 0
     let end = 0
+    let reverse = false
     // TODO Refactoring to avoid those tests
     if (this.currentOp === this.countOperations()) {
       begin = this.operations[this.currentOp - 1].offset
@@ -145,6 +146,10 @@ export class DocHistoryComponent implements OnInit {
       end = this.operations[numOperation].offset
     }
 
+    if (this.currentOp > numOperation) {
+      reverse = true
+    }
+
     if (this.currentOp !== numOperation) {
       const doc = this.editor.getDoc() as any
       // Generate string content depending on operations
@@ -154,11 +159,10 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = numOperation
     }
 
-    this.animateText(begin, end)
     if (this.state) {
-      this.colorizeDifferences(begin, end)
+      this.colorizeDifferences(begin, end + 1, reverse)
     } else {
-      this.colorizeAuthors(begin, end)
+      this.colorizeAuthors(begin, end + 1)
     }
   }
 
@@ -213,17 +217,24 @@ export class DocHistoryComponent implements OnInit {
     if (this.docAuthors) {
       length = this.docAuthors.length
     }
+    this.animateText(begin, end)
     let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: ' + color})
   }
 
-  colorizeDifferences (begin: number, end: number) {
+  colorizeDifferences (begin: number, end: number, reverse: boolean) {
     const doc = this.editor.getDoc()
     let pos1 = doc.posFromIndex(begin)
     let pos2 = doc.posFromIndex(end)
-    doc.markText({line: pos1.line, ch: pos1.ch},
+    this.animateText(begin, end)
+    if (!reverse) {
+      doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
+    } else {
+      doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #E57373' })
+    }
   }
 
   animateText (begin: number, end: number) {
