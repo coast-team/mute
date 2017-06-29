@@ -17,6 +17,7 @@ import { HistoryControlsComponent } from './history-controls/history-controls.co
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
 import { CONTROLS } from './history-controls/controls'
 import { UiService } from '../../core/ui/ui.service'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
@@ -30,7 +31,7 @@ require('codemirror/mode/javascript/javascript')
   selector: 'mute-doc-history',
   templateUrl: './doc-history.component.html',
   styleUrls: ['./doc-history.component.scss'],
-  providers: [DocHistoryService]
+  providers: [DocHistoryService, RichCollaboratorsService]
 })
 
 @Injectable()
@@ -153,11 +154,11 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = numOperation
     }
 
+    this.animateText(begin, end)
     if (this.state) {
-      this.animateText(begin, end)
       this.colorizeDifferences(begin, end)
     } else {
-      this.mockTextColors()
+      this.colorizeAuthors(begin, end)
     }
   }
 
@@ -205,19 +206,16 @@ export class DocHistoryComponent implements OnInit {
     this.showVersion(indexOp)
   }
 
-  mockTextColors () {
+  colorizeAuthors (begin: number, end: number) {
     const doc = this.editor.getDoc()
-    let cpt = 0
-    let length = 0
-    doc.eachLine((l) => {
-      if (this.docAuthors) {
-        length = this.docAuthors.length
-      }
-      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
-      doc.markText({line: cpt, ch: (Math.floor(Math.random() * 10))},
-       {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
-      cpt += (Math.floor(Math.random() * 10))
-    })
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end)
+    if (this.docAuthors) {
+      length = this.docAuthors.length
+    }
+    let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
+    doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: ' + color})
   }
 
   colorizeDifferences (begin: number, end: number) {

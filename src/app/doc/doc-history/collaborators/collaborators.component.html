@@ -7,17 +7,19 @@
 
 
   <md-list dense *ngIf="displayMode.checked">
-    <md-list-item [style.color] = "'#4CAF50'">
+    <md-list-item [style.background-color] = "'#4CAF50'">
       Addition
     </md-list-item>
-    <md-list-item [style.color] = "'#E57373'">
+    <md-list-item [style.background-color] = "'#E57373'">
       Deletion
     </md-list-item>
   </md-list>
 
   <md-list dense *ngIf="!displayMode.checked">
-    <md-list-item *ngFor="let author of docAuthors" [style.color] = "author.getColor()">
+    <md-list-item *ngFor="let author of docAuthors" [style.background-color] = "author.getColor()">
       {{ author.authorName }}
     </md-list-item>
   </md-list>
+
+
 </md-card>
