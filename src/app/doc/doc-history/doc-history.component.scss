@@ -42,13 +42,8 @@ md-sidenav-container {
 
   .rightsidenav {
     background-color: $bg-background !important;
-    min-width: 32rem;
     max-width: 32rem;
     padding: 10px;
-
-    .button-card {
-      margin: 10px; 
-    }
   }
 
   @keyframes slidein {
