@@ -29,7 +29,7 @@ import 'hypermd/hypermd/addon/hide-token'
 import 'hypermd/hypermd/addon/cursor-debounce'
 import 'hypermd/hypermd/addon/fold'
 import 'mathjax/MathJax.js'
-// SETTING: This import below loads a particular configuration
+// SETTING: The 4 imports below load a particular configuration for using fold-math
 // See others configurations here: http://docs.mathjax.org/en/latest/config-files.html#common-configurations
 import 'mathjax/config/TeX-AMS_CHTML.js'
 import 'mathjax/jax/output/CommonHTML/jax.js'
@@ -39,8 +39,6 @@ import 'hypermd/hypermd/addon/readlink'
 import 'hypermd/hypermd/addon/click'
 import 'hypermd/hypermd/addon/hover'
 import 'hypermd/hypermd/addon/paste'
-// FIXME: This load does not work yet
-// import 'hypermd/hypermd/addon/paste-image.js'
 
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert }  from 'mute-structs'
@@ -92,8 +90,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         hmdCursorDebounce: true,
         hmdAutoFold: 200,
         hmdPaste: true,
-        hmdFoldMath: { interval: 200, preview: true },
-        // hmdPasteImage: true,
+        hmdFoldMath: { interval: 200, preview: true }
       } as any)
 
       let tmp: any = this.editor
