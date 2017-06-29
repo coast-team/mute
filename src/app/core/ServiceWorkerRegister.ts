@@ -35,7 +35,7 @@ export class ServiceWorkerRegister {
                     // have been added to the cache.
                     // It's the perfect time to display a "New content is available; please refresh."
                     // message in the page's interface.
-                  this.emitEvent('New content is available')
+                  this.emitEvent('New content is available, please refresh.')
                   log.info('Service Worker', 'New or updated content is available.')
                 } else {
                     // At this point, everything has been precached.
