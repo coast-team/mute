@@ -2,4 +2,10 @@
   <button md-mini-fab><md-icon (click)="onClickFastRewind($event)">fast_rewind</md-icon></button>
   <button md-mini-fab><md-icon (click)="onClickPlay($event)">{{ (isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow' }}</md-icon></button>
   <button md-mini-fab><md-icon (click)="onClickFastForward($event)" >fast_forward</md-icon></button>
+  <md-slider thumbLabel 
+    min="1"
+    max="{{ max }}"
+    step="{{ stepSize }}"
+    (input)="updateStep($event.value)">
+  </md-slider>
 </div>

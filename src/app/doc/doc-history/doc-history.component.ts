@@ -52,6 +52,7 @@ export class DocHistoryComponent implements OnInit {
   public editor: CodeMirror.Editor
   public currentOp: number
   private doc: Doc
+  step = 1
 
   public rightSideNavMode = 'side'
 
@@ -267,6 +268,11 @@ export class DocHistoryComponent implements OnInit {
   onToggle (state: boolean) {
     this.state = state
     this.showVersion(this.currentOp)
+  }
+
+  updateStep (step: number) {
+    this.step = step <= 0 ? 1 : step
+    console.log(this.step)
   }
 
   showEditor () {
