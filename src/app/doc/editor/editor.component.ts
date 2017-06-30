@@ -14,34 +14,11 @@ import {
   ChangeDetectorRef
 } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
-import * as CodeMirror from 'codemirror'
-
-// SETTINGS: Thoses imports below are needed to run HyperMd into Mute
-import 'codemirror/addon/mode/overlay'
-import 'codemirror/addon/edit/continuelist'
-import 'codemirror/mode/meta'
-import 'codemirror/mode/xml/xml'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/mode/gfm/gfm'
-import 'codemirror/mode/javascript/javascript'
-import 'hypermd/hypermd/mode/hypermd.js'
-import 'hypermd/hypermd/addon/hide-token'
-import 'hypermd/hypermd/addon/cursor-debounce'
-import 'hypermd/hypermd/addon/fold'
-import 'mathjax/MathJax.js'
-// SETTING: The 4 imports below load a particular configuration for using fold-math
-// See others configurations here: http://docs.mathjax.org/en/latest/config-files.html#common-configurations
-import 'mathjax/config/TeX-AMS_CHTML.js'
-import 'mathjax/jax/output/CommonHTML/jax.js'
-import 'mathjax/jax/output/CommonHTML/fonts/TeX/fontdata.js'
-import 'hypermd/hypermd/addon/fold-math'
-import 'hypermd/hypermd/addon/readlink'
-import 'hypermd/hypermd/addon/click'
-import 'hypermd/hypermd/addon/hover'
-import 'hypermd/hypermd/addon/paste'
-
 import { DocService } from 'mute-core'
+import { EditorService } from './editor.service'
 import { TextDelete, TextInsert }  from 'mute-structs'
+
+import * as CodeMirror from 'codemirror'
 
 @Component({
   selector: 'mute-editor',
@@ -65,6 +42,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
 
   @Input() docService: DocService
+  @Input() editorService: EditorService = new EditorService()
   @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
@@ -76,50 +54,8 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit () {
     this.zone.runOutsideAngular(() => {
-      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
-        lineNumbers: false,
-        lineWrapping: true,
-        cursorBlinkRate: 400,
-        cursorScrollMargin: 100,
-        theme: 'hypermd-light',
-        mode: {name: 'text/x-hypermd', globalVars: true},
-        extraKeys: {
-          Enter: 'newlineAndIndentContinueMarkdownList'
-        },
-        hmdHideToken: '(profile-1)',
-        hmdCursorDebounce: true,
-        hmdAutoFold: 200,
-        hmdPaste: true,
-        hmdFoldMath: { interval: 200, preview: true }
-      } as any)
-
-      let instance: any = this.editor
-      instance.hmdHoverInit()
-      instance.hmdClickInit()
-
-      instance.addKeyMap({
-        // bold
-        'Ctrl-B': (cm) => {
-          toggleStyle(cm, '**', '\\*\\*')
-        },
-        // italic
-        'Ctrl-I': (cm) => {
-          toggleStyle(cm, '_', '_')
-        },
-        // strikethrough
-        'Ctrl-Alt-S': (cm) => {
-          toggleStyle(cm, '~~', '~~')
-        },
-        // link
-        'Ctrl-K': (cm) => {
-          let s = cm.getSelection()
-          let t = s.slice(0, 1) === '[' && s.slice(-1) === ['](url)']
-          cm.replaceSelection(t ? s.slice(1, -1) : '[' + s + '](url)', 'around')
-        }
-      })
-
-      // For Quentin's test
-      this.setupGlobalForTests()
+      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, this.editorService.editorConfiguration as any)
+      this.editorService.initEditor(this.editor)
 
       const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
@@ -227,24 +163,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     this.editor.focus()
   }
 
-  setupGlobalForTests () {
-    const doc = this.editor.getDoc() as any
-    window.muteTest = {
-      insert: (index: number, text: string) => {
-        doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
-      },
-      delete: (index: number, length: number) => {
-        doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
-      },
-      getText: (index?: number, length?: number) => {
-        if (index) {
-          return this.editor.getValue().substr(index, length)
-        } else {
-          return this.editor.getValue()
-        }
-      }
-    }
-  }
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
@@ -285,45 +203,5 @@ class ChangeEvent {
   isDeleteOperation (): boolean {
     return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
-}
 
-function toggleStyle (cm: any, tokenSyntax: string, reTokenSyntax: string): void {
-  const DEBUG = true
-
-  const selectedText = cm.getSelection()
-
-  const reStyle: RegExp = new RegExp('.*' + reTokenSyntax + '.*' + reTokenSyntax + '.*')
-
-  if (!selectedText.match(reStyle)) { // if not found, then the style does not exist yet
-    if (DEBUG) { console.log('there\'s not style on this selection') }
-    cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around')
-  } else { // otherwise
-    let subSelectedText = selectedText
-    let beginOuterText = ''
-    let endOuterText = ''
-    let beginTmp = ''
-    let endTmp = ''
-
-    while (subSelectedText.length > 2 * tokenSyntax.length + 1) {
-      if (DEBUG) { console.log('subSelectedText ' + subSelectedText) }
-
-      beginTmp = subSelectedText.slice(0, tokenSyntax.length)
-      endTmp = subSelectedText.slice(-tokenSyntax.length)
-
-      if (DEBUG) { console.log('beginTmp ' + beginTmp) }
-      if (DEBUG) { console.log('endTmp ' + endTmp) }
-      if (DEBUG) { console.log('just to be sure : ' + subSelectedText) }
-
-      if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
-        if (DEBUG) { console.log('FOUND') }
-        cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
-        return
-      }
-
-      beginOuterText = beginOuterText + beginTmp.slice(0, 1)
-      endOuterText = endTmp.slice(-1) + endOuterText
-      subSelectedText = subSelectedText.slice(1, -1)
-
-    }
-  }
 }
