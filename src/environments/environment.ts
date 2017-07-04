@@ -6,15 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
-  iceServers: [
-    {
-      urls: 'stun:stun.l.google.com:19302'
-    },
-    {
-      urls: ['turn:example.turn.com:80?transport=udp', 'turn:example.turn.com:80?transport=tcp'],
-      username: 'user',
-      credential: 'password'
-    }],
+  iceServers: [],
   signalingURL: 'wss://www.coedit.re:20443',
   storages: [
     {secure: false, host: 'localhost', port: 20000}

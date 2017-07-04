@@ -15,13 +15,35 @@ import {
 } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
 import * as CodeMirror from 'codemirror'
+
+// SETTINGS: Thoses imports below are needed to run HyperMd into Mute
+import 'codemirror/addon/mode/overlay'
+import 'codemirror/addon/edit/continuelist'
+import 'codemirror/mode/meta'
+import 'codemirror/mode/xml/xml'
+import 'codemirror/mode/markdown/markdown'
+import 'codemirror/mode/gfm/gfm'
+import 'codemirror/mode/javascript/javascript'
+import 'hypermd/hypermd/mode/hypermd.js'
+import 'hypermd/hypermd/addon/hide-token'
+import 'hypermd/hypermd/addon/cursor-debounce'
+import 'hypermd/hypermd/addon/fold'
+import 'mathjax/MathJax.js'
+// SETTING: This import below loads a particular configuration
+// See others configurations here: http://docs.mathjax.org/en/latest/config-files.html#common-configurations
+import 'mathjax/config/TeX-AMS_CHTML.js'
+import 'mathjax/jax/output/CommonHTML/jax.js'
+import 'mathjax/jax/output/CommonHTML/fonts/TeX/fontdata.js'
+import 'hypermd/hypermd/addon/fold-math'
+import 'hypermd/hypermd/addon/readlink'
+import 'hypermd/hypermd/addon/click'
+import 'hypermd/hypermd/addon/hover'
+import 'hypermd/hypermd/addon/paste'
+// FIXME: This load does not work yet
+// import 'hypermd/hypermd/addon/paste-image.js'
+
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert }  from 'mute-structs'
-
-// FIXME: Find a proper way to import the mode's files
-require('codemirror/mode/gfm/gfm')
-require('codemirror/mode/javascript/javascript')
-
 
 @Component({
   selector: 'mute-editor',
@@ -61,8 +83,22 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         lineWrapping: true,
         cursorBlinkRate: 400,
         cursorScrollMargin: 100,
-        mode: {name: 'gfm', globalVars: true}
+        theme: 'hypermd-light',
+        mode: {name: 'text/x-hypermd', globalVars: true},
+        extraKeys: {
+          Enter: 'newlineAndIndentContinueMarkdownList'
+        },
+        hmdHideToken: '(profile-1)',
+        hmdCursorDebounce: true,
+        hmdAutoFold: 200,
+        hmdPaste: true,
+        hmdFoldMath: { interval: 200, preview: true },
+        // hmdPasteImage: true,
       } as any)
+
+      let tmp: any = this.editor
+      tmp.hmdHoverInit()
+      tmp.hmdClickInit()
 
       // For Quentin's test
       this.setupGlobalForTests()
