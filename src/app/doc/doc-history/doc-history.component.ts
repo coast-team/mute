@@ -52,7 +52,7 @@ export class DocHistoryComponent implements OnInit {
   public editor: CodeMirror.Editor
   public currentOp: number
   private doc: Doc
-  private step: number
+  public step: number
   private oldText: string
 
   public rightSideNavMode = 'side'
