@@ -8,7 +8,6 @@
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
     "build": "ng build --prod -oh none",
-    "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && npm run sw && zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
@@ -16,7 +15,7 @@
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
-    "sw": "sw-precache --verbose --config=sw-precache.conf.js",
+    "sw": "workbox-cli generate:sw",
     "firebase-sw-deploy": "npm run build && firebase deploy",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
@@ -55,6 +54,7 @@
     "normalize.css": "^7.0.0",
     "rxjs": "^5.4.0",
     "web-animations-js": "^2.2.5",
+    "workbox-cli": "^1.0.1",
     "zone.js": "^0.8.12"
   },
   "devDependencies": {
