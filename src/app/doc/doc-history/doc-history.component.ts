@@ -52,7 +52,8 @@ export class DocHistoryComponent implements OnInit {
   public editor: CodeMirror.Editor
   public currentOp: number
   private doc: Doc
-  step = 1
+  private step: number
+  private oldText: string
 
   public rightSideNavMode = 'side'
 
@@ -63,7 +64,7 @@ export class DocHistoryComponent implements OnInit {
     public ui: UiService,
     public media: ObservableMedia,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
@@ -92,6 +93,8 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = 0
     })
 
+    this.step = 1
+    this.oldText = ''
 
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
@@ -157,17 +160,26 @@ export class DocHistoryComponent implements OnInit {
       const generatedText = this.generateText(0, numOperation - 1)
       // just replace the content of editor the generated text.
       doc.setValue(generatedText)
+      const diff = this.docHistory.getDiff(this.oldText, generatedText)
+      this.oldText = generatedText
       this.currentOp = numOperation
+      diff.forEach((part) => {
+       // console.log(part.value)
+      })
     }
 
     if (this.state) {
-      this.colorizeDifferences(begin, end + 1, reverse)
+      if (begin === end) {
+        end += 1
+      }
+      this.colorizeDifferences(begin, end, reverse)
     } else {
       this.colorizeAuthors(begin, end + 1)
     }
+
   }
 
-  generateText (beginOp: number, endOp: number): String {
+  generateText (beginOp: number, endOp: number): string {
     let textContent = ''
     for (let i = beginOp; i <= endOp; i++) {
       const currentOp = this.operations[i]
