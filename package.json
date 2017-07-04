@@ -17,7 +17,7 @@
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "sw": "workbox-cli generate:sw",
-    "firebase-sw-deploy": "npm run build && firebase deploy",
+    "firebase-sw-deploy": "npm run build && npm run sw && firebase deploy",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
