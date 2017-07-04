@@ -10,5 +10,6 @@ module.exports = {
   "skipWaiting": true,
   "navigateFallback": [
     "/index.html"
-  ]
+  ],
+  "maximumFileSizeToCacheInBytes": 4000000
 };
