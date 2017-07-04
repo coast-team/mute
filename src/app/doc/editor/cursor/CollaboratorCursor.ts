@@ -25,6 +25,8 @@ export class CollaboratorCursor {
     this.cm = cm
     this.selectionCSS = `background-color: ${collab.color};`
 
+    this.previousBookmarkPos = {line: 0, ch: 0}
+
     // HTML element for cursor
     this.cursorElm = document.createElement('span')
     this.cursorElm.className = 'collaborator-cursor'
@@ -39,6 +41,7 @@ export class CollaboratorCursor {
     this.pseudoElm.style.width = '0'
     this.updatePseudo(collab.pseudo)
 
+    // Append elements to DOM
     this.cursorElm.appendChild(this.pseudoElm)
     this.cm.getWrapperElement().appendChild(this.cursorElm)
   }
@@ -53,7 +56,6 @@ export class CollaboratorCursor {
 
   updatePseudo (pseudo: string) {
     this.pseudoElm.innerHTML = `&nbsp;${pseudo}`
-    log.debug('new pseudo', this.pseudoElm.style)
     this.pseudoElmWidth = `${15 + pseudo.length * 5}px`
   }
 
@@ -76,15 +78,20 @@ export class CollaboratorCursor {
   translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
     if (this.bookmark !== undefined) {
       const currentBookmarkPos = this.bookmark.find()
-      if (this.previousBookmarkPos.line !== currentBookmarkPos.line ||
-          this.previousBookmarkPos.ch !== currentBookmarkPos.ch) {
+      if (currentBookmarkPos !== undefined && (
+          this.previousBookmarkPos.line !== currentBookmarkPos.line ||
+          this.previousBookmarkPos.ch !== currentBookmarkPos.ch)) {
         const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
         if (linesNb === 1 && firstLineLength < 6) {
           this.cursorElm.style.transitionDuration = '0.03s'
         }
         this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
         this.resetPseudoTimeout()
+      } else {
+        this.hideCursor()
       }
+    } else {
+      this.hideCursor()
     }
   }
 
