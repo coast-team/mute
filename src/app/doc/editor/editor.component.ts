@@ -71,7 +71,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         // The change's origin indicates the kind of changes performed
         // When the application updates the editor programatically, this field remains undefined
         // Allow to filter the changes performed by our application
-        return changeEvent.change.origin !== undefined && changeEvent.change.origin !== 'setValue'
+        return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
       })
 
       const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
@@ -135,10 +135,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
           textOperations.forEach( (textOperation: any) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
             if (textOperation instanceof TextInsert) {
-              doc.replaceRange(textOperation.content, from)
+              doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')
             } else if (textOperation instanceof TextDelete) {
               const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-              doc.replaceRange('', from, to)
+              doc.replaceRange('', from, to, 'muteRemoteOp')
             }
           })
         }
