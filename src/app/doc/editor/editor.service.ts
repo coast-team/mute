@@ -65,11 +65,11 @@ export class EditorService {
     this.editor.addKeyMap({
       // bold
       'Ctrl-B': (cm) => {
-        this.toggleStyle(cm, '**', '\\*\\*')
+        this.toggleStyle(cm, '**', {'\\*\\*': '**', __: '__'})
       },
       // italic
       'Ctrl-I': (cm) => {
-        this.toggleStyle(cm, '_', '_')
+        this.toggleStyle(cm, '_', {_: '_', '\\*': '*'})
       },
       // strikethrough
       'Ctrl-Alt-S': (cm) => {
@@ -84,17 +84,29 @@ export class EditorService {
     })
   }
 
-  toggleStyle (cm: any, tokenSyntax: string, reTokenSyntax: string): void {
-    const DEBUG = true
+  toggleStyle (cm: any, tokenSyntax: string, reTokenSyntaxs: any): void {
+    let isAlreadyStyled = false
 
     const selectedText = cm.getSelection()
 
-    const reStyle: RegExp = new RegExp('.*' + reTokenSyntax + '.*' + reTokenSyntax + '.*')
+    for (let reTokenSyntax in reTokenSyntaxs) {
+      if (typeof reTokenSyntaxs[reTokenSyntax] === 'string') {
+        const reStyle: RegExp = new RegExp('.*' + reTokenSyntax + '.*' + reTokenSyntax + '.*')
+        let isStyled = reStyle.test(selectedText)
 
-    if (!selectedText.match(reStyle)) { // if not found, then the style does not exist yet
-      if (DEBUG) { console.log('there\'s no style on this selection') }
+        if (isStyled) {
+          tokenSyntax = reTokenSyntaxs[reTokenSyntax]
+        }
+
+        isAlreadyStyled = isAlreadyStyled || isStyled
+      }
+
+    }
+
+    if (!isAlreadyStyled) { // add style
       cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around')
-    } else { // otherwise
+    } else {
+      // remove style
       let subSelectedText = selectedText
       let beginOuterText = ''
       let endOuterText = ''
@@ -102,17 +114,11 @@ export class EditorService {
       let endTmp = ''
 
       while (subSelectedText.length > 2 * tokenSyntax.length + 1) {
-        if (DEBUG) { console.log('subSelectedText ' + subSelectedText) }
 
         beginTmp = subSelectedText.slice(0, tokenSyntax.length)
         endTmp = subSelectedText.slice(-tokenSyntax.length)
 
-        if (DEBUG) { console.log('beginTmp ' + beginTmp) }
-        if (DEBUG) { console.log('endTmp ' + endTmp) }
-        if (DEBUG) { console.log('just to be sure : ' + subSelectedText) }
-
         if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
-          if (DEBUG) { console.log('FOUND') }
           cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
           return
         }

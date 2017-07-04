@@ -89,6 +89,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
       this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
         return changeEvents.map( (changeEvent: ChangeEvent ) => {
+          // log.debug("Transmitting changements ", changeEvent.change.text)
           return changeEvent.toTextOperations()
         })
       })
