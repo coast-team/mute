@@ -93,11 +93,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
         if (cursor !== undefined) {
           if (pbMsg.getState() === pb.State.HIDDEN) {
             // When cursor should be hidden
-
             cursor.hideCursor()
+
           } else if (pbMsg.getState() === pb.State.FROM) {
             // When cursor update only
-
             cursor.clearSelection()
             cursor.showCursor()
             let newPos: CodeMirror.Position
@@ -110,9 +109,9 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
               newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
             cursor.translateCursorOnRemoteChange(newPos)
+
           } else {
             // When cursor & selection update
-
             let fromPos: CodeMirror.Position
             let toPos: CodeMirror.Position
             if (pbMsg.hasFrom()) {
