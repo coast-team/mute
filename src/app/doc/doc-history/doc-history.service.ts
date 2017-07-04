@@ -9,6 +9,7 @@ import { LocalStorageService } from '../../core/storage/local-storage/local-stor
 import { AUTHORS } from './mock-authors'
 import { Author } from '../../core/Author'
 import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
+const diff = require ('diff')
 
 @Injectable()
 export class DocHistoryService {
@@ -17,6 +18,10 @@ export class DocHistoryService {
     private localStorage: LocalStorageService,
     private collaboratorsService: RichCollaboratorsService
   ) {}
+
+  getDiff (strA: string, strB: string): any {
+    return diff.diffChars(strA, strB)
+  }
 
   getOperations (doc: Doc): Promise<(Delete|Insert)[]> {
     return new Promise((resolve, reject) => {
