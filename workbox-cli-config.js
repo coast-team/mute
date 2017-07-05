@@ -7,7 +7,7 @@ module.exports = {
   "globIgnores": [
     "../workbox-cli-config.js"
   ],
-  "skipWaiting": true,
+  "skipWaiting": false,
   "navigateFallback": [
     "/index.html"
   ],
