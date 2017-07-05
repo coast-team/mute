@@ -12,7 +12,7 @@ module.exports = function (config) {
       require('karma-coverage-istanbul-reporter'),
       require('@angular/cli/plugins/karma')
     ],
-    client:{
+    client: {
       clearContext: false // leave Jasmine Spec Runner output visible in browser
     },
     files: [
@@ -22,7 +22,7 @@ module.exports = function (config) {
       './src/test.ts': ['@angular/cli']
     },
     mime: {
-      'text/x-typescript': ['ts','tsx']
+      'text/x-typescript': ['ts', 'tsx']
     },
     coverageIstanbulReporter: {
       reports: [ 'html', 'lcovonly' ],
@@ -40,5 +40,5 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false
-  });
-};
+  })
+}
