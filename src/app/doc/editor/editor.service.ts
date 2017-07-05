@@ -65,15 +65,16 @@ export class EditorService {
     this.editor.addKeyMap({
       // bold
       'Ctrl-B': (cm) => {
-        this.toggleStyle(cm, '**', {'\\*\\*': '**', __: '__'})
+        this.toggleStyle(cm, '**', {'**': new RegExp('.*\\*\\*.*\\*\\*.*'), __: new RegExp('.*__.*__.*')})
       },
       // italic
       'Ctrl-I': (cm) => {
-        this.toggleStyle(cm, '_', {_: '_', '\\*': '*'})
+        this.toggleStyle(cm, '_', {_: new RegExp('[^_]*(_|___)[^_].*[^_](_|___)[^_]*', 'y'),
+          '*': new RegExp('[^\\*]*(\\*|\\*\\*\\*)[^\\*].*[^\\*](\\*|\\*\\*\\*)[^\\*]*', 'y')})
       },
       // strikethrough
       'Ctrl-Alt-S': (cm) => {
-        this.toggleStyle(cm, '~~', '~~')
+        this.toggleStyle(cm, '~~', {'~~': new RegExp('.*~~.*~~.*')})
       },
       // link
       'Ctrl-K': (cm) => {
@@ -88,47 +89,48 @@ export class EditorService {
     let isAlreadyStyled = false
 
     const selectedText = cm.getSelection()
+    if (selectedText.length > 0) {
+      for (let reTokenSyntax in reTokenSyntaxs) {
+        if (typeof reTokenSyntaxs[reTokenSyntax] === typeof(new RegExp(''))) {
+          const reStyle: RegExp = reTokenSyntaxs[reTokenSyntax]
+          let isStyled = reStyle.test(selectedText)
 
-    for (let reTokenSyntax in reTokenSyntaxs) {
-      if (typeof reTokenSyntaxs[reTokenSyntax] === 'string') {
-        const reStyle: RegExp = new RegExp('.*' + reTokenSyntax + '.*' + reTokenSyntax + '.*')
-        let isStyled = reStyle.test(selectedText)
+          if (isStyled) {
+            tokenSyntax = reTokenSyntax
+          }
 
-        if (isStyled) {
-          tokenSyntax = reTokenSyntaxs[reTokenSyntax]
+          isAlreadyStyled = isAlreadyStyled || isStyled
         }
 
-        isAlreadyStyled = isAlreadyStyled || isStyled
       }
 
-    }
+      if (!isAlreadyStyled) { // add style
+        cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around')
+      } else { // remove style
+        let subSelectedText = selectedText
+        let beginOuterText = ''
+        let endOuterText = ''
+        let beginTmp = ''
+        let endTmp = ''
 
-    if (!isAlreadyStyled) { // add style
-      cm.replaceSelection(tokenSyntax + selectedText + tokenSyntax, 'around')
-    } else {
-      // remove style
-      let subSelectedText = selectedText
-      let beginOuterText = ''
-      let endOuterText = ''
-      let beginTmp = ''
-      let endTmp = ''
+        while (subSelectedText.length > 2 * tokenSyntax.length + 1) {
 
-      while (subSelectedText.length > 2 * tokenSyntax.length + 1) {
+          beginTmp = subSelectedText.slice(0, tokenSyntax.length)
+          endTmp = subSelectedText.slice(-tokenSyntax.length)
 
-        beginTmp = subSelectedText.slice(0, tokenSyntax.length)
-        endTmp = subSelectedText.slice(-tokenSyntax.length)
+          if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
+            cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
+            return
+          }
 
-        if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
-          cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
-          return
+          beginOuterText = beginOuterText + beginTmp.slice(0, 1)
+          endOuterText = endTmp.slice(-1) + endOuterText
+          subSelectedText = subSelectedText.slice(1, -1)
+
         }
-
-        beginOuterText = beginOuterText + beginTmp.slice(0, 1)
-        endOuterText = endTmp.slice(-1) + endOuterText
-        subSelectedText = subSelectedText.slice(1, -1)
-
       }
     }
+
   }
 
   setupGlobalForTests () {
