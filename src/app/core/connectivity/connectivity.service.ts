@@ -12,6 +12,10 @@ export class ConnectivityService {
     this.previousState = undefined
   }
 
+  getPreviousState (): boolean {
+    return this.previousState
+  }
+
   get onLine (): Observable<boolean> {
     return this.onLineSubject.asObservable()
   }
