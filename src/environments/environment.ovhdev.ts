@@ -3,7 +3,7 @@ export const environment = {
   devLabel: true,
   iceServers: [
     {
-      urls: 'stun.l.google.com:19302'
+      urls: 'stun:stun.l.google.com:19302'
     }
   ],
   signalingURL: 'wss://www.coedit.re:20443',
