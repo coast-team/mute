@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { DocHistoryService, Delete, Insert } from '../doc-history.service'
 import { ActivatedRoute } from '@angular/router'
 import { Doc } from '../../../core/Doc'
@@ -12,12 +12,15 @@ import { Author } from '../../../core/Author'
 export class CollaboratorsComponent implements OnInit {
 
   @Input() docAuthors: Author[]
-  doc
+  @Output() change = new EventEmitter<boolean>()
 
   constructor (private docHistoryService: DocHistoryService, private route: ActivatedRoute) { }
 
   ngOnInit () {
+  }
 
+  onChange (value: any) {
+    this.change.emit(value.checked)
   }
 
 }

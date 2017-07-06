@@ -11,23 +11,23 @@ import { UiService } from '../../../core/ui/ui.service'
 })
 export class HistoryControlsComponent implements OnInit {
 
-  private doc: Doc
   public isPlaying: boolean
   @Input() currentOp: number
   @Input() nbOperations: number
+  @Input() max: number
   @Output() onControls: EventEmitter<Number>
+  @Output() onSlide: EventEmitter<Number>
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
     public ui: UiService) {
-    this.onControls = new EventEmitter<number>()
+    this.onControls = new EventEmitter<number>(),
+    this.onSlide = new EventEmitter<number>()
   }
 
   ngOnInit () {
     this.isPlaying = false
-    this.route.data
-      .subscribe(({doc}: {doc: Doc}) => {this.doc = doc})
   }
 
   onClickPlay (event: any) {
@@ -49,9 +49,14 @@ export class HistoryControlsComponent implements OnInit {
     this.onControls.emit(CONTROLS.FAST_REWIND)
   }
 
-  showEditor () {
-    this.ui.setActiveFile(this.doc)
-    this.router.navigate(['/doc/' + this.doc.id])
+  updateStep (step: number) {
+    this.onSlide.emit(step)
   }
 
+  showEditor () {
+    this.route.data.subscribe((data: {doc: Doc}) => {
+      this.ui.setActiveFile(data.doc)
+      this.router.navigate(['/doc/' + data.doc.id])
+    })
+  }
 }

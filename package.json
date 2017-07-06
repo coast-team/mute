@@ -16,8 +16,8 @@
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
-    "sw": "sw-precache --verbose --config=sw-precache.conf.js",
-    "firebase-sw-deploy": "npm run build && firebase deploy",
+    "sw": "workbox-cli generate:sw",
+    "firebase-sw-deploy": "npm run build && npm run sw && firebase deploy",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
@@ -42,6 +42,7 @@
     "bragi-browser": "0.0.12",
     "codemirror": "^5.27.4",
     "core-js": "^2.4.1",
+    "diff": "^3.2.0",
     "google-protobuf": "^3.3.0",
     "hammerjs": "^2.0.8",
     "hypermd": "git+https://github.com/menou2u/HyperMD.git",
@@ -79,12 +80,12 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "live-server": "^1.2.0",
     "protractor": "~5.1.2",
-    "sw-precache": "^5.2.0",
     "ts-node": "~3.0.4",
     "tslint": "~5.3.2",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.3.3",
-    "validate-commit-msg": "^2.12.2"
+    "validate-commit-msg": "^2.12.2",
+    "workbox-cli": "^1.0.1"
   },
   "repository": {},
   "config": {

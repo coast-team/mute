@@ -12,11 +12,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() currentOp: number
   @Input() delay: number
   @Input() nbOperations: number
+  @Input() max: number
+  @Input() step: number
   @Output() onSlide: EventEmitter<Number>
 
   player: any
   private subscriptionPlayer: Subscription
-  step: number
   stepSize: number
 
   constructor () {
@@ -63,10 +64,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
     if (this.subscriptionPlayer) {
       this.pause()
     }
-  }
-
-  updateStep (event: any) {
-    this.step = event.value <= 0 ? 1 : event.value
   }
 
 }

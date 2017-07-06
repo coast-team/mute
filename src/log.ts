@@ -11,7 +11,7 @@ BRAGI.transports.get('console').property('showMeta', false)
 * `log` and `BRAGI`.
 * This script is then imported into *app.module.ts*.
 */
-class Log {
+export class Log {
   /**
    * Colored 'Debug' group log.
    * @param {string} msg message
