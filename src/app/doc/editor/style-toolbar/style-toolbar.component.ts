@@ -9,7 +9,7 @@ import { MdButtonToggleModule } from '@angular/material'
 import { EditorService } from '../editor.service'
 
 @Component({
-  selector: 'mute-style-yoolbar',
+  selector: 'mute-style-toolbar',
   templateUrl: './style-toolbar.component.html',
   styleUrls: ['./style-toolbar.component.scss'],
   providers: [ EditorService ]
