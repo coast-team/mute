@@ -28,7 +28,8 @@ import * as CodeMirror from 'codemirror'
     // Should find a proper way to do it.
     './editor.component.scss'
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ EditorService ]
 })
 
 @Injectable()
@@ -42,14 +43,14 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
 
   @Input() docService: DocService
-  @Input() editorService: EditorService = new EditorService()
   @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
   public editor: CodeMirror.Editor
 
   constructor (
-    private zone: NgZone
+    private zone: NgZone,
+    private editorService: EditorService
   ) {}
 
   ngOnInit () {
