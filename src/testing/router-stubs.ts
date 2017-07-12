@@ -1,3 +1,4 @@
+/* tslint:disable:component-selector */
 import { Component, Directive, Injectable, Input } from '@angular/core'
 import { NavigationExtras } from '@angular/router'
 
