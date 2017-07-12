@@ -1,0 +1,12 @@
+.mute-style-toolbar {
+  z-index: 4;
+  position: absolute;
+}
+
+.active {
+  visibility: visible
+}
+
+.inactive {
+  visibility: hidden
+}
