@@ -5,7 +5,7 @@ describe('ConnectivityService test', () => {
 
   beforeEach(() => connectivityService = new ConnectivityService())
 
-  it('Correct Init', () => expect(connectivityService.getPreviousState()).toBe(undefined))
+  it('Correct Init', () => expect(connectivityService).toBeTruthy())
 
   it('Correct Changing State', () => {
     connectivityService.testConnection(undefined)

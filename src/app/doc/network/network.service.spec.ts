@@ -1,6 +1,6 @@
 import { NetworkService } from './network.service'
 
-describe('Network registration tests', () => {
+describe('NetworkService', () => {
   let networkService: NetworkService
 
   beforeEach(() => {
@@ -9,14 +9,18 @@ describe('Network registration tests', () => {
     networkService.join('key')
   })
 
-  it('Correct iceServer', () => {
+  it('Correct Init', () => {
+    expect(networkService).toBeTruthy()
+  })
+
+  it('IceServers', () => {
     networkService.fetchServer().then((iceServers) => {
       console.log(iceServers)
       expect(iceServers).toBeDefined()
     })
   })
 
-  it('Correct key', () => {
+  it('Key', () => {
     expect(networkService.key).toBe('key')
   })
 

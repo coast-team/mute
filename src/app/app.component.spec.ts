@@ -15,7 +15,7 @@ class DevLabelStubComponent {}
 let comp: AppComponent
 let fixture: ComponentFixture<AppComponent>
 
-describe('AppComponent & Testmodule', () => {
+describe('AppComponent', () => {
   beforeEach(async (() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
