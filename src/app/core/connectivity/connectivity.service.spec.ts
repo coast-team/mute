@@ -1,6 +1,6 @@
 import { ConnectivityService } from './connectivity.service'
 
-describe('ConnectivityService test', () => {
+describe('ConnectivityService', () => {
   let connectivityService: ConnectivityService
 
   beforeEach(() => connectivityService = new ConnectivityService())
