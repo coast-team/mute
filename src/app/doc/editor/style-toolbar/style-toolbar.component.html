@@ -1,25 +1,60 @@
-<md-button-toggle-group class="mute-style-toolbar inactive">
+<md-button-toggle-group class="mute-style-toolbar inactive" multiple>
   <md-button-toggle value="bold" (click)="toggleBold()" mdTooltip="Bold">
     <md-icon>format_bold</md-icon>
   </md-button-toggle>
+
   <md-button-toggle value="italic" (click)="toggleItalic()" mdTooltip="Italic">
     <md-icon>format_italic</md-icon>
   </md-button-toggle>
+
   <md-button-toggle value="strikethrough" (click)="toggleStrikethrough()" mdTooltip="Strikethrough">
     <md-icon>format_strikethrough</md-icon>
   </md-button-toggle>
+
   <md-button-toggle value="link" (click)="handleLink()" mdTooltip="Insert link">
     <md-icon>link</md-icon>
   </md-button-toggle>
-  <md-button-toggle value="quote" mdTooltip="Quote">
+
+  <md-button-toggle value="quote" mdTooltip="Quote" (click)="createQuotation()">
     <md-icon>format_quote</md-icon>
   </md-button-toggle>
-  <md-button-toggle value="headers" mdTooltip="Headers">
+  
+  <button md-button [mdMenuTriggerFor]="headers" value="headers" mdTooltip="Headers">
     <md-icon>format_size</md-icon>
     <md-icon>arrow_drop_down</md-icon>
-  </md-button-toggle>
-  <md-button-toggle value="lists" mdTooltip="Create a list">
-    <md-icon>format_list_numbered</md-icon>
-    <md-icon>arrow_drop_down</md-icon>
-  </md-button-toggle>
+  </button>
+  <md-menu #headers="mdMenu" [overlapTrigger]="false">
+      <button md-menu-item mdTooltip="H1" (click)="addHeader(1)">
+        <span>H1</span>
+      </button>
+      <button md-menu-item mdTooltip="H2" (click)="addHeader(2)">
+        <span>H2</span>
+      </button>
+      <button md-menu-item mdTooltip="H3" (click)="addHeader(3)">
+        <span>H3</span>
+      </button>
+      <button md-menu-item mdTooltip="H4" (click)="addHeader(4)">
+        <span>H4</span>
+      </button>
+      <button md-menu-item mdTooltip="H5" (click)="addHeader(5)">
+        <span>H5</span>
+      </button>
+  </md-menu>
+  
+  <button md-button [mdMenuTriggerFor]="lists" value="lists" mdTooltip="Lists">
+      <md-icon>format_list_numbered</md-icon>
+      <md-icon>arrow_drop_down</md-icon>
+  </button>
+  <md-menu #lists="mdMenu" [overlapTrigger]="false">
+      <button md-menu-item mdTooltip="Bulleted list">
+        <md-icon>format_list_bulleted</md-icon>
+      </button>
+      <button md-menu-item mdTooltip="Numbered list">
+        <md-icon>format_list_numbered</md-icon>
+      </button>
+      <button md-menu-item mdTooltip="Check list">
+        <md-icon>check_box</md-icon>
+        <md-icon>check_box_outline_blank</md-icon>
+      </button>
+  </md-menu>
 </md-button-toggle-group>

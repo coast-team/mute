@@ -20,6 +20,7 @@ export class StyleToolbarComponent implements OnInit {
 
   @Input() cm: CodeMirror.Editor
 
+  private buttons: Array<any> = new Array()
   private toolbarWidth: number
   private toolbar: any
 
@@ -29,6 +30,7 @@ export class StyleToolbarComponent implements OnInit {
 
   ngOnInit () {
     this.toolbar = document.getElementsByClassName('mute-style-toolbar')[0]
+    this.getButtons()
     this.toolbarWidth = this.removePx(getComputedStyle(this.toolbar).width)
 
     // Set up when to show/hide toolbar
@@ -40,6 +42,7 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   hideToolbar (): void {
+    this.resetToggledButtons()
     this.toolbar.classList.remove('active')
     this.toolbar.classList.add('inactive')
   }
@@ -82,6 +85,14 @@ export class StyleToolbarComponent implements OnInit {
       }
     }
     this.toolbar.style = 'top: ' + top + 'px; ' + horizontalPosition
+  }
+
+  resetToggledButtons (): void {
+    this.buttons.forEach(function (button) {
+      if (button.classList.contains('mat-button-toggle-checked')) {
+        button.classList.remove('mat-button-toggle-checked')
+      }
+    })
   }
 
   // ACCESS PROPERTIES OF SELECTION
@@ -132,7 +143,40 @@ export class StyleToolbarComponent implements OnInit {
     this.editorService.toggleStyle(this.cm, '~~', {'~~': new RegExp('.*~~.*~~.*')})
   }
 
+  createQuotation (): void {
+    this.cm.getDoc().replaceSelection('>' + this.cm.getDoc().getSelection())
+  }
+
+  addHeader (headerSize: string): void {
+    switch (+(headerSize)) {
+    case 1:
+      headerSize = '# '
+      break
+    case 2:
+      headerSize = '## '
+      break
+    case 3:
+      headerSize = '### '
+      break
+    case 4:
+      headerSize = '#### '
+      break
+    case 5:
+      headerSize = '##### '
+      break
+    }
+    this.cm.getDoc().replaceSelection(headerSize + this.cm.getDoc().getSelection())
+  }
+
   // TOOLS
+  getButtons (): void {
+    this.buttons.push(this.toolbar.childNodes[1])
+    this.buttons.push(this.toolbar.childNodes[3])
+    this.buttons.push(this.toolbar.childNodes[5])
+    this.buttons.push(this.toolbar.childNodes[7])
+    this.buttons.push(this.toolbar.childNodes[9])
+  }
+
   removePx (cssSize: string): number {
     return +(cssSize.slice(0, -2))
   }
