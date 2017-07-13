@@ -4,7 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core'
-import { MdButtonToggleModule } from '@angular/material'
+import { MdButtonToggleModule, MdTooltipModule } from '@angular/material'
 
 import { EditorService } from '../editor.service'
 
@@ -32,9 +32,10 @@ export class StyleToolbarComponent implements OnInit {
     this.toolbarWidth = this.removePx(getComputedStyle(this.toolbar).width)
 
     // Set up when to show/hide toolbar
+    // As it runs even when the selection is not complete, maybe is needs to create a custom CodeMirror event
     this.cm.on('cursorActivity', () => { this.showToolbar() })
     this.cm.on('mousedown', () => { this.hideToolbar() })
-    // FIX ME: it disappear when it's clicked (check event.target)
+    // FIX ME: it disappears when it's clicked (check event.target)
     // this.cm.on('blur', () => { this.hideToolbar() })
   }
 
@@ -44,19 +45,27 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   showToolbar (): void {
-    if (this.cm.getDoc().getSelection().length > 0) {
+    if (this.cm.getDoc().somethingSelected()) {
+      this.setToggledButtons()
       this.setToolbarLocation()
       this.toolbar.classList.remove('inactive')
       this.toolbar.classList.add('active')
     }
   }
 
+  // SET TOOLBAR UP
+  // Find via DOM and CodeMirror state which style a selection has, so the related buttons be toggled
+  setToggledButtons (): void {
+
+  }
+
   setToolbarLocation (): void {
     const width: number = this.removePx(getComputedStyle(document.getElementsByTagName('mute-editor')[0] as any).borderLeft) // not ideal
 
-    const top: number = this.getTopOfSelection()
-    let left: number = this.getLeftFromMiddleOfSelection(top)
-    let right: number = this.getRightFromMiddleOfSelection(top)
+    const line: number = this.getUpperLine()
+    let top: number = this.getTopFromSelection(line)
+    let left: number = this.getLeftFromMiddleOfSelection(line)
+    let right: number = this.getRightFromMiddleOfSelection(line)
 
     let horizontalPosition = ''
 
@@ -72,7 +81,7 @@ export class StyleToolbarComponent implements OnInit {
         horizontalPosition = 'left: ' + left + 'px;'
       }
     }
-    this.toolbar.style = 'top: ' + top * this.cm.defaultTextHeight() + 'px; ' + horizontalPosition
+    this.toolbar.style = 'top: ' + top + 'px; ' + horizontalPosition
   }
 
   // ACCESS PROPERTIES OF SELECTION
@@ -96,7 +105,12 @@ export class StyleToolbarComponent implements OnInit {
     return charCoords.right
   }
 
-  getTopOfSelection (): number {
+  getTopFromSelection (line: number): number {
+    let charCoords = this.cm.charCoords({line, ch: 0}, 'local')
+    return charCoords.top - 8
+  }
+
+  getUpperLine (): number {
     let selection = this.cm.getDoc().listSelections()[0]
     let anchor = selection.anchor.line
     let head = selection.head.line
