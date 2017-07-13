@@ -1,20 +1,18 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+import { CUSTOM_ELEMENTS_SCHEMA, Injectable } from '@angular/core'
 import { RouterTestingModule } from '@angular/router/testing'
-import { CollaboratorsComponent } from './collaborators.component'
-import { DocHistoryService } from '../doc-history.service'
+import { TimelineComponent } from './timeline.component'
 
+let comp: TimelineComponent
+let fixture: ComponentFixture<TimelineComponent>
 
-let comp: CollaboratorsComponent
-let fixture: ComponentFixture<CollaboratorsComponent>
+let uiServiceStub
 
-let docHistoryService
-
-describe('CollaboratorsComponent', () => {
+describe('TimelineComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CollaboratorsComponent
+        TimelineComponent
       ],
       imports: [
         RouterTestingModule
@@ -23,12 +21,11 @@ describe('CollaboratorsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ],
       providers: [
-        { provide: DocHistoryService, useValue: docHistoryService}
       ]
     })
     .compileComponents()
     .then(() => {
-      fixture = TestBed.createComponent(CollaboratorsComponent)
+      fixture = TestBed.createComponent(TimelineComponent)
       comp = fixture.componentInstance
     })
   }))

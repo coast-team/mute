@@ -1,7 +1,7 @@
 import { Doc } from './Doc'
 import { LocalStorageService } from './storage/local-storage/local-storage.service'
 
-describe( 'Doc class', () => {
+describe( 'Doc', () => {
   let doc: Doc
 
   beforeEach( () => {

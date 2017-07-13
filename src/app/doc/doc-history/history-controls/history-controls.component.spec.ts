@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+import { CUSTOM_ELEMENTS_SCHEMA, Injectable } from '@angular/core'
 import { RouterTestingModule } from '@angular/router/testing'
-import { CollaboratorsComponent } from './collaborators.component'
-import { DocHistoryService } from '../doc-history.service'
+import { HistoryControlsComponent } from './history-controls.component'
+import { UiService } from '../../../core/ui/ui.service'
 
 
-let comp: CollaboratorsComponent
-let fixture: ComponentFixture<CollaboratorsComponent>
+let comp: HistoryControlsComponent
+let fixture: ComponentFixture<HistoryControlsComponent>
 
-let docHistoryService
+let uiServiceStub
 
-describe('CollaboratorsComponent', () => {
+describe('HistoryControlsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CollaboratorsComponent
+        HistoryControlsComponent
       ],
       imports: [
         RouterTestingModule
@@ -23,12 +23,12 @@ describe('CollaboratorsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ],
       providers: [
-        { provide: DocHistoryService, useValue: docHistoryService}
+        { provide: UiService, useValue: uiServiceStub}
       ]
     })
     .compileComponents()
     .then(() => {
-      fixture = TestBed.createComponent(CollaboratorsComponent)
+      fixture = TestBed.createComponent(HistoryControlsComponent)
       comp = fixture.componentInstance
     })
   }))
@@ -37,6 +37,7 @@ describe('CollaboratorsComponent', () => {
 
 function tests () {
   it('Correct Init', () => {
+    console.log(comp)
     expect(comp).toBeTruthy()
   })
 }
