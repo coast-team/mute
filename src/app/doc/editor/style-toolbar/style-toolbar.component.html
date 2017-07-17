@@ -1,4 +1,4 @@
-<md-button-toggle-group class="mute-style-toolbar inactive" multiple>
+<md-button-toggle-group #muteStyleToolbar class="mute-style-toolbar inactive mat-elevation-z6" multiple>
   <md-button-toggle value="bold" (click)="toggleBold()" mdTooltip="Bold">
     <md-icon>format_bold</md-icon>
   </md-button-toggle>
@@ -11,12 +11,12 @@
     <md-icon>format_strikethrough</md-icon>
   </md-button-toggle>
 
-  <md-button-toggle value="link" (click)="handleLink()" mdTooltip="Insert link">
-    <md-icon>link</md-icon>
+  <md-button-toggle value="quote" (click)="createQuotation()" mdTooltip="Quotation">
+    <md-icon>format_quote</md-icon>
   </md-button-toggle>
 
-  <md-button-toggle value="quote" mdTooltip="Quote" (click)="createQuotation()">
-    <md-icon>format_quote</md-icon>
+  <md-button-toggle value="link" (click)="handleLink()" mdTooltip="Insert link">
+    <md-icon>link</md-icon>
   </md-button-toggle>
   
   <button md-button [mdMenuTriggerFor]="headers" value="headers" mdTooltip="Headers">
@@ -24,37 +24,46 @@
     <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #headers="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item mdTooltip="H1" (click)="addHeader(1)">
+      <button md-menu-item (click)="addHeader(1)" mdTooltip="H1" >
         <span>H1</span>
       </button>
-      <button md-menu-item mdTooltip="H2" (click)="addHeader(2)">
+      <button md-menu-item (click)="addHeader(2)" mdTooltip="H2" >
         <span>H2</span>
       </button>
-      <button md-menu-item mdTooltip="H3" (click)="addHeader(3)">
+      <button md-menu-item (click)="addHeader(3)" mdTooltip="H3">
         <span>H3</span>
       </button>
-      <button md-menu-item mdTooltip="H4" (click)="addHeader(4)">
+      <button md-menu-item (click)="addHeader(4)" mdTooltip="H4">
         <span>H4</span>
       </button>
-      <button md-menu-item mdTooltip="H5" (click)="addHeader(5)">
+      <button md-menu-item (click)="addHeader(5)" mdTooltip="H5">
         <span>H5</span>
       </button>
   </md-menu>
   
-  <button md-button [mdMenuTriggerFor]="lists" value="lists" mdTooltip="Lists">
+  <button md-button value="numberedlist" (click)="createList(0)" mdTooltip="Numbered List">
       <md-icon>format_list_numbered</md-icon>
+  </button>
+
+  <button md-button [mdMenuTriggerFor]="bulletedlists" value="bulletedlists" mdTooltip="Bulleted Lists">
+      <md-icon>format_list_bulleted</md-icon>
       <md-icon>arrow_drop_down</md-icon>
   </button>
-  <md-menu #lists="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item mdTooltip="Bulleted list">
-        <md-icon>format_list_bulleted</md-icon>
-      </button>
-      <button md-menu-item mdTooltip="Numbered list">
-        <md-icon>format_list_numbered</md-icon>
-      </button>
-      <button md-menu-item mdTooltip="Check list">
-        <md-icon>check_box</md-icon>
-        <md-icon>check_box_outline_blank</md-icon>
-      </button>
+  <md-menu #bulletedlists="mdMenu" [overlapTrigger]="false">
+    <button md-menu-item (click)="createList(1)" mdTooltip="-">
+      <md-icon>remove</md-icon>
+    </button>
+    <!--><button md-menu-item (click)="createList(times)" mdTooltip="*">
+      <svg style="width:24px;height:24px;fill:aqua !important;" viewBox="0 0 24 24">
+    <path fill="#000000" d="M11,3H13V10.27L19.29,6.64L20.29,8.37L14,12L20.3,15.64L19.3,17.37L13,13.72V21H11V13.73L4.69,17.36L3.69,15.63L10,12L3.72,8.36L4.72,6.63L11,10.26V3Z" />
+</svg>
+    </button></!-->
+    <button md-menu-item (click)="createList(3)" mdTooltip="+">
+      <md-icon>add</md-icon>
+    </button>
+    <button md-menu-item (click)="createList(4)" mdTooltip="Check list">
+      <!--><md-icon>check_box</md-icon></!-->
+      <md-icon>check_box_outline_blank</md-icon>
+    </button>
   </md-menu>
 </md-button-toggle-group>

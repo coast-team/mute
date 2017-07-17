@@ -96,13 +96,14 @@ export class EditorService {
       pos = cm.getCursor()
       line = pos.line
       ch = pos.ch
-      cm.setCursor({line, ch: ch - 4})
+      cm.setSelection({line, ch: ch - 1}, {line, ch: ch - 4})
     } else {
       let sizeOfLinkBeforeURL = selectedText.match(new RegExp('\\[[\\s\\S]*\\]\\('))[0].length
-      if (ch < cm.listSelections()[0].head.ch) {
-        cm.setCursor({line, ch: ch + sizeOfLinkBeforeURL})
-      } else {
-        cm.setCursor({line, ch: ch - (selectedText.length - sizeOfLinkBeforeURL)})
+      if (ch < cm.listSelections()[0].head.ch) { // LTR selection
+        cm.setSelection({line, ch: ch + sizeOfLinkBeforeURL}, {line, ch: ch + sizeOfLinkBeforeURL + 3})
+      } else { // RTL selection
+        cm.setSelection({line, ch: ch - (selectedText.length - sizeOfLinkBeforeURL)},
+         {line, ch: ch - (selectedText.length - sizeOfLinkBeforeURL) + 3})
       }
     }
   }

@@ -2,7 +2,8 @@ import {
   Component,
   Injectable,
   Input,
-  OnInit
+  OnInit,
+  ViewChild
 } from '@angular/core'
 import { MdButtonToggleModule, MdTooltipModule } from '@angular/material'
 
@@ -19,6 +20,7 @@ import { EditorService } from '../editor.service'
 export class StyleToolbarComponent implements OnInit {
 
   @Input() cm: CodeMirror.Editor
+  @ViewChild('muteStyleToolbar') muteStyleToolbar
 
   private buttons: Array<any> = new Array()
   private toolbarWidth: number
@@ -59,7 +61,6 @@ export class StyleToolbarComponent implements OnInit {
   // SET TOOLBAR UP
   // Find via DOM and CodeMirror state which style a selection has, so the related buttons be toggled
   setToggledButtons (): void {
-
   }
 
   setToolbarLocation (): void {
@@ -128,7 +129,7 @@ export class StyleToolbarComponent implements OnInit {
     return Math.min(anchor, head)
   }
 
-  // MD-BUTTON-TOGGLE FUNCTIONNALITIES
+  // BUTTONS FUNCTIONNALITIES
   toggleBold (): void {
     this.editorService.toggleStyle(this.cm, '**', {'**': new RegExp('[\\s\\S]*\\*\\*[\\s\\S]*\\*\\*[\\s\\S]*'),
       __: new RegExp('[\\s\\S]*__[\\s\\S]*__[\\s\\S]*')})
@@ -141,6 +142,10 @@ export class StyleToolbarComponent implements OnInit {
 
   toggleStrikethrough (): void {
     this.editorService.toggleStyle(this.cm, '~~', {'~~': new RegExp('.*~~.*~~.*')})
+  }
+
+  handleLink (): void {
+    this.editorService.handleLink(this.cm.getDoc())
   }
 
   createQuotation (): void {
@@ -168,7 +173,44 @@ export class StyleToolbarComponent implements OnInit {
     this.cm.getDoc().replaceSelection(headerSize + this.cm.getDoc().getSelection())
   }
 
+  createList (bullet: string): void {
+    const selection = this.cm.getDoc().getSelection()
+    switch (+(bullet)) {
+    case 0:
+      bullet = '. '
+      break
+    case 1:
+      bullet = '- '
+      break
+    case 2:
+      bullet = '* '
+      break
+    case 3:
+      bullet = '+ '
+      break
+    case 4:
+      bullet = '- [ ] '
+      break
+    }
+    let list = ''
+    let beginningIndexOfSubSelection = 0
+    let counter = 1
+    for (let i = 0; i < selection.length; i++) {
+      if (selection[i] === '\n' || i === selection.length - 1) {
+        if (bullet === '. ') {
+          list += counter + bullet + selection.slice(beginningIndexOfSubSelection, i + 1)
+          counter++
+        } else {
+          list += bullet + selection.slice(beginningIndexOfSubSelection, i + 1)
+        }
+        beginningIndexOfSubSelection = i + 1
+      }
+    }
+    this.cm.getDoc().replaceSelection(list)
+  }
+
   // TOOLS
+  // FIX ME: should work for any toolbar configuration
   getButtons (): void {
     this.buttons.push(this.toolbar.childNodes[1])
     this.buttons.push(this.toolbar.childNodes[3])
