@@ -148,6 +148,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     aux.select()
     document.execCommand('copy')
     document.body.removeChild(aux)
+    this.snackBarSubject.next('Address to ' + doc.id.toString() + ' is in clipboard!')
   }
 
 }

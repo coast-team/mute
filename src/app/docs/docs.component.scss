@@ -37,12 +37,12 @@ md-card {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    padding: 0px;
     @media (max-width: 600px) {
       flex-direction: column;
     }
     
     button {
-      transition-delay: 200ms;
       transition-property: all;
       transition-duration: 200ms;
       opacity: 0;
