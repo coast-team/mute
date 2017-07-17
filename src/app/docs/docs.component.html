@@ -12,6 +12,7 @@
       <h3 class="noDoc" *ngIf="docs.length === 0">You don't have any document!</h3>
       <md-card *ngFor="let doc of docs; let i = index"
         fxLayout="column" fxFlex.xs="1 0 150px"
+        (dblclick)="openDoc(doc)"
       >
       <md-card-header>
         <div *ngIf="doc.sync; else elseBlock" md-card-avatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
