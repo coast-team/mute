@@ -9,6 +9,6 @@ message BotProtocol {
   string key = 1;
 }
 
-message BotReponse {
+message BotResponse {
   string url = 1;
 }
