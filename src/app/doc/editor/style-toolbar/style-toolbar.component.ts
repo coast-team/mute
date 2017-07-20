@@ -2,8 +2,7 @@ import {
   Component,
   Injectable,
   Input,
-  OnInit,
-  ViewChild
+  OnInit
 } from '@angular/core'
 import { MdButtonToggleModule, MdTooltipModule } from '@angular/material'
 
@@ -20,7 +19,6 @@ import { EditorService } from '../editor.service'
 export class StyleToolbarComponent implements OnInit {
 
   @Input() cm: CodeMirror.Editor
-  @ViewChild('muteStyleToolbar') muteStyleToolbar
 
   private buttons: Array<any> = new Array()
   private toolbarWidth: number
@@ -32,35 +30,84 @@ export class StyleToolbarComponent implements OnInit {
 
   ngOnInit () {
     this.toolbar = document.getElementsByClassName('mute-style-toolbar')[0]
-    this.getButtons()
+    this.getToggleButtons()
     this.toolbarWidth = this.removePx(getComputedStyle(this.toolbar).width)
+    this.setListeners()
+  }
 
-    // Set up when to show/hide toolbar
-    // As it runs even when the selection is not complete, maybe is needs to create a custom CodeMirror event
-    this.cm.on('cursorActivity', () => { this.showToolbar() })
-    this.cm.on('mousedown', () => { this.hideToolbar() })
-    // FIX ME: it disappears when it's clicked (check event.target)
-    // this.cm.on('blur', () => { this.hideToolbar() })
+  // Set up when to show/hide toolbar
+  setListeners (): void {
+    this.cm.on('cursorActivity', () => { this.updateToolbarState() })
+
+    // Handles 'on blur'
+    let editor = document.getElementsByTagName('mute-editor')[0]
+    editor.addEventListener('mousedown', this.checkThenHide.bind(this))
+
+    this.cm.addKeyMap({Esc: () => this.hideToolbar() })
+  }
+
+  checkThenHide (event: Event): void {
+    let editor = document.getElementsByTagName('mute-editor')[0]
+    if (event.target === editor) {
+      this.hideToolbar()
+    }
   }
 
   hideToolbar (): void {
-    this.resetToggledButtons()
-    this.toolbar.classList.remove('active')
-    this.toolbar.classList.add('inactive')
+    if (this.toolbar.classList.contains('active')) {
+      if (this.cm.getDoc().somethingSelected()) { // For 'Esc', so the selection is removed
+        this.cm.getDoc().setSelection(this.cm.getDoc().getCursor(), this.cm.getDoc().getCursor())
+      }
+      this.resetToggledButtons()
+      this.toolbar.classList.remove('active')
+      this.toolbar.classList.add('inactive')
+    }
   }
 
-  showToolbar (): void {
-    if (this.cm.getDoc().somethingSelected()) {
+  updateToolbarState (): void {
+    if (this.cm.getDoc().somethingSelected() && this.toolbar.classList.contains('inactive')) {
       this.setToggledButtons()
       this.setToolbarLocation()
       this.toolbar.classList.remove('inactive')
       this.toolbar.classList.add('active')
+    } else if (!this.cm.getDoc().somethingSelected()) {
+      this.hideToolbar()
+    } else if (this.toolbar.classList.contains('active')) {
+      this.setToggledButtons()
+      this.setToolbarLocation()
     }
   }
 
   // SET TOOLBAR UP
-  // Find via DOM and CodeMirror state which style a selection has, so the related buttons be toggled
   setToggledButtons (): void {
+    // log.debug('SET BUTTONS')
+    const selection = this.cm.getDoc().listSelections()[0]
+    let sum = (selection.anchor.ch + selection.head.ch) / 2
+    this.cm.getDoc().setSelection({ch: sum - 1, line: selection.anchor.line}, {ch: sum + 1, line: selection.head.line})
+    const selectionStyles = (this.cm.getTokenAt(this.cm.getDoc().listSelections()[0].anchor)).type
+    // log.debug('STYLES', selectionStyles)
+    const existingStyles = ['strong', 'em', 'strikethrough', 'quote', 'link']
+    let buttonIndex = 0
+    existingStyles.forEach((style) => {
+
+      if (selectionStyles && selectionStyles.includes(style)) {
+
+        // log.debug('it should be toggled')
+
+        this.buttons[buttonIndex].classList.add('mat-button-toggle-checked')
+
+        // log.debug('button', this.buttons[buttonIndex])
+
+      } else if (this.buttons[buttonIndex].classList.contains('mat-button-toggle-checked')) {
+
+        // log.debug('before', this.buttons[buttonIndex])
+        this.buttons[buttonIndex].classList.remove('mat-button-toggle-checked')
+        // log.debug('after', this.buttons[buttonIndex])
+
+      }
+      buttonIndex++
+    })
+    this.cm.getDoc().setSelection(selection.anchor, selection.head)
   }
 
   setToolbarLocation (): void {
@@ -89,6 +136,7 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   resetToggledButtons (): void {
+    // log.debug('RESET BUTTONS')
     this.buttons.forEach(function (button) {
       if (button.classList.contains('mat-button-toggle-checked')) {
         button.classList.remove('mat-button-toggle-checked')
@@ -101,9 +149,8 @@ export class StyleToolbarComponent implements OnInit {
     let selection = this.cm.getDoc().listSelections()[0]
     let anchor = selection.anchor.ch
     let head = selection.head.ch
-    let mean = anchor < head ? Math.floor((head - anchor) / 2) : Math.floor((anchor - head / 2))
-    let leftBorderOfSelection = Math.min(anchor, head)
-    let charCoords = this.cm.charCoords({line, ch: mean + leftBorderOfSelection}, 'window')
+    let middleOfSelection = Math.floor((head + anchor) / 2)
+    let charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
     return charCoords.left
   }
 
@@ -111,9 +158,8 @@ export class StyleToolbarComponent implements OnInit {
     let selection = this.cm.getDoc().listSelections()[0]
     let anchor = selection.anchor.ch
     let head = selection.head.ch
-    let mean = anchor < head ? Math.floor((head - anchor) / 2) : Math.floor((anchor - head / 2))
-    let rightBorderOfSelection = Math.max(anchor, head)
-    let charCoords = this.cm.charCoords({line, ch: mean + rightBorderOfSelection}, 'window')
+    let middleOfSelection = Math.floor((head + anchor) / 2)
+    let charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
     return charCoords.right
   }
 
@@ -153,6 +199,7 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   addHeader (headerSize: string): void {
+    const selection = this.cm.getDoc().getSelection()
     switch (+(headerSize)) {
     case 1:
       headerSize = '# '
@@ -170,7 +217,15 @@ export class StyleToolbarComponent implements OnInit {
       headerSize = '##### '
       break
     }
-    this.cm.getDoc().replaceSelection(headerSize + this.cm.getDoc().getSelection())
+    let list = ''
+    let beginningIndexOfSubSelection = 0
+    for (let i = 0; i < selection.length; i++) {
+      if (selection[i] === '\n' || i === selection.length - 1) {
+        list += headerSize + selection.slice(beginningIndexOfSubSelection, i + 1)
+        beginningIndexOfSubSelection = i + 1
+      }
+    }
+    this.cm.getDoc().replaceSelection(list, 'around')
   }
 
   createList (bullet: string): void {
@@ -206,17 +261,16 @@ export class StyleToolbarComponent implements OnInit {
         beginningIndexOfSubSelection = i + 1
       }
     }
-    this.cm.getDoc().replaceSelection(list)
+    this.cm.getDoc().replaceSelection(list, 'around')
   }
 
   // TOOLS
-  // FIX ME: should work for any toolbar configuration
-  getButtons (): void {
-    this.buttons.push(this.toolbar.childNodes[1])
-    this.buttons.push(this.toolbar.childNodes[3])
-    this.buttons.push(this.toolbar.childNodes[5])
-    this.buttons.push(this.toolbar.childNodes[7])
-    this.buttons.push(this.toolbar.childNodes[9])
+  getToggleButtons (): void {
+    this.toolbar.childNodes.forEach((child) => {
+      if (child.className && child.classList.contains('mat-button-toggle')) {
+        this.buttons.push(child)
+      }
+    })
   }
 
   removePx (cssSize: string): number {

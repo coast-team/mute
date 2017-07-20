@@ -142,7 +142,7 @@ export class EditorService {
           endTmp = subSelectedText.slice(-tokenSyntax.length)
 
           if (beginTmp === tokenSyntax && endTmp === tokenSyntax) {
-            cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText)
+            cm.replaceSelection(beginOuterText + subSelectedText.slice(tokenSyntax.length, -tokenSyntax.length) + endOuterText, 'around')
             return
           }
 

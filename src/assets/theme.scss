@@ -27,6 +27,12 @@ $bg-dialog: map-get($mat-bg, dialog);
 $bg-disabled-button: map-get($mat-bg, disabled-button);
 $bg-raised-button: map-get($mat-bg, raised-button);
 
+@mixin mat-menu-theme($theme) {
+  .mat-menu-content {
+    background: #FFC400;
+  }
+}
+
 // Foreground color
 $mat-fg: map-get($mute-theme, foreground);
 $fg-base: map-get($mat-fg, base);
