@@ -86,9 +86,7 @@ export class NetworkService {
         const url = BotResponse.decode(msg.content).url
         this.botUrls.push(url)
       } else {
-        let buffer = new ArrayBuffer(msg.content.length)
-        msg.content.map((value, i) => buffer[i] = value)
-        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, buffer)
+        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
         this.messageSubject.next(networkMessage)
       }
     }
@@ -238,12 +236,12 @@ export class NetworkService {
     }
   }
 
-  send (service: string, content: ArrayBuffer): void
+  send (service: string, content: Uint8Array): void
 
-  send (service: string, content: ArrayBuffer, id: number|undefined): void
+  send (service: string, content: Uint8Array, id: number|undefined): void
 
-  send (service: string, content: ArrayBuffer, id?: number|undefined): void {
-    let msg = Message.create({ service, content: new Uint8Array(content)})
+  send (service: string, content:  Uint8Array, id?: number|undefined): void {
+    let msg = Message.create({ service, content})
     if (id === undefined) {
       this.webChannel.send(Message.encode(msg).finish())
     } else {
