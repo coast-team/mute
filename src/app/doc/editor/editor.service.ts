@@ -65,8 +65,8 @@ export class EditorService {
     this.editor.addKeyMap({
       // bold
       'Ctrl-B': (cm) => {
-        this.toggleStyle(cm, '**', {'**': new RegExp('[\\s\\S]*\\*\\*[\\s\\S]*\\*\\*[\\s\\S]*'),
-          __: new RegExp('[\\s\\S]*__[\\s\\S]*__[\\s\\S]*')})
+        this.toggleStyle(cm, '__', {__: new RegExp('[\\s\\S]*__[\\s\\S]*__[\\s\\S]*'),
+          '**': new RegExp('[\\s\\S]*\\*\\*[\\s\\S]*\\*\\*[\\s\\S]*')})
       },
       // italic
       'Ctrl-I': (cm) => {
@@ -86,24 +86,54 @@ export class EditorService {
 
   handleLink (cm: any): void {
     const selectedText = cm.getSelection()
-    const linkRE = new RegExp('^\\[[\\s\\S]*\\]\\([\\s\\S]*\\)', 'y')
-    let pos = cm.listSelections()[0].anchor
-    let line = pos.line
-    let ch = pos.ch
+    if (selectedText.length > 0) {
+      if (typeof cm === typeof this.editor) { // we expect a CodeMirror.Doc but sometimes we are provided a CodeMirror.Editor
+        cm = cm.getDoc()
+      }
+      const linkRE = new RegExp('^\\[[\\s\\S]*\\]\\([\\s\\S]*\\)', 'y')
 
-    if (!linkRE.test(selectedText)) {
-      cm.replaceSelection('[' + selectedText + '](url)', 'end')
-      pos = cm.getCursor()
-      line = pos.line
-      ch = pos.ch
-      cm.setSelection({line, ch: ch - 1}, {line, ch: ch - 4})
-    } else {
-      let sizeOfLinkBeforeURL = selectedText.match(new RegExp('\\[[\\s\\S]*\\]\\('))[0].length
-      if (ch < cm.listSelections()[0].head.ch) { // LTR selection
-        cm.setSelection({line, ch: ch + sizeOfLinkBeforeURL}, {line, ch: ch + sizeOfLinkBeforeURL + 3})
-      } else { // RTL selection
-        cm.setSelection({line, ch: ch - (selectedText.length - sizeOfLinkBeforeURL)},
-         {line, ch: ch - (selectedText.length - sizeOfLinkBeforeURL) + 3})
+      let beginOfSelection = this.getBeginningOfSelection(cm)
+      let endOfSelection = this.getEndOfSelection(cm)
+
+      // the selection is the exact Markdown syntax for links
+      if (linkRE.test(selectedText)) {
+        let sizeOfLinkBeforeURL = selectedText.match(new RegExp('\\[[\\s\\S]*\\]\\('))[0].length
+        let sizeOfURL = selectedText.match(new RegExp(']\\([\\s\\S]*\\)'))[0].length - 3
+        cm.setSelection({line: endOfSelection.line, ch: beginOfSelection.ch + sizeOfLinkBeforeURL},
+          {line: endOfSelection.line, ch: beginOfSelection.ch + sizeOfLinkBeforeURL + sizeOfURL})
+      } else { // otherwise we look for the link style in the selection
+        let position = {line: beginOfSelection.line, ch: beginOfSelection.ch}
+        let end = {line: endOfSelection.line, ch: endOfSelection.ch}
+        let foundLinkStyle = false
+        while (!(position.ch === end.ch && position.line === end.line && !foundLinkStyle)) {
+
+          // to handle several lines selections
+          cm.setSelection(position, {line: position.line, ch: position.ch + 1})
+          if (!foundLinkStyle && cm.listSelections()[0].anchor.ch === cm.listSelections()[0].head.ch) {
+            position = {line: position.line + 1, ch: -1}
+          }
+          if (!foundLinkStyle && cm.cm.getTokenAt(position).type && cm.cm.getTokenAt(position).type.includes('link')) {
+            foundLinkStyle = true
+          }
+          if (foundLinkStyle) {
+            // Markdown syntax for URL : [text](url). Link type exists only on : '[text](u'
+            if (cm.cm.getTokenAt(position).string === '(' || !cm.cm.getTokenAt(position).type.includes('link')) {
+              let beginningOfURL = {line: position.line, ch: position.ch}
+              while (cm.cm.getTokenAt(position).string !== ')') {
+                position.ch++
+              }
+              position.ch--
+              cm.setSelection(beginningOfURL, position)
+              return
+            }
+          }
+          position.ch++
+        }
+        // then link style does not exist at all in the selection, we initiate it
+        cm.setSelection(beginOfSelection, endOfSelection)
+        cm.replaceSelection('[' + selectedText + '](url)', 'end')
+        let pos = cm.getCursor()
+        cm.setSelection({line: pos.line, ch: pos.ch - 1}, {line: pos.line, ch: pos.ch - 4})
       }
     }
   }
@@ -153,7 +183,6 @@ export class EditorService {
         }
       }
     }
-
   }
 
   setupGlobalForTests () {
@@ -172,6 +201,25 @@ export class EditorService {
           return this.editor.getValue()
         }
       }
+    }
+  }
+
+  // TOOLS
+  getBeginningOfSelection (cm: CodeMirror.Doc): CodeMirror.Position {
+    const selection = cm.listSelections()[0]
+    if (selection.anchor.line === selection.head.line) {
+      return selection.anchor.ch < selection.head.ch ? selection.anchor : selection.head
+    } else {
+      return selection.anchor.line < selection.head.line ? selection.anchor : selection.head
+    }
+  }
+
+  getEndOfSelection (cm: CodeMirror.Doc): CodeMirror.Position {
+    const selection = cm.listSelections()[0]
+    if (selection.anchor.line === selection.head.line) {
+      return selection.anchor.ch > selection.head.ch ? selection.anchor : selection.head
+    } else {
+      return selection.anchor.line > selection.head.line ? selection.anchor : selection.head
     }
   }
 
