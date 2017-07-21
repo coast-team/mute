@@ -2607,7 +2607,7 @@ globule@^1.0.0:
     lodash "~4.17.4"
     minimatch "~3.0.2"
 
-google-protobuf@^3.2.0, google-protobuf@^3.3.0:
+google-protobuf@^3.2.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.3.0.tgz#21c15ec2fbd57c236eb684d2e18bcaeca9759b77"
 
@@ -4000,7 +4000,7 @@ ms@2.0.0:
 
 "mute-core@file:../mute-core/mute-core-v0.1.7.tgz":
   version "0.1.7"
-  resolved "../mute-core/mute-core-v0.1.7.tgz#e8f00ac0f167d40c7f6afdd9ce0e0e1b4529a00a"
+  resolved "../mute-core/mute-core-v0.1.7.tgz#f364e2d49ea2e1ecbd9b6cef3ead038d0dc085c6"
   dependencies:
     google-protobuf "^3.2.0"
     mute-structs "^0.1.3"

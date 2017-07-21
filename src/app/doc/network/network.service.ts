@@ -5,7 +5,7 @@ import { create } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
-import { Message, BotResponse, BotProtocol } from './message'
+import { Message, BotResponse, BotProtocol } from './message_pb'
 
 @Injectable()
 export class NetworkService {

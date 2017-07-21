@@ -11,7 +11,7 @@ enum State {
   FROM = 1;
   SELECTION_FROM = 2;
   SELECTION_TO = 3;
-}
+  }
 
 message PositionMsg {
   repeated double base = 1;

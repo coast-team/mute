@@ -8,9 +8,8 @@ import { CollaboratorCursor } from './CollaboratorCursor'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { NetworkService } from '../../network/'
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
+import { CursorMsg, PositionMsg } from './cursor_pb'
 
-import { CursorMsg, PositionMsg, State } from './cursor'
-const pb = require('./cursor_pb.js')
 
 interface MuteCorePosition {
   index: number,
@@ -37,6 +36,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
   private pbCursor: CursorMsg
   private pbFrom: PositionMsg
   private pbTo: PositionMsg
+
 
   constructor (
     private collabService: RichCollaboratorsService,
@@ -78,7 +78,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     CodeMirror.on(this.cm, 'blur', () => {
       this.pbCursor.from = PositionMsg.create()
       this.pbCursor.to = PositionMsg.create()
-      this.pbCursor.state = pb.State.HIDDEN
+      this.pbCursor.state = 0 // State.HIDDEN
       this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
     })
 
@@ -92,11 +92,11 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
         const pbMsg = CursorMsg.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
         if (cursor !== undefined) {
-          if (pbMsg.state === pb.State.HIDDEN) {
+          if (pbMsg.state === 0 /*State.HIDDEN*/) {
             // When cursor should be hidden
             cursor.hideCursor()
 
-          } else if (pbMsg.state === pb.State.FROM) {
+          } else if (pbMsg.state === 1 /*State.FROM*/ ) {
             // When cursor update only
             cursor.clearSelection()
             cursor.showCursor()
@@ -104,7 +104,6 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             if (pbMsg.from) {
               const pbFrom = pbMsg.from
               const identifier = new Identifier(pbFrom.base, pbFrom.last)
-              console.log(identifier)
               newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
@@ -132,7 +131,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
               const lastLine = this.cmDoc.lastLine()
               toPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
-            cursor.translateCursorOnRemoteChange(pbMsg.state === pb.State.SELECTION_FROM ? fromPos : toPos, false)
+            cursor.translateCursorOnRemoteChange(pbMsg.state === 2 /*State.SELECTION_FROM*/ ? fromPos : toPos, false)
             cursor.updateSelection(fromPos, toPos)
           }
         }
@@ -154,7 +153,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       // Prepare messag for cursor and selection update
       const fromPos = this.cmDoc.getCursor('from')
       const toPos = this.cmDoc.getCursor('to')
-      const state = fromPos === cursorPos ? pb.State.SELECTION_FROM : pb.State.SELECTION_TO
+      const state = fromPos === cursorPos ? 2 /*State.SELECTION_FROM*/ : 3 /*State.SELECTION_TO*/
 
       this.pbCursor.state = state
 
@@ -184,7 +183,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     } else {
 
       // Prepare message for cursor only update
-      this.pbCursor.state = pb.State.FROM
+      this.pbCursor.state = 1 /*State.FROM*/
       this.pbCursor.to = PositionMsg.create()
       const id: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(cursorPos))
       if (id === null) {
