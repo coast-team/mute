@@ -159,63 +159,6 @@ export const Message = $root.Message = (() => {
         return null;
     };
 
-    /**
-     * Creates a Message message from a plain object. Also converts values to their respective internal types.
-     * @function fromObject
-     * @memberof Message
-     * @static
-     * @param {Object.<string,*>} object Plain object
-     * @returns {Message} Message
-     */
-    Message.fromObject = function fromObject(object) {
-        if (object instanceof $root.Message)
-            return object;
-        let message = new $root.Message();
-        if (object.service != null)
-            message.service = String(object.service);
-        if (object.content != null)
-            if (typeof object.content === "string")
-                $util.base64.decode(object.content, message.content = $util.newBuffer($util.base64.length(object.content)), 0);
-            else if (object.content.length)
-                message.content = object.content;
-        return message;
-    };
-
-    /**
-     * Creates a plain object from a Message message. Also converts values to other types if specified.
-     * @function toObject
-     * @memberof Message
-     * @static
-     * @param {Message} message Message
-     * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * @returns {Object.<string,*>} Plain object
-     */
-    Message.toObject = function toObject(message, options) {
-        if (!options)
-            options = {};
-        let object = {};
-        if (options.defaults) {
-            object.service = "";
-            object.content = options.bytes === String ? "" : [];
-        }
-        if (message.service != null && message.hasOwnProperty("service"))
-            object.service = message.service;
-        if (message.content != null && message.hasOwnProperty("content"))
-            object.content = options.bytes === String ? $util.base64.encode(message.content, 0, message.content.length) : options.bytes === Array ? Array.prototype.slice.call(message.content) : message.content;
-        return object;
-    };
-
-    /**
-     * Converts this Message to JSON.
-     * @function toJSON
-     * @memberof Message
-     * @instance
-     * @returns {Object.<string,*>} JSON object
-     */
-    Message.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-    };
-
     return Message;
 })();
 
@@ -354,54 +297,6 @@ export const BotProtocol = $root.BotProtocol = (() => {
         return null;
     };
 
-    /**
-     * Creates a BotProtocol message from a plain object. Also converts values to their respective internal types.
-     * @function fromObject
-     * @memberof BotProtocol
-     * @static
-     * @param {Object.<string,*>} object Plain object
-     * @returns {BotProtocol} BotProtocol
-     */
-    BotProtocol.fromObject = function fromObject(object) {
-        if (object instanceof $root.BotProtocol)
-            return object;
-        let message = new $root.BotProtocol();
-        if (object.key != null)
-            message.key = String(object.key);
-        return message;
-    };
-
-    /**
-     * Creates a plain object from a BotProtocol message. Also converts values to other types if specified.
-     * @function toObject
-     * @memberof BotProtocol
-     * @static
-     * @param {BotProtocol} message BotProtocol
-     * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * @returns {Object.<string,*>} Plain object
-     */
-    BotProtocol.toObject = function toObject(message, options) {
-        if (!options)
-            options = {};
-        let object = {};
-        if (options.defaults)
-            object.key = "";
-        if (message.key != null && message.hasOwnProperty("key"))
-            object.key = message.key;
-        return object;
-    };
-
-    /**
-     * Converts this BotProtocol to JSON.
-     * @function toJSON
-     * @memberof BotProtocol
-     * @instance
-     * @returns {Object.<string,*>} JSON object
-     */
-    BotProtocol.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-    };
-
     return BotProtocol;
 })();
 
@@ -538,54 +433,6 @@ export const BotResponse = $root.BotResponse = (() => {
             if (!$util.isString(message.url))
                 return "url: string expected";
         return null;
-    };
-
-    /**
-     * Creates a BotResponse message from a plain object. Also converts values to their respective internal types.
-     * @function fromObject
-     * @memberof BotResponse
-     * @static
-     * @param {Object.<string,*>} object Plain object
-     * @returns {BotResponse} BotResponse
-     */
-    BotResponse.fromObject = function fromObject(object) {
-        if (object instanceof $root.BotResponse)
-            return object;
-        let message = new $root.BotResponse();
-        if (object.url != null)
-            message.url = String(object.url);
-        return message;
-    };
-
-    /**
-     * Creates a plain object from a BotResponse message. Also converts values to other types if specified.
-     * @function toObject
-     * @memberof BotResponse
-     * @static
-     * @param {BotResponse} message BotResponse
-     * @param {$protobuf.IConversionOptions} [options] Conversion options
-     * @returns {Object.<string,*>} Plain object
-     */
-    BotResponse.toObject = function toObject(message, options) {
-        if (!options)
-            options = {};
-        let object = {};
-        if (options.defaults)
-            object.url = "";
-        if (message.url != null && message.hasOwnProperty("url"))
-            object.url = message.url;
-        return object;
-    };
-
-    /**
-     * Converts this BotResponse to JSON.
-     * @function toJSON
-     * @memberof BotResponse
-     * @instance
-     * @returns {Object.<string,*>} JSON object
-     */
-    BotResponse.prototype.toJSON = function toJSON() {
-        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
     };
 
     return BotResponse;

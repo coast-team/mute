@@ -73,27 +73,6 @@ export class Message {
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a Message message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns Message
-     */
-    public static fromObject(object: { [k: string]: any }): Message;
-
-    /**
-     * Creates a plain object from a Message message. Also converts values to other types if specified.
-     * @param message Message
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: Message, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this Message to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
 }
 
 /** Properties of a BotProtocol. */
@@ -163,27 +142,6 @@ export class BotProtocol {
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a BotProtocol message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns BotProtocol
-     */
-    public static fromObject(object: { [k: string]: any }): BotProtocol;
-
-    /**
-     * Creates a plain object from a BotProtocol message. Also converts values to other types if specified.
-     * @param message BotProtocol
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: BotProtocol, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this BotProtocol to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
 }
 
 /** Properties of a BotResponse. */
@@ -253,25 +211,4 @@ export class BotResponse {
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a BotResponse message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns BotResponse
-     */
-    public static fromObject(object: { [k: string]: any }): BotResponse;
-
-    /**
-     * Creates a plain object from a BotResponse message. Also converts values to other types if specified.
-     * @param message BotResponse
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: BotResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this BotResponse to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
 }
