@@ -35,7 +35,7 @@ export class StyleToolbarComponent implements OnInit {
     this.setListeners()
   }
 
-  // Set up when to show/hide toolbar
+  // UPDATE TOOLBAR VISIBILITY
   setListeners (): void {
     this.cm.on('cursorActivity', () => { this.updateToolbarState() })
 
@@ -79,31 +79,25 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   // SET TOOLBAR UP
+  resetToggledButtons (): void {
+    this.buttons.forEach(function (button) {
+      if (button.classList.contains('mat-button-toggle-checked')) {
+        button.classList.remove('mat-button-toggle-checked')
+      }
+    })
+  }
+
   setToggledButtons (): void {
-    // log.debug('SET BUTTONS')
     const selection = this.cm.getDoc().listSelections()[0]
     let sum = (selection.anchor.ch + selection.head.ch) / 2
-    this.cm.getDoc().setSelection({ch: sum - 1, line: selection.anchor.line}, {ch: sum + 1, line: selection.head.line})
-    const selectionStyles = (this.cm.getTokenAt(this.cm.getDoc().listSelections()[0].anchor)).type
-    // log.debug('STYLES', selectionStyles)
+    const selectionStyles = (this.cm.getTokenAt({ch: sum, line: selection.anchor.line})).type
     const existingStyles = ['strong', 'em', 'strikethrough', 'quote', 'link']
     let buttonIndex = 0
     existingStyles.forEach((style) => {
-
       if (selectionStyles && selectionStyles.includes(style)) {
-
-        // log.debug('it should be toggled')
-
         this.buttons[buttonIndex].classList.add('mat-button-toggle-checked')
-
-        // log.debug('button', this.buttons[buttonIndex])
-
       } else if (this.buttons[buttonIndex].classList.contains('mat-button-toggle-checked')) {
-
-        // log.debug('before', this.buttons[buttonIndex])
         this.buttons[buttonIndex].classList.remove('mat-button-toggle-checked')
-        // log.debug('after', this.buttons[buttonIndex])
-
       }
       buttonIndex++
     })
@@ -135,16 +129,7 @@ export class StyleToolbarComponent implements OnInit {
     this.toolbar.style = 'top: ' + top + 'px; ' + horizontalPosition
   }
 
-  resetToggledButtons (): void {
-    // log.debug('RESET BUTTONS')
-    this.buttons.forEach(function (button) {
-      if (button.classList.contains('mat-button-toggle-checked')) {
-        button.classList.remove('mat-button-toggle-checked')
-      }
-    })
-  }
-
-  // ACCESS PROPERTIES OF SELECTION
+  // ACCESS LOCATION OF SELECTION
   getLeftFromMiddleOfSelection (line: number): number {
     let selection = this.cm.getDoc().listSelections()[0]
     let anchor = selection.anchor.ch
@@ -177,8 +162,8 @@ export class StyleToolbarComponent implements OnInit {
 
   // BUTTONS FUNCTIONNALITIES
   toggleBold (): void {
-    this.editorService.toggleStyle(this.cm, '**', {'**': new RegExp('[\\s\\S]*\\*\\*[\\s\\S]*\\*\\*[\\s\\S]*'),
-      __: new RegExp('[\\s\\S]*__[\\s\\S]*__[\\s\\S]*')})
+    this.editorService.toggleStyle(this.cm, '__', {__: new RegExp('[\\s\\S]*__[\\s\\S]*__[\\s\\S]*'),
+      '**': new RegExp('[\\s\\S]*\\*\\*[\\s\\S]*\\*\\*[\\s\\S]*')})
   }
 
   toggleItalic (): void {
@@ -190,16 +175,16 @@ export class StyleToolbarComponent implements OnInit {
     this.editorService.toggleStyle(this.cm, '~~', {'~~': new RegExp('.*~~.*~~.*')})
   }
 
+  createQuotation (): void {
+    this.cm.getDoc().replaceSelection('>' + this.getSelectionForHeadersListsOrQuotations(), 'around')
+  }
+
   handleLink (): void {
     this.editorService.handleLink(this.cm.getDoc())
   }
 
-  createQuotation (): void {
-    this.cm.getDoc().replaceSelection('>' + this.cm.getDoc().getSelection())
-  }
-
   addHeader (headerSize: string): void {
-    const selection = this.cm.getDoc().getSelection()
+    const selection = this.getSelectionForHeadersListsOrQuotations()
     switch (+(headerSize)) {
     case 1:
       headerSize = '# '
@@ -229,7 +214,8 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   createList (bullet: string): void {
-    const selection = this.cm.getDoc().getSelection()
+    const selection = this.getSelectionForHeadersListsOrQuotations()
+    log.debug('SELECTION', selection)
     switch (+(bullet)) {
     case 0:
       bullet = '. '
@@ -271,6 +257,14 @@ export class StyleToolbarComponent implements OnInit {
         this.buttons.push(child)
       }
     })
+  }
+
+  getSelectionForHeadersListsOrQuotations (): string {
+    let beginningOfSelection = this.editorService.getBeginningOfSelection(this.cm.getDoc())
+    beginningOfSelection.ch = 0
+    this.cm.getDoc().setSelection(beginningOfSelection, this.editorService.getEndOfSelection(this.cm.getDoc()))
+    log.debug(this.cm.getDoc().getSelection())
+    return this.cm.getDoc().getSelection()
   }
 
   removePx (cssSize: string): number {
