@@ -79,27 +79,6 @@ export class CursorMsg {
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a CursorMsg message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns CursorMsg
-     */
-    public static fromObject(object: { [k: string]: any }): CursorMsg;
-
-    /**
-     * Creates a plain object from a CursorMsg message. Also converts values to other types if specified.
-     * @param message CursorMsg
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: CursorMsg, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this CursorMsg to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
 }
 
 /** State enum. */
@@ -189,25 +168,4 @@ export class PositionMsg {
      * @returns `null` if valid, otherwise the reason why it is not
      */
     public static verify(message: { [k: string]: any }): (string|null);
-
-    /**
-     * Creates a PositionMsg message from a plain object. Also converts values to their respective internal types.
-     * @param object Plain object
-     * @returns PositionMsg
-     */
-    public static fromObject(object: { [k: string]: any }): PositionMsg;
-
-    /**
-     * Creates a plain object from a PositionMsg message. Also converts values to other types if specified.
-     * @param message PositionMsg
-     * @param [options] Conversion options
-     * @returns Plain object
-     */
-    public static toObject(message: PositionMsg, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-    /**
-     * Converts this PositionMsg to JSON.
-     * @returns JSON object
-     */
-    public toJSON(): { [k: string]: any };
 }
