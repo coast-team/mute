@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-message Cursor {
-  Position from = 1;
-  Position to = 2;
+message CursorMsg {
+  PositionMsg from = 1;
+  PositionMsg to = 2;
   State state = 3;
 }
 
@@ -13,7 +13,7 @@ enum State {
   SELECTION_TO = 3;
 }
 
-message Position {
+message PositionMsg {
   repeated double base = 1;
   int32 last = 2;
   int32 index = 3;
