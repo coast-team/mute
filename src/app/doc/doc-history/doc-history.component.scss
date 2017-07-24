@@ -1,5 +1,8 @@
 @import 'theme';
 @import 'variables';
+
+$break-small: 500px;
+$break-large: 1200px;
 $padding-left-right: 2%;
 
 :host {
@@ -8,27 +11,22 @@ $padding-left-right: 2%;
 }
 
 md-card {
+  @media screen and (max-width: $break-small) {
+    width: 95%;
+    margin: 10px auto;
+  }
+  margin: 20px;
   display: inline-block;
-  width: 800px;
-  margin: 10px auto;
   cursor: text;
-  overflow: auto;
+}
+
+.matContent {
+  padding-bottom: 2px;
 }
 
 .content {
   display: flex;
   flex-direction: column;
-}
-
-md-input-container {
-  margin: auto;
-  width: 100% - 2 * $padding-left-right;
-  //width: 100%;
-  //box-sizing: border-box;
-}
-
-mute-timeline {
-  padding: 40px $padding-left-right 0 $padding-left-right;
 }
 
 md-sidenav-container {
@@ -42,7 +40,6 @@ md-sidenav-container {
 
   .rightsidenav {
     background-color: $bg-background !important;
-    min-width: 32rem;
     max-width: 32rem;
     padding: 10px;
   }

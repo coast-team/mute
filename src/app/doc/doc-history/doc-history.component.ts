@@ -6,7 +6,7 @@ import {
   ViewChild,
   ElementRef,
   NgZone } from '@angular/core'
-import { ActivatedRoute, Params } from '@angular/router'
+import { ActivatedRoute, Params, Router } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
@@ -17,6 +17,7 @@ import { HistoryControlsComponent } from './history-controls/history-controls.co
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
 import { DocHistoryService, Delete, Insert } from './doc-history.service'
+import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
 import { CONTROLS } from './history-controls/controls'
 import { UiService } from '../../core/ui/ui.service'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
@@ -30,7 +31,7 @@ require('codemirror/mode/javascript/javascript')
   selector: 'mute-doc-history',
   templateUrl: './doc-history.component.html',
   styleUrls: ['./doc-history.component.scss'],
-  providers: [DocHistoryService]
+  providers: [DocHistoryService, RichCollaboratorsService]
 })
 
 @Injectable()
@@ -39,6 +40,7 @@ export class DocHistoryComponent implements OnInit {
   private isInited = false
   private operations: (Delete | Insert)[]
   public docAuthors: Author[]
+  private state = false
 
   @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
@@ -49,6 +51,9 @@ export class DocHistoryComponent implements OnInit {
   @ViewChild('rightSidenavElm') rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
+  private doc: Doc
+  public step: number
+  private oldText: string
 
   public rightSideNavMode = 'side'
 
@@ -57,12 +62,14 @@ export class DocHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
-    public media: ObservableMedia
-  ) { }
+    public media: ObservableMedia,
+    private router: Router
+  ) {}
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe((data: {doc: Doc}) => {
+      this.doc = data.doc
       this.docHistory.getAuthors(data.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
@@ -86,6 +93,8 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = 0
     })
 
+    this.step = 1
+    this.oldText = ''
 
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
@@ -115,7 +124,7 @@ export class DocHistoryComponent implements OnInit {
         value: '',
         mode: 'gfm',
         readOnly: 'true',
-        lineWrapping: true
+        lineWrapping: true,
       })
     })
   }
@@ -127,6 +136,7 @@ export class DocHistoryComponent implements OnInit {
   showVersion (numOperation: number) {
     let begin = 0
     let end = 0
+    let reverse = false
     // TODO Refactoring to avoid those tests
     if (this.currentOp === this.countOperations()) {
       begin = this.operations[this.currentOp - 1].offset
@@ -140,21 +150,36 @@ export class DocHistoryComponent implements OnInit {
       end = this.operations[numOperation].offset
     }
 
+    if (this.currentOp > numOperation) {
+      reverse = true
+    }
+
     if (this.currentOp !== numOperation) {
       const doc = this.editor.getDoc() as any
       // Generate string content depending on operations
       const generatedText = this.generateText(0, numOperation - 1)
       // just replace the content of editor the generated text.
       doc.setValue(generatedText)
+      const diff = this.docHistory.getDiff(this.oldText, generatedText)
+      this.oldText = generatedText
       this.currentOp = numOperation
+      diff.forEach((part) => {
+       // console.log(part.value)
+      })
     }
 
-    // this.mockTextColors()
-    this.animateText(begin, end)
-    this.colorizeDifferences(begin, end)
+    if (this.state) {
+      if (begin === end) {
+        end += 1
+      }
+      this.colorizeDifferences(begin, end, reverse)
+    } else {
+      this.colorizeAuthors(begin, end + 1)
+    }
+
   }
 
-  generateText (beginOp: number, endOp: number): String {
+  generateText (beginOp: number, endOp: number): string {
     let textContent = ''
     for (let i = beginOp; i <= endOp; i++) {
       const currentOp = this.operations[i]
@@ -184,6 +209,13 @@ export class DocHistoryComponent implements OnInit {
     return this.operations ? this.operations.length : 0
   }
 
+  countMax (): number {
+    if (this.countOperations() === 0) {
+      return 0
+    }
+    return Math.floor(this.countOperations() / 2)
+  }
+
   onInputChange (event: any) {
     let indexOp = event.target.value
     indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
@@ -191,27 +223,31 @@ export class DocHistoryComponent implements OnInit {
     this.showVersion(indexOp)
   }
 
-  mockTextColors () {
-    const doc = this.editor.getDoc()
-    let cpt = 0
-    let length = 0
-    doc.eachLine((l) => {
-      if (this.docAuthors) {
-        length = this.docAuthors.length
-      }
-      let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
-      doc.markText({line: cpt, ch: (Math.floor(Math.random() * 10))},
-       {line: cpt, ch: (Math.floor(Math.random() * 200))}, {css: 'background-color: ' + color})
-      cpt += (Math.floor(Math.random() * 10))
-    })
-  }
-
-  colorizeDifferences (begin: number, end: number) {
+  colorizeAuthors (begin: number, end: number) {
     const doc = this.editor.getDoc()
     let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end + 1)
+    let pos2 = doc.posFromIndex(end)
+    if (this.docAuthors) {
+      length = this.docAuthors.length
+    }
+    this.animateText(begin, end)
+    let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
     doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: ' + color})
+  }
+
+  colorizeDifferences (begin: number, end: number, reverse: boolean) {
+    const doc = this.editor.getDoc()
+    let pos1 = doc.posFromIndex(begin)
+    let pos2 = doc.posFromIndex(end)
+    this.animateText(begin, end)
+    if (!reverse) {
+      doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
+    } else {
+      doc.markText({line: pos1.line, ch: pos1.ch},
+       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #E57373' })
+    }
   }
 
   animateText (begin: number, end: number) {
@@ -239,6 +275,16 @@ export class DocHistoryComponent implements OnInit {
       this.timelineComponent.goToBegin()
       break
     }
+  }
+
+  onToggle (state: boolean) {
+    this.state = state
+    this.showVersion(this.currentOp)
+  }
+
+  updateStep (step: number) {
+    this.step = step <= 0 ? 1 : step
+    console.log(this.step)
   }
 
 }

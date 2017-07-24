@@ -91,7 +91,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   deleteAllDocs (): void {
     const snackMsg = (this.activeFolder.id !== 'trash') ?
-      'All documents moved to tash' : 'All documents deleted'
+      'All documents moved to trash' : 'All documents deleted'
     this.activeFolder.deleteFiles()
       .then(() => {
         this.docs = []

@@ -8,13 +8,20 @@ import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
 import { AUTHORS } from './mock-authors'
 import { Author } from '../../core/Author'
+import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
+const diff = require ('diff')
 
 @Injectable()
 export class DocHistoryService {
 
   constructor (
-    private localStorage: LocalStorageService
+    private localStorage: LocalStorageService,
+    private collaboratorsService: RichCollaboratorsService
   ) {}
+
+  getDiff (strA: string, strB: string): any {
+    return diff.diffChars(strA, strB)
+  }
 
   getOperations (doc: Doc): Promise<(Delete|Insert)[]> {
     return new Promise((resolve, reject) => {
@@ -54,8 +61,7 @@ export class DocHistoryService {
           .then((ops: (Delete | Insert)[]) => {
             for (let o of ops) {
               // log.debug(o.authorName)
-              let author: Author = new Author(o.authorName, o.authorId, 'rgb(' + (Math.floor(Math.random() * 256)) +
-                ',' + (Math.floor(Math.random() * 256)) + ',' + (Math.floor(Math.random() * 256)) + ')')
+              let author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor())
 
               if (docAuthors.filter((e) => {
                 return e.getId() === author.getId()

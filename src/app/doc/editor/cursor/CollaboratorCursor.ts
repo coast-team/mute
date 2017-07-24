@@ -2,6 +2,8 @@ import * as CodeMirror from 'codemirror'
 
 import { RichCollaborator } from '../../rich-collaborators/'
 
+const DEFAULT_BOOKMARK_POSITION = {line: 0, ch: 0}
+
 export class CollaboratorCursor {
 
   private selectionCSS: string
@@ -23,9 +25,12 @@ export class CollaboratorCursor {
 
   constructor (cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
-    this.selectionCSS = `background-color: ${collab.color};`
+    this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
 
-    this.previousBookmarkPos = {line: 0, ch: 0}
+    // Initialize bookmark
+    this.previousBookmarkPos = DEFAULT_BOOKMARK_POSITION
+    this.bookmark = this.cm.getDoc()
+      .setBookmark(DEFAULT_BOOKMARK_POSITION, {insertLeft: true})
 
     // HTML element for cursor
     this.cursorElm = document.createElement('span')
@@ -62,36 +67,33 @@ export class CollaboratorCursor {
   translateCursorOnRemoteChange (pos: CodeMirror.Position, isAnimated = true) {
     this.previousBookmarkPos = pos
     const newCoords = this.cm.cursorCoords(pos, 'local')
-    if (this.bookmark !== undefined) {
-      this.bookmark.clear()
-    }
+    this.bookmark.clear()
     this.bookmark = this.cm.getDoc().setBookmark(pos, {insertLeft: true})
     if (isAnimated) {
       this.cursorElm.style.transitionDuration = '.12s'
     } else {
       this.cursorElm.style.transitionDuration = '0.03s'
     }
+    this.showCursor()
     this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
     this.resetPseudoTimeout()
   }
 
   translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
-    if (this.bookmark !== undefined) {
-      const currentBookmarkPos = this.bookmark.find()
-      if (currentBookmarkPos !== undefined && (
-          this.previousBookmarkPos.line !== currentBookmarkPos.line ||
-          this.previousBookmarkPos.ch !== currentBookmarkPos.ch)) {
-        const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
-        if (linesNb === 1 && firstLineLength < 6) {
-          this.cursorElm.style.transitionDuration = '0.03s'
-        }
-        this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
-        this.resetPseudoTimeout()
-      } else {
-        this.hideCursor()
+    let currentBookmarkPos = this.bookmark.find()
+    if (currentBookmarkPos === undefined) {
+      this.bookmark = this.cm.getDoc()
+        .setBookmark(DEFAULT_BOOKMARK_POSITION, {insertLeft: true})
+      currentBookmarkPos = this.bookmark.find()
+    }
+    if (this.previousBookmarkPos.line !== currentBookmarkPos.line ||
+        this.previousBookmarkPos.ch !== currentBookmarkPos.ch) {
+      const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
+      if (linesNb === 1 && firstLineLength < 6) {
+        this.cursorElm.style.transitionDuration = '0.03s'
       }
-    } else {
-      this.hideCursor()
+      this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
+      this.resetPseudoTimeout()
     }
   }
 

@@ -8,19 +8,26 @@
   </md-sidenav>
 
   <div class="content">
-    <mute-timeline
-      [nbOperations]="countOperations()"
-      [currentOp]="currentOp"
-      (onSlide)="showVersion($event)"
-      [delay]="300">
-    </mute-timeline>
-
-    <md-input-container>
-      <input mdInput placeholder="Current operation" [value]="currentOp" (keyup.enter)="onInputChange($event)">
-    </md-input-container>
-
-    <md-card fxFlex="760px" fxFlex.md="75%" fxFlex.sm="85%" fxFlex.xs="100%">
+    <md-card class="matContent">
       <div #editorElt id="textArea"></div>
+
+      <md-divider></md-divider>
+      <mute-history-controls 
+        (onControls)="onControlsChange($event)" 
+        (onSlide)="updateStep($event)"
+        [nbOperations]="countOperations()"
+        [currentOp]="currentOp"
+        [max]="countMax()">
+      </mute-history-controls>
+
+      <mute-timeline
+        [nbOperations]="countOperations()"
+        [step]="step"
+        [max]="countMax()"
+        [currentOp]="currentOp"
+        (onSlide)="showVersion($event)"
+        [delay]="300">
+      </mute-timeline>
     </md-card>
   </div>
 
@@ -30,12 +37,10 @@
     [mode]="rightSideNavMode"
   >
 
-    <mute-collaborators [docAuthors]="docAuthors"></mute-collaborators>
-    <mute-history-controls 
-      (onControls)="onControlsChange($event)" 
-      [nbOperations]="countOperations()"
-      [currentOp]="currentOp">
-    </mute-history-controls>
+    <mute-collaborators [docAuthors]="docAuthors"
+    (change)="onToggle($event)">
+    </mute-collaborators>
+
   </md-sidenav>
 
 </md-sidenav-container>
