@@ -4,18 +4,26 @@
 
 "@angular/animations@^4.2.5":
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-4.2.5.tgz#1230f6bc6a18f2abb23e27f1d9ae9efafd1a6031"
 =======
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-4.3.0.tgz#56f34b84649379202ac359929b82eb0b915e9c72"
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/animations/-/animations-4.3.1.tgz#1f7e0bb803efc21c608246e6765a1c647f3d1a5f"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/cdk@^2.0.0-beta.8":
   version "2.0.0-beta.8"
   resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-2.0.0-beta.8.tgz#71961c851dfbeb19e085e898bf5e4461408f8b57"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
@@ -85,16 +93,22 @@
 
 "@angular/common@^4.2.5":
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.2.5.tgz#4d50a95b444cd58cf706f0da9dd1407d3b83362e"
 =======
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.3.0.tgz#13a54a6929dd52f9729b16ae446fad58fe163053"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/common/-/common-4.3.1.tgz#260f487a7cdca326c436bd3ea9515c797de2ff72"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/compiler-cli@^4.2.2":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.2.4.tgz#cce941a28362fc1c042ab85890fcaab1e233dd57"
@@ -106,10 +120,17 @@
   dependencies:
     "@angular/tsc-wrapped" "4.3.0"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/compiler-cli/-/compiler-cli-4.3.1.tgz#00b41afb6faeb4aef561b8427804ac8880aff63c"
+  dependencies:
+    "@angular/tsc-wrapped" "4.3.1"
+>>>>>>> build(yarn): Reupload yarn.lock
     minimist "^1.2.0"
     reflect-metadata "^0.1.2"
 
 "@angular/compiler@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.2.5.tgz#b48674c7456b2b0df1072d70e4e667af86cddf83"
@@ -117,10 +138,15 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.3.0.tgz#55503bf27a1f062f71b9495393f3311903a8fc43"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/compiler/-/compiler-4.3.1.tgz#3a24d49ecf01ac2b6e07f63e378b8ff8e257fe09"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/core@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.2.5.tgz#61c1b5885c262332d737fbe0f5d71151759a8464"
@@ -128,6 +154,10 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.3.0.tgz#bd2249c3de1224a7c6536c4aba728d6565329334"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-4.3.1.tgz#a9d0a7d644b96260674269b689a04feea632a8d3"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
@@ -137,16 +167,22 @@
 
 "@angular/forms@^4.2.5":
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-4.2.5.tgz#a7e55c8d1f5a4e8537efe1edd7834e4a1f59c6e4"
 =======
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-4.3.0.tgz#7d0c7a854737e9a30a5fd9665f8d4f56a1b91bd8"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/forms/-/forms-4.3.1.tgz#33914da2cb146430ff901471e682c76654622dfe"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/http@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.2.5.tgz#3fff8e5cf8e88262bacd1c996304312c3c5a3aef"
@@ -154,10 +190,15 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.3.0.tgz#dfb73310a840a6ad8050ac51f0e55c4984db0926"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/http/-/http-4.3.1.tgz#e4f661f746711e88ecbea76a3c905babf97d315a"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/language-service@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.2.5.tgz#912ca8ebeac3cbc3d51c3344568127974db7a740"
@@ -168,15 +209,23 @@
 =======
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.3.0.tgz#ecea5f2812373c4c84e2199fca5ed8f6781ea0d6"
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-4.3.1.tgz#9910833fc89ddaac3e48d3ffaf8bb893618cda11"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 "@angular/material@^2.0.0-beta.7":
   version "2.0.0-beta.8"
   resolved "https://registry.yarnpkg.com/@angular/material/-/material-2.0.0-beta.8.tgz#a92852abc9261aea26c2401f576645470be2cf38"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/platform-browser-dynamic@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.2.5.tgz#8076ec4a885cc3a1a23c5e540c40a7fdd3f7e7b2"
@@ -184,10 +233,15 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.3.0.tgz#551fb18851b27ee8f3e4b0ee25aad10bd7b312e3"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.3.1.tgz#84034da60a82ef36e7effda7b3ade6e645b330b3"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/platform-browser@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-4.2.5.tgz#d9ddfe0f81084e98ef24a79f485dbb112e78a0c4"
@@ -195,10 +249,15 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-4.3.0.tgz#02389489185185c3becf06359346100e5479c7e1"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/platform-browser/-/platform-browser-4.3.1.tgz#db727b06eed64bda5defec71815db26a4da2f690"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tslib "^1.7.1"
 
 "@angular/router@^4.2.5":
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "4.2.5"
   resolved "https://registry.yarnpkg.com/@angular/router/-/router-4.2.5.tgz#7f364089493ab1a06eac5f0c628c0f9fdb11008f"
@@ -218,6 +277,16 @@
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-4.3.0.tgz#fe2e5376b6e2ad1b139edde23a9dbb4299df6264"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-4.3.1.tgz#5219d44526156d816065841127610165a015b450"
+  dependencies:
+    tslib "^1.7.1"
+
+"@angular/tsc-wrapped@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@angular/tsc-wrapped/-/tsc-wrapped-4.3.1.tgz#f6616a4d2a3bbec1cded664fd1f526edce99ef41"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     tsickle "^0.21.0"
 
@@ -235,7 +304,10 @@
     source-map "^0.5.6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -279,7 +351,10 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 "@types/codemirror@^0.0.41":
   version "0.0.41"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.41.tgz#249937651ccb8a0292186546f23df507749d59ce"
@@ -289,15 +364,19 @@
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.5.45.tgz#58928a621d014ce6ab59c5a9c41071f7328b0ca9"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "@types/node@^6.0.46", "@types/node@^6.0.78":
   version "6.0.78"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.78.tgz#5d4a3f579c1524e01ee21bf474e6fba09198f470"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 "@types/long@^3.0.31":
   version "3.0.31"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-3.0.31.tgz#08635b0d0d322676940c1a88a7a9cef661c6f34a"
 
 "@types/node@^6.0.46", "@types/node@^6.0.78":
+<<<<<<< HEAD
   version "6.0.83"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.83.tgz#dd022db01ac2c01c1057775e88ccffce96d1d6fe"
 
@@ -305,6 +384,14 @@
   version "7.0.37"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.37.tgz#f129fff94d14a60c3d99eadb9fe0c98119e09c8f"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "6.0.85"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.85.tgz#ec02bfe54a61044f2be44f13b389c6a0e8ee05ae"
+
+"@types/node@^7.0.29":
+  version "7.0.39"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-7.0.39.tgz#8aced4196387038113f6f9aa4014ab4c51edab3c"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -350,17 +437,21 @@ acorn-dynamic-import@^2.0.0:
     acorn "^4.0.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 acorn@^1.0.3:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-1.2.2.tgz#c8ce27de0acc76d896d2b1fad3df588d9e82f014"
 
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 acorn@^4.0.3:
   version "4.0.13"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.13.tgz#105495ae5361d697bd195c825192e1ad7f253787"
 
 acorn@^5.0.0:
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.0.3.tgz#c460df08491463f028ccb82eab3730bf01087b3d"
@@ -368,6 +459,10 @@ acorn@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.1.1.tgz#53fe161111f912ab999ee887a90a0bc52822fd75"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.1.1.tgz#53fe161111f912ab999ee887a90a0bc52822fd75"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 adm-zip@0.4.4:
   version "0.4.4"
@@ -401,18 +496,24 @@ ajv@^4.7.0, ajv@^4.9.1:
 
 ajv@^5.0.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.2.0.tgz#c1735024c5da2ef75cc190713073d44f098bf486"
   dependencies:
     co "^4.6.0"
     fast-deep-equal "^0.1.0"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-5.2.2.tgz#47c68d69e86f5d953103b0074a9430dc63da5e39"
   dependencies:
     co "^4.6.0"
     fast-deep-equal "^1.0.0"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
     json-schema-traverse "^0.3.0"
     json-stable-stringify "^1.0.1"
 
@@ -463,6 +564,7 @@ ansi-styles@^2.2.1:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-2.2.1.tgz#b432dd3358b634cf75e1e4664368240533c1ddbe"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 ansi-styles@^3.1.0:
   version "3.1.0"
@@ -471,6 +573,14 @@ ansi-styles@^3.1.0:
     color-convert "^1.0.0"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+ansi-styles@^3.1.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.0.tgz#c159b8d5be0f9e5a6f346dab94f16ce022161b88"
+  dependencies:
+    color-convert "^1.9.0"
+
+>>>>>>> build(yarn): Reupload yarn.lock
 anymatch@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/anymatch/-/anymatch-1.3.0.tgz#a3e52fa39168c825ff57b0248126ce5a8ff95507"
@@ -523,12 +633,17 @@ arr-diff@^2.0.0:
 
 arr-flatten@^1.0.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/arr-flatten/-/arr-flatten-1.0.3.tgz#a274ed85ac08849b6bd7847c4580745dc51adfb1"
 =======
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/arr-flatten/-/arr-flatten-1.1.0.tgz#36048bbff4e7b47e136644316c99669ea5ae91f1"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/arr-flatten/-/arr-flatten-1.1.0.tgz#36048bbff4e7b47e136644316c99669ea5ae91f1"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 array-find-index@^1.0.1:
   version "1.0.2"
@@ -566,12 +681,17 @@ arrify@^1.0.0:
 
 asap@~2.0.3:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.5.tgz#522765b50c3510490e52d7dcfe085ef9ba96958f"
 =======
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 asn1.js@^4.0.0:
   version "4.9.1"
@@ -594,8 +714,11 @@ assert-plus@^0.2.0:
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-0.2.0.tgz#d74e1b87e7affc0db8aadb7021f3fe48101ab234"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 assert@^1.1.1, assert@~1.1.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 assert@^1.1.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.4.1.tgz#99912d591836b5a6f5b345c0f07eefc08fc65d91"
@@ -603,7 +726,10 @@ assert@^1.1.1:
     util "0.10.3"
 
 assert@~1.1.0:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/assert/-/assert-1.1.2.tgz#adaa04c46bb58c6dd1f294da3eb26e6228eb6e44"
   dependencies:
@@ -792,8 +918,13 @@ big.js@^3.1.3:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.1.3.tgz#4cada2193652eb3ca9ec8e55c9015669c9806978"
 
 binary-extensions@^1.0.0:
+<<<<<<< HEAD
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.8.0.tgz#48ec8d16df4377eae5fa5884682480af4d95c774"
+=======
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.9.0.tgz#66506c16ce6f4d6928a5b3cd6a33ca41e941e37b"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 blob@0.0.4:
   version "0.0.4"
@@ -1066,23 +1197,32 @@ builtins@~0.0.3:
   resolved "https://registry.yarnpkg.com/builtins/-/builtins-0.0.7.tgz#355219cd6cf18dbe7c01cc7fd2dce765cfdc549a"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 bytes@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.3.0.tgz#d5b680a165b6201739acb611542aabc2d8ceb070"
 
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 bytes@2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.4.0.tgz#7d97196f9d5baf7f6935e25985549edd2a6c2339"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 bytes@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-2.5.0.tgz#4c9423ea2d252c270c41b2bdefeff9bb6b62c06a"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 cachedir@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/cachedir/-/cachedir-1.1.1.tgz#e1363075ea206a12767d92bb711c8a2f76a10f62"
@@ -1130,12 +1270,17 @@ caniuse-api@^1.5.2:
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.0.30000696"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000696.tgz#e71f5c61e1f96c7a3af4e791ac5db55e11737604"
 =======
   version "1.0.30000701"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000701.tgz#2e32b06993bf3dbd90b43d93f04e26d11afddcba"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.0.30000704"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000704.tgz#8c5aa6fed8058e65c70f2c1f5d63f7088650705c"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 capture-stack-trace@^1.0.0:
   version "1.0.0"
@@ -1163,8 +1308,11 @@ chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.0, chalk@^1.1.1, chalk@^1.1.3:
     supports-color "^2.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 chokidar@^1.4.1, chokidar@^1.4.3, chokidar@^1.6.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 chalk@^2.0.0, chalk@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.0.1.tgz#dbec49436d2ae15f536114e76d14656cdbc0f44d"
@@ -1174,7 +1322,10 @@ chalk@^2.0.0, chalk@^2.0.1:
     supports-color "^4.0.0"
 
 chokidar@^1.4.1, chokidar@^1.6.0, chokidar@^1.7.0:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -1195,17 +1346,23 @@ ci-info@^1.0.0:
 
 cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.3.tgz#eeabf194419ce900da3018c207d212f2a6df0a07"
   dependencies:
     inherits "^2.0.1"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/cipher-base/-/cipher-base-1.0.4.tgz#8760e4ecc272f4c363532f926d874aae2c1397de"
   dependencies:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 
 clap@^1.0.9:
   version "1.2.0"
@@ -1215,12 +1372,17 @@ clap@^1.0.9:
 
 clean-css@4.1.x:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.4.tgz#eec8811db27457e0078d8ca921fa81b72fa82bf4"
 =======
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.7.tgz#b9aea4f85679889cf3eae8b40349ec4ebdfdd032"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.7.tgz#b9aea4f85679889cf3eae8b40349ec4ebdfdd032"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     source-map "0.5.x"
 
@@ -1283,12 +1445,17 @@ co@^4.6.0:
 
 coa@~1.0.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/coa/-/coa-1.0.3.tgz#1b54a5e1dcf77c990455d4deea98c564416dc893"
 =======
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/coa/-/coa-1.0.4.tgz#a9ef153660d6a86a8bdec0289a5c684d217432fd"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/coa/-/coa-1.0.4.tgz#a9ef153660d6a86a8bdec0289a5c684d217432fd"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     q "^1.1.2"
 
@@ -1308,6 +1475,7 @@ codelyzer@~3.0.1:
     sprintf-js "^1.0.3"
 
 codemirror@^5.27.4:
+<<<<<<< HEAD
   version "5.27.4"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.27.4.tgz#0e817c839bfea9959dd16cd48ae14acc0e43c3b6"
 
@@ -1316,6 +1484,12 @@ color-convert@^1.3.0:
 =======
 color-convert@^1.0.0, color-convert@^1.3.0:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "5.28.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.28.0.tgz#2978d9280d671351a4f5737d06bbd681a0fd6f83"
+
+color-convert@^1.3.0, color-convert@^1.9.0:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.0.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
   dependencies:
@@ -1323,12 +1497,17 @@ color-convert@^1.0.0, color-convert@^1.3.0:
 
 color-name@^1.0.0, color-name@^1.1.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.2.tgz#5c8ab72b64bd2215d617ae9559ebb148475cf98d"
 =======
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.3.tgz#a7d0558bd89c42f795dd42328f740831ca53bc25"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 color-string@^0.3.0:
   version "0.3.0"
@@ -1389,11 +1568,17 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
+<<<<<<< HEAD
 commander@2.9.x, commander@~2.9.0:
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
     graceful-readlink ">= 1.0.0"
+=======
+commander@2.11.x, commander@~2.11.0:
+  version "2.11.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 commander@~2.1.0:
   version "2.1.0"
@@ -1446,16 +1631,21 @@ component-inherit@0.0.3:
   resolved "https://registry.yarnpkg.com/component-inherit/-/component-inherit-0.0.3.tgz#645fc4adf58b72b649d5cae65135619db26ff143"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 compressible@~2.0.8:
 =======
 compressible@~2.0.10:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+compressible@~2.0.10:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "2.0.10"
   resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.10.tgz#feda1c7f7617912732b29bf8cf26252a20b9eecd"
   dependencies:
     mime-db ">= 1.27.0 < 2"
 
 compression@^1.5.2:
+<<<<<<< HEAD
 <<<<<<< HEAD
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/compression/-/compression-1.6.2.tgz#cceb121ecc9d09c52d7ad0c3350ea93ddd402bc3"
@@ -1467,6 +1657,8 @@ compression@^1.5.2:
     on-headers "~1.0.1"
     vary "~1.1.0"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.0.tgz#030c9f198f1643a057d776a738e922da4373012d"
   dependencies:
@@ -1477,7 +1669,10 @@ compression@^1.5.2:
     on-headers "~1.0.1"
     safe-buffer "5.1.1"
     vary "~1.1.1"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -1563,12 +1758,17 @@ content-type@~1.0.2:
 
 conventional-commit-types@^2.0.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/conventional-commit-types/-/conventional-commit-types-2.1.0.tgz#45d860386c9a2e6537ee91d8a1b61bd0411b3d04"
 =======
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/conventional-commit-types/-/conventional-commit-types-2.2.0.tgz#5db95739d6c212acbe7b6f656a11b940baa68946"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/conventional-commit-types/-/conventional-commit-types-2.2.0.tgz#5db95739d6c212acbe7b6f656a11b940baa68946"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 convert-source-map@^1.3.0:
   version "1.5.0"
@@ -1600,19 +1800,29 @@ core-util-is@~1.0.0:
 
 cors@latest:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.8.3"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.3.tgz#4cf78e1d23329a7496b2fc2225b77ca5bb5eb802"
 =======
   version "2.8.4"
   resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.4.tgz#2bd381f2eb201020105cd50ea59da63090694686"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "2.8.4"
+  resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.4.tgz#2bd381f2eb201020105cd50ea59da63090694686"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     object-assign "^4"
     vary "^1"
 
 cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
+<<<<<<< HEAD
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-2.1.3.tgz#952771eb0dddc1cb3fa2f6fbe51a522e93b3ee0a"
+=======
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-2.2.2.tgz#6173cebd56fac042c1f4390edf7af6c07c7cb892"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     is-directory "^0.3.1"
     js-yaml "^3.4.3"
@@ -1670,12 +1880,17 @@ cryptiles@2.x.x:
 
 crypto-browserify@^3.0.0, crypto-browserify@^3.11.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/crypto-browserify/-/crypto-browserify-3.11.0.tgz#3652a0906ab9b2a7e0c3ce66a408e957a2485522"
 =======
   version "3.11.1"
   resolved "https://registry.yarnpkg.com/crypto-browserify/-/crypto-browserify-3.11.1.tgz#948945efc6757a400d6e5e5af47194d10064279f"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/crypto-browserify/-/crypto-browserify-3.11.1.tgz#948945efc6757a400d6e5e5af47194d10064279f"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     browserify-cipher "^1.0.0"
     browserify-sign "^4.0.0"
@@ -1963,12 +2178,17 @@ di@^0.0.1:
 
 diff@^3.1.0, diff@^3.2.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.2.0.tgz#c9ce393a4b7cbd0b058a725c93df299027868ff9"
 =======
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.0.tgz#056695150d7aa93237ca7e378ac3b1682b7963b9"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-3.3.0.tgz#056695150d7aa93237ca7e378ac3b1682b7963b9"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 diffie-hellman@^5.0.0:
   version "5.0.2"
@@ -2016,6 +2236,7 @@ dom-serializer@0:
     entities "~1.1.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 dom-urls@^1.1.0:
   version "1.1.0"
@@ -2024,6 +2245,8 @@ dom-urls@^1.1.0:
     urijs "^1.16.1"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 domain-browser@^1.1.1, domain-browser@~1.1.0:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.1.7.tgz#867aa4b093faa05f1de08c06f4d7b21fdf8698bc"
@@ -2089,12 +2312,17 @@ ee-first@1.1.1:
 
 electron-to-chromium@^1.2.7:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.3.14"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.14.tgz#64af0f9efd3c3c6acd57d71f83b49ca7ee9c4b43"
 =======
   version "1.3.15"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.15.tgz#08397934891cbcfaebbd18b82a95b5a481138369"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.16.tgz#d0e026735754770901ae301a21664cba45d92f7d"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 elliptic@^6.0.0:
   version "6.4.0"
@@ -2173,17 +2401,26 @@ engine.io@1.8.3:
 
 enhanced-resolve@^3.0.0, enhanced-resolve@^3.1.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-3.1.0.tgz#9f4b626f577245edcf4b2ad83d86e17f4f421dec"
 =======
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-3.3.0.tgz#950964ecc7f0332a42321b673b38dc8ff15535b3"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-3.4.1.tgz#0421e339fd71419b3da13d129b3979040230476e"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     graceful-fs "^4.1.2"
     memory-fs "^0.4.0"
     object-assign "^4.0.1"
+<<<<<<< HEAD
     tapable "^0.2.5"
+=======
+    tapable "^0.2.7"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 ensure-posix-path@^1.0.0:
   version "1.0.2"
@@ -2210,12 +2447,15 @@ error-ex@^1.2.0:
     is-arrayish "^0.2.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 es6-promise@^4.0.5:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.1.1.tgz#8811e90915d9a0dba36274f0b242dbda78f9c92a"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
@@ -2248,6 +2488,7 @@ esprima@^2.6.0:
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 esprima@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
@@ -2256,6 +2497,11 @@ esprima@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+esprima@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.0.tgz#4499eddcd1110e0b218bacf2fa7f7f59f55ca804"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 esprima@~1.0.2:
   version "1.0.4"
@@ -2306,14 +2552,20 @@ eventemitter3@1.x.x:
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 events@^1.0.0, events@~1.0.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 events@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
 events@~1.0.0:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/events/-/events-1.0.2.tgz#75849dcfe93d10fb057c30055afdbd51d06a8e24"
 
@@ -2450,22 +2702,29 @@ extsprintf@1.0.2:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.0.2.tgz#e1080e0658e300b06294990cc70e1502235fd550"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 falafel@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/falafel/-/falafel-1.2.0.tgz#c18d24ef5091174a497f318cd24b026a25cddab4"
   dependencies:
     acorn "^1.0.3"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 falafel@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/falafel/-/falafel-2.1.0.tgz#96bb17761daba94f46d001738b3cedf3a67fe06c"
   dependencies:
     acorn "^5.0.0"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
     foreach "^2.0.5"
     isarray "0.0.1"
     object-keys "^1.0.6"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 fast-deep-equal@^0.1.0:
   version "0.1.0"
@@ -2475,6 +2734,11 @@ fast-deep-equal@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.0.0.tgz#96256a3bc975595eb36d82e9929d060d893439ff"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+fast-deep-equal@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-1.0.0.tgz#96256a3bc975595eb36d82e9929d060d893439ff"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 fastparse@^1.1.1:
   version "1.1.1"
@@ -2683,6 +2947,9 @@ fs-extra@^2.0.0:
     jsonfile "^2.1.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 fs-extra@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-3.0.1.tgz#3794f378c58b342ea7dbbb23095109c4b3b62291"
@@ -2691,8 +2958,11 @@ fs-extra@^3.0.1:
     jsonfile "^3.0.0"
     universalify "^0.1.0"
 
+<<<<<<< HEAD
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
@@ -2783,10 +3053,14 @@ glob@7.0.x:
     path-is-absolute "^1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 glob@7.1.1, glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.0.6, glob@^7.1.1, glob@~7.1.1:
 =======
 glob@7.1.1:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+glob@7.1.1:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.1.tgz#805211df04faaf1c63a3600306cdf5ade50b2ec8"
   dependencies:
@@ -2807,7 +3081,10 @@ glob@^4.0.5:
     once "^1.3.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.0.6, glob@^7.1.1, glob@~7.1.1:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
@@ -2819,7 +3096,10 @@ glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.0.6, glob@^7.1.1, glob@~7.1.1:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 global-modules@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/global-modules/-/global-modules-0.2.3.tgz#ea5a3bed42c6d6ce995a4f8a1269b5dae223828d"
@@ -2887,10 +3167,13 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
 
+<<<<<<< HEAD
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 hammerjs@^2.0.8:
   version "2.0.8"
   resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
@@ -2970,12 +3253,17 @@ hash-base@^2.0.0:
 
 hash.js@^1.0.0, hash.js@^1.0.3:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.2.tgz#bf5c887825cfe40b9efde7bf11bd2db26e6bf01b"
 =======
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.3.tgz#340dedbe6290187151c1ea1d777a3448935df846"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/hash.js/-/hash.js-1.1.3.tgz#340dedbe6290187151c1ea1d777a3448935df846"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.0"
@@ -3033,12 +3321,21 @@ html-entities@^1.2.0:
   resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-1.2.1.tgz#0df29351f0721163515dfb9e5543e5f6eed5162f"
 
 html-minifier@^3.2.3:
+<<<<<<< HEAD
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/html-minifier/-/html-minifier-3.5.2.tgz#d73bc3ff448942408818ce609bf3fb0ea7ef4eb7"
   dependencies:
     camel-case "3.0.x"
     clean-css "4.1.x"
     commander "2.9.x"
+=======
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/html-minifier/-/html-minifier-3.5.3.tgz#4a275e3b1a16639abb79b4c11191ff0d0fcf1ab9"
+  dependencies:
+    camel-case "3.0.x"
+    clean-css "4.1.x"
+    commander "2.11.x"
+>>>>>>> build(yarn): Reupload yarn.lock
     he "1.1.x"
     ncname "1.0.x"
     param-case "2.1.x"
@@ -3132,12 +3429,17 @@ https-proxy-agent@^1.0.0:
 
 husky@^0.14.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/husky/-/husky-0.14.1.tgz#8edba33e728ceed75343e88bb8002e4cbd8d1b40"
 =======
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/husky/-/husky-0.14.3.tgz#c69ed74e2d2779769a17ba8399b54ce0b63c12c3"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "0.14.3"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-0.14.3.tgz#c69ed74e2d2779769a17ba8399b54ce0b63c12c3"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     is-ci "^1.0.10"
     normalize-path "^1.0.0"
@@ -3148,18 +3450,24 @@ husky@^0.14.1:
   resolved "git+https://github.com/menou2u/HyperMD.git#6daad0b25dbb0e646b65c72c882910d763670a35"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 iconv-lite@0.4.15, iconv-lite@~0.4.13:
   version "0.4.15"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.15.tgz#fe265a218ac6a57cfe854927e9d04c19825eddeb"
 
 iconv-lite@^0.4.17:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 iconv-lite@0.4.15:
   version "0.4.15"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.15.tgz#fe265a218ac6a57cfe854927e9d04c19825eddeb"
 
 iconv-lite@^0.4.17, iconv-lite@~0.4.13:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "0.4.18"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.18.tgz#23d8656b16aae6742ac29732ea8f0336a4789cf2"
 
@@ -3264,6 +3572,9 @@ inquirer@1.2.3:
     through "^2.3.6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 inquirer@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-2.0.0.tgz#e1351687b90d150ca403ceaa3cefb1e3065bef4b"
@@ -3284,6 +3595,7 @@ inquirer@^2.0.0:
     through "^2.3.6"
 
 inquirer@^3.0.0:
+<<<<<<< HEAD
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.1.1.tgz#87621c4fba4072f48a8dd71c9f9df6f100b2d534"
   dependencies:
@@ -3291,12 +3603,17 @@ inquirer@^3.0.0:
     chalk "^1.0.0"
 =======
 inquirer@^3.0.0:
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-3.2.0.tgz#45b44c2160c729d7578c54060b3eed94487bb42b"
   dependencies:
     ansi-escapes "^2.0.0"
     chalk "^2.0.0"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
     cli-cursor "^2.1.0"
     cli-width "^2.0.0"
     external-editor "^2.0.4"
@@ -3307,12 +3624,17 @@ inquirer@^3.0.0:
     rx-lite "^4.0.8"
     rx-lite-aggregates "^4.0.8"
 <<<<<<< HEAD
+<<<<<<< HEAD
     string-width "^2.0.0"
     strip-ansi "^3.0.0"
 =======
     string-width "^2.1.0"
     strip-ansi "^4.0.0"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+    string-width "^2.1.0"
+    strip-ansi "^4.0.0"
+>>>>>>> build(yarn): Reupload yarn.lock
     through "^2.3.6"
 
 insert-module-globals@^6.1.0:
@@ -3480,16 +3802,22 @@ is-plain-obj@^1.0.0:
 
 is-plain-object@^2.0.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.3.tgz#c15bf3e4b66b62d72efaf2925848663ecbc619b6"
   dependencies:
     isobject "^3.0.0"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-2.0.4.tgz#2c163b3fafb1b606d9d17928f05c2a1c38e07677"
   dependencies:
     isobject "^3.0.1"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 
 is-posix-bracket@^0.1.0:
   version "0.1.1"
@@ -3560,6 +3888,7 @@ isobject@^2.0.0:
     isarray "1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 isobject@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.0.tgz#39565217f3661789e8a0a0c080d5f7e6bc46e1a0"
@@ -3568,6 +3897,11 @@ isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+isobject@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 isstream@~0.1.2:
   version "0.1.2"
@@ -3575,22 +3909,31 @@ isstream@~0.1.2:
 
 istanbul-api@^1.1.8:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.1.10"
   resolved "https://registry.yarnpkg.com/istanbul-api/-/istanbul-api-1.1.10.tgz#f27e5e7125c8de13f6a80661af78f512e5439b2b"
 =======
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/istanbul-api/-/istanbul-api-1.1.11.tgz#fcc0b461e2b3bda71e305155138238768257d9de"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/istanbul-api/-/istanbul-api-1.1.11.tgz#fcc0b461e2b3bda71e305155138238768257d9de"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     async "^2.1.4"
     fileset "^2.0.2"
     istanbul-lib-coverage "^1.1.1"
     istanbul-lib-hook "^1.0.7"
 <<<<<<< HEAD
+<<<<<<< HEAD
     istanbul-lib-instrument "^1.7.3"
 =======
     istanbul-lib-instrument "^1.7.4"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+    istanbul-lib-instrument "^1.7.4"
+>>>>>>> build(yarn): Reupload yarn.lock
     istanbul-lib-report "^1.1.1"
     istanbul-lib-source-maps "^1.2.1"
     istanbul-reports "^1.1.1"
@@ -3618,6 +3961,7 @@ istanbul-lib-hook@^1.0.7:
     append-transform "^0.4.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 istanbul-lib-instrument@^1.1.3, istanbul-lib-instrument@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.7.3.tgz#925b239163eabdd68cc4048f52c2fa4f899ecfa7"
@@ -3626,6 +3970,11 @@ istanbul-lib-instrument@^1.1.3, istanbul-lib-instrument@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.7.4.tgz#e9fd920e4767f3d19edc765e2d6b3f5ccbd0eea8"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+istanbul-lib-instrument@^1.1.3, istanbul-lib-instrument@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.7.4.tgz#e9fd920e4767f3d19edc765e2d6b3f5ccbd0eea8"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     babel-generator "^6.18.0"
     babel-template "^6.16.0"
@@ -3684,12 +4033,17 @@ jasminewd2@^2.1.0:
 
 "jio@git+https://github.com/Nexedi/jio.git":
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.18.0"
   resolved "git+https://github.com/Nexedi/jio.git#a0c3917af8c640938e83c820c8b30f7f8317081b"
 =======
   version "3.19.0"
   resolved "git+https://github.com/Nexedi/jio.git#c28b6cf639f897f7140857d7b97a139730899065"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "3.20.0"
+  resolved "git+https://github.com/Nexedi/jio.git#cb00908186a6cfa961a5760999570971c160ad70"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     moment "2.13.0"
     rsvp "git+https://lab.nexedi.com/nexedi/rsvp.js.git"
@@ -3702,6 +4056,7 @@ js-base64@^2.1.5, js-base64@^2.1.8, js-base64@^2.1.9:
 
 js-tokens@^3.0.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.1.tgz#08e9f132484a2c45a30907e9dc4d5567b7f114d7"
 
@@ -3712,6 +4067,8 @@ js-yaml@^3.4.3, js-yaml@^3.7.0:
     argparse "^1.0.7"
     esprima "^3.1.1"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
@@ -3721,7 +4078,10 @@ js-yaml@^3.4.3, js-yaml@^3.7.0:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 
 js-yaml@~3.7.0:
   version "3.7.0"
@@ -3736,12 +4096,17 @@ jsbn@~0.1.0:
 
 jschardet@^1.4.2:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.4.2.tgz#2aa107f142af4121d145659d44f50830961e699a"
 =======
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.0.tgz#a61f310306a5a71188e1b1acd08add3cfbb08b1e"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.5.0.tgz#a61f310306a5a71188e1b1acd08add3cfbb08b1e"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 jsesc@^1.3.0:
   version "1.3.0"
@@ -3752,8 +4117,13 @@ jsesc@~0.5.0:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
 
 json-loader@^0.5.4:
+<<<<<<< HEAD
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.4.tgz#8baa1365a632f58a3c46d20175fc6002c96e37de"
+=======
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.7.tgz#dca14a70235ff82f0ac9a3abeb60d337a365185d"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 json-schema-traverse@^0.3.0:
   version "0.3.1"
@@ -3794,6 +4164,7 @@ jsonfile@^2.1.0:
     graceful-fs "^4.1.6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 jsonfile@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-3.0.0.tgz#92e7c7444e5ffd5fa32e6a9ae8b85034df8347d0"
@@ -3802,6 +4173,14 @@ jsonfile@^3.0.0:
 
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+jsonfile@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-3.0.1.tgz#a5ecc6f65f53f662c4415c7675a0331d0992ec66"
+  optionalDependencies:
+    graceful-fs "^4.1.6"
+
+>>>>>>> build(yarn): Reupload yarn.lock
 jsonify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/jsonify/-/jsonify-0.0.0.tgz#2c74b6ee41d93ca51b7b5aaee8f503631d252a73"
@@ -3943,12 +4322,17 @@ lcid@^1.0.0:
 
 less-loader@^4.0.2:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.0.4.tgz#b4a8c43843e65c67d2ea2eb1465b5c4233d5006a"
 =======
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.0.5.tgz#ae155a7406cac6acd293d785587fcff0f478c4dd"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/less-loader/-/less-loader-4.0.5.tgz#ae155a7406cac6acd293d785587fcff0f478c4dd"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     clone "^2.1.1"
     loader-utils "^1.1.0"
@@ -4039,12 +4423,15 @@ lodash.clonedeep@^4.3.2, lodash.clonedeep@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 lodash.defaults@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 lodash.map@^4.5.1:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.map/-/lodash.map-4.6.0.tgz#771ec7839e3473d9c4cde28b19394c3562f4f6d3"
@@ -4083,10 +4470,14 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 lodash@4.17.2, lodash@^4.11.1:
 =======
 lodash@4.17.2:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+lodash@4.17.2:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.2.tgz#34a3055babe04ce42467b607d700072c7ff6bf42"
 
@@ -4095,10 +4486,14 @@ lodash@^3.8.0:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 lodash@^4.0.0, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.5.0, lodash@~4.17.4:
 =======
 lodash@^4.0.0, lodash@^4.11.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.5.0, lodash@~4.17.4:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+lodash@^4.0.0, lodash@^4.11.1, lodash@^4.14.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.5.0, lodash@~4.17.4:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4114,12 +4509,18 @@ loglevel@^1.4.1:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.4.1.tgz#95b383f91a3c2756fd4ab093667e4309161f2bcd"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 long@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/long/-/long-3.2.0.tgz#d821b7138ca1cb581c172990ef14db200b5c474b"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 longest@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
@@ -4260,14 +4661,20 @@ miller-rabin@^4.0.0:
     brorand "^1.0.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 "mime-db@>= 1.27.0 < 2", mime-db@~1.27.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 "mime-db@>= 1.27.0 < 2":
   version "1.29.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.29.0.tgz#48d26d235589651704ac5916ca06001914266878"
 
 mime-db@~1.27.0:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.27.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.27.0.tgz#820f572296bbd20ec25ed55e5b5de869e5436eb1"
 
@@ -4865,6 +5272,7 @@ path-to-regexp@0.1.7:
   resolved "https://registry.yarnpkg.com/path-to-regexp/-/path-to-regexp-0.1.7.tgz#df604178005f522f15eb4490e7247a1bfaa67f8c"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 path-to-regexp@^1.0.1:
   version "1.7.0"
@@ -4873,6 +5281,8 @@ path-to-regexp@^1.0.1:
     isarray "0.0.1"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 path-type@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/path-type/-/path-type-1.1.0.tgz#59c44f7ee491da704da415da5a4070ba4f8fe441"
@@ -5211,6 +5621,7 @@ postcss@^5.0.0, postcss@^5.0.10, postcss@^5.0.11, postcss@^5.0.12, postcss@^5.0.
 
 postcss@^6.0.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.3.tgz#b7f565b3d956fbb8565ca7c1e239d0506e427d8b"
   dependencies:
@@ -5225,6 +5636,14 @@ postcss@^6.0.1:
     source-map "^0.5.6"
     supports-color "^4.1.0"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-6.0.8.tgz#89067a9ce8b11f8a84cbc5117efc30419a0857b3"
+  dependencies:
+    chalk "^2.0.1"
+    source-map "^0.5.6"
+    supports-color "^4.2.0"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 prepend-http@^1.0.0, prepend-http@^1.0.1:
   version "1.0.4"
@@ -5235,12 +5654,15 @@ preserve@^0.2.0:
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 pretty-bytes@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-4.0.2.tgz#b2bf82e7350d65c6c33aa95aaa5a4f6327f61cd9"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 pretty-error@^2.0.2:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/pretty-error/-/pretty-error-2.1.1.tgz#5f4f87c8f91e5ae3f3ba87ab4cf5e03b1a17f1a3"
@@ -5267,7 +5689,10 @@ promise@^7.1.1:
     asap "~2.0.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 protobufjs@^6.8.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-6.8.0.tgz#04e85493c4e1653878ec283f18bc78b1e7c5d5a2"
@@ -5286,7 +5711,10 @@ protobufjs@^6.8.0:
     "@types/node" "^7.0.29"
     long "^3.2.0"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 protractor@~5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/protractor/-/protractor-5.1.2.tgz#9b221741709a4c62d5cd53c6aadd54a71137e95f"
@@ -5337,18 +5765,24 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 punycode@1.3.2, punycode@^1.2.4:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
 
 punycode@^1.4.1:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 punycode@1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.3.2.tgz#9653a036fb7c1ee42342f2325cceefea3926c48d"
 
 punycode@^1.2.4, punycode@^1.4.1:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"
 
@@ -5357,11 +5791,14 @@ punycode@~1.2.3:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-1.2.4.tgz#54008ac972aec74175def9cba6df7fa9d3918740"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 q@1.4.1, q@^1.1.2, q@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 q@1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
@@ -5370,7 +5807,10 @@ q@^1.1.2, q@^1.4.1:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.0.tgz#dd01bac9d06d30e6f219aecb8253ee9ebdc308f1"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 qjobs@^1.1.4:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/qjobs/-/qjobs-1.1.5.tgz#659de9f2cf8dcc27a1481276f205377272382e73"
@@ -5497,17 +5937,23 @@ readable-stream@1.0, readable-stream@~1.0.17, readable-stream@~1.0.2, readable-s
 
 readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.1.4, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.2.6, readable-stream@^2.2.9:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.2.tgz#5a04df05e4f57fe3f0dc68fdd11dc5c97c7e6f4d"
 =======
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.3.tgz#368f2512d79f9d46fdfc71349ae7878bbc1eb95c"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.3.tgz#368f2512d79f9d46fdfc71349ae7878bbc1eb95c"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     core-util-is "~1.0.0"
     inherits "~2.0.3"
     isarray "~1.0.0"
     process-nextick-args "~1.0.6"
+<<<<<<< HEAD
 <<<<<<< HEAD
     safe-buffer "~5.1.0"
     string_decoder "~1.0.0"
@@ -5515,6 +5961,10 @@ readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable
     safe-buffer "~5.1.1"
     string_decoder "~1.0.3"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+    safe-buffer "~5.1.1"
+    string_decoder "~1.0.3"
+>>>>>>> build(yarn): Reupload yarn.lock
     util-deprecate "~1.0.1"
 
 readable-wrap@^1.0.0:
@@ -5763,12 +6213,17 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
 
 rsvp@^3.0.17:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.5.0.tgz#a62c573a4ae4e1dfd0697ebc6242e79c681eaa34"
 =======
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.1.tgz#34f4a7ac2859f7bacc8f49789c5604f1e26ae702"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 "rsvp@git+https://lab.nexedi.com/nexedi/rsvp.js.git":
   version "2.0.4"
@@ -5807,6 +6262,7 @@ rx@^4.1.0:
 
 rxjs@^5.0.1, rxjs@^5.0.3, rxjs@^5.2.0, rxjs@^5.4.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.1.tgz#b62f757f279445d265a18a58fb0a70dc90e91626"
   dependencies:
@@ -5814,13 +6270,18 @@ rxjs@^5.0.1, rxjs@^5.0.3, rxjs@^5.2.0, rxjs@^5.4.1:
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@~5.1.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "5.4.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.4.2.tgz#2a3236fcbf03df57bae06fd6972fd99e5c08fcf7"
   dependencies:
     symbol-observable "^1.0.1"
 
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
@@ -5975,12 +6436,15 @@ serve-static@1.12.3:
     send "0.15.3"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 serviceworker-cache-polyfill@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/serviceworker-cache-polyfill/-/serviceworker-cache-polyfill-4.0.0.tgz#de19ee73bef21ab3c0740a37b33db62464babdeb"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
@@ -6150,24 +6614,34 @@ source-map-support@^0.4.0, source-map-support@^0.4.2, source-map-support@~0.4.0:
     source-map "^0.5.6"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 source-map@0.1.34, source-map@0.1.x, source-map@~0.1.31, source-map@~0.1.33, source-map@~0.1.7:
 =======
 source-map@0.1.34:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+source-map@0.1.34:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "0.1.34"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.1.34.tgz#a7cfe89aec7b1682c3b198d0acfb47d7d090566b"
   dependencies:
     amdefine ">=0.0.4"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 source-map@0.1.x, source-map@~0.1.31, source-map@~0.1.33, source-map@~0.1.7:
   version "0.1.43"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.1.43.tgz#c24bc146ca517c1471f5dacbe2571b2b7f9e3346"
   dependencies:
     amdefine ">=0.0.4"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 source-map@0.5.x, "source-map@>= 0.1.2", source-map@^0.5.0, source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.1, source-map@~0.5.3:
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.6.tgz#75ce38f52bf0733c5a7f0c118d81334a2bb5f412"
@@ -6264,21 +6738,30 @@ static-eval@~0.2.0:
 
 static-module@^1.1.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/static-module/-/static-module-1.3.2.tgz#329fb9f223a566266bda71843b7d932c767174f3"
 =======
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/static-module/-/static-module-1.4.0.tgz#bef0d9b6f89585f6f2359b8161beeab06055dbd2"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/static-module/-/static-module-1.4.0.tgz#bef0d9b6f89585f6f2359b8161beeab06055dbd2"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     concat-stream "~1.6.0"
     duplexer2 "~0.0.2"
     escodegen "~1.3.2"
 <<<<<<< HEAD
+<<<<<<< HEAD
     falafel "^1.0.0"
 =======
     falafel "^2.1.0"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+    falafel "^2.1.0"
+>>>>>>> build(yarn): Reupload yarn.lock
     has "^1.0.0"
     object-inspect "~0.4.0"
     quote-stream "~0.0.0"
@@ -6358,12 +6841,18 @@ string-width@^1.0.1, string-width@^1.0.2:
     strip-ansi "^3.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 string-width@^2.0.0:
 =======
 string-width@^2.1.0:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-2.1.0.tgz#030664561fc146c9423ec7d978fe2457437fe6d0"
+=======
+string-width@^2.0.0, string-width@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-2.1.1.tgz#ab93f27a8dc13d28cac815c462143a6d9012ae9e"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     is-fullwidth-code-point "^2.0.0"
     strip-ansi "^4.0.0"
@@ -6373,10 +6862,14 @@ string_decoder@^0.10.25, string_decoder@~0.10.0, string_decoder@~0.10.x:
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 string_decoder@~1.0.0:
 =======
 string_decoder@~1.0.3:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+string_decoder@~1.0.3:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.3.tgz#0fc67d7c141825de94282dd536bec6b9bce860ab"
   dependencies:
@@ -6464,6 +6957,7 @@ supports-color@^3.1.0, supports-color@^3.1.1, supports-color@^3.1.2, supports-co
     has-flag "^1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 supports-color@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.0.0.tgz#33a7c680aa512c9d03ef929cacbb974d203d2790"
@@ -6472,6 +6966,11 @@ supports-color@^4.0.0, supports-color@^4.1.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.0.tgz#ad986dc7eb2315d009b4d77c8169c2231a684037"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+supports-color@^4.0.0, supports-color@^4.2.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.2.1.tgz#65a4bb2631e90e02420dba5554c375a4754bb836"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     has-flag "^2.0.0"
 
@@ -6487,6 +6986,7 @@ svgo@^0.7.0:
     sax "~1.2.1"
     whet.extend "~0.9.9"
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 sw-precache@^5.2.0:
@@ -6512,6 +7012,8 @@ sw-toolbox@^3.4.0:
     serviceworker-cache-polyfill "^4.0.0"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 symbol-observable@^1.0.1:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
@@ -6522,9 +7024,15 @@ syntax-error@^1.1.1:
   dependencies:
     acorn "^4.0.3"
 
+<<<<<<< HEAD
 tapable@^0.2.5, tapable@~0.2.5:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.6.tgz#206be8e188860b514425375e6f1ae89bfb01fd8d"
+=======
+tapable@^0.2.7, tapable@~0.2.5:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/tapable/-/tapable-0.2.7.tgz#e46c0daacbb2b8a98b9b0cea0f4052105817ed5c"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 tar-pack@^3.4.0:
   version "3.4.0"
@@ -6721,14 +7229,20 @@ tsutils@^1.4.0:
 
 tsutils@^2.0.0:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.4.0.tgz#ad4ce6dba0e5a3edbddf8626b7ca040782189fea"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.7.1.tgz#411a0e9466525a2b2869260a55620d7292155e24"
   dependencies:
     tslib "^1.7.1"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 
 tty-browserify@0.0.0, tty-browserify@~0.0.0:
   version "0.0.0"
@@ -6761,6 +7275,7 @@ typedarray@^0.0.6, typedarray@~0.0.5:
 
 uglify-js@3.0.x:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "3.0.20"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.20.tgz#cb35b2bcfe478051b6f3282be8db4e4add49a1e5"
 =======
@@ -6769,6 +7284,12 @@ uglify-js@3.0.x:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
   dependencies:
     commander "~2.9.0"
+=======
+  version "3.0.26"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.26.tgz#ba279ca597b13fe6c62c2d87dd5188e57a7a3233"
+  dependencies:
+    commander "~2.11.0"
+>>>>>>> build(yarn): Reupload yarn.lock
     source-map "~0.5.1"
 
 uglify-js@^2.4.15, uglify-js@^2.6, uglify-js@^2.8.5:
@@ -6840,12 +7361,19 @@ uniqs@^2.0.0:
   resolved "https://registry.yarnpkg.com/uniqs/-/uniqs-2.0.0.tgz#ffede4b36b25290696e6e165d4a59edb998e6b02"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 universalify@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.0.tgz#9eb1c4651debcc670cc94f1a75762332bb967778"
 
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+universalify@^0.1.0:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/universalify/-/universalify-0.1.1.tgz#fa71badd4437af4c148841e3b3b165f9e9e590b7"
+
+>>>>>>> build(yarn): Reupload yarn.lock
 unix-crypt-td-js@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/unix-crypt-td-js/-/unix-crypt-td-js-1.0.0.tgz#1c0824150481bc7a01d49e98f1ec668d82412f3b"
@@ -6876,12 +7404,15 @@ upper-case@^1.1.1:
   resolved "https://registry.yarnpkg.com/upper-case/-/upper-case-1.1.3.tgz#f6b4501c2ec4cdd26ba78be7222961de77621598"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 urijs@^1.16.1:
   version "1.18.10"
   resolved "https://registry.yarnpkg.com/urijs/-/urijs-1.18.10.tgz#b94463eaba59a1a796036a467bb633c667f221ab"
 
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 "uritemplate@git+https://lab.nexedi.com/nexedi/uritemplate-js.git":
   version "0.3.4"
   resolved "git+https://lab.nexedi.com/nexedi/uritemplate-js.git#69c0af3da5299ac216a0d437fac6dd621ccf9af8"
@@ -6933,12 +7464,17 @@ user-home@^1.1.1:
 
 useragent@^2.1.12:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "2.1.13"
   resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.1.13.tgz#bba43e8aa24d5ceb83c2937473e102e21df74c10"
 =======
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.2.1.tgz#cf593ef4f2d175875e8bb658ea92e18a4fd06d8e"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/useragent/-/useragent-2.2.1.tgz#cf593ef4f2d175875e8bb658ea92e18a4fd06d8e"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     lru-cache "2.2.x"
     tmp "0.0.x"
@@ -6984,8 +7520,13 @@ v8flags@^2.0.11:
     user-home "^1.1.1"
 
 validate-commit-msg@^2.12.2:
+<<<<<<< HEAD
   version "2.12.2"
   resolved "https://registry.yarnpkg.com/validate-commit-msg/-/validate-commit-msg-2.12.2.tgz#6d5015331bf196c22afb880d3f33bcef1deafea6"
+=======
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/validate-commit-msg/-/validate-commit-msg-2.13.1.tgz#71386ea45349c4970e091296f132dcf67dc50714"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     conventional-commit-types "^2.0.0"
     find-parent-dir "^0.3.0"
@@ -7000,10 +7541,14 @@ validate-npm-package-license@^3.0.1:
     spdx-expression-parse "~1.0.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 vary@^1, vary@~1.1.0, vary@~1.1.1:
 =======
 vary@^1, vary@~1.1.1:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+vary@^1, vary@~1.1.1:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.1.tgz#67535ebb694c1d52257457984665323f587e8d37"
 
@@ -7040,18 +7585,24 @@ walk-sync@^0.3.1:
 
 watchpack@^1.3.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.3.1.tgz#7d8693907b28ce6013e7f3610aa2a1acf07dad87"
   dependencies:
     async "^2.1.2"
     chokidar "^1.4.3"
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.4.0.tgz#4a1472bcbb952bd0a9bb4036801f954dfb39faac"
   dependencies:
     async "^2.1.2"
     chokidar "^1.7.0"
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
     graceful-fs "^4.1.2"
 
 wbuf@^1.1.0, wbuf@^1.7.2:
@@ -7061,8 +7612,13 @@ wbuf@^1.1.0, wbuf@^1.7.2:
     minimalistic-assert "^1.0.0"
 
 web-animations-js@^2.2.5:
+<<<<<<< HEAD
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/web-animations-js/-/web-animations-js-2.2.5.tgz#26ca1b34c1347332a0813f8b2bfe69664efa80aa"
+=======
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/web-animations-js/-/web-animations-js-2.3.1.tgz#3a6d9bc15196377a90f8e2803fa5262165b04510"
+>>>>>>> build(yarn): Reupload yarn.lock
 
 webdriver-js-extender@^1.0.0:
   version "1.0.0"
@@ -7166,12 +7722,17 @@ webpack@~2.4.0:
 
 webrtc-adapter@^4.0.1:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-4.0.2.tgz#f9d1d0604d7937766fb4b672ba235af70feada2b"
 =======
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-4.2.0.tgz#293e4870fca90414c332bd09410a27a812a18c50"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/webrtc-adapter/-/webrtc-adapter-4.2.1.tgz#863894d43ffe82c985c6795d63213f7b707ce751"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     sdp "^2.1.0"
 
@@ -7232,20 +7793,34 @@ wordwrap@~0.0.2:
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-0.0.3.tgz#a3d5da6cd5c0bc0008d37234bbaf1bed63059107"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 workbox-build@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/workbox-build/-/workbox-build-1.0.1.tgz#bafdab353bdd5c4cac4361c605dfc468a2f46efe"
+=======
+workbox-build@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/workbox-build/-/workbox-build-1.1.0.tgz#5013b072584b5fe96651e8c7aa5bc28011f4e014"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     chalk "^1.1.3"
     fs-extra "^3.0.1"
     glob "^7.1.1"
     lodash.template "^4.4.0"
     mkdirp "^0.5.1"
+<<<<<<< HEAD
     workbox-sw "^1.0.1"
 
 workbox-cli@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/workbox-cli/-/workbox-cli-1.0.1.tgz#4d5e12a2a08006fcad9404b3462be76dedadedab"
+=======
+    workbox-sw "^1.1.0"
+
+workbox-cli@^1.0.1:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/workbox-cli/-/workbox-cli-1.1.0.tgz#778705f7890ac299a76bff86665940676049c1fb"
+>>>>>>> build(yarn): Reupload yarn.lock
   dependencies:
     chalk "^1.1.3"
     fs-extra "^3.0.1"
@@ -7253,6 +7828,7 @@ workbox-cli@^1.0.1:
     lodash.template "^4.4.0"
     meow "^3.7.0"
     update-notifier "^1.0.3"
+<<<<<<< HEAD
     workbox-build "^1.0.1"
 
 workbox-sw@^1.0.1:
@@ -7261,6 +7837,14 @@ workbox-sw@^1.0.1:
 
 =======
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+    workbox-build "^1.1.0"
+
+workbox-sw@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/workbox-sw/-/workbox-sw-1.1.0.tgz#a2593a03ffef69de924635117d03952d954acec0"
+
+>>>>>>> build(yarn): Reupload yarn.lock
 wrap-ansi@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-2.1.0.tgz#d8fc3d284dd05794fe84973caecdd1cf824fdd85"
@@ -7281,10 +7865,14 @@ write-file-atomic@^1.1.2:
     slide "^1.1.5"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ws@1.1.2, ws@^1.0.1:
 =======
 ws@1.1.2:
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+ws@1.1.2:
+>>>>>>> build(yarn): Reupload yarn.lock
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.2.tgz#8a244fa052401e08c9886cf44a85189e1fd4067f"
   dependencies:
@@ -7292,7 +7880,10 @@ ws@1.1.2:
     ultron "1.0.x"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 ws@^1.0.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/ws/-/ws-1.1.4.tgz#57f40d036832e5f5055662a397c4de76ed66bf61"
@@ -7300,7 +7891,10 @@ ws@^1.0.1:
     options ">=0.0.5"
     ultron "1.0.x"
 
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 wtf-8@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wtf-8/-/wtf-8-1.0.0.tgz#392d8ba2d0f1c34d1ee2d630f15d0efb68e1048a"
@@ -7330,14 +7924,20 @@ xml2js@^0.4.17:
     xmlbuilder "^4.1.0"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 xmlbuilder@>=1.0.0, xmlbuilder@^4.1.0:
 =======
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
 xmlbuilder@>=1.0.0:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.1.tgz#91cd70897755363eba57c12ddeeab4a341a61f65"
 
 xmlbuilder@^4.1.0:
+<<<<<<< HEAD
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+>>>>>>> build(yarn): Reupload yarn.lock
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-4.2.1.tgz#aa58a3041a066f90eaa16c2f5389ff19f3f461a5"
   dependencies:
@@ -7449,9 +8049,14 @@ yn@^2.0.0:
 
 zone.js@^0.8.12, zone.js@^0.8.4:
 <<<<<<< HEAD
+<<<<<<< HEAD
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.12.tgz#86ff5053c98aec291a0bf4bbac501d694a05cfbb"
 =======
   version "0.8.13"
   resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.13.tgz#f0822525fad941582a03bbfe71eb21740315ddd0"
 >>>>>>> feat(protobuf-lib): Migrate message.pb.js to message.js in network service.
+=======
+  version "0.8.14"
+  resolved "https://registry.yarnpkg.com/zone.js/-/zone.js-0.8.14.tgz#0c4db24b178232274ccb43f78c99db7f3642b6cf"
+>>>>>>> build(yarn): Reupload yarn.lock
