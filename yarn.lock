@@ -3998,9 +3998,9 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-"mute-core@file:../mute-core/mute-core-v0.1.7.tgz":
-  version "0.1.7"
-  resolved "../mute-core/mute-core-v0.1.7.tgz#da8d86df5bec0012481abf84c5e651f1944c4cf6"
+mute-core@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/mute-core/-/mute-core-0.2.0.tgz#eccbdfe4ee1d95ebc6f0e90cc59d1791fb6b673c"
   dependencies:
     google-protobuf "^3.2.0"
     mute-structs "^0.1.3"
