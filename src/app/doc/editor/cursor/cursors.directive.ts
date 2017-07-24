@@ -92,7 +92,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
         const pbMsg = CursorMsg.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
         if (cursor !== undefined) {
-          if (pbMsg.state === State.HIDDEN ) {
+          if (pbMsg.state === State.HIDDEN) {
             // When cursor should be hidden
             cursor.hideCursor()
 
