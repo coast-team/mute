@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
-    "protoc": "pbjs -t static-module -o src/app/doc/network/message_pb.js -w es6 --es6 src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -o src/app/doc/editor/cursor/cursor_pb.js -w es6 --es6 src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
+    "protoc": "pbjs -t static-module -o src/app/doc/network/message_pb.js -w es6 --es6 --no-convert src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -o src/app/doc/editor/cursor/cursor_pb.js -w es6 --es6 --no-convert src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js && echo 'export const State = $root.State;' >> src/app/doc/editor/cursor/cursor_pb.js",
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
