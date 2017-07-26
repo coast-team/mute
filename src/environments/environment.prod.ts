@@ -11,7 +11,7 @@ export const environment = {
   // See https://developer.mozilla.org/en/docs/Web/API/RTCIceServer/urls
   iceServers: [
     {
-      urls: 'stun.l.google.com:19302'
+      urls: 'stun:stun.l.google.com:19302'
     }
   ],
 

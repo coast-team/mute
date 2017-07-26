@@ -14,36 +14,11 @@ import {
   ChangeDetectorRef
 } from '@angular/core'
 import { Observable, Subscription } from 'rxjs'
-import * as CodeMirror from 'codemirror'
-
-// SETTINGS: Thoses imports below are needed to run HyperMd into Mute
-import 'codemirror/addon/mode/overlay'
-import 'codemirror/addon/edit/continuelist'
-import 'codemirror/mode/meta'
-import 'codemirror/mode/xml/xml'
-import 'codemirror/mode/markdown/markdown'
-import 'codemirror/mode/gfm/gfm'
-import 'codemirror/mode/javascript/javascript'
-import 'hypermd/hypermd/mode/hypermd.js'
-import 'hypermd/hypermd/addon/hide-token'
-import 'hypermd/hypermd/addon/cursor-debounce'
-import 'hypermd/hypermd/addon/fold'
-import 'mathjax/MathJax.js'
-// SETTING: This import below loads a particular configuration
-// See others configurations here: http://docs.mathjax.org/en/latest/config-files.html#common-configurations
-import 'mathjax/config/TeX-AMS_CHTML.js'
-import 'mathjax/jax/output/CommonHTML/jax.js'
-import 'mathjax/jax/output/CommonHTML/fonts/TeX/fontdata.js'
-import 'hypermd/hypermd/addon/fold-math'
-import 'hypermd/hypermd/addon/readlink'
-import 'hypermd/hypermd/addon/click'
-import 'hypermd/hypermd/addon/hover'
-import 'hypermd/hypermd/addon/paste'
-// FIXME: This load does not work yet
-// import 'hypermd/hypermd/addon/paste-image.js'
-
 import { DocService } from 'mute-core'
+import { EditorService } from './editor.service'
 import { TextDelete, TextInsert }  from 'mute-structs'
+
+import * as CodeMirror from 'codemirror'
 
 @Component({
   selector: 'mute-editor',
@@ -67,6 +42,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
 
   @Input() docService: DocService
+  @Input() editorService: EditorService = new EditorService()
   @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
@@ -78,30 +54,8 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   ngOnInit () {
     this.zone.runOutsideAngular(() => {
-      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, {
-        lineNumbers: false,
-        lineWrapping: true,
-        cursorBlinkRate: 400,
-        cursorScrollMargin: 100,
-        theme: 'hypermd-light',
-        mode: {name: 'text/x-hypermd', globalVars: true},
-        extraKeys: {
-          Enter: 'newlineAndIndentContinueMarkdownList'
-        },
-        hmdHideToken: '(profile-1)',
-        hmdCursorDebounce: true,
-        hmdAutoFold: 200,
-        hmdPaste: true,
-        hmdFoldMath: { interval: 200, preview: true },
-        // hmdPasteImage: true,
-      } as any)
-
-      let tmp: any = this.editor
-      tmp.hmdHoverInit()
-      tmp.hmdClickInit()
-
-      // For Quentin's test
-      this.setupGlobalForTests()
+      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, this.editorService.editorConfiguration as any)
+      this.editorService.initEditor(this.editor)
 
       const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
       (h: ChangeEventHandler) => {
@@ -117,7 +71,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         // The change's origin indicates the kind of changes performed
         // When the application updates the editor programatically, this field remains undefined
         // Allow to filter the changes performed by our application
-        return changeEvent.change.origin !== undefined && changeEvent.change.origin !== 'setValue'
+        return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
       })
 
       const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
@@ -135,6 +89,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
       this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
         return changeEvents.map( (changeEvent: ChangeEvent ) => {
+          // log.debug("Transmitting changements ", changeEvent.change.text)
           return changeEvent.toTextOperations()
         })
       })
@@ -181,10 +136,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
           textOperations.forEach( (textOperation: any) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
             if (textOperation instanceof TextInsert) {
-              doc.replaceRange(textOperation.content, from)
+              doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')
             } else if (textOperation instanceof TextDelete) {
               const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-              doc.replaceRange('', from, to)
+              doc.replaceRange('', from, to, 'muteRemoteOp')
             }
           })
         }
@@ -209,24 +164,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     this.editor.focus()
   }
 
-  setupGlobalForTests () {
-    const doc = this.editor.getDoc() as any
-    window.muteTest = {
-      insert: (index: number, text: string) => {
-        doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
-      },
-      delete: (index: number, length: number) => {
-        doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
-      },
-      getText: (index?: number, length?: number) => {
-        if (index) {
-          return this.editor.getValue().substr(index, length)
-        } else {
-          return this.editor.getValue()
-        }
-      }
-    }
-  }
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
@@ -267,4 +204,5 @@ class ChangeEvent {
   isDeleteOperation (): boolean {
     return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
+
 }
