@@ -8,8 +8,8 @@ import { CollaboratorCursor } from './CollaboratorCursor'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { NetworkService } from '../../network/'
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
+import { CursorMsg, PositionMsg, State } from './cursor_pb'
 
-const pb = require('./cursor_pb.js')
 
 interface MuteCorePosition {
   index: number,
@@ -33,18 +33,19 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
   private cursors: Map<number, CollaboratorCursor> // CodeMirror cursors of other peers
 
   // Preconstructed Protocol Buffer objects for sending the position of my cursor
-  private pbCursor: any
-  private pbFrom: any
-  private pbTo: any
+  private pbCursor: CursorMsg
+  private pbFrom: PositionMsg
+  private pbTo: PositionMsg
+
 
   constructor (
     private collabService: RichCollaboratorsService,
     private network: NetworkService
   ) {
     super('Cursor')
-    this.pbCursor = new pb.Cursor()
-    this.pbFrom = new pb.Position()
-    this.pbTo = new pb.Position()
+    this.pbCursor = CursorMsg.create()
+    this.pbFrom = PositionMsg.create()
+    this.pbTo = PositionMsg.create()
     this.cursors = new Map()
   }
 
@@ -75,10 +76,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     // When the editor looses the focus (my cursor disappeared)
     CodeMirror.on(this.cm, 'blur', () => {
-      this.pbCursor.clearFrom()
-      this.pbCursor.clearTo()
-      this.pbCursor.setState(pb.State.HIDDEN)
-      this.network.send(this.id, this.pbCursor.serializeBinary())
+      this.pbCursor.from = PositionMsg.create()
+      this.pbCursor.to = PositionMsg.create()
+      this.pbCursor.state = State.HIDDEN
+      this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
     })
 
     // Send my cursor position to the network on certain events
@@ -88,22 +89,22 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     this.networkMsgSubs = this.network.onMessage
       .filter((msg: NetworkMessage) => msg.service === this.id)
       .subscribe((msg: NetworkMessage) => {
-        const pbMsg = pb.Cursor.deserializeBinary(msg.content)
+        const pbMsg = CursorMsg.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
         if (cursor !== undefined) {
-          if (pbMsg.getState() === pb.State.HIDDEN) {
+          if (pbMsg.state === State.HIDDEN) {
             // When cursor should be hidden
             cursor.hideCursor()
 
-          } else if (pbMsg.getState() === pb.State.FROM) {
+          } else if (pbMsg.state === State.FROM) {
             // When cursor update only
             cursor.clearSelection()
             cursor.showCursor()
             let newPos: CodeMirror.Position
-            if (pbMsg.hasFrom()) {
-              const pbFrom = pbMsg.getFrom()
-              const identifier = new Identifier(pbFrom.getBaseList(), pbFrom.getLast())
-              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.getIndex())
+            if (pbMsg.from) {
+              const pbFrom = pbMsg.from
+              const identifier = new Identifier(pbFrom.base, pbFrom.last)
+              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
@@ -114,23 +115,23 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             // When cursor & selection update
             let fromPos: CodeMirror.Position
             let toPos: CodeMirror.Position
-            if (pbMsg.hasFrom()) {
-              const pbFrom = pbMsg.getFrom()
-              const identifier = new Identifier(pbFrom.getBaseList(), pbFrom.getLast())
-              fromPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.getIndex())
+            if (pbMsg.from) {
+              const pbFrom = pbMsg.from
+              const identifier = new Identifier(pbFrom.base, pbFrom.last)
+              fromPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               fromPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
-            if (pbMsg.hasTo()) {
-              const pbTo = pbMsg.getTo()
-              const identifier = new Identifier(pbTo.getBaseList(), pbTo.getLast())
-              toPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbTo.getIndex())
+            if (pbMsg.to) {
+              const pbTo = pbMsg.to
+              const identifier = new Identifier(pbTo.base, pbTo.last)
+              toPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbTo.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               toPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
-            cursor.translateCursorOnRemoteChange(pbMsg.getState() === pb.State.SELECTION_FROM ? fromPos : toPos, false)
+            cursor.translateCursorOnRemoteChange(pbMsg.state === State.SELECTION_FROM ? fromPos : toPos, false)
             cursor.updateSelection(fromPos, toPos)
           }
         }
@@ -152,9 +153,9 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       // Prepare messag for cursor and selection update
       const fromPos = this.cmDoc.getCursor('from')
       const toPos = this.cmDoc.getCursor('to')
-      const state = fromPos === cursorPos ? pb.State.SELECTION_FROM : pb.State.SELECTION_TO
+      const state = fromPos === cursorPos ? State.SELECTION_FROM : State.SELECTION_TO
 
-      this.pbCursor.setState(state)
+      this.pbCursor.state = state
 
       // Retreive mute-core identifiers from codemirror positions
       const mcFromId: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(fromPos))
@@ -162,40 +163,40 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
       // Started position for selection
       if (mcFromId === null) {
-        this.pbCursor.clearFrom()
+        this.pbCursor.from = PositionMsg.create()
       } else {
-        this.pbFrom.setIndex(mcFromId.index)
-        this.pbFrom.setLast(mcFromId.last)
-        this.pbFrom.setBaseList(mcFromId.base)
-        this.pbCursor.setFrom(this.pbFrom)
+        this.pbFrom.index = mcFromId.index
+        this.pbFrom.last = mcFromId.last
+        this.pbFrom.base = mcFromId.base
+        this.pbCursor.from = this.pbFrom
       }
 
       // Ended position for selection
       if (mcToId === null) {
-        this.pbCursor.clearTo()
+        this.pbCursor.to = PositionMsg.create()
       } else {
-        this.pbTo.setIndex(mcToId.index)
-        this.pbTo.setLast(mcToId.last)
-        this.pbTo.setBaseList(mcToId.base)
-        this.pbCursor.setTo(this.pbTo)
+        this.pbTo.index = mcToId.index
+        this.pbTo.last = mcToId.last
+        this.pbTo.base = mcToId.base
+        this.pbCursor.to = this.pbTo
       }
     } else {
 
       // Prepare message for cursor only update
-      this.pbCursor.setState(pb.State.FROM)
-      this.pbCursor.clearTo()
+      this.pbCursor.state = State.FROM
+      this.pbCursor.to = PositionMsg.create()
       const id: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(cursorPos))
       if (id === null) {
-        this.pbCursor.clearFrom()
+        this.pbCursor.from = PositionMsg.create()
       } else {
-        this.pbFrom.setIndex(id.index)
-        this.pbFrom.setLast(id.last)
-        this.pbFrom.setBaseList(id.base)
-        this.pbCursor.setFrom(this.pbFrom)
+        this.pbFrom.index = id.index
+        this.pbFrom.last = id.last
+        this.pbFrom.base = id.base
+        this.pbCursor.from = this.pbFrom
       }
     }
 
-    this.network.send(this.id, this.pbCursor.serializeBinary())
+    this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
   }
 
 
