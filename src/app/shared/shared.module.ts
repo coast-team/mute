@@ -13,7 +13,8 @@ import {
   MdIconModule,
   MdTooltipModule,
   MdMenuModule,
-  MdChipsModule } from '@angular/material'
+  MdChipsModule,
+  MdTabsModule, } from '@angular/material'
 import { NgModule } from '@angular/core'
 import 'hammerjs/hammer'
 import { CommonModule } from '@angular/common'
@@ -39,7 +40,8 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTooltipModule,
     MdChipsModule,
     MdMenuModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MdTabsModule
   ],
   declarations: [ EditFieldComponent ],
   exports: [
@@ -60,7 +62,8 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdChipsModule,
     MdMenuModule,
     FlexLayoutModule,
-    EditFieldComponent
+    EditFieldComponent,
+    MdTabsModule
   ]
 })
 export class SharedModule {
