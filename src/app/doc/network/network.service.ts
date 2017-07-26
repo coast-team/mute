@@ -35,6 +35,10 @@ export class NetworkService {
   private messageToSendRandomlySubscription: Subscription
   private messageToSendToSubscription: Subscription
 
+  // Connection state subject
+  private stateSubject: Subject<number>
+  private signalingSubject: Subject<number>
+
   constructor (
   ) {
     log.angular('NetworkService constructed')
@@ -48,6 +52,9 @@ export class NetworkService {
     this.leaveSubject = new Subject()
     this.doorSubject = new Subject()
     this.onLineSubject = new Subject()
+
+    this.stateSubject = new Subject()
+    this.signalingSubject = new Subject()
 
     this.messageSubject = new ReplaySubject()
 
@@ -161,6 +168,15 @@ export class NetworkService {
     return this.doorSubject.asObservable()
   }
 
+  get onStateChange (): Observable<number> {
+    return this.stateSubject.asObservable()
+  }
+
+
+  get onSignalingStateChange (): Observable<number> {
+    return this.signalingSubject.asObservable()
+  }
+
   cleanWebChannel (): void {
     if (this.webChannel !== undefined) {
       this.webChannel.close()
@@ -200,7 +216,6 @@ export class NetworkService {
         }
       })
       .catch((err) => log.warn('IceServer Error', err))
-      .then(() => this.testConnection())
       .then(() => this.webChannel.join(key))
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.signalingURL} with ${key} key`)
@@ -231,14 +246,18 @@ export class NetworkService {
     })
   }
 
-  testConnection (): boolean {
-    if (navigator.onLine) {
-      this.onLineSubject.next(true)
-      return true
-    } else {
-      this.onLineSubject.next(false)
-      return false
+  testConnection (): void {
+    if (this.webChannel) {
+      this.stateSubject.next(this.webChannel.state)
+      this.signalingSubject.next(this.webChannel.signalingState)
     }
+    this.onLineSubject.next(navigator.onLine)
+  }
+
+  launchTest (): void {
+    let intervalID = setInterval(() => {
+      this.testConnection()
+    }, 1000)
   }
 
   send (service: string, content: Uint8Array): void
