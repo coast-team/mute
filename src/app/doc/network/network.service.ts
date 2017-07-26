@@ -5,7 +5,7 @@ import { WebChannel } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
-const pb = require('./message_pb.js')
+import { Message, BotResponse, BotProtocol } from './message_pb'
 
 @Injectable()
 export class NetworkService {
@@ -81,20 +81,17 @@ export class NetworkService {
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
-      const msg = pb.Message.deserializeBinary(bytes)
-      const serviceName = msg.getService()
+      const msg = Message.decode(bytes)
+      const serviceName = msg.service
       if (serviceName === 'botprotocol') {
-        let msg = new pb.Message()
-        msg.setService('botprotocol')
-        let content = new pb.BotProtocol()
-        content.setKey(this.key)
-        msg.setContent(content.serializeBinary())
-        this.webChannel.sendTo(id, msg.serializeBinary())
+        let content = BotProtocol.create({key: this.key})
+        let msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
+        this.webChannel.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
-        const url = pb.BotResponse.deserializeBinary(msg.getContent()).getUrl()
+        const url = BotResponse.decode(msg.content).url
         this.botUrls.push(url)
       } else {
-        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.getContent())
+        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
         this.messageSubject.next(networkMessage)
       }
     }
@@ -244,18 +241,16 @@ export class NetworkService {
     }
   }
 
-  send (service: string, content: ArrayBuffer): void
+  send (service: string, content: Uint8Array): void
 
-  send (service: string, content: ArrayBuffer, id: number|undefined): void
+  send (service: string, content: Uint8Array, id: number|undefined): void
 
-  send (service: string, content: ArrayBuffer, id?: number|undefined): void {
-    const msg = new pb.Message()
-    msg.setService(service)
-    msg.setContent(content)
+  send (service: string, content:  Uint8Array, id?: number|undefined): void {
+    let msg = Message.create({ service, content})
     if (id === undefined) {
-      this.webChannel.send(msg.serializeBinary())
+      this.webChannel.send(Message.encode(msg).finish())
     } else {
-      this.webChannel.sendTo(id, msg.serializeBinary())
+      this.webChannel.sendTo(id, Message.encode(msg).finish())
     }
   }
 
