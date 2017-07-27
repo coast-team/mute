@@ -1,11 +1,11 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
 import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
-import { create } from 'netflux'
+import { WebChannel } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
-const pb = require('./message_pb.js')
+import { Message, BotResponse, BotProtocol } from './message_pb'
 
 @Injectable()
 export class NetworkService {
@@ -57,13 +57,13 @@ export class NetworkService {
     // Leave webChannel before closing tab or browser
     window.addEventListener('beforeunload', () => {
       if (this.webChannel !== undefined) {
-        this.webChannel.leave()
+        this.webChannel.disconnect()
       }
     })
   }
 
   initWebChannel (): void {
-    this.webChannel = create({signalingURL: environment.signalingURL})
+    this.webChannel = new WebChannel({signalingURL: environment.signalingURL})
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
@@ -73,23 +73,25 @@ export class NetworkService {
 
     // On door closed
     this.webChannel.onClose = () => this.doorSubject.next(false)
+    this.webChannel.onSignalingStateChanged = (state) => {
+      if (state === this.webChannel.SIGNALING_CLOSED) {
+        this.doorSubject.next(false)
+      }
+    }
 
     // Message event
     this.webChannel.onMessage = (id, bytes, isBroadcast) => {
-      const msg = pb.Message.deserializeBinary(bytes)
-      const serviceName = msg.getService()
+      const msg = Message.decode(bytes)
+      const serviceName = msg.service
       if (serviceName === 'botprotocol') {
-        let msg = new pb.Message()
-        msg.setService('botprotocol')
-        let content = new pb.BotProtocol()
-        content.setKey(this.key)
-        msg.setContent(content.serializeBinary())
-        this.webChannel.sendTo(id, msg.serializeBinary())
+        let content = BotProtocol.create({key: this.key})
+        let msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
+        this.webChannel.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
-        const url = pb.BotResponse.deserializeBinary(msg.getContent()).getUrl()
+        const url = BotResponse.decode(msg.content).url
         this.botUrls.push(url)
       } else {
-        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.getContent())
+        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
         this.messageSubject.next(networkMessage)
       }
     }
@@ -194,22 +196,22 @@ export class NetworkService {
     return this.fetchServer()
       .then((iceServers) => {
         if (iceServers !== null) {
-          this.webChannel.settings.iceServers = iceServers
+          this.webChannel.iceServers = iceServers
         }
       })
       .catch((err) => log.warn('IceServer Error', err))
       .then(() => this.testConnection())
       .then(() => this.webChannel.join(key))
       .then(() => {
-        log.info('network', `Joined successfully via ${this.webChannel.settings.signalingURL} with ${key} key`)
+        log.info('network', `Joined successfully via ${this.webChannel.signalingURL} with ${key} key`)
         this.doorSubject.next(true)
         const created = this.members.length === 0
         this.joinSubject.next(new JoinEvent(this.webChannel.myId, key, created))
       })
       .catch((reason) => {
-        log.error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`, this.webChannel)
+        log.error(`Could not join via ${this.webChannel.signalingURL} with ${key} key: ${reason}`, this.webChannel)
         this.doorSubject.next(false)
-        return new Error(`Could not join via ${this.webChannel.settings.signalingURL} with ${key} key: ${reason}`)
+        return new Error(`Could not join via ${this.webChannel.signalingURL} with ${key} key: ${reason}`)
       })
   }
 
@@ -239,18 +241,16 @@ export class NetworkService {
     }
   }
 
-  send (service: string, content: ArrayBuffer): void
+  send (service: string, content: Uint8Array): void
 
-  send (service: string, content: ArrayBuffer, id: number|undefined): void
+  send (service: string, content: Uint8Array, id: number|undefined): void
 
-  send (service: string, content: ArrayBuffer, id?: number|undefined): void {
-    const msg = new pb.Message()
-    msg.setService(service)
-    msg.setContent(content)
+  send (service: string, content:  Uint8Array, id?: number|undefined): void {
+    let msg = Message.create({ service, content})
     if (id === undefined) {
-      this.webChannel.send(msg.serializeBinary())
+      this.webChannel.send(Message.encode(msg).finish())
     } else {
-      this.webChannel.sendTo(id, msg.serializeBinary())
+      this.webChannel.sendTo(id, Message.encode(msg).finish())
     }
   }
 
@@ -258,12 +258,12 @@ export class NetworkService {
    * Open the door with signaling server if it is closed, otherwise do nothing.
    */
   openDoor (key: string): Promise<void> {
-    if (!this.webChannel.isOpen()) {
-      return this.webChannel().open(key)
-        .then(() => {
-          this.doorSubject.next(true)
-        })
-    }
+    // if (!this.webChannel.isOpen()) {
+    //   return this.webChannel().open(key)
+    //     .then(() => {
+    //       this.doorSubject.next(true)
+    //     })
+    // }
     return Promise.resolve()
   }
 
@@ -271,9 +271,7 @@ export class NetworkService {
    * Close the door with signaling server if it is opened, otherwise do nothing.
    */
   closeDoor (): void {
-    if (this.webChannel.isOpen()) {
-      this.webChannel.close()
-      this.doorSubject.next(false)
-    }
+    this.webChannel.closeSignaling()
+    this.doorSubject.next(false)
   }
 }
