@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "prestart": "pm2 gracefulReload process.yml",
-    "start": "ng serve --host 0.0.0.0",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
     "build": "ng build --prod -oh none",
