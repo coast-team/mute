@@ -4,9 +4,8 @@
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
     "ng": "ng",
-    "prestart": "pm2 start --name mute-signaling sigver -- --port 8010",
-    "start": "ng serve --host=0.0.0.0",
-    "poststart": "pm2 stop mute-signaling",
+    "prestart": "pm2 gracefulReload process.yml",
+    "start": "ng serve --host=152.81.64.104",
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
     "build": "ng build --prod -oh none",

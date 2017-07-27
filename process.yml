@@ -1,0 +1,4 @@
+apps:
+  - script: node_modules/.bin/sigver
+    name: 'mute-signaling'
+    args: '--port 8010'
