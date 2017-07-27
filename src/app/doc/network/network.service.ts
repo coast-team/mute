@@ -179,8 +179,7 @@ export class NetworkService {
 
   cleanWebChannel (): void {
     if (this.webChannel !== undefined) {
-      this.webChannel.close()
-      this.webChannel.leave()
+      this.webChannel.disconnect()
       this.leaveSubject.next()
 
       this.disposeSubject.complete()
@@ -192,6 +191,9 @@ export class NetworkService {
       this.peerLeaveSubject.complete()
       this.doorSubject.complete()
 
+      this.stateSubject.complete()
+      this.signalingSubject.complete()
+
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
@@ -200,6 +202,8 @@ export class NetworkService {
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
       this.doorSubject = new Subject<boolean>()
+      this.stateSubject = new Subject()
+      this.signalingSubject = new Subject()
 
       this.messageToBroadcastSubscription.unsubscribe()
       this.messageToSendRandomlySubscription.unsubscribe()
