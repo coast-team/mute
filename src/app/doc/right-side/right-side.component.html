@@ -22,54 +22,13 @@
             {{icon}}
           </md-icon>
         </div>
-        <hr class='divider' />
-        <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
+      <hr class='divider' />
+      <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
     </md-tab>
-    <md-tab label="Cheat-sheets">
+    <md-tab label="Cheatsheets">
       <md-tab-group>
         <md-tab label="Markdown">
-          <md-card class="background-card">
-            <md-card-content>
-              <h1 style="font-family: 'Lato', sans-serif; color: #424344;">Markdown<br>Cheat-sheet</h1>
-              <div class="line-separator"></div>
-              <h2 style="font-family: 'Lato', sans-serif; color: #424344;">Headers</h2>
-              <md-card class="mat-elevation-z5" style="padding-left:20px;padding-right:12px;">
-                <md-grid-list cols="2" rowHeight="35px">
-                  <span *ngFor="let elt of headers">
-                    <md-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></md-grid-tile>
-                    <md-grid-tile>{{elt.s}}</md-grid-tile>
-                  </span>
-                </md-grid-list>
-              </md-card>
-              <h2 style="font-family: 'Lato', sans-serif; color: #424344;">Style</h2>
-              <md-card class="mat-elevation-z5" style="padding-left:12px;padding-right:12px;">
-                <md-grid-list cols="2" rowHeight="35px">
-                  <span *ngFor="let elt of styles">
-                    <md-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></md-grid-tile>
-                    <md-grid-tile>{{elt.s}}</md-grid-tile>
-                  </span>
-                </md-grid-list>
-              </md-card>
-              <h2 style="font-family: 'Lato', sans-serif; color: #424344;">Lists</h2>
-              <md-card class="mat-elevation-z5">
-                <md-grid-list cols="2" rowHeight="35px">
-                  <span *ngFor="let elt of lists">
-                    <md-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></md-grid-tile>
-                    <md-grid-tile>{{elt.s}}</md-grid-tile>
-                  </span>
-                </md-grid-list>
-              </md-card>
-              <h2 style="font-family: 'Lato', sans-serif; color: #424344;">Other</h2>
-              <md-card class="mat-elevation-z5">
-                <md-grid-list cols="2" rowHeight="35px">
-                  <span *ngFor="let elt of other">
-                    <md-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></md-grid-tile>
-                    <md-grid-tile>{{elt.s}}</md-grid-tile>
-                  </span>
-                </md-grid-list>
-              </md-card>
-            </md-card-content>
-          </md-card>
+          <mute-markdown-cheatsheet></mute-markdown-cheatsheet>
         </md-tab>
         <md-tab label="Math formulas">
           <md-card>

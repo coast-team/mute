@@ -5,11 +5,13 @@ import { RightSideComponent } from './right-side.component'
 import { CollaboratorsModule } from './collaborators'
 import { InviteBotComponent } from './invite-bot/invite-bot.component'
 import { SharedModule } from '../../shared'
+import { MarkdownCheatsheetComponent } from './cheatsheets/markdown-cheatsheet.component'
 
 @NgModule({
   declarations: [
     RightSideComponent,
-    InviteBotComponent
+    InviteBotComponent,
+    MarkdownCheatsheetComponent
   ],
   imports: [
     SharedModule,
