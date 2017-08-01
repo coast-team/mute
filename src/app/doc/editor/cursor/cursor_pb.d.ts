@@ -47,14 +47,6 @@ export class CursorMsg {
     public static encode(message: ICursorMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Encodes the specified CursorMsg message, length delimited. Does not implicitly {@link CursorMsg.verify|verify} messages.
-     * @param message CursorMsg message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    public static encodeDelimited(message: ICursorMsg, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
      * Decodes a CursorMsg message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
@@ -63,22 +55,6 @@ export class CursorMsg {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): CursorMsg;
-
-    /**
-     * Decodes a CursorMsg message from the specified reader or buffer, length delimited.
-     * @param reader Reader or buffer to decode from
-     * @returns CursorMsg
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): CursorMsg;
-
-    /**
-     * Verifies a CursorMsg message.
-     * @param message Plain object to verify
-     * @returns `null` if valid, otherwise the reason why it is not
-     */
-    public static verify(message: { [k: string]: any }): (string|null);
 }
 
 /** State enum. */
@@ -136,14 +112,6 @@ export class PositionMsg {
     public static encode(message: IPositionMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Encodes the specified PositionMsg message, length delimited. Does not implicitly {@link PositionMsg.verify|verify} messages.
-     * @param message PositionMsg message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    public static encodeDelimited(message: IPositionMsg, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
      * Decodes a PositionMsg message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
@@ -152,20 +120,4 @@ export class PositionMsg {
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
     public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PositionMsg;
-
-    /**
-     * Decodes a PositionMsg message from the specified reader or buffer, length delimited.
-     * @param reader Reader or buffer to decode from
-     * @returns PositionMsg
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): PositionMsg;
-
-    /**
-     * Verifies a PositionMsg message.
-     * @param message Plain object to verify
-     * @returns `null` if valid, otherwise the reason why it is not
-     */
-    public static verify(message: { [k: string]: any }): (string|null);
 }

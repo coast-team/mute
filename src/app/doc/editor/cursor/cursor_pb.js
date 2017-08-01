@@ -1,13 +1,15 @@
 /*eslint-disable block-scoped-var, no-redeclare, no-control-regex, no-prototype-builtins*/
-import * as $protobuf from "protobufjs/minimal";
+"use strict";
+
+var $protobuf = require("protobufjs/minimal");
 
 // Common aliases
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const CursorMsg = $root.CursorMsg = (() => {
+$root.CursorMsg = (function() {
 
     /**
      * Properties of a CursorMsg.
@@ -27,7 +29,7 @@ export const CursorMsg = $root.CursorMsg = (() => {
      */
     function CursorMsg(properties) {
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -90,19 +92,6 @@ export const CursorMsg = $root.CursorMsg = (() => {
     };
 
     /**
-     * Encodes the specified CursorMsg message, length delimited. Does not implicitly {@link CursorMsg.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof CursorMsg
-     * @static
-     * @param {ICursorMsg} message CursorMsg message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    CursorMsg.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
-    };
-
-    /**
      * Decodes a CursorMsg message from the specified reader or buffer.
      * @function decode
      * @memberof CursorMsg
@@ -116,9 +105,9 @@ export const CursorMsg = $root.CursorMsg = (() => {
     CursorMsg.decode = function decode(reader, length) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.CursorMsg();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.CursorMsg();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
                 message.from = $root.PositionMsg.decode(reader, reader.uint32());
@@ -137,56 +126,6 @@ export const CursorMsg = $root.CursorMsg = (() => {
         return message;
     };
 
-    /**
-     * Decodes a CursorMsg message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof CursorMsg
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {CursorMsg} CursorMsg
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    CursorMsg.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a CursorMsg message.
-     * @function verify
-     * @memberof CursorMsg
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    CursorMsg.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.from != null && message.hasOwnProperty("from")) {
-            let error = $root.PositionMsg.verify(message.from);
-            if (error)
-                return "from." + error;
-        }
-        if (message.to != null && message.hasOwnProperty("to")) {
-            error = $root.PositionMsg.verify(message.to);
-            if (error)
-                return "to." + error;
-        }
-        if (message.state != null && message.hasOwnProperty("state"))
-            switch (message.state) {
-            default:
-                return "state: enum value expected";
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                break;
-            }
-        return null;
-    };
-
     return CursorMsg;
 })();
 
@@ -200,7 +139,7 @@ export const CursorMsg = $root.CursorMsg = (() => {
  * @property {number} SELECTION_TO=3 SELECTION_TO value
  */
 $root.State = (function() {
-    const valuesById = {}, values = Object.create(valuesById);
+    var valuesById = {}, values = Object.create(valuesById);
     values[valuesById[0] = "HIDDEN"] = 0;
     values[valuesById[1] = "FROM"] = 1;
     values[valuesById[2] = "SELECTION_FROM"] = 2;
@@ -208,7 +147,7 @@ $root.State = (function() {
     return values;
 })();
 
-export const PositionMsg = $root.PositionMsg = (() => {
+$root.PositionMsg = (function() {
 
     /**
      * Properties of a PositionMsg.
@@ -229,7 +168,7 @@ export const PositionMsg = $root.PositionMsg = (() => {
     function PositionMsg(properties) {
         this.base = [];
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -284,7 +223,7 @@ export const PositionMsg = $root.PositionMsg = (() => {
             writer = $Writer.create();
         if (message.base != null && message.base.length) {
             writer.uint32(/* id 1, wireType 2 =*/10).fork();
-            for (let i = 0; i < message.base.length; ++i)
+            for (var i = 0; i < message.base.length; ++i)
                 writer.double(message.base[i]);
             writer.ldelim();
         }
@@ -293,19 +232,6 @@ export const PositionMsg = $root.PositionMsg = (() => {
         if (message.index != null && message.hasOwnProperty("index"))
             writer.uint32(/* id 3, wireType 0 =*/24).int32(message.index);
         return writer;
-    };
-
-    /**
-     * Encodes the specified PositionMsg message, length delimited. Does not implicitly {@link PositionMsg.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof PositionMsg
-     * @static
-     * @param {IPositionMsg} message PositionMsg message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    PositionMsg.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
     };
 
     /**
@@ -322,15 +248,15 @@ export const PositionMsg = $root.PositionMsg = (() => {
     PositionMsg.decode = function decode(reader, length) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.PositionMsg();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.PositionMsg();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
                 if (!(message.base && message.base.length))
                     message.base = [];
                 if ((tag & 7) === 2) {
-                    let end2 = reader.uint32() + reader.pos;
+                    var end2 = reader.uint32() + reader.pos;
                     while (reader.pos < end2)
                         message.base.push(reader.double());
                 } else
@@ -350,51 +276,7 @@ export const PositionMsg = $root.PositionMsg = (() => {
         return message;
     };
 
-    /**
-     * Decodes a PositionMsg message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof PositionMsg
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {PositionMsg} PositionMsg
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    PositionMsg.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a PositionMsg message.
-     * @function verify
-     * @memberof PositionMsg
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    PositionMsg.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.base != null && message.hasOwnProperty("base")) {
-            if (!Array.isArray(message.base))
-                return "base: array expected";
-            for (let i = 0; i < message.base.length; ++i)
-                if (typeof message.base[i] !== "number")
-                    return "base: number[] expected";
-        }
-        if (message.last != null && message.hasOwnProperty("last"))
-            if (!$util.isInteger(message.last))
-                return "last: integer expected";
-        if (message.index != null && message.hasOwnProperty("index"))
-            if (!$util.isInteger(message.index))
-                return "index: integer expected";
-        return null;
-    };
-
     return PositionMsg;
 })();
 
-export { $root as default };
-export const State = $root.State;
+module.exports = $root;
