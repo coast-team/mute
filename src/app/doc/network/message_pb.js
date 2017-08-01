@@ -1,13 +1,15 @@
 /*eslint-disable block-scoped-var, no-redeclare, no-control-regex, no-prototype-builtins*/
-import * as $protobuf from "protobufjs/minimal";
+"use strict";
+
+var $protobuf = require("protobufjs/minimal");
 
 // Common aliases
-const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
 
 // Exported root namespace
-const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const Message = $root.Message = (() => {
+$root.Message = (function() {
 
     /**
      * Properties of a Message.
@@ -26,7 +28,7 @@ export const Message = $root.Message = (() => {
      */
     function Message(properties) {
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -79,19 +81,6 @@ export const Message = $root.Message = (() => {
     };
 
     /**
-     * Encodes the specified Message message, length delimited. Does not implicitly {@link Message.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof Message
-     * @static
-     * @param {IMessage} message Message message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    Message.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
-    };
-
-    /**
      * Decodes a Message message from the specified reader or buffer.
      * @function decode
      * @memberof Message
@@ -105,9 +94,9 @@ export const Message = $root.Message = (() => {
     Message.decode = function decode(reader, length) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.Message();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.Message();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
                 message.service = reader.string();
@@ -123,46 +112,10 @@ export const Message = $root.Message = (() => {
         return message;
     };
 
-    /**
-     * Decodes a Message message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof Message
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {Message} Message
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    Message.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a Message message.
-     * @function verify
-     * @memberof Message
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    Message.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.service != null && message.hasOwnProperty("service"))
-            if (!$util.isString(message.service))
-                return "service: string expected";
-        if (message.content != null && message.hasOwnProperty("content"))
-            if (!(message.content && typeof message.content.length === "number" || $util.isString(message.content)))
-                return "content: buffer expected";
-        return null;
-    };
-
     return Message;
 })();
 
-export const BotProtocol = $root.BotProtocol = (() => {
+$root.BotProtocol = (function() {
 
     /**
      * Properties of a BotProtocol.
@@ -180,7 +133,7 @@ export const BotProtocol = $root.BotProtocol = (() => {
      */
     function BotProtocol(properties) {
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -223,19 +176,6 @@ export const BotProtocol = $root.BotProtocol = (() => {
     };
 
     /**
-     * Encodes the specified BotProtocol message, length delimited. Does not implicitly {@link BotProtocol.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof BotProtocol
-     * @static
-     * @param {IBotProtocol} message BotProtocol message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    BotProtocol.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
-    };
-
-    /**
      * Decodes a BotProtocol message from the specified reader or buffer.
      * @function decode
      * @memberof BotProtocol
@@ -249,9 +189,9 @@ export const BotProtocol = $root.BotProtocol = (() => {
     BotProtocol.decode = function decode(reader, length) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.BotProtocol();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.BotProtocol();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
                 message.key = reader.string();
@@ -264,43 +204,10 @@ export const BotProtocol = $root.BotProtocol = (() => {
         return message;
     };
 
-    /**
-     * Decodes a BotProtocol message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof BotProtocol
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {BotProtocol} BotProtocol
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    BotProtocol.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a BotProtocol message.
-     * @function verify
-     * @memberof BotProtocol
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    BotProtocol.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.key != null && message.hasOwnProperty("key"))
-            if (!$util.isString(message.key))
-                return "key: string expected";
-        return null;
-    };
-
     return BotProtocol;
 })();
 
-export const BotResponse = $root.BotResponse = (() => {
+$root.BotResponse = (function() {
 
     /**
      * Properties of a BotResponse.
@@ -318,7 +225,7 @@ export const BotResponse = $root.BotResponse = (() => {
      */
     function BotResponse(properties) {
         if (properties)
-            for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
                     this[keys[i]] = properties[keys[i]];
     }
@@ -361,19 +268,6 @@ export const BotResponse = $root.BotResponse = (() => {
     };
 
     /**
-     * Encodes the specified BotResponse message, length delimited. Does not implicitly {@link BotResponse.verify|verify} messages.
-     * @function encodeDelimited
-     * @memberof BotResponse
-     * @static
-     * @param {IBotResponse} message BotResponse message or plain object to encode
-     * @param {$protobuf.Writer} [writer] Writer to encode to
-     * @returns {$protobuf.Writer} Writer
-     */
-    BotResponse.encodeDelimited = function encodeDelimited(message, writer) {
-        return this.encode(message, writer).ldelim();
-    };
-
-    /**
      * Decodes a BotResponse message from the specified reader or buffer.
      * @function decode
      * @memberof BotResponse
@@ -387,9 +281,9 @@ export const BotResponse = $root.BotResponse = (() => {
     BotResponse.decode = function decode(reader, length) {
         if (!(reader instanceof $Reader))
             reader = $Reader.create(reader);
-        let end = length === undefined ? reader.len : reader.pos + length, message = new $root.BotResponse();
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.BotResponse();
         while (reader.pos < end) {
-            let tag = reader.uint32();
+            var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
                 message.url = reader.string();
@@ -402,40 +296,7 @@ export const BotResponse = $root.BotResponse = (() => {
         return message;
     };
 
-    /**
-     * Decodes a BotResponse message from the specified reader or buffer, length delimited.
-     * @function decodeDelimited
-     * @memberof BotResponse
-     * @static
-     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-     * @returns {BotResponse} BotResponse
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    BotResponse.decodeDelimited = function decodeDelimited(reader) {
-        if (!(reader instanceof $Reader))
-            reader = new $Reader(reader);
-        return this.decode(reader, reader.uint32());
-    };
-
-    /**
-     * Verifies a BotResponse message.
-     * @function verify
-     * @memberof BotResponse
-     * @static
-     * @param {Object.<string,*>} message Plain object to verify
-     * @returns {string|null} `null` if valid, otherwise the reason why it is not
-     */
-    BotResponse.verify = function verify(message) {
-        if (typeof message !== "object" || message === null)
-            return "object expected";
-        if (message.url != null && message.hasOwnProperty("url"))
-            if (!$util.isString(message.url))
-                return "url: string expected";
-        return null;
-    };
-
     return BotResponse;
 })();
 
-export { $root as default };
+module.exports = $root;
