@@ -6,15 +6,13 @@ import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
 import { NetworkService } from '../doc/network/network.service'
 import { ServiceWorkerRegister } from '../core/ServiceWorkerRegister'
-import { ConnectivityService } from '../core/connectivity/connectivity.service'
 
 import { MdSnackBar, MdMenuTrigger, MdMenu } from '@angular/material'
 
 @Component({
   selector: 'mute-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss'],
-  providers: [ConnectivityService]
+  styleUrls: ['./toolbar.component.scss']
 })
 export class ToolbarComponent implements OnInit {
 
@@ -23,9 +21,10 @@ export class ToolbarComponent implements OnInit {
   public rootFileTitle: Observable<string>
 
   private onDoorSubscription: Subscription
+
+  // Here add subscription
   private serviceWorker: ServiceWorkerRegister
   private snackBarSubject: Subject<string>
-  public connectionState: boolean
   public signalingStatus: boolean
   public onLineStatus: boolean
   public networkStatus: boolean
@@ -37,11 +36,9 @@ export class ToolbarComponent implements OnInit {
     private router: Router,
     public profile: ProfileService,
     private snackBar: MdSnackBar,
-    private connectivity: ConnectivityService
   ) {
     this.snackBarSubject = new Subject()
     this.serviceWorker = new ServiceWorkerRegister
-    this.connectionState = undefined
     this.signalingStatus = undefined
     this.onLineStatus = undefined
     this.networkStatus = undefined
@@ -60,52 +57,37 @@ export class ToolbarComponent implements OnInit {
         })
       })
 
-    this.connectivity.launchTest()
-
-    this.connectivity.onLine.subscribe((state) => {
-      if (state) {
-        this.snackBarSubject.next('You are online')
-        this.onLineStatus = true
-      } else {
-        this.snackBarSubject.next('You are offline')
-        this.onLineStatus = false
-        this.signalingStatus = false
-        this.networkStatus = false
-      }
-      this.updateConnectionState()
-    })
-
     this.serviceWorker.registerSW()
 
     this.serviceWorker.observableState.subscribe((message) => {
       this.snackBarSubject.next(message)
     })
 
-    this.networkService.onDoor.subscribe((opened) => {
-      this.signalingStatus = opened
-      if (!opened && this.networkStatus === undefined) {
+    this.networkService.onSignalingStateChange.subscribe((event) => {
+      if (event === 0) {
+        this.signalingStatus = undefined
+      } else if ((event === 1) || (event === 3)) {
+        this.signalingStatus = true
+      } else {
+        this.signalingStatus = false
+      }
+    })
+
+    this.networkService.onStateChange.subscribe((event) => {
+      if (event === 0) {
+        this.networkStatus = undefined
+      } else if (event === 1) {
+        this.networkStatus = true
+      } else {
         this.networkStatus = false
       }
-      if (opened) {
-        this.onLineStatus = true
-      }
-      this.changeDetectorRef.detectChanges()
-      this.updateConnectionState()
     })
 
     this.networkService.onLine.subscribe((event) => {
-      this.onLineStatus = event.valueOf()
-      if (!event.valueOf()) {
-        this.networkStatus = false
-        this.signalingStatus = false
-      }
-      this.updateConnectionState()
+      this.onLineStatus = event
     })
 
-    this.networkService.onJoin.subscribe((event) => {
-      this.networkStatus = true
-      this.updateConnectionState()
-    })
+    this.networkService.launchTest()
 
   }
 
@@ -130,22 +112,6 @@ export class ToolbarComponent implements OnInit {
     const doc = this.ui.activeFile as any
     doc.title = title
     doc.save()
-  }
-
-  updateConnectionState () {
-    if (this.isDoc()) {
-      if (this.signalingStatus && this.onLineStatus && this.networkStatus) {
-        this.connectionState = true
-      } else if (this.signalingStatus === undefined ||
-        this.signalingStatus === undefined ||
-        this.signalingStatus === undefined) {
-        this.connectionState = undefined
-      } else {
-        this.connectionState = false
-      }
-    } else {
-      this.connectionState = this.onLineStatus
-    }
   }
 
 }

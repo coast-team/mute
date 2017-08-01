@@ -12,6 +12,7 @@
       <h3 class="noDoc" *ngIf="docs.length === 0">You don't have any document!</h3>
       <md-card *ngFor="let doc of docs; let i = index"
         fxLayout="column" fxFlex.xs="1 0 150px"
+        (dblclick)="openDoc(doc)"
       >
       <md-card-header>
         <div *ngIf="doc.sync; else elseBlock" md-card-avatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
@@ -36,13 +37,12 @@
           </md-icon>
         </div>
       </md-card-content>
-      <md-divider></md-divider>
+      
       <md-card-actions class="actions">
-        <button md-button (click)="openDoc(doc)"><md-icon>mode_edit</md-icon>OPEN</button>
-        <button md-button (click)="shareDoc(doc)"><md-icon>share</md-icon>SHARE</button>
+        <button md-button (click)="openDoc(doc)"><md-icon>mode_edit</md-icon></button>
+        <button md-button (click)="shareDoc(doc)"><md-icon>share</md-icon></button>
         <button md-button (click)="deleteDoc(doc)">
           <md-icon>delete</md-icon>
-          DELETE
         </button>
       </md-card-actions>
 
