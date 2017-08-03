@@ -64,6 +64,7 @@
     "@angular/language-service": "^4.2.5",
     "@types/codemirror": "^0.0.41",
     "@types/jasmine": "2.5.45",
+    "@types/mathjax": "0.0.31",
     "@types/node": "^6.0.78",
     "codelyzer": "~3.0.1",
     "commitizen": "^2.8.6",

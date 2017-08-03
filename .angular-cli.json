@@ -9,6 +9,7 @@
       "assets": [
         "assets/fonts",
         "assets/icons",
+        "assets/images",
         "assets/*",
         "manifest.json"
       ],

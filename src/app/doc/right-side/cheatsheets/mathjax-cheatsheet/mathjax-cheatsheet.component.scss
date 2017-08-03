@@ -1,0 +1,32 @@
+@import 'variables';
+@import 'theme';
+
+.mat-card {
+  font-family: "Droid Sans", sans-serif, serif;
+}
+
+.background-card {
+  background: $bg-background;
+}
+
+h1 {
+  font-family: 'Lato', sans-serif;
+  color: #424344;
+}
+
+h1:after {
+  display: block;
+  content: ' ';
+  margin-top: 2px;
+  height: 2px;
+  background: #424344;
+}
+
+h2 {
+  font-family: 'Lato', sans-serif;
+  color: #424344;
+}
+
+h3 {
+  font-family: 'Lato', sans-serif;
+}
