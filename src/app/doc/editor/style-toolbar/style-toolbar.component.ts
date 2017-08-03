@@ -4,7 +4,6 @@ import {
   Input,
   OnInit
 } from '@angular/core'
-import { MdButtonToggleModule, MdTooltipModule } from '@angular/material'
 
 import { EditorService } from '../editor.service'
 
