@@ -1,12 +1,16 @@
 @import 'variables';
 @import 'theme';
 
-.mat-card {
-  font-family: "Droid Sans", sans-serif, serif;
+:host {
+  padding-left: 5px;
+  padding-right: 10px;
+  margin-top: 16px;
+  display: inline-block;
 }
 
-.background-card {
-  background: $bg-background;
+.mat-card {
+  font-family: "Droid Sans", sans-serif, serif;
+  margin-bottom: 16px;
 }
 
 h1 {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { NgModule, ViewChild, OnInit } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
 import { RightSideComponent } from './right-side.component'
