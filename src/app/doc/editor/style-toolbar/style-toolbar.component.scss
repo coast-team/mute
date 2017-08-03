@@ -10,6 +10,7 @@
 
 .mat-button {
   background-color: #ffc400;
+  border-radius: 0;
 }
 
 .mat-button:hover:not([disabled]) {
@@ -45,4 +46,9 @@
 .inactive {
   opacity: 0;
   visibility: hidden;
+}
+
+.list-character {
+  font-weight: bold;
+  font-size: 1.1em;
 }

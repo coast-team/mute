@@ -24,43 +24,42 @@
     <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #headers="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item (click)="addHeader(1)" mdTooltip="H1" >
-        <span>H1</span>
+      <button md-menu-item (click)="addHeader(1)" >
+        <span>Headline</span>
       </button>
-      <button md-menu-item (click)="addHeader(2)" mdTooltip="H2" >
-        <span>H2</span>
+      <button md-menu-item (click)="addHeader(2)" >
+        <span>Title</span>
       </button>
-      <button md-menu-item (click)="addHeader(3)" mdTooltip="H3">
-        <span>H3</span>
+      <button md-menu-item (click)="addHeader(3)">
+        <span>Subheading 3</span>
       </button>
-      <button md-menu-item (click)="addHeader(4)" mdTooltip="H4">
-        <span>H4</span>
+      <button md-menu-item (click)="addHeader(4)">
+        <span>Subheading 4</span>
       </button>
-      <button md-menu-item (click)="addHeader(5)" mdTooltip="H5">
-        <span>H5</span>
+      <button md-menu-item (click)="addHeader(5)">
+        <span>Subheading 5</span>
       </button>
   </md-menu>
-  
-  <button md-button (click)="createList(0)" mdTooltip="Numbered List">
-      <md-icon>format_list_numbered</md-icon>
-  </button>
 
-  <button md-button [mdMenuTriggerFor]="bulletedlists" mdTooltip="Bulleted Lists">
-      <md-icon>format_list_bulleted</md-icon>
+  <button md-button [mdMenuTriggerFor]="bulletedlists" mdTooltip="Lists">
+      <md-icon>list</md-icon>
       <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #bulletedlists="mdMenu" [overlapTrigger]="false">
-    <button md-menu-item (click)="createList(1)" mdTooltip="-">
-      <md-icon>remove</md-icon>
+    <button md-menu-item  (click)="createList(0)">
+      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_numbered</md-icon> numbered</span>
     </button>
-    <button md-menu-item (click)="createList(2)" mdTooltip="*">
-      <md-icon>star</md-icon>
+    <button md-menu-item (click)="createList(1)">
+      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">-</span></span>
     </button>
-    <button md-menu-item (click)="createList(3)" mdTooltip="+">
-      <md-icon>add</md-icon>
+    <button md-menu-item (click)="createList(2)">
+      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">*</span></span>
     </button>
-    <button md-menu-item (click)="createList(4)" mdTooltip="Check list">
-      <md-icon>check_box_outline_blank</md-icon>
+    <button md-menu-item (click)="createList(3)">
+      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">+</span></span>
+    </button>
+    <button md-menu-item (click)="createList(4)">
+      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>check_box</md-icon> check list</span>
     </button>
   </md-menu>
 </md-button-toggle-group>
