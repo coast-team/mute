@@ -13,6 +13,7 @@ import {
   MdIconModule,
   MdTooltipModule,
   MdMenuModule,
+  MdSlideToggleModule,
   MdChipsModule,
   MdTabsModule, } from '@angular/material'
 import { NgModule } from '@angular/core'
@@ -40,6 +41,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTooltipModule,
     MdChipsModule,
     MdMenuModule,
+    MdSlideToggleModule,
     FlexLayoutModule,
     MdTabsModule
   ],
@@ -61,6 +63,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTooltipModule,
     MdChipsModule,
     MdMenuModule,
+    MdSlideToggleModule,
     FlexLayoutModule,
     EditFieldComponent,
     MdTabsModule
