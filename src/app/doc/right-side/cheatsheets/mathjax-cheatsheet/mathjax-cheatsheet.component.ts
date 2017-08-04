@@ -68,7 +68,7 @@ export class MathJaxCheatsheetComponent {
     {image: 'assets/images/mathjax/less_equal.jpg', s: '\\leq'},
     {image: 'assets/images/mathjax/less.jpg', s: '<'},
     {image: 'assets/images/mathjax/way_less.jpg', s: '\\ll'},
-    {image: 'assets/images/mathjax/logical_equivalence.jpg', s: '\\sim'},
+    {image: 'assets/images/mathjax/equivalence_relation.jpg', s: '\\sim'},
     {image: 'assets/images/mathjax/inclusion.jpg', s: '\\subset'},
     {image: 'assets/images/mathjax/strict_inclusion.jpg', s: '\\subseteq'},
   ]
@@ -76,7 +76,7 @@ export class MathJaxCheatsheetComponent {
   public propositionalCalculus = [
     {image: 'assets/images/mathjax/implication.jpg', s: '\\Rightarrow'},
     {image: 'assets/images/mathjax/reverse_implication.jpg', s: '\\Leftarrow'},
-    {image: 'assets/images/mathjax/equivalence.jpg', s: '\\Leftrightarrow'},
+    {image: 'assets/images/mathjax/logical_equivalence.jpg', s: '\\Leftrightarrow'},
   ]
 
   public functions = [
