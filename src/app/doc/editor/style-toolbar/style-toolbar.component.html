@@ -24,21 +24,11 @@
     <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #headers="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item (click)="addHeader(1)" >
-        <span>Headline</span>
-      </button>
-      <button md-menu-item (click)="addHeader(2)" >
-        <span>Title</span>
-      </button>
-      <button md-menu-item (click)="addHeader(3)">
-        <span>Subheading 3</span>
-      </button>
-      <button md-menu-item (click)="addHeader(4)">
-        <span>Subheading 4</span>
-      </button>
-      <button md-menu-item (click)="addHeader(5)">
-        <span>Subheading 5</span>
-      </button>
+      <button md-menu-item (click)="addHeader(1)"><span>Headline</span></button>
+      <button md-menu-item (click)="addHeader(2)"><span>Title</span></button>
+      <button md-menu-item (click)="addHeader(3)"><span>Subheading 3</span></button>
+      <button md-menu-item (click)="addHeader(4)"><span>Subheading 4</span></button>
+      <button md-menu-item (click)="addHeader(5)"><span>Subheading 5</span></button>
   </md-menu>
 
   <button md-button [mdMenuTriggerFor]="bulletedlists" mdTooltip="Lists">

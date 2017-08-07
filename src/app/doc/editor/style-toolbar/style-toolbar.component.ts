@@ -182,54 +182,56 @@ export class StyleToolbarComponent implements OnInit {
     this.editorService.handleLink(this.cm.getDoc())
   }
 
-  addHeader (headerSize: string): void {
+  addHeader (headerSize: number): void {
     const selection = this.getSelectionForHeadersListsOrQuotations()
-    switch (+(headerSize)) {
+    let mdSyntax
+    switch (headerSize) {
     case 1:
-      headerSize = '# '
+      mdSyntax = '# '
       break
     case 2:
-      headerSize = '## '
+      mdSyntax = '## '
       break
     case 3:
-      headerSize = '### '
+      mdSyntax = '### '
       break
     case 4:
-      headerSize = '#### '
+      mdSyntax = '#### '
       break
     case 5:
-      headerSize = '##### '
+      mdSyntax = '##### '
       break
     }
     let list = ''
     let beginningIndexOfSubSelection = 0
     for (let i = 0; i < selection.length; i++) {
       if (selection[i] === '\n' || i === selection.length - 1) {
-        list += headerSize + selection.slice(beginningIndexOfSubSelection, i + 1)
+        list += mdSyntax + selection.slice(beginningIndexOfSubSelection, i + 1)
         beginningIndexOfSubSelection = i + 1
       }
     }
     this.cm.getDoc().replaceSelection(list, 'around')
   }
 
-  createList (bullet: string): void {
+  createList (bullet: number): void {
     const selection = this.getSelectionForHeadersListsOrQuotations()
     log.debug('SELECTION', selection)
+    let mdSyntax
     switch (+(bullet)) {
     case 0:
-      bullet = '. '
+      mdSyntax = '. '
       break
     case 1:
-      bullet = '- '
+      mdSyntax = '- '
       break
     case 2:
-      bullet = '* '
+      mdSyntax = '* '
       break
     case 3:
-      bullet = '+ '
+      mdSyntax = '+ '
       break
     case 4:
-      bullet = '- [ ] '
+      mdSyntax = '- [ ] '
       break
     }
     let list = ''
@@ -237,11 +239,11 @@ export class StyleToolbarComponent implements OnInit {
     let counter = 1
     for (let i = 0; i < selection.length; i++) {
       if (selection[i] === '\n' || i === selection.length - 1) {
-        if (bullet === '. ') {
-          list += counter + bullet + selection.slice(beginningIndexOfSubSelection, i + 1)
+        if (mdSyntax === '. ') {
+          list += counter + mdSyntax + selection.slice(beginningIndexOfSubSelection, i + 1)
           counter++
         } else {
-          list += bullet + selection.slice(beginningIndexOfSubSelection, i + 1)
+          list += mdSyntax + selection.slice(beginningIndexOfSubSelection, i + 1)
         }
         beginningIndexOfSubSelection = i + 1
       }
