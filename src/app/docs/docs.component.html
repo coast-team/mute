@@ -9,7 +9,7 @@
   <div fxLayout="column">
 
     <div class="doc-grid" fxLayoutWrap fxLayout="row" >
-      <h3 class="noDoc" *ngIf="docs.length === 0">You don't have any document!</h3>
+      <h3 class="noDoc" *ngIf="docs.length === 0">No documents!</h3>
       <md-card *ngFor="let doc of docs; let i = index"
         fxLayout="column" fxFlex.xs="1 0 150px"
         (dblclick)="openDoc(doc)"
