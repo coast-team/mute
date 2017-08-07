@@ -20,7 +20,7 @@
   </md-button-toggle>
   
   <button md-button [mdMenuTriggerFor]="headers" mdTooltip="Headers">
-    <md-icon>format_size</md-icon>
+    <md-icon class="disabled">format_size</md-icon>
     <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #headers="mdMenu" [overlapTrigger]="false">
@@ -42,7 +42,7 @@
   </md-menu>
 
   <button md-button [mdMenuTriggerFor]="bulletedlists" mdTooltip="Lists">
-      <md-icon>list</md-icon>
+      <md-icon class="disabled">list</md-icon>
       <md-icon>arrow_drop_down</md-icon>
   </button>
   <md-menu #bulletedlists="mdMenu" [overlapTrigger]="false">

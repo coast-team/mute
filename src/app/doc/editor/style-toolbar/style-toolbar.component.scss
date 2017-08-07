@@ -43,6 +43,10 @@
   visibility: visible;
 }
 
+.disabled {
+  color: $fg-disabled-text;
+}
+
 .inactive {
   opacity: 0;
   visibility: hidden;
