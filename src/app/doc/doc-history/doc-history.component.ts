@@ -8,11 +8,11 @@ import {
   NgZone } from '@angular/core'
 import { ActivatedRoute, Params, Router } from '@angular/router'
 import { DocService } from 'mute-core/lib'
-import { TextDelete, TextInsert }  from 'mute-structs'
+import { TextDelete, TextInsert } from 'mute-structs'
 import * as CodeMirror from 'codemirror'
 import { Observable } from 'rxjs/Observable'
 
-import { TimelineComponent }  from './timeline/timeline.component'
+import { TimelineComponent } from './timeline/timeline.component'
 import { HistoryControlsComponent } from './history-controls/history-controls.component'
 import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'

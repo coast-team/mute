@@ -1,6 +1,9 @@
-import { Injectable }             from '@angular/core'
-import { Router, Resolve, RouterStateSnapshot,
-         ActivatedRouteSnapshot } from '@angular/router'
+import { Injectable } from '@angular/core'
+import {
+  Router, Resolve,
+  RouterStateSnapshot,
+  ActivatedRouteSnapshot
+} from '@angular/router'
 
 import { LocalStorageService, BotStorageService } from './core/storage'
 import { UiService } from './core/ui/ui.service'
