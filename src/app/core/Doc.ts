@@ -35,7 +35,7 @@ export class Doc extends File {
     key: string,
     title: string,
     localStorage: LocalStorageService,
-    localFolder: Folder = undefined
+    localFolder?: Folder
   ) {
     super(title)
     this.sync = false
