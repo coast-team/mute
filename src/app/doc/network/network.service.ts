@@ -70,7 +70,8 @@ export class NetworkService {
   }
 
   initWebChannel (): void {
-    this.webChannel = new WebChannel({signalingURL: environment.signalingURL})
+    log.debug('Ice servers: ', environment.iceServers)
+    this.webChannel = new WebChannel({signalingURL: environment.signalingURL, iceServers: environment.iceServers})
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
@@ -213,14 +214,7 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-    return this.fetchServer()
-      .then((iceServers) => {
-        if (iceServers !== null) {
-          this.webChannel.iceServers = iceServers
-        }
-      })
-      .catch((err) => log.warn('IceServer Error', err))
-      .then(() => this.webChannel.join(key))
+    return this.webChannel.join(key)
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.signalingURL} with ${key} key`)
         this.doorSubject.next(true)
