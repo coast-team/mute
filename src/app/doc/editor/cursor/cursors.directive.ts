@@ -76,8 +76,8 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     // When the editor looses the focus (my cursor disappeared)
     CodeMirror.on(this.cm, 'blur', () => {
-      this.pbCursor.from = PositionMsg.create()
-      this.pbCursor.to = PositionMsg.create()
+      this.pbCursor.from = undefined
+      this.pbCursor.to = undefined
       this.pbCursor.state = State.HIDDEN
       this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
     })
@@ -100,6 +100,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             // When cursor update only
             cursor.clearSelection()
             cursor.showCursor()
+            log.debug('Cursor message ', pbMsg)
             let newPos: CodeMirror.Position
             if (pbMsg.from) {
               const pbFrom = pbMsg.from
@@ -162,37 +163,36 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       const mcToId: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(toPos))
 
       // Started position for selection
-      if (mcFromId === null) {
-        this.pbCursor.from = PositionMsg.create()
-      } else {
+      if (mcFromId !== null) {
         this.pbFrom.index = mcFromId.index
         this.pbFrom.last = mcFromId.last
         this.pbFrom.base = mcFromId.base
         this.pbCursor.from = this.pbFrom
+      } else {
+        this.pbCursor.from = undefined
       }
 
       // Ended position for selection
-      if (mcToId === null) {
-        this.pbCursor.to = PositionMsg.create()
-      } else {
+      if (mcToId !== null) {
         this.pbTo.index = mcToId.index
         this.pbTo.last = mcToId.last
         this.pbTo.base = mcToId.base
         this.pbCursor.to = this.pbTo
+      } else {
+        this.pbCursor.to = undefined
       }
     } else {
 
       // Prepare message for cursor only update
       this.pbCursor.state = State.FROM
-      this.pbCursor.to = PositionMsg.create()
       const id: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(cursorPos))
-      if (id === null) {
-        this.pbCursor.from = PositionMsg.create()
-      } else {
+      if (id !== null) {
         this.pbFrom.index = id.index
         this.pbFrom.last = id.last
         this.pbFrom.base = id.base
         this.pbCursor.from = this.pbFrom
+      } else {
+        this.pbCursor.from = undefined
       }
     }
 
