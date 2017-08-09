@@ -55,6 +55,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     // When a new peer joins
     this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
       this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
+      this.sendMyCursorPos()
     })
 
     // When the peer leaves
@@ -82,6 +83,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
     })
 
+    CodeMirror.on(this.cm, 'focus', () => {
+      this.sendMyCursorPos()
+    })
+
     // Send my cursor position to the network on certain events
     this.listenEventsForCursorChange()
 
@@ -91,6 +96,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       .subscribe((msg: NetworkMessage) => {
         const pbMsg = CursorMsg.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
+        log.debug('Cursor message ', pbMsg)
         if (cursor !== undefined) {
           if (pbMsg.state === State.HIDDEN) {
             // When cursor should be hidden
@@ -100,7 +106,6 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             // When cursor update only
             cursor.clearSelection()
             cursor.showCursor()
-            log.debug('Cursor message ', pbMsg)
             let newPos: CodeMirror.Position
             if (pbMsg.from) {
               const pbFrom = pbMsg.from
