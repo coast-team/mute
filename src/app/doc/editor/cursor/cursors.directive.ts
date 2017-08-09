@@ -1,5 +1,5 @@
 import { Directive, Injectable, Input, OnChanges, OnInit, OnDestroy } from '@angular/core'
-import { Subscription } from 'rxjs'
+import { Subscription } from 'rxjs/Subscription'
 import * as CodeMirror from 'codemirror'
 import { DocService, NetworkMessage } from 'mute-core'
 import { TextDelete, TextInsert, Identifier } from 'mute-structs'

@@ -13,7 +13,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core'
-import { Observable, Subscription } from 'rxjs'
+import { Subscription } from 'rxjs/Subscription'
+import { Observable } from 'rxjs/Observable'
 import { DocService } from 'mute-core'
 import { EditorService } from './editor.service'
 import { TextDelete, TextInsert }  from 'mute-structs'

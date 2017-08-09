@@ -4,6 +4,8 @@
     "node_modules/codelyzer"
   ],
   "rules": {
+    "arrow-return-shorthand": true,
+    "callable-types": true,
     "arrow-parens": true,
     "class-name": true,
     "comment-format": [
@@ -13,6 +15,10 @@
     "curly": true,
     "eofline": true,
     "forin": true,
+    "import-blacklist": [
+      true,
+      "rxjs"
+    ],
     "indent": [
       true,
       "spaces"
