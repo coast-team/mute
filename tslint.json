@@ -33,8 +33,14 @@
     "member-access": false,
     "member-ordering": [
       true,
-      "static-before-instance",
-      "variables-before-functions"
+      {
+        "order": [
+          "static-field",
+          "instance-field",
+          "static-method",
+          "instance-method"
+        ]
+      }
     ],
     "no-arg": true,
     "no-bitwise": true,
@@ -50,6 +56,7 @@
     "no-debugger": true,
     "no-default-export": true,
     "no-duplicate-variable": true,
+    "no-duplicate-super": true,
     "no-empty": false,
     "no-eval": true,
     "no-inferrable-types": true,
