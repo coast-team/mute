@@ -1,4 +1,4 @@
-import { TextDelete, TextInsert }  from 'mute-structs'
+import { TextDelete, TextInsert } from 'mute-structs'
 
 export const OPERATIONS: (TextDelete | TextInsert)[] = [
   new TextInsert(0, 'Welcome on this document! '),
