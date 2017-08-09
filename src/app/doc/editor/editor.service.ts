@@ -43,7 +43,7 @@ export class EditorService {
     hmdCursorDebounce: true,
     hmdAutoFold: 200,
     hmdPaste: true,
-    hmdFoldMath: { interval: 200, preview: true }
+    hmdFoldMath: { interval: 200, preview: false }
   }
 
   private editor: CodeMirror.Editor

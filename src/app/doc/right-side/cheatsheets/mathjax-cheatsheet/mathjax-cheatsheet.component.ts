@@ -23,7 +23,7 @@ export class MathJaxCheatsheetComponent {
     {image: 'assets/images/mathjax/equivalence_relation.jpg', s: '\\approx'},
     {image: 'assets/images/mathjax/non_equal.jpg', s: '\\neq'},
     {image: 'assets/images/mathjax/infinity.jpg', s: '\\infty'},
-    {image: 'assets/images/mathjax/limit.jpg', s: '\\lim_{x \\to 0}^{infty}'},
+    {image: 'assets/images/mathjax/limit.jpg', s: '\\lim_{x \\to 0}^{\infty}'},
   ]
 
   public power = [
