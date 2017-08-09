@@ -57,12 +57,12 @@ export class DocHistoryService {
 
   getAuthors (doc: Doc): Promise<Author[]> {
     return new Promise((resolve, reject) => {
-      let docAuthors: Author[] = []
+      const docAuthors: Author[] = []
       this.getOperations(doc)
           .then((ops: (Delete | Insert)[]) => {
-            for (let o of ops) {
+            for (const o of ops) {
               // log.debug(o.authorName)
-              let author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor())
+              const author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor())
 
               if (docAuthors.filter((e) => {
                 return e.getId() === author.getId()
