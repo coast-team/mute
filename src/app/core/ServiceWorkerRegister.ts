@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs'
+import { Subject } from 'rxjs/Subject'
 
 export class ServiceWorkerRegister {
 
@@ -24,7 +24,7 @@ export class ServiceWorkerRegister {
           reg.onupdatefound = () => {
             // The updatefound event implies that reg.installing is set; see
             // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
-            let installingWorker = reg.installing
+            const installingWorker = reg.installing
 
 
             installingWorker.onstatechange = () => {

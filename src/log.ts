@@ -83,13 +83,13 @@ export class Log {
   noConflict () {}
 
   private getTimestamp (): string {
-    let now = new Date()
+    const now = new Date()
     return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}T`
       + `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}Z`
   }
 
   private prefix (prefix = ''): string {
-    let timestamp = this.getTimestamp()
+    const timestamp = this.getTimestamp()
     if (prefix !== '') {
       return '[ ' + prefix + ':' + timestamp + '  ]  '
     } else {

@@ -1,5 +1,5 @@
 import { Directive, Injectable, Input, OnChanges, OnInit, OnDestroy } from '@angular/core'
-import { Subscription } from 'rxjs'
+import { Subscription } from 'rxjs/Subscription'
 import * as CodeMirror from 'codemirror'
 import { DocService, NetworkMessage } from 'mute-core'
 import { TextDelete, TextInsert, Identifier } from 'mute-structs'
@@ -55,6 +55,9 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     // When a new peer joins
     this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
       this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
+      if (this.cm.hasFocus()) {
+        this.sendMyCursorPos()
+      }
     })
 
     // When the peer leaves
@@ -76,10 +79,14 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     // When the editor looses the focus (my cursor disappeared)
     CodeMirror.on(this.cm, 'blur', () => {
-      this.pbCursor.from = PositionMsg.create()
-      this.pbCursor.to = PositionMsg.create()
+      this.pbCursor.from = undefined
+      this.pbCursor.to = undefined
       this.pbCursor.state = State.HIDDEN
       this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
+    })
+
+    CodeMirror.on(this.cm, 'focus', () => {
+      this.sendMyCursorPos()
     })
 
     // Send my cursor position to the network on certain events
@@ -162,37 +169,36 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       const mcToId: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(toPos))
 
       // Started position for selection
-      if (mcFromId === null) {
-        this.pbCursor.from = PositionMsg.create()
-      } else {
+      if (mcFromId !== null) {
         this.pbFrom.index = mcFromId.index
         this.pbFrom.last = mcFromId.last
         this.pbFrom.base = mcFromId.base
         this.pbCursor.from = this.pbFrom
+      } else {
+        this.pbCursor.from = undefined
       }
 
       // Ended position for selection
-      if (mcToId === null) {
-        this.pbCursor.to = PositionMsg.create()
-      } else {
+      if (mcToId !== null) {
         this.pbTo.index = mcToId.index
         this.pbTo.last = mcToId.last
         this.pbTo.base = mcToId.base
         this.pbCursor.to = this.pbTo
+      } else {
+        this.pbCursor.to = undefined
       }
     } else {
 
       // Prepare message for cursor only update
       this.pbCursor.state = State.FROM
-      this.pbCursor.to = PositionMsg.create()
       const id: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(cursorPos))
-      if (id === null) {
-        this.pbCursor.from = PositionMsg.create()
-      } else {
+      if (id !== null) {
         this.pbFrom.index = id.index
         this.pbFrom.last = id.last
         this.pbFrom.base = id.base
         this.pbCursor.from = this.pbFrom
+      } else {
+        this.pbCursor.from = undefined
       }
     }
 

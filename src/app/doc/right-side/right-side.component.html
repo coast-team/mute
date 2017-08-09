@@ -13,13 +13,28 @@
     >See revision history</a>
     <mute-invite-bot class="action"></mute-invite-bot>
   </div>
-  <hr class='divider' />
-  <div fxLayout="row" fxLayoutAlign="start center" class="line">
-    <span class='meta-title'>Location</span>
-    <md-icon *ngFor="let icon of storageIcons" class="storage-icon">
-      {{icon}}
-    </md-icon>
-  </div>
-  <hr class='divider' />
-  <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
+  <md-tab-group>
+    <md-tab label="Details">
+      <div class="details">
+        <div fxLayout="row" fxLayoutAlign="start center" class="location">
+          <span class="mat-caption meta-title">Location</span>
+          <md-icon *ngFor="let icon of storageIcons" class="storage-icon">
+            {{icon}}
+          </md-icon>
+        </div>
+        <h2 class="mat-title collaborators-header">Collaborators</h2>
+        <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators> 
+      </div>
+    </md-tab>
+    <md-tab label="Cheat sheets">
+      <md-tab-group>
+        <md-tab label="Markdown">
+          <mute-markdown-cheatsheet></mute-markdown-cheatsheet>
+        </md-tab>
+        <md-tab label="Math formulas">
+          <mute-mathjax-cheatsheet></mute-mathjax-cheatsheet>
+        </md-tab>
+      </md-tab-group>
+    </md-tab>
+  </md-tab-group>
 </div>

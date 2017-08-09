@@ -1,12 +1,5 @@
-@import 'variables';
-@import 'theme';
-
-.divider {
-  border: 0;
-  height: 1px;
-  width: 100%;
-  margin: 1rem 0 2rem 0;
-  background-color: $fg-divider;
+.details {
+  padding-left: 5px;
 }
 
 .actions {
@@ -30,16 +23,18 @@ mute-edit-field {
   margin-right: 10px;
 }
 
-.line {
-  margin-bottom: 10px;
+.location {
+  margin: 20px 0;
   height: 30px;
 }
 
 .meta-title {
-  color: $fg-secondary-text;
-  width: 80px;
   text-align: left;
   margin-right: 15px;
+}
+
+.collaborators-header {
+  text-align: center;
 }
 
 .collaborators {

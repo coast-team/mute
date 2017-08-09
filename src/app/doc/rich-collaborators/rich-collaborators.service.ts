@@ -1,5 +1,7 @@
 import { Injectable, ChangeDetectorRef } from '@angular/core'
-import { Observable, Subject } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
+import { Subject } from 'rxjs/Subject'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 import { Collaborator } from 'mute-core'
 import { RichCollaborator } from './RichCollaborator'
@@ -12,7 +14,7 @@ export class RichCollaboratorsService {
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
   private changeSubject: Subject<{collab: RichCollaborator, prop: string}>
-  private collaboratorsSubject: Subject<RichCollaborator[]>
+  private collaboratorsSubject: BehaviorSubject<RichCollaborator[]>
 
   private availableColors: string[]
 
@@ -24,7 +26,7 @@ export class RichCollaboratorsService {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.changeSubject = new Subject()
-    this.collaboratorsSubject = new Subject()
+    this.collaboratorsSubject = new BehaviorSubject([])
 
     this.availableColors = COLORS.slice()
     this.collaborators = []

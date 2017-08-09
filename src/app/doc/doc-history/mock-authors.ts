@@ -1,4 +1,4 @@
-import { TextDelete, TextInsert }  from 'mute-structs'
+import { TextDelete, TextInsert } from 'mute-structs'
 
 export const AUTHORS: [number, string][] = [
   [randId(), 'Mr Smith'],

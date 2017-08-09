@@ -1,0 +1,164 @@
+<h2 class="mat-title">Usage</h2>
+<md-card>
+  Each formula must be formatted as following:
+  <br>
+  <div style="text-align:center;"><img src={{example}}></div>
+</md-card>
+<h2 class="mat-title">Basic</h2>
+<md-card style="padding-left:0px;padding-right:6px;">
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of basic">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Power</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of power">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Sums and products</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of sumAndProduct">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Sets</h2>
+<md-card>
+  <h3>Operations</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of setOperations">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Quantificators</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of quantificators">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Order relations</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of orderRelations">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Propositional calculus</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of propositionalCalculus">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Functions</h2>
+<md-card>
+  <h3>General</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of functions">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <br>
+  <span style="text-align:center;">Works for the following math functions:</span>
+  <md-grid-list cols="5" rowHeight="35px">
+    <span *ngFor="let elt of mathFunctions">
+      <md-grid-tile>{{elt}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Derivation</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of derivation">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Integration</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of integration">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Vectors</h2>
+<md-card style="padding-left:0px;padding-right:13px;">
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of vectors">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Physics constants</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of physicsConstants">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Complex numbers</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of complexNumbers">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Parentheses and other</h2>
+<md-card>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of parenthesesAndOther">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>
+<h2 class="mat-title">Redaction</h2>
+<md-card style="padding-right:6px;">
+  <h3>Subscripts</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of subscripts">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Greek letters</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of greekLetters">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Ponctuation</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of ponctuation">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+  <h3>Plain text</h3>
+  <md-grid-list cols="2" rowHeight="35px">
+    <span *ngFor="let elt of plainText">
+      <md-grid-tile><img src={{elt.image}}></md-grid-tile>
+      <md-grid-tile>{{elt.s}}</md-grid-tile>
+    </span>
+  </md-grid-list>
+</md-card>

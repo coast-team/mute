@@ -70,7 +70,8 @@ export class NetworkService {
   }
 
   initWebChannel (): void {
-    this.webChannel = new WebChannel({signalingURL: environment.signalingURL})
+    log.debug('Ice servers: ', environment.iceServers)
+    this.webChannel = new WebChannel({signalingURL: environment.signalingURL, iceServers: environment.iceServers})
 
     // Peer JOIN event
     this.webChannel.onPeerJoin = (id) => this.peerJoinSubject.next(id)
@@ -91,8 +92,8 @@ export class NetworkService {
       const msg = Message.decode(bytes)
       const serviceName = msg.service
       if (serviceName === 'botprotocol') {
-        let content = BotProtocol.create({key: this.key})
-        let msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
+        const content = BotProtocol.create({key: this.key})
+        const msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
         this.webChannel.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
         const url = BotResponse.decode(msg.content).url
@@ -213,14 +214,7 @@ export class NetworkService {
 
   join (key): Promise<void> {
     this.key = key
-    return this.fetchServer()
-      .then((iceServers) => {
-        if (iceServers !== null) {
-          this.webChannel.iceServers = iceServers
-        }
-      })
-      .catch((err) => log.warn('IceServer Error', err))
-      .then(() => this.webChannel.join(key))
+    return this.webChannel.join(key)
       .then(() => {
         log.info('network', `Joined successfully via ${this.webChannel.signalingURL} with ${key} key`)
         this.doorSubject.next(true)
@@ -259,17 +253,13 @@ export class NetworkService {
   }
 
   launchTest (): void {
-    let intervalID = setInterval(() => {
+    const intervalID = setInterval(() => {
       this.testConnection()
     }, 1000)
   }
 
-  send (service: string, content: Uint8Array): void
-
-  send (service: string, content: Uint8Array, id: number|undefined): void
-
   send (service: string, content:  Uint8Array, id?: number|undefined): void {
-    let msg = Message.create({ service, content})
+    const msg = Message.create({ service, content})
     if (id === undefined) {
       this.webChannel.send(Message.encode(msg).finish())
     } else {

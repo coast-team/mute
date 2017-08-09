@@ -27,15 +27,11 @@ export class Doc extends File {
     return doc
   }
 
-  constructor (key: string, title: string, localStorage: LocalStorageService)
-
-  constructor (key: string, title: string, localStorage: LocalStorageService, localFolder: Folder)
-
   constructor (
     key: string,
     title: string,
     localStorage: LocalStorageService,
-    localFolder: Folder = undefined
+    localFolder?: Folder
   ) {
     super(title)
     this.sync = false
