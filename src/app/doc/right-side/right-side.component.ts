@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
-import { Subscription } from 'rxjs'
+import { Subscription } from 'rxjs/Subscription'
 import { ActivatedRoute, Params } from '@angular/router'
 
 import { NetworkService } from '../../doc/network'

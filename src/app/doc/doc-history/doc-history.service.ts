@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
-import { Observable, Observer } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
+import { Observer } from 'rxjs/Observer'
 import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
 import { LogootSAdd, LogootSDel, TextDelete, TextInsert }  from 'mute-structs'
 import { DocService } from 'mute-core/lib'

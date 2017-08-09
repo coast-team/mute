@@ -10,7 +10,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router'
 import { DocService } from 'mute-core/lib'
 import { TextDelete, TextInsert }  from 'mute-structs'
 import * as CodeMirror from 'codemirror'
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
 
 import { TimelineComponent }  from './timeline/timeline.component'
 import { HistoryControlsComponent } from './history-controls/history-controls.component'
