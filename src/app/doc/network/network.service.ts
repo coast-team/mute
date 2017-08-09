@@ -258,10 +258,6 @@ export class NetworkService {
     }, 1000)
   }
 
-  send (service: string, content: Uint8Array): void
-
-  send (service: string, content: Uint8Array, id: number|undefined): void
-
   send (service: string, content:  Uint8Array, id?: number|undefined): void {
     const msg = Message.create({ service, content})
     if (id === undefined) {
