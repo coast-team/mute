@@ -14,7 +14,7 @@ export class ProfileService {
   }
 
   get pseudonym () {
-    let pseudonym = this.getItem('pseudonym')
+    const pseudonym = this.getItem('pseudonym')
     if (pseudonym === null) {
       return this.pseudonymDefault
     }

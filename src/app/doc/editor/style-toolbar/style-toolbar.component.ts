@@ -39,14 +39,14 @@ export class StyleToolbarComponent implements OnInit {
     this.cm.on('cursorActivity', () => { this.updateToolbarState() })
 
     // Handles 'on blur'
-    let editor = document.getElementsByTagName('mute-editor')[0]
+    const editor = document.getElementsByTagName('mute-editor')[0]
     editor.addEventListener('mousedown', this.checkThenHide.bind(this))
 
     this.cm.addKeyMap({Esc: () => this.hideToolbar() })
   }
 
   checkThenHide (event: Event): void {
-    let editor = document.getElementsByTagName('mute-editor')[0]
+    const editor = document.getElementsByTagName('mute-editor')[0]
     if (event.target === editor) {
       this.hideToolbar()
     }
@@ -88,7 +88,7 @@ export class StyleToolbarComponent implements OnInit {
 
   setToggledButtons (): void {
     const selection = this.cm.getDoc().listSelections()[0]
-    let sum = (selection.anchor.ch + selection.head.ch) / 2
+    const sum = (selection.anchor.ch + selection.head.ch) / 2
     const selectionStyles = (this.cm.getTokenAt({ch: sum, line: selection.anchor.line})).type
     const existingStyles = ['strong', 'em', 'strikethrough', 'quote', 'link']
     let buttonIndex = 0
@@ -107,7 +107,7 @@ export class StyleToolbarComponent implements OnInit {
     const width: number = this.removePx(getComputedStyle(document.getElementsByTagName('mute-editor')[0] as any).borderLeft) // not ideal
 
     const line: number = this.getUpperLine()
-    let top: number = this.getTopFromSelection(line)
+    const top: number = this.getTopFromSelection(line)
     let left: number = this.getLeftFromMiddleOfSelection(line)
     let right: number = this.getRightFromMiddleOfSelection(line)
 
@@ -130,32 +130,32 @@ export class StyleToolbarComponent implements OnInit {
 
   // ACCESS LOCATION OF SELECTION
   getLeftFromMiddleOfSelection (line: number): number {
-    let selection = this.cm.getDoc().listSelections()[0]
-    let anchor = selection.anchor.ch
-    let head = selection.head.ch
-    let middleOfSelection = Math.floor((head + anchor) / 2)
-    let charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
+    const selection = this.cm.getDoc().listSelections()[0]
+    const anchor = selection.anchor.ch
+    const head = selection.head.ch
+    const middleOfSelection = Math.floor((head + anchor) / 2)
+    const charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
     return charCoords.left
   }
 
   getRightFromMiddleOfSelection (line: number): number {
-    let selection = this.cm.getDoc().listSelections()[0]
-    let anchor = selection.anchor.ch
-    let head = selection.head.ch
-    let middleOfSelection = Math.floor((head + anchor) / 2)
-    let charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
+    const selection = this.cm.getDoc().listSelections()[0]
+    const anchor = selection.anchor.ch
+    const head = selection.head.ch
+    const middleOfSelection = Math.floor((head + anchor) / 2)
+    const charCoords = this.cm.charCoords({line, ch: middleOfSelection}, 'window')
     return charCoords.right
   }
 
   getTopFromSelection (line: number): number {
-    let charCoords = this.cm.charCoords({line, ch: 0}, 'local')
+    const charCoords = this.cm.charCoords({line, ch: 0}, 'local')
     return charCoords.top - 8
   }
 
   getUpperLine (): number {
-    let selection = this.cm.getDoc().listSelections()[0]
-    let anchor = selection.anchor.line
-    let head = selection.head.line
+    const selection = this.cm.getDoc().listSelections()[0]
+    const anchor = selection.anchor.line
+    const head = selection.head.line
     return Math.min(anchor, head)
   }
 
@@ -261,7 +261,7 @@ export class StyleToolbarComponent implements OnInit {
   }
 
   getSelectionForHeadersListsOrQuotations (): string {
-    let beginningOfSelection = this.editorService.getBeginningOfSelection(this.cm.getDoc())
+    const beginningOfSelection = this.editorService.getBeginningOfSelection(this.cm.getDoc())
     beginningOfSelection.ch = 0
     this.cm.getDoc().setSelection(beginningOfSelection, this.editorService.getEndOfSelection(this.cm.getDoc()))
     log.debug(this.cm.getDoc().getSelection())

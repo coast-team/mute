@@ -92,8 +92,8 @@ export class NetworkService {
       const msg = Message.decode(bytes)
       const serviceName = msg.service
       if (serviceName === 'botprotocol') {
-        let content = BotProtocol.create({key: this.key})
-        let msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
+        const content = BotProtocol.create({key: this.key})
+        const msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
         this.webChannel.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
         const url = BotResponse.decode(msg.content).url
@@ -253,7 +253,7 @@ export class NetworkService {
   }
 
   launchTest (): void {
-    let intervalID = setInterval(() => {
+    const intervalID = setInterval(() => {
       this.testConnection()
     }, 1000)
   }
@@ -263,7 +263,7 @@ export class NetworkService {
   send (service: string, content: Uint8Array, id: number|undefined): void
 
   send (service: string, content:  Uint8Array, id?: number|undefined): void {
-    let msg = Message.create({ service, content})
+    const msg = Message.create({ service, content})
     if (id === undefined) {
       this.webChannel.send(Message.encode(msg).finish())
     } else {

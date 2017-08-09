@@ -18,7 +18,7 @@ export class DocResolverService implements Resolve<Doc> {
 
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Doc> {
     const urlKey = route.params['key']
-    let activeFile = this.ui.activeFile as Doc
+    const activeFile = this.ui.activeFile as Doc
 
     // If user come from another part of the application
     if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {

@@ -196,8 +196,8 @@ export class DocHistoryComponent implements OnInit {
 
   destroyText (begin, end) {
     const doc = this.editor.getDoc()
-    let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end + 1)
+    const pos1 = doc.posFromIndex(begin)
+    const pos2 = doc.posFromIndex(end + 1)
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: red' })
     doc.markText({line: pos1.line, ch: pos1.ch},
@@ -225,21 +225,21 @@ export class DocHistoryComponent implements OnInit {
 
   colorizeAuthors (begin: number, end: number) {
     const doc = this.editor.getDoc()
-    let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end)
+    const pos1 = doc.posFromIndex(begin)
+    const pos2 = doc.posFromIndex(end)
     if (this.docAuthors) {
       length = this.docAuthors.length
     }
     this.animateText(begin, end)
-    let color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
+    const color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'background-color: ' + color})
   }
 
   colorizeDifferences (begin: number, end: number, reverse: boolean) {
     const doc = this.editor.getDoc()
-    let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end)
+    const pos1 = doc.posFromIndex(begin)
+    const pos2 = doc.posFromIndex(end)
     this.animateText(begin, end)
     if (!reverse) {
       doc.markText({line: pos1.line, ch: pos1.ch},
@@ -252,8 +252,8 @@ export class DocHistoryComponent implements OnInit {
 
   animateText (begin: number, end: number) {
     const doc = this.editor.getDoc()
-    let pos1 = doc.posFromIndex(begin)
-    let pos2 = doc.posFromIndex(end)
+    const pos1 = doc.posFromIndex(begin)
+    const pos2 = doc.posFromIndex(end)
     doc.markText({line: pos1.line, ch: pos1.ch},
        {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slidein;'
        + 'animation-duration: 0.300s;' })

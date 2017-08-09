@@ -56,7 +56,7 @@ export class EditorService {
   }
 
   initHyperMD (): void {
-    let tmp = this.editor as any
+    const tmp = this.editor as any
     tmp.hmdHoverInit()
     tmp.hmdClickInit()
   }
@@ -92,18 +92,18 @@ export class EditorService {
       }
       const linkRE = new RegExp('^\\[[\\s\\S]*\\]\\([\\s\\S]*\\)', 'y')
 
-      let beginOfSelection = this.getBeginningOfSelection(cm)
-      let endOfSelection = this.getEndOfSelection(cm)
+      const beginOfSelection = this.getBeginningOfSelection(cm)
+      const endOfSelection = this.getEndOfSelection(cm)
 
       // the selection is the exact Markdown syntax for links
       if (linkRE.test(selectedText)) {
-        let sizeOfLinkBeforeURL = selectedText.match(new RegExp('\\[[\\s\\S]*\\]\\('))[0].length
-        let sizeOfURL = selectedText.match(new RegExp(']\\([\\s\\S]*\\)'))[0].length - 3
+        const sizeOfLinkBeforeURL = selectedText.match(new RegExp('\\[[\\s\\S]*\\]\\('))[0].length
+        const sizeOfURL = selectedText.match(new RegExp(']\\([\\s\\S]*\\)'))[0].length - 3
         cm.setSelection({line: endOfSelection.line, ch: beginOfSelection.ch + sizeOfLinkBeforeURL},
           {line: endOfSelection.line, ch: beginOfSelection.ch + sizeOfLinkBeforeURL + sizeOfURL})
       } else { // otherwise we look for the link style in the selection
         let position = {line: beginOfSelection.line, ch: beginOfSelection.ch}
-        let end = {line: endOfSelection.line, ch: endOfSelection.ch}
+        const end = {line: endOfSelection.line, ch: endOfSelection.ch}
         let foundLinkStyle = false
         while (!(position.ch === end.ch && position.line === end.line && !foundLinkStyle)) {
 
@@ -118,7 +118,7 @@ export class EditorService {
           if (foundLinkStyle) {
             // Markdown syntax for URL : [text](url). Link type exists only on : '[text](u'
             if (cm.cm.getTokenAt(position).string === '(' || !cm.cm.getTokenAt(position).type.includes('link')) {
-              let beginningOfURL = {line: position.line, ch: position.ch}
+              const beginningOfURL = {line: position.line, ch: position.ch}
               while (cm.cm.getTokenAt(position).string !== ')') {
                 position.ch++
               }
@@ -132,7 +132,7 @@ export class EditorService {
         // then link style does not exist at all in the selection, we initiate it
         cm.setSelection(beginOfSelection, endOfSelection)
         cm.replaceSelection('[' + selectedText + '](url)', 'end')
-        let pos = cm.getCursor()
+        const pos = cm.getCursor()
         cm.setSelection({line: pos.line, ch: pos.ch - 1}, {line: pos.line, ch: pos.ch - 4})
       }
     }
@@ -143,10 +143,10 @@ export class EditorService {
     const selectedText = cm.getSelection()
 
     if (selectedText.length > 0) {
-      for (let reTokenSyntax in reTokenSyntaxs) {
+      for (const reTokenSyntax in reTokenSyntaxs) {
         if (typeof reTokenSyntaxs[reTokenSyntax] === typeof(new RegExp(''))) {
           const reStyle: RegExp = reTokenSyntaxs[reTokenSyntax]
-          let isStyled = reStyle.test(selectedText)
+          const isStyled = reStyle.test(selectedText)
 
           if (isStyled) {
             tokenSyntax = reTokenSyntax
