@@ -9,6 +9,7 @@
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
     "build": "ng build --prod -oh none",
+    "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && npm run sw && zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
     "e2e": "ng e2e",
