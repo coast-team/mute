@@ -85,6 +85,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
     })
 
+    CodeMirror.on(this.cm, 'focus', () => {
+      this.sendMyCursorPos()
+    })
+
     // Send my cursor position to the network on certain events
     this.listenEventsForCursorChange()
 
