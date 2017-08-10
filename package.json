@@ -8,7 +8,7 @@
     "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "start-sw": "npm run build -- --env=dev && npm run sw && cd dist && live-server --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
-    "build": "ng build --prod -oh none",
+    "build": "ng build --build-optimizer --prod -oh none",
     "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && npm run sw && zopfli dist/*.js dist/*.css dist/*.html & node scripts/brotli_build_compression.js",
     "lint": "ng lint",
     "test": "ng test",
@@ -18,7 +18,6 @@
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "sw": "workbox-cli generate:sw",
-    "firebase-sw-deploy": "npm run build && npm run sw && firebase deploy",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
@@ -56,12 +55,12 @@
     "netflux": "^1.1.0-beta.8",
     "normalize.css": "^7.0.0",
     "protobufjs": "^6.8.0",
-    "rxjs": "^5.4.1",
+    "rxjs": "^5.4.2",
     "web-animations-js": "^2.2.5",
-    "zone.js": "^0.8.16"
+    "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "^1.2.6",
+    "@angular/cli": "1.3.0",
     "@angular/compiler-cli": "^4.3.3",
     "@angular/language-service": "^4.3.3",
     "@types/codemirror": "^0.0.43",
@@ -69,7 +68,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/mathjax": "0.0.31",
     "@types/node": "^8.0.19",
-    "codelyzer": "~3.0.1",
+    "codelyzer": "~3.1.1",
     "commitizen": "^2.8.6",
     "cz-conventional-changelog": "^2.0.0",
     "husky": "^0.14.1",
@@ -85,12 +84,12 @@
     "pm2": "^2.6.1",
     "protractor": "~5.1.2",
     "sigver": "^15.0.1",
-    "ts-node": "~3.0.4",
+    "ts-node": "~3.2.0",
     "tslint": "~5.3.2",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.3.3",
     "validate-commit-msg": "^2.14.0",
-    "workbox-cli": "^1.0.1"
+    "workbox-cli": "^1.3.0"
   },
   "repository": {},
   "config": {
