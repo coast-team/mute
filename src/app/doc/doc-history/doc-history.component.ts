@@ -7,7 +7,7 @@ import {
   ElementRef,
   NgZone } from '@angular/core'
 import { ActivatedRoute, Params, Router } from '@angular/router'
-import { DocService } from 'mute-core/lib'
+import { DocService } from 'mute-core'
 import { TextDelete, TextInsert } from 'mute-structs'
 import * as CodeMirror from 'codemirror'
 import { Observable } from 'rxjs/Observable'
