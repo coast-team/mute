@@ -12,7 +12,7 @@
         <md-icon>account_circle</md-icon>
       </div>
       |
-      <div class="networkIcon" [ngSwitch]="signalingStatus || onLineStatus || networkStatus">
+      <div class="networkIcon" [ngSwitch]="signalingStatus && onLineStatus && networkStatus">
         <md-icon *ngSwitchCase="true">network_wifi</md-icon>
         <md-icon *ngSwitchCase="false">signal_wifi_off</md-icon>
         <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
