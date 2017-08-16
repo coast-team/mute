@@ -10,8 +10,8 @@ import { Message, BotResponse, BotProtocol } from './message_pb'
 @Injectable()
 export class NetworkService {
 
-  private webChannel
-  private key: string
+  public webChannel
+  public key: string
   private botUrls: string[]
 
   private disposeSubject: Subject<void>
@@ -41,7 +41,7 @@ export class NetworkService {
 
   constructor (
   ) {
-    log.angular('NetworkService constructed')
+    // log.angular('NetworkService constructed')
 
     this.botUrls = []
 
