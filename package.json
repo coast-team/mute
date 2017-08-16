@@ -23,7 +23,9 @@
   "keywords": [],
   "contributors": [
     "Philippe Kalitine <philippe.kalitine@gmail.com> (http://philippe.kalitine.name/)",
-    "Matthieu Nicolas <matthieu.nicolas@inria.fr>"
+    "Matthieu Nicolas <matthieu.nicolas@inria.fr>",
+    "Quentin Tardivon",
+    "Camille Menou"
   ],
   "license": "AGPL-3.0",
   "angular-cli": {},
