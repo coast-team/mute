@@ -19,41 +19,39 @@ export class ServiceWorkerRegister {
         // It won't be able to control pages unless it's located at the same level or higher than them.
         // *Don't* register service worker file in, e.g., a scripts/ sub-directory!
         // See https://github.com/slightlyoff/ServiceWorker/issues/468
-        navigator.serviceWorker.register('service-worker.js').then((reg) => {
-          // updatefound is fired if service-worker.js changes.
-          reg.onupdatefound = () => {
-            // The updatefound event implies that reg.installing is set; see
-            // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
-            const installingWorker = reg.installing
+        navigator.serviceWorker.register('service-worker.js')
+          .then((reg) => {
+            // updatefound is fired if service-worker.js changes.
+            reg.onupdatefound = () => {
+              // The updatefound event implies that reg.installing is set; see
+              // https://slightlyoff.github.io/ServiceWorker/spec/service_worker/index.html#service-worker-container-updatefound-event
+              const installingWorker = reg.installing
 
-
-            installingWorker.onstatechange = () => {
-              switch (installingWorker.state) {
-              case 'installed':
-                if (navigator.serviceWorker.controller) {
-                    // At this point, the old content will have been purged and the fresh content will
-                    // have been added to the cache.
-                    // It's the perfect time to display a "New content is available; please refresh."
-                    // message in the page's interface.
-                  this.emitEvent('New content is available, please refresh.')
-                  log.info('Service Worker', 'New or updated content is available.')
-                } else {
-                    // At this point, everything has been precached.
-                    // It's the perfect time to display a "Content is cached for offline use." message.
-                  this.emitEvent('Content available offline')
-                  log.info('Service Worker', 'Content is now available offline!')
+              installingWorker.onstatechange = () => {
+                switch (installingWorker.state) {
+                case 'installed':
+                  if (navigator.serviceWorker.controller) {
+                      // At this point, the old content will have been purged and the fresh content will
+                      // have been added to the cache.
+                      // It's the perfect time to display a "New content is available; please refresh."
+                      // message in the page's interface.
+                    this.emitEvent('Application has been updated, page refresh is needed.')
+                    log.info('Service Worker', 'Application has been updated, page refresh is needed.')
+                  } else {
+                      // At this point, everything has been precached.
+                      // It's the perfect time to display a "Content is cached for offline use." message.
+                    this.emitEvent('Application is available offline')
+                    log.info('Service Worker', 'Application is cached to use offline.')
+                  }
+                  break
+                case 'redundant':
+                  log.error('The installing service worker became redundant')
+                  break
                 }
-                break
-              case 'redundant':
-                console.error('The installing service worker became redundant.')
-                break
               }
             }
-          }
-        })
-          .catch((e) => {
-            log.error('Error during service worker registration:', e)
           })
+          .catch((e) => log.error('Error during service worker registration', e))
       })
     }
   }
