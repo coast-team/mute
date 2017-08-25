@@ -40,7 +40,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private remoteOperationsSubscription: Subscription
 
-  private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
+  private textOperationsObservable: Observable<(TextDelete | TextInsert)[]>
 
   @Input() docService: DocService
   @Output() isReady: EventEmitter<any> = new EventEmitter()
@@ -88,12 +88,15 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       })
       */
 
-      this.textOperationsObservable = multipleOperationsStream.map( (changeEvents: ChangeEvent[]) => {
-        return changeEvents.map( (changeEvent: ChangeEvent ) => {
-          // log.debug("Transmitting changements ", changeEvent.change.text)
-          return changeEvent.toTextOperations()
-        })
-      })
+      this.textOperationsObservable =
+        multipleOperationsStream
+          .map((changeEvents: ChangeEvent[]) => {
+            return changeEvents.map((changeEvent: ChangeEvent) => {
+              return changeEvent.toTextOperations()
+            }).reduce((acc: (TextDelete | TextInsert)[], textOperations: (TextDelete | TextInsert)[]) => {
+              return acc.concat(textOperations)
+            }, [])
+          })
 
       this.docService.localTextOperationsSource = this.textOperationsObservable
 
