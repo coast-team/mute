@@ -97,6 +97,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
               return acc.concat(textOperations)
             }, [])
           })
+          .share()
 
       this.docService.localTextOperationsSource = this.textOperationsObservable
 
