@@ -5,23 +5,12 @@ describe('NetworkService', () => {
 
   beforeEach(() => {
     networkService = new NetworkService()
-    networkService.initWebChannel()
+    networkService.init()
     networkService.webChannel.join('key')
   })
 
   it('Correct Init', () => {
     expect(networkService).toBeTruthy()
-  })
-
-  it('IceServers', () => {
-    networkService.fetchServer().then((iceServers) => {
-      console.log(iceServers)
-      expect(iceServers).toBeDefined()
-    })
-  })
-
-  it('Key', () => {
-    expect(networkService.key).toBe('key')
   })
 
 })
