@@ -8,7 +8,7 @@ import { DocHistoryService } from '../doc-history.service'
 let comp: CollaboratorsComponent
 let fixture: ComponentFixture<CollaboratorsComponent>
 
-let docHistoryService
+const docHistoryService = undefined
 
 describe('CollaboratorsComponent', () => {
   beforeEach(async(() => {

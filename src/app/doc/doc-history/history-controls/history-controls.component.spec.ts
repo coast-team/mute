@@ -8,7 +8,7 @@ import { UiService } from '../../../core/ui/ui.service'
 let comp: HistoryControlsComponent
 let fixture: ComponentFixture<HistoryControlsComponent>
 
-let uiServiceStub
+const uiServiceStub = undefined
 
 describe('HistoryControlsComponent', () => {
   beforeEach(async(() => {

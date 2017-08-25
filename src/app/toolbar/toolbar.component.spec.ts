@@ -11,10 +11,10 @@ import { MdSnackBar } from '@angular/material'
 let comp: ToolbarComponent
 let fixture: ComponentFixture<ToolbarComponent>
 
-let uiServiceStub
-let networkServiceStub
-let profileServiceStub
-let mdSnackBarStub
+const uiServiceStub = undefined
+const networkServiceStub = undefined
+const profileServiceStub = undefined
+const mdSnackBarStub = undefined
 
 describe('ToolbarComponent', () => {
   beforeEach(async(() => {

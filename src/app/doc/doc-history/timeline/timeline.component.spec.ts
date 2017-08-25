@@ -6,8 +6,6 @@ import { TimelineComponent } from './timeline.component'
 let comp: TimelineComponent
 let fixture: ComponentFixture<TimelineComponent>
 
-let uiServiceStub
-
 describe('TimelineComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
