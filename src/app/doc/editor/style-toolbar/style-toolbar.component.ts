@@ -4,7 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core'
-import CodeMirror from 'codemirror'
+import * as CodeMirror from 'codemirror'
 
 import { EditorService } from '../editor.service'
 

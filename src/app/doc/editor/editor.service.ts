@@ -1,7 +1,7 @@
 import {
   Injectable
 } from '@angular/core'
-import CodeMirror from 'codemirror'
+import * as CodeMirror from 'codemirror'
 // SETTINGS: Thoses imports below are needed to run HyperMd into Mute
 import 'codemirror/addon/mode/overlay'
 import 'codemirror/addon/edit/continuelist'
