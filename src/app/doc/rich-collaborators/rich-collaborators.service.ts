@@ -50,26 +50,31 @@ export class RichCollaboratorsService {
 
   set pseudoChangeSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      for (const rc of this.collaborators) {
-        if (rc.id === collab.id) {
-          rc.pseudo = collab.pseudo
-          this.changeSubject.next({collab: rc, prop: 'pseudo'})
-          this.collaboratorsSubject.next(this.collaborators)
-          this.changeDetector.detectChanges()
-          break
-        }
+      const rc: RichCollaborator | undefined = this.findRichCollaborator(collab.id)
+
+      // In some cases, it is possible to receive a message from a peer
+      // before the corresponding peerJoin event is triggered.
+      // In that case, add the new peer instead of trying to perform an update.
+      if (rc instanceof RichCollaborator) {
+        rc.pseudo = collab.pseudo
+        this.changeSubject.next({collab: rc, prop: 'pseudo'})
+        this.collaboratorsSubject.next(this.collaborators)
+        this.changeDetector.detectChanges()
+      } else {
+        this.handleNewCollaborator(collab)
       }
     })
   }
 
   set joinSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      const color = this.pickColor()
-      const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
-      this.collaborators[this.collaborators.length] = newRCollab
-      this.joinSubject.next(newRCollab)
-      this.collaboratorsSubject.next(this.collaborators)
-      this.changeDetector.detectChanges()
+      const rc: RichCollaborator | undefined = this.findRichCollaborator(collab.id)
+
+      // Prevent from overriding the pseudo of the collaborator with
+      // the default one if we already received a message from this peer.
+      if (rc === undefined) {
+        this.handleNewCollaborator(collab)
+      }
     })
   }
 
@@ -86,6 +91,20 @@ export class RichCollaboratorsService {
         }
       }
     })
+  }
+
+  findRichCollaborator (id: number): RichCollaborator | undefined {
+    return this.collaborators
+      .find((rc: RichCollaborator): boolean => rc.id === id)
+  }
+
+  handleNewCollaborator (collab: Collaborator): void {
+    const color = this.pickColor()
+    const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
+    this.collaborators.push(newRCollab)
+    this.joinSubject.next(newRCollab)
+    this.collaboratorsSubject.next(this.collaborators)
+    this.changeDetector.detectChanges()
   }
 
   pickColor (): string {
