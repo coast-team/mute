@@ -12,14 +12,14 @@
         <md-icon>account_circle</md-icon>
       </div>
       |
-      <div class="networkIcon" [ngSwitch]="signalingStatus && onLineStatus && networkStatus">
-        <md-icon *ngSwitchCase="true">network_wifi</md-icon>
-        <md-icon *ngSwitchCase="false">signal_wifi_off</md-icon>
-        <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
-        </md-progress-spinner>
+      <div class="networkIcon" [ngSwitch]="syncIcon" fxLayout="row" fxLayoutAlign="center center">
+        <md-icon *ngSwitchCase="SYNC">sync</md-icon>
+        <md-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
+        <md-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
+        <md-icon class="syncing" *ngSwitchCase="undefined">sync</md-icon>
       </div>
 
-      <md-card class="networkState">
+      <!-- <md-card class="networkState">
         <md-card-header>
           <md-card-title>Status</md-card-title>
         </md-card-header>
@@ -58,7 +58,7 @@
             </md-list-item>
           </md-list>
         </md-card-content>
-      </md-card>
+      </md-card> -->
       |
       <button md-icon-button (click)="ui.toggleDocNav()">
         <md-icon>info</md-icon>

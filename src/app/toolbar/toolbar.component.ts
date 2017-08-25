@@ -6,9 +6,6 @@ import { WebChannel } from 'netflux'
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
 import { NetworkService } from '../doc/network/network.service'
-import { ServiceWorkerRegister } from '../core/ServiceWorkerRegister'
-
-import { MdSnackBar, MdMenuTrigger, MdMenu } from '@angular/material'
 
 @Component({
   selector: 'mute-toolbar',
@@ -19,11 +16,13 @@ export class ToolbarComponent implements OnInit {
 
   @Input('state') state
 
+  public SYNC = 1
+  public SYNC_DISABLED = 2
+  public SYNC_PROBLEM = 3
   public rootFileTitle: Observable<string>
 
   // Here add subscription
-  private serviceWorker: ServiceWorkerRegister
-  private snackBarSubject: Subject<string>
+  public syncIcon: number
   public signalingStatus: boolean
   public onLineStatus: boolean
   public networkStatus: boolean
@@ -33,11 +32,8 @@ export class ToolbarComponent implements OnInit {
     private networkService: NetworkService,
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
-    public profile: ProfileService,
-    private snackBar: MdSnackBar,
+    public profile: ProfileService
   ) {
-    this.snackBarSubject = new Subject()
-    this.serviceWorker = new ServiceWorkerRegister
     this.signalingStatus = undefined
     this.onLineStatus = undefined
     this.networkStatus = undefined
@@ -48,49 +44,59 @@ export class ToolbarComponent implements OnInit {
       .filter((file) => file !== null)
       .pluck('title')
 
-    this.snackBarSubject
-      .throttleTime(500)
-      .subscribe((message: string) => {
-        this.snackBar.open(message, 'close', {
-          duration: 5000
-        })
-      })
-
-    this.serviceWorker.registerSW()
-
-    this.serviceWorker.observableState.subscribe((message) => {
-      this.snackBarSubject.next(message)
-    })
-
-    this.networkService.onSignalingStateChange.subscribe((event) => {
-      if (event === 0) {
-        this.signalingStatus = undefined
-      } else if ((event === 1) || (event === 2)) {
-        this.signalingStatus = true
-      } else {
-        this.signalingStatus = false
+    this.networkService.onStateChange.subscribe((state: number) => {
+      log.info('NetworkState', state)
+      if (navigator.onLine) {
+        if (state === WebChannel.JOINED) {
+          this.syncIcon = this.SYNC
+        } else {
+          this.syncIcon = undefined
+        }
+        this.changeDetectorRef.detectChanges()
       }
     })
 
-    this.networkService.onStateChange.subscribe((state) => {
-      if (state === WebChannel.SIGNALING_CONNECTING) {
-        this.networkStatus = undefined
-      } else if (state === WebChannel.SIGNALING_CONNECTED || state === WebChannel.SIGNALING_OPEN) {
-        this.networkStatus = true
-      } else if (state === WebChannel.SIGNALING_CLOSED) {
-        this.networkStatus = false
-      } else {
-        const errMsg = 'Unknown Signaling state: '
-        log.error('Unknown Signaling state: ', state)
-        throw new Error(errMsg + state)
+    this.networkService.onSignalingStateChange.subscribe((state: number) => {
+      log.info('SignalingState', state)
+      if (navigator.onLine) {
+        if (state === WebChannel.SIGNALING_CONNECTING && this.syncIcon !== undefined) {
+          this.syncIcon = undefined
+          this.changeDetectorRef.detectChanges()
+        }
+        if (state === WebChannel.SIGNALING_CLOSED && this.syncIcon !== undefined) {
+          this.syncIcon = undefined
+          this.changeDetectorRef.detectChanges()
+        }
       }
     })
 
-    this.networkService.onLine.subscribe((event) => {
-      this.onLineStatus = event
+    this.networkService.onLine.subscribe((online: boolean) => {
+      log.info('ONLINE/OFFLINE', 'Is online ' + online)
+      if (!online) {
+        this.syncIcon = this.SYNC_PROBLEM
+        this.changeDetectorRef.detectChanges()
+      }
     })
 
-    this.networkService.launchTest()
+    // this.networkService.onStateChange.subscribe((state) => {
+    //   if (state === WebChannel.SIGNALING_CONNECTING) {
+    //     this.networkStatus = undefined
+    //   } else if (state === WebChannel.SIGNALING_CONNECTED || state === WebChannel.SIGNALING_OPEN) {
+    //     this.networkStatus = true
+    //   } else if (state === WebChannel.SIGNALING_CLOSED) {
+    //     this.networkStatus = false
+    //   } else {
+    //     const errMsg = 'Unknown Signaling state: '
+    //     log.error('Unknown Signaling state: ', state)
+    //     throw new Error(errMsg + state)
+    //   }
+    // })
+
+    // this.networkService.onLine.subscribe((event) => {
+    //   this.onLineStatus = event
+    // })
+
+    // this.networkService.launchTest()
 
   }
 

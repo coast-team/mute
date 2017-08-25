@@ -6,9 +6,28 @@
 }
 
 md-progress-spinner {
-    width: 24px;
-    height: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
   }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.syncing {
+  margin: 0;
+  padding: 0;
+  animation-name: rotating;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+}
 
 md-toolbar {
 

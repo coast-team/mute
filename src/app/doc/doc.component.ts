@@ -80,7 +80,6 @@ export class DocComponent implements OnDestroy, OnInit {
         this.network.clean()
         this.muteCore.clean()
       }
-      this.network.init()
 
       // TODO: Retrieve previous id for this document if existing
       const ids = new Int32Array(1)

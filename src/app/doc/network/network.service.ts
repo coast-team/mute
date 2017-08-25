@@ -1,6 +1,6 @@
 /// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
-import { Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
+import { Observable, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 import { WebChannel } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
@@ -19,7 +19,7 @@ export class NetworkService {
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
-  private lineSubject: Subject<boolean>
+  private lineSubject: BehaviorSubject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -50,15 +50,24 @@ export class NetworkService {
     this.messageSubject = new ReplaySubject()
 
     this.disposeSubject = new Subject<void>()
-    this.lineSubject = new Subject()
+    this.lineSubject = new BehaviorSubject(navigator.onLine)
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
 
+    this.init()
     // Leave webChannel before closing a tab or the browser
     window.addEventListener('beforeunload', () => {
       if (this.webChannel !== undefined) {
         this.webChannel.leave()
       }
+    })
+    window.addEventListener('online', () => {
+      this.webChannel.join(this.key)
+      this.lineSubject.next(true)
+    })
+    window.addEventListener('offline', () => {
+      this.webChannel.closeSignaling()
+      this.lineSubject.next(false)
     })
   }
 
@@ -68,6 +77,7 @@ export class NetworkService {
       iceServers: environment.iceServers
     })
     window.wc = this.webChannel
+
     // Handle network events
     this.webChannel.onPeerJoin = (id) => {
       return this.peerJoinSubject.next(id)
@@ -99,11 +109,17 @@ export class NetworkService {
     }
   }
 
+  leave () {
+    this.webChannel.leave()
+  }
+
   set initSource (source: Observable<string>) {
     source.takeUntil(this.disposeSubject)
       .subscribe((key: string) => {
         this.key = key
-        this.webChannel.join(key)
+        if (navigator.onLine) {
+          this.webChannel.join(key)
+        }
       })
   }
 
@@ -166,7 +182,7 @@ export class NetworkService {
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
-      this.lineSubject = new Subject()
+      this.lineSubject = new BehaviorSubject(navigator.onLine)
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
@@ -187,12 +203,6 @@ export class NetworkService {
           log.info('network', `Bot ${fullUrl} has been invited`)
         })
     }
-  }
-
-  launchTest (): void {
-    setInterval(() => {
-      this.lineSubject.next(navigator.onLine)
-    }, 1000)
   }
 
   send (service: string, content:  Uint8Array, id?: number|undefined): void {
