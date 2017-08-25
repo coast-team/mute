@@ -38,7 +38,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private isInited = false
 
-  private docValueSubscription: Subscription
   private remoteOperationsSubscription: Subscription
 
   private textOperationsObservable: Observable<(TextDelete | TextInsert)[][]>
@@ -114,7 +113,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   ngOnChanges (changes: SimpleChanges): void {
     this.zone.runOutsideAngular(() => {
       if (this.isInited) {
-        this.docValueSubscription.unsubscribe()
+        this.editor.setValue('')
         this.remoteOperationsSubscription.unsubscribe()
       }
 
@@ -123,10 +122,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       if (this.textOperationsObservable !== undefined) {
         this.docService.localTextOperationsSource = this.textOperationsObservable
       }
-
-      this.docValueSubscription = this.docService.onDocValue.subscribe( (str: string) => {
-        this.editor.setValue(str)
-      })
 
       this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
 
@@ -158,7 +153,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   ngOnDestroy () {
-    this.docValueSubscription.unsubscribe()
     this.remoteOperationsSubscription.unsubscribe()
   }
 
