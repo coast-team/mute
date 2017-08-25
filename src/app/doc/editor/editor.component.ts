@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs/Subscription'
 import { Observable } from 'rxjs/Observable'
 import { DocService } from 'mute-core'
 import { EditorService } from './editor.service'
-import { TextDelete, TextInsert } from 'mute-structs'
+import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
 
 import * as CodeMirror from 'codemirror'
 
@@ -40,7 +40,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private remoteOperationsSubscription: Subscription
 
-  private textOperationsObservable: Observable<(TextDelete | TextInsert)[]>
+  private textOperationsObservable: Observable<TextOperation[]>
 
   @Input() docService: DocService
   @Output() isReady: EventEmitter<any> = new EventEmitter()
@@ -93,7 +93,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
           .map((changeEvents: ChangeEvent[]) => {
             return changeEvents.map((changeEvent: ChangeEvent) => {
               return changeEvent.toTextOperations()
-            }).reduce((acc: (TextDelete | TextInsert)[], textOperations: (TextDelete | TextInsert)[]) => {
+            }).reduce((acc: TextOperation[], textOperations: TextOperation[]) => {
               return acc.concat(textOperations)
             }, [])
           })
@@ -127,14 +127,14 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         this.docService.localTextOperationsSource = this.textOperationsObservable
       }
 
-      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: any[]) => {
+      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: TextOperation[]) => {
 
         const updateDoc: () => void = () => {
           const doc: CodeMirror.Doc = this.editor.getDoc()
 
           // log.info('operation:editor', 'applied: ', textOperations)
 
-          textOperations.forEach( (textOperation: any) => {
+          textOperations.forEach( (textOperation: TextOperation) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
             if (textOperation instanceof TextInsert) {
               doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')
@@ -177,8 +177,8 @@ class ChangeEvent {
     this.change = change
   }
 
-  toTextOperations (): (TextDelete | TextInsert)[] {
-    const textOperations: (TextDelete | TextInsert)[] = []
+  toTextOperations (): TextOperation[] {
+    const textOperations: TextOperation[] = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
 
