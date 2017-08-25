@@ -30,7 +30,6 @@ export class LocalStorageService implements StorageServiceInterface {
       this.db.get(key)
         .then(
           (docSer: DocSerialize) => {
-            log.debug('doc serialize: ', docSer)
             if (docSer.localFolderId === 'local') {
               resolve(Doc.deserialize(docSer, this, this.home))
             } else if (docSer.localFolderId === 'trash') {
@@ -46,7 +45,6 @@ export class LocalStorageService implements StorageServiceInterface {
 
   getBody (doc: Doc): Promise < any > {
     return new Promise((resolve, reject) => {
-      log.debug('getBody doc id: ' + doc.id)
       this.db.getAttachment(doc.id, 'body')
         .then(
           (body) => {
@@ -77,7 +75,6 @@ export class LocalStorageService implements StorageServiceInterface {
                   (err) => reject(err)
                 )
             }
-            log.debug('Save doc')
             resolve()
           },
           (err) => reject(err)

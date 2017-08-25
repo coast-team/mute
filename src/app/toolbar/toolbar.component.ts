@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { Router } from '@angular/router'
+import { WebChannel } from 'netflux'
 
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
@@ -19,8 +20,6 @@ export class ToolbarComponent implements OnInit {
   @Input('state') state
 
   public rootFileTitle: Observable<string>
-
-  private onDoorSubscription: Subscription
 
   // Here add subscription
   private serviceWorker: ServiceWorkerRegister
@@ -66,20 +65,24 @@ export class ToolbarComponent implements OnInit {
     this.networkService.onSignalingStateChange.subscribe((event) => {
       if (event === 0) {
         this.signalingStatus = undefined
-      } else if ((event === 1) || (event === 3)) {
+      } else if ((event === 1) || (event === 2)) {
         this.signalingStatus = true
       } else {
         this.signalingStatus = false
       }
     })
 
-    this.networkService.onStateChange.subscribe((event) => {
-      if (event === 0) {
+    this.networkService.onStateChange.subscribe((state) => {
+      if (state === WebChannel.SIGNALING_CONNECTING) {
         this.networkStatus = undefined
-      } else if (event === 1) {
+      } else if (state === WebChannel.SIGNALING_CONNECTED || state === WebChannel.SIGNALING_OPEN) {
         this.networkStatus = true
-      } else {
+      } else if (state === WebChannel.SIGNALING_CLOSED) {
         this.networkStatus = false
+      } else {
+        const errMsg = 'Unknown Signaling state: '
+        log.error('Unknown Signaling state: ', state)
+        throw new Error(errMsg + state)
       }
     })
 

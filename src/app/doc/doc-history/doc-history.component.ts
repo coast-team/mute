@@ -260,7 +260,6 @@ export class DocHistoryComponent implements OnInit {
   }
 
   onControlsChange (controlType: number) {
-    // log.angular('controls', controlType)
     switch (controlType) {
     case CONTROLS.PLAY:
       this.timelineComponent.play()

@@ -25,9 +25,4 @@ import { NavModule } from '../nav'
   ],
   providers: []
 })
-export class DocsModule {
-
-  constructor () {
-    log.angular('DocsModule constructed')
-  }
-}
+export class DocsModule {}

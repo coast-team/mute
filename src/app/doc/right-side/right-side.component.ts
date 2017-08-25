@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { Subscription } from 'rxjs/Subscription'
 import { ActivatedRoute, Params } from '@angular/router'
 
@@ -14,9 +14,7 @@ import { RichCollaboratorsService } from '../../doc/rich-collaborators'
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss']
 })
-export class RightSideComponent implements OnDestroy, OnInit {
-
-  private onDoorSubscription: Subscription
+export class RightSideComponent implements OnInit {
 
   public storageIcons: string[]
   public collaborators: any
@@ -50,7 +48,6 @@ export class RightSideComponent implements OnDestroy, OnInit {
   constructor (
     private route: ActivatedRoute,
     private collabService: RichCollaboratorsService,
-    private changeDetectorRef: ChangeDetectorRef,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
     private networkService: NetworkService,
@@ -68,17 +65,6 @@ export class RightSideComponent implements OnDestroy, OnInit {
           this.docKey = doc.id
         })
     })
-    this.onDoorSubscription = this.networkService.onDoor.subscribe((opened) => {
-      this.changeDetectorRef.detectChanges()
-    })
-  }
-
-  ngOnDestroy () {
-    this.onDoorSubscription.unsubscribe()
-  }
-
-  toggleDoor () {
-    // this.networkService.openDoor(!this.doorOpened)
   }
 
   updatePseudo (pseudo: string) {

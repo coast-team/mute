@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core'
+import CodeMirror from 'codemirror'
 
 import { EditorService } from '../editor.service'
 
@@ -215,7 +216,6 @@ export class StyleToolbarComponent implements OnInit {
 
   createList (bullet: number): void {
     const selection = this.getSelectionForHeadersListsOrQuotations()
-    log.debug('SELECTION', selection)
     let mdSyntax
     switch (+(bullet)) {
     case 0:
@@ -264,7 +264,6 @@ export class StyleToolbarComponent implements OnInit {
     const beginningOfSelection = this.editorService.getBeginningOfSelection(this.cm.getDoc())
     beginningOfSelection.ch = 0
     this.cm.getDoc().setSelection(beginningOfSelection, this.editorService.getEndOfSelection(this.cm.getDoc()))
-    log.debug(this.cm.getDoc().getSelection())
     return this.cm.getDoc().getSelection()
   }
 

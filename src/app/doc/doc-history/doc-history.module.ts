@@ -32,8 +32,4 @@ import { NavModule } from '../../nav'
     ])
   ]
 })
-export class DocHistoryModule {
-  constructor () {
-    log.angular('DocHistoryModule constructed')
-  }
-}
+export class DocHistoryModule {}

@@ -69,9 +69,4 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MdTabsModule
   ]
 })
-export class SharedModule {
-
-  constructor () {
-    log.angular('SharedModule constructed')
-  }
-}
+export class SharedModule {}

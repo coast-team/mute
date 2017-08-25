@@ -46,8 +46,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit () {
-    log.angular('DocsComponent init')
-
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
       if ( change.mqAlias === 'xs') {

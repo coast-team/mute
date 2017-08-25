@@ -47,7 +47,6 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit () {
-    log.angular('NavComponent init')
     this.botStorageSubs = this.botStorage.onBots
       .subscribe((bots: BotTuple[]) => {
         const botsFolders = bots.map((botTuple) => botTuple[1])
@@ -75,7 +74,6 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   setActiveFile ({value}) {
-    log.debug('Active file changed to ', value)
     this.ui.setActiveFile(value)
   }
 

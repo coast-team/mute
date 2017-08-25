@@ -46,8 +46,6 @@ export class DocComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit () {
-    log.angular('DocComponent init')
-
     this.mediaSubscription = this.media.subscribe((change: MediaChange) => {
       this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
       if ( change.mqAlias === 'xs') {
@@ -79,10 +77,10 @@ export class DocComponent implements OnDestroy, OnInit {
 
       if (this.inited) {
         // Need to clean the services before
-        this.network.cleanWebChannel()
+        this.network.clean()
         this.muteCore.clean()
       }
-      this.network.initWebChannel()
+      this.network.init()
 
       // TODO: Retrieve previous id for this document if existing
       const ids = new Int32Array(1)
@@ -120,7 +118,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy () {
-    this.network.cleanWebChannel()
+    this.network.clean()
     this.muteCore.clean()
     this.mediaSubscription.unsubscribe()
     if (true) {
