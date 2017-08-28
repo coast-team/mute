@@ -58,15 +58,9 @@ export class ToolbarComponent implements OnInit {
 
     this.networkService.onSignalingStateChange.subscribe((state: number) => {
       log.info('SignalingState', state)
-      if (navigator.onLine) {
-        if (state === WebChannel.SIGNALING_CONNECTING && this.syncIcon !== undefined) {
-          this.syncIcon = undefined
-          this.changeDetectorRef.detectChanges()
-        }
-        if (state === WebChannel.SIGNALING_CLOSED && this.syncIcon !== undefined) {
-          this.syncIcon = undefined
-          this.changeDetectorRef.detectChanges()
-        }
+      if (navigator.onLine && this.syncIcon !== undefined && state !== WebChannel.SIGNALING_READY_TO_JOIN_OTHERS) {
+        this.syncIcon = undefined
+        this.changeDetectorRef.detectChanges()
       }
     })
 
@@ -77,26 +71,6 @@ export class ToolbarComponent implements OnInit {
         this.changeDetectorRef.detectChanges()
       }
     })
-
-    // this.networkService.onStateChange.subscribe((state) => {
-    //   if (state === WebChannel.SIGNALING_CONNECTING) {
-    //     this.networkStatus = undefined
-    //   } else if (state === WebChannel.SIGNALING_CONNECTED || state === WebChannel.SIGNALING_OPEN) {
-    //     this.networkStatus = true
-    //   } else if (state === WebChannel.SIGNALING_CLOSED) {
-    //     this.networkStatus = false
-    //   } else {
-    //     const errMsg = 'Unknown Signaling state: '
-    //     log.error('Unknown Signaling state: ', state)
-    //     throw new Error(errMsg + state)
-    //   }
-    // })
-
-    // this.networkService.onLine.subscribe((event) => {
-    //   this.onLineStatus = event
-    // })
-
-    // this.networkService.launchTest()
 
   }
 
