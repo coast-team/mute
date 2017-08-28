@@ -37,10 +37,12 @@ export class NetworkService {
   // Connection state subject
   private stateSubject: Subject<number>
   private signalingSubject: Subject<number>
+  private goneOfflineOnce: boolean
 
   constructor (
   ) {
     this.botUrls = []
+    this.goneOfflineOnce = !navigator.onLine
 
     // Initialize subjects
     this.peerJoinSubject = new ReplaySubject()
@@ -62,11 +64,15 @@ export class NetworkService {
       }
     })
     window.addEventListener('online', () => {
-      this.webChannel.join(this.key)
-      this.lineSubject.next(true)
+      console.log('I am online: ', this.goneOfflineOnce)
+      if (this.goneOfflineOnce) {
+        this.webChannel.join(this.key)
+        this.lineSubject.next(true)
+      }
     })
     window.addEventListener('offline', () => {
-      this.webChannel.closeSignaling()
+      this.goneOfflineOnce = true
+      this.webChannel.leave()
       this.lineSubject.next(false)
     })
   }
