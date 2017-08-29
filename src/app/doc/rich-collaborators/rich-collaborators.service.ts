@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Collaborator } from 'mute-core'
 import { RichCollaborator } from './RichCollaborator'
 import { COLORS } from './colors'
-
+import { ProfileService } from '../../core/profile/profile.service'
 
 @Injectable()
 export class RichCollaboratorsService {
@@ -21,7 +21,8 @@ export class RichCollaboratorsService {
   public collaborators: RichCollaborator[]
 
   constructor (
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    public profile: ProfileService
   ) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
@@ -29,7 +30,15 @@ export class RichCollaboratorsService {
     this.collaboratorsSubject = new BehaviorSubject([])
 
     this.availableColors = COLORS.slice()
-    this.collaborators = []
+    const me = new RichCollaborator(-1, profile.pseudonym, this.pickColor())
+    this.collaborators = [me]
+    profile.onPseudonym.subscribe(
+      (pseudo) => {
+        me.pseudo = pseudo
+        this.changeSubject.next({collab: me, prop: 'pseudo'})
+        this.collaboratorsSubject.next(this.collaborators)
+      }
+    )
   }
 
   get onChange (): Observable<{collab: RichCollaborator, prop: string}> {
@@ -50,7 +59,7 @@ export class RichCollaboratorsService {
 
   set pseudoChangeSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      const rc: RichCollaborator | undefined = this.findRichCollaborator(collab.id)
+      const rc = this.findRichCollaborator(collab.id)
 
       // In some cases, it is possible to receive a message from a peer
       // before the corresponding peerJoin event is triggered.
@@ -68,7 +77,7 @@ export class RichCollaboratorsService {
 
   set joinSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
-      const rc: RichCollaborator | undefined = this.findRichCollaborator(collab.id)
+      const rc = this.findRichCollaborator(collab.id)
 
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
@@ -99,7 +108,7 @@ export class RichCollaboratorsService {
   }
 
   handleNewCollaborator (collab: Collaborator): void {
-    const color = this.pickColor()
+    const color = this.pickColor(collab.id)
     const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
     this.collaborators.push(newRCollab)
     this.joinSubject.next(newRCollab)
@@ -107,7 +116,7 @@ export class RichCollaboratorsService {
     this.changeDetector.detectChanges()
   }
 
-  pickColor (): string {
+  pickColor (id?: number): string {
     if (this.availableColors.length !== 0) {
       const index = Math.floor(Math.random() * this.availableColors.length)
       for (let i = 0; i < this.availableColors.length; i++) {
