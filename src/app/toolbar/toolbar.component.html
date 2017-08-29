@@ -1,25 +1,69 @@
 <md-toolbar color="primary">
-  <div fxFlexFill fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="left-part" fxLayout="row" fxLayoutAlign="start center">
     <button md-icon-button (click)="ui.toggleNav()">
       <md-icon>menu</md-icon>
     </button>
-    <div *ngIf="isDocs(); then docs else doc"></div>
-    <div fxLayout="row" fxLayoutAlign="end center">
-      <div class="profile" fxFlex="1 1 auto" fxHide.xs='true' fxLayout="row" fxLayoutAlign="end center">
-        <mute-edit-field fxFlex="80%" fxLayout="row" fxLayoutAlign="end center" [value]="profile.onPseudonym | async" [defaultValue]="profile.pseudonymDefault"
-          (onDone)="updatePseudo($event)">
-        </mute-edit-field>
-        <md-icon>account_circle</md-icon>
-      </div>
-      |
-      <div class="networkIcon" [ngSwitch]="syncIcon" fxLayout="row" fxLayoutAlign="center center">
-        <md-icon *ngSwitchCase="SYNC">sync</md-icon>
-        <md-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
-        <md-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
-        <md-icon class="syncing" *ngSwitchCase="undefined">sync</md-icon>
-      </div>
+    <div class="profile" fxHide fxShow.gt-sm='true'>
+      <md-input-container dividerColor="accent" floatPlaceholder="never">
+        <md-icon mdPrefix>account_circle</md-icon>
+        <input #inputPseudo mdInput
+            [value]="profile.onPseudonym | async"
+            (keydown)="updatePseudo($event)"
+            (blur)="updatePseudo($event)"
+            (focus)="selectPseudo()"
+        />
+      </md-input-container>
+    </div>
+  </div>
 
-      <!-- <md-card class="networkState">
+  <ng-container [ngSwitch]="routeName">
+    <!-- Toolbar content for Docs -->
+    <ng-container class="docs" *ngSwitchCase="'docs'">
+      <h2 class="central-part">{{rootFileTitle | async}}</h2>
+      <button class="right-part" md-icon-button (click)="ui.toggleDocNav()">
+        <md-icon>info</md-icon>
+      </button>
+    </ng-container>
+  
+    <!-- Toolbar content for Doc -->
+    <ng-container *ngSwitchCase="'doc'">
+      <!-- <mute-edit-field fxLayout="row" fxLayoutAlign="center center" [value]="rootFileTitle | async"
+        defaultValue="Untitled document" (onDone)="updateTitle($event)">
+      </mute-edit-field> -->
+      <div class="central-part doc-title" [style.xs]="{'width.px': 200}">
+        <md-input-container class="full-width" dividerColor="accent" floatPlaceholder="never">
+          <input #inputTitle mdInput
+              [value]="rootFileTitle | async"
+              (keydown)="updateTitle($event)"
+              (blur)="updateTitle($event)"
+              (focus)="selectTitle()"
+          />
+        </md-input-container>
+      </div>
+      <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
+        <ng-container [ngSwitch]="syncIcon">
+          <md-icon class="only-icon" *ngSwitchCase="SYNC">sync</md-icon>
+          <md-icon class="only-icon" *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
+          <md-icon class="only-icon" *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
+          <md-icon class="only-icon syncing" *ngSwitchDefault>sync</md-icon>
+        </ng-container>
+        <button md-icon-button (click)="ui.toggleDocNav()">
+          <md-icon>info</md-icon>
+        </button>
+      </div>
+    </ng-container>
+  
+    <!-- Toolbar content for Doc History -->
+    <ng-container *ngSwitchCase="'history'">
+      <h2 class="central-part">{{rootFileTitle | async}}</h2>
+      <button class="right-part" md-icon-button (click)="ui.toggleDocNav()">
+        <md-icon>info</md-icon>
+      </button>
+    </ng-container>
+  </ng-container>
+</md-toolbar>
+
+<!-- <md-card class="networkState">
         <md-card-header>
           <md-card-title>Status</md-card-title>
         </md-card-header>
@@ -59,30 +103,3 @@
           </md-list>
         </md-card-content>
       </md-card> -->
-      |
-      <button md-icon-button (click)="ui.toggleDocNav()">
-        <md-icon>info</md-icon>
-      </button>
-    </div>
-  </div>
-
-  <!-- Toolbar content for Docs -->
-  <ng-template #docs>
-    <h2>{{rootFileTitle | async}}</h2>
-  </ng-template>
-
-  <!-- Toolbar content for Doc -->
-  <ng-template #doc>
-    <mute-edit-field fxLayout="row" fxLayoutAlign="center center" fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%" [value]="rootFileTitle | async"
-      defaultValue="Untitled document" (onDone)="updateTitle($event)">
-    </mute-edit-field>
-  </ng-template>
-
-  <!-- Toolbar content for Doc History -->
-  <ng-template #doc>
-    <mute-edit-field fxLayout="row" fxLayoutAlign="center center" fxFlex="60%" fxFlex.xs="76%" fxFlex.sm="40%" [value]="rootFileTitle | async"
-      defaultValue="Untitled document" (onDone)="updateTitle($event)">
-    </mute-edit-field>
-  </ng-template>
-
-</md-toolbar>

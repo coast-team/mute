@@ -1,5 +1,16 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
   <h1><a routerLink="/">MUTE</a></h1>
+  <div class="profile" fxShow fxHide.gt-sm='true'>
+    <md-input-container dividerColor="accent" floatPlaceholder="never">
+      <md-icon mdPrefix>account_circle</md-icon>
+      <input #inputPseudo mdInput
+          [value]="profile.onPseudonym | async"
+          (keydown)="updatePseudo($event)"
+          (blur)="updatePseudo($event)"
+          (focus)="selectPseudo()"
+      />
+    </md-input-container>
+  </div>
   <button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="newDoc()">New Document</button>
   <!--<button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="openDialog()">Add Storage</button>-->
 

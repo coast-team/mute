@@ -17,6 +17,20 @@
   background-color: $fg-divider;
 }
 
+.profile {
+  width: 170px;
+
+  input {
+    position: relative;
+  }
+  input {
+    bottom: 2px;
+  }
+  md-icon {
+    margin-right: 5px;
+  }
+}
+
 h1 {
   width: 100%;
   font-family: $font-logo;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core'
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core'
 import { Router } from '@angular/router'
 import { BehaviorSubject, Subscription } from 'rxjs/Rx'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
@@ -6,6 +6,7 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { BotTuple, FakeStorageService, LocalStorageService, BotStorageService } from '../core/storage'
 import { Folder } from '../core/Folder'
 import { UiService } from '../core/ui/ui.service'
+import { ProfileService } from '../core/profile/profile.service'
 
 @Component({
   selector: 'mute-nav',
@@ -13,6 +14,9 @@ import { UiService } from '../core/ui/ui.service'
   styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit, OnDestroy {
+
+  @ViewChild('inputPseudo') public inputPseudo: ElementRef
+
   private botStorageSubs: Subscription
 
   public allDocuments: Folder
@@ -27,7 +31,8 @@ export class NavComponent implements OnInit, OnDestroy {
     public localStorage: LocalStorageService,
     public botStorage: BotStorageService,
     public ui: UiService,
-    public media: ObservableMedia
+    public media: ObservableMedia,
+    public profile: ProfileService
   ) {
     this.allDocuments = this.fakeStorage.allDocs
     this.botFoldersSubject = new BehaviorSubject([])
@@ -47,6 +52,7 @@ export class NavComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit () {
+    this.inputPseudo.nativeElement.value = this.profile.pseudonym
     this.botStorageSubs = this.botStorage.onBots
       .subscribe((bots: BotTuple[]) => {
         const botsFolders = bots.map((botTuple) => botTuple[1])
@@ -75,6 +81,22 @@ export class NavComponent implements OnInit, OnDestroy {
 
   setActiveFile ({value}) {
     this.ui.setActiveFile(value)
+  }
+
+  updatePseudo (event) {
+    if (event.type === 'keydown' && event.keyCode === 13) {
+      this.inputPseudo.nativeElement.blur()
+    } else if (event.type === 'blur') {
+      const newPseudo = this.inputPseudo.nativeElement.value
+      if (this.profile.pseudonym !== newPseudo) {
+        this.profile.pseudonym = (newPseudo === '') ?
+          this.profile.pseudonymDefault : newPseudo
+      }
+    }
+  }
+
+  selectPseudo () {
+    this.inputPseudo.nativeElement.select()
   }
 
   onStorageClick () {

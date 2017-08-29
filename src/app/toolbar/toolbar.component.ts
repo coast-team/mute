@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
-import { Router } from '@angular/router'
+import { Router, NavigationStart, UrlSegment } from '@angular/router'
 import { WebChannel } from 'netflux'
 
 import { UiService } from '../core/ui/ui.service'
@@ -15,11 +15,14 @@ import { NetworkService } from '../doc/network/network.service'
 export class ToolbarComponent implements OnInit {
 
   @Input('state') state
+  @ViewChild('inputPseudo') public inputPseudo: ElementRef
+  @ViewChild('inputTitle') public inputTitle: ElementRef
 
   public SYNC = 1
   public SYNC_DISABLED = 2
   public SYNC_PROBLEM = 3
   public rootFileTitle: Observable<string>
+  public routeName: string
 
   // Here add subscription
   public syncIcon: number
@@ -37,13 +40,14 @@ export class ToolbarComponent implements OnInit {
     this.signalingStatus = undefined
     this.onLineStatus = undefined
     this.networkStatus = undefined
-  }
 
-  ngOnInit () {
     this.rootFileTitle = this.ui.onActiveFile
       .filter((file) => file !== null)
       .pluck('title')
+  }
 
+  ngOnInit () {
+    this.inputPseudo.nativeElement.value = this.profile.pseudonym
     this.networkService.onStateChange.subscribe((state: number) => {
       log.info('NetworkState', state)
       if (navigator.onLine) {
@@ -72,29 +76,65 @@ export class ToolbarComponent implements OnInit {
       }
     })
 
+    this.router.events
+      .filter((event) => event instanceof NavigationStart)
+      .subscribe((event: NavigationStart) => {
+        log.debug('Route NAME BEFORE = ' + this.routeName)
+        this.routeName = this.routeNameFromUrl(event.url)
+        log.debug('Route NAME = ' + this.routeName)
+        this.changeDetectorRef.detectChanges()
+      })
+
   }
 
-
-  isDocs () {
-    return this.router.url.includes('/docs')
+  updatePseudo (event) {
+    if (event.type === 'keydown' && event.keyCode === 13) {
+      this.inputPseudo.nativeElement.blur()
+    } else if (event.type === 'blur') {
+      const newPseudo = this.inputPseudo.nativeElement.value
+      if (this.profile.pseudonym !== newPseudo) {
+        this.profile.pseudonym = (newPseudo === '') ?
+          this.profile.pseudonymDefault : newPseudo
+      }
+    }
   }
 
-  isDoc () {
-    return this.router.url.includes('/doc/') && !this.router.url.includes('/history/')
+  selectPseudo () {
+    this.inputPseudo.nativeElement.select()
   }
 
-  isHistory () {
-    return this.router.url.includes('history')
+  updateTitle (event) {
+    if (event.type === 'keydown' && event.keyCode === 13) {
+      this.inputTitle.nativeElement.blur()
+    } else if (event.type === 'blur') {
+      const doc = this.ui.activeFile as any
+      const newTitle = this.inputTitle.nativeElement.value
+      log.debug('TITLE iS: "' + newTitle + '"')
+      log.debug('Doc title = ' + doc.title)
+      if (doc.title !== newTitle) {
+        if (newTitle === '') {
+          doc.title = 'Untitled document'
+          this.inputTitle.nativeElement.value = doc.title
+        } else {
+          doc.title = newTitle
+        }
+        doc.save()
+      }
+    }
   }
 
-  updatePseudo (pseudo: string) {
-    this.profile.pseudonym = pseudo
+  selectTitle () {
+    this.inputTitle.nativeElement.select()
   }
 
-  updateTitle (title: string) {
-    const doc = this.ui.activeFile as any
-    doc.title = title
-    doc.save()
+  private routeNameFromUrl (url: string) {
+    if (url.includes('/docs')) {
+      return 'docs'
+    } else if (url.includes('/doc/') && !url.includes('/history/')) {
+      return 'doc'
+    } else if (url.includes('history')) {
+      return 'history'
+    }
   }
 
 }
