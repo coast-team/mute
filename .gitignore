@@ -48,4 +48,4 @@ Thumbs.db
 firebase.json
 
 # Other
-src/environments/environment.ovh.ts
+src/environments/*ovh*.ts
