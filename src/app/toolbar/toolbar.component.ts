@@ -79,9 +79,7 @@ export class ToolbarComponent implements OnInit {
     this.router.events
       .filter((event) => event instanceof NavigationStart)
       .subscribe((event: NavigationStart) => {
-        log.debug('Route NAME BEFORE = ' + this.routeName)
         this.routeName = this.routeNameFromUrl(event.url)
-        log.debug('Route NAME = ' + this.routeName)
         this.changeDetectorRef.detectChanges()
       })
 
@@ -109,8 +107,6 @@ export class ToolbarComponent implements OnInit {
     } else if (event.type === 'blur') {
       const doc = this.ui.activeFile as any
       const newTitle = this.inputTitle.nativeElement.value
-      log.debug('TITLE iS: "' + newTitle + '"')
-      log.debug('Doc title = ' + doc.title)
       if (doc.title !== newTitle) {
         if (newTitle === '') {
           doc.title = 'Untitled document'

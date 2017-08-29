@@ -23,7 +23,6 @@ export class AppResolverService implements Resolve<void> {
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<void> {
     const urlKey = route.params['key']
     console.log(urlKey)
-    log.debug('ActivatedRouteSnapshot: ', route)
     return Promise.resolve()
     // if (activeFile && activeFile instanceof Doc && urlKey === activeFile.id) {
     //   log.debug('here')
