@@ -57,7 +57,7 @@
     "mathjax": "^2.7.1",
     "mnemonicjs": "git+https://github.com/oster/mnemonic.js.git",
     "mute-core": "^0.3.0",
-    "mute-structs": "^0.3.1",
+    "mute-structs": "^0.3.2",
     "netflux": "1.2.0-beta.2",
     "normalize.css": "^7.0.0",
     "protobufjs": "^6.8.0",
