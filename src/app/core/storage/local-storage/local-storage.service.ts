@@ -43,7 +43,7 @@ export class LocalStorageService implements StorageServiceInterface {
     })
   }
 
-  getBody (doc: Doc): Promise < any > {
+  getBody (doc: Doc): Promise <any> {
     return new Promise((resolve, reject) => {
       this.db.getAttachment(doc.id, 'body')
         .then(
@@ -60,7 +60,7 @@ export class LocalStorageService implements StorageServiceInterface {
     })
   }
 
-  save (doc: Doc, body?: any): Promise < any > {
+  save (doc: Doc, body?: any): Promise <any> {
     return new Promise((resolve, reject) => {
       if (doc.localFolder !== this.home && doc.localFolder !== this.trash) {
         doc.localFolder = this.home
@@ -82,7 +82,7 @@ export class LocalStorageService implements StorageServiceInterface {
     })
   }
 
-  delete (doc: Doc): Promise < any > {
+  delete (doc: Doc): Promise <any> {
     if (doc.localFolder === this.home) {
       doc.localFolder = this.trash
       return doc.save()
