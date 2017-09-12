@@ -39,7 +39,7 @@ export class SyncStorageService {
           })
         })
         .catch((err) => {
-          log.error('Error getting document body of: ', doc)
+          log.info('Document\' local content is empty')
           this.storedStateObservers.forEach((observer: Observer<State>) => {
             observer.next(new State(new Map(), []))
           })

@@ -10,7 +10,7 @@ import { LocalStorageService } from '../../core/storage/local-storage/local-stor
 import { AUTHORS } from './mock-authors'
 import { Author } from '../../core/Author'
 import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
-const diff = require ('diff')
+import * as diff from 'diff'
 
 @Injectable()
 export class DocHistoryService {

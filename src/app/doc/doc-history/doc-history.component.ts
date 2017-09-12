@@ -24,8 +24,8 @@ import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
 import { OPERATIONS } from './mock-operations'
 
-require('codemirror/mode/gfm/gfm')
-require('codemirror/mode/javascript/javascript')
+import 'codemirror/mode/gfm/gfm'
+import 'codemirror/mode/javascript/javascript'
 
 @Component({
   selector: 'mute-doc-history',

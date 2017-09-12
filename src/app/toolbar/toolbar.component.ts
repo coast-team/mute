@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { Router, NavigationStart, UrlSegment } from '@angular/router'
-import { WebChannel } from 'netflux'
+import { WebGroupState, SignalingState } from 'netflux'
 
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
@@ -51,7 +51,7 @@ export class ToolbarComponent implements OnInit {
     this.networkService.onStateChange.subscribe((state: number) => {
       log.info('NetworkState', state)
       if (navigator.onLine) {
-        if (state === WebChannel.JOINED) {
+        if (state === WebGroupState.JOINED) {
           this.syncIcon = this.SYNC
         } else {
           this.syncIcon = undefined
@@ -62,7 +62,7 @@ export class ToolbarComponent implements OnInit {
 
     this.networkService.onSignalingStateChange.subscribe((state: number) => {
       log.info('SignalingState', state)
-      if (navigator.onLine && this.syncIcon !== undefined && state !== WebChannel.SIGNALING_READY_TO_JOIN_OTHERS) {
+      if (navigator.onLine && this.syncIcon !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
         this.syncIcon = undefined
         this.changeDetectorRef.detectChanges()
       }

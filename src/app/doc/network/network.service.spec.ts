@@ -6,7 +6,7 @@ describe('NetworkService', () => {
   beforeEach(() => {
     networkService = new NetworkService()
     networkService.init()
-    networkService.webChannel.join('key')
+    networkService.wg.join('key')
   })
 
   it('Correct Init', () => {

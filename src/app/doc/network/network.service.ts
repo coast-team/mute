@@ -1,7 +1,6 @@
-/// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 import { Injectable } from '@angular/core'
 import { Observable, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
-import { WebChannel } from 'netflux'
+import { WebGroup, WebGroupState } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
@@ -10,7 +9,7 @@ import { Message, BotResponse, BotProtocol } from './message_pb'
 @Injectable()
 export class NetworkService {
 
-  public webChannel
+  public wg: WebGroup
   public key: string
   private botUrls: string[]
 
@@ -59,52 +58,52 @@ export class NetworkService {
     this.init()
     // Leave webChannel before closing a tab or the browser
     window.addEventListener('beforeunload', () => {
-      if (this.webChannel !== undefined) {
-        this.webChannel.leave()
+      if (this.wg !== undefined) {
+        this.wg.leave()
       }
     })
     window.addEventListener('online', () => {
       console.log('I am online: ', this.goneOfflineOnce)
       if (this.goneOfflineOnce) {
-        this.webChannel.join(this.key)
+        this.wg.join(this.key)
         this.lineSubject.next(true)
       }
     })
     window.addEventListener('offline', () => {
       this.goneOfflineOnce = true
-      this.webChannel.leave()
+      this.wg.leave()
       this.lineSubject.next(false)
     })
   }
 
   init (): void {
-    this.webChannel = new WebChannel({
+    this.wg = new WebGroup({
       signalingURL: environment.signalingURL,
       iceServers: environment.iceServers
     })
-    window.wc = this.webChannel
+    window.wc = this.wg
 
     // Handle network events
-    this.webChannel.onPeerJoin = (id) => {
+    this.wg.onMemberJoin = (id) => {
       return this.peerJoinSubject.next(id)
     }
-    this.webChannel.onPeerLeave = (id) => this.peerLeaveSubject.next(id)
-    this.webChannel.onSignalingStateChanged = (state) => this.signalingSubject.next(state)
-    this.webChannel.onStateChanged = (state) => {
-      if (state === WebChannel.JOINED) {
-        log.info('network', `Joined successfully via ${this.webChannel.signalingURL} with ${this.key} key`)
-        const joinEvt = new JoinEvent(this.webChannel.myId, this.key, this.members.length === 0)
+    this.wg.onMemberLeave = (id) => this.peerLeaveSubject.next(id)
+    this.wg.onSignalingStateChanged = (state) => this.signalingSubject.next(state)
+    this.wg.onStateChanged = (state) => {
+      if (state === WebGroupState.JOINED) {
+        log.info('network', `Joined successfully via ${this.wg.signalingURL} with ${this.key} key`)
+        const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 0)
         this.joinSubject.next(joinEvt)
       }
       this.stateSubject.next(state)
     }
-    this.webChannel.onMessage = (id, bytes, isBroadcast) => {
+    this.wg.onMessage = (id, bytes: Uint8Array, isBroadcast) => {
       const msg = Message.decode(bytes)
       const serviceName = msg.service
       if (serviceName === 'botprotocol') {
         const content = BotProtocol.create({key: this.key})
         const msg = Message.create({service: 'botprotocol', content: Message.encode(content).finish()})
-        this.webChannel.sendTo(id, Message.encode(msg).finish())
+        this.wg.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
         const url = BotResponse.decode(msg.content).url
         this.botUrls.push(url)
@@ -116,7 +115,7 @@ export class NetworkService {
   }
 
   leave () {
-    this.webChannel.leave()
+    this.wg.leave()
   }
 
   set initSource (source: Observable<string>) {
@@ -124,7 +123,7 @@ export class NetworkService {
       .subscribe((key: string) => {
         this.key = key
         if (navigator.onLine) {
-          this.webChannel.join(key)
+          this.wg.join(key)
         }
       })
   }
@@ -149,9 +148,9 @@ export class NetworkService {
     })
   }
 
-  get myId (): number { return this.webChannel.myId }
+  get myId (): number { return this.wg.myId }
 
-  get members (): number[] { return this.webChannel.members }
+  get members (): number[] { return this.wg.members }
 
   get onMessage (): Observable<NetworkMessage> { return this.messageSubject.asObservable() }
 
@@ -170,8 +169,8 @@ export class NetworkService {
   get onSignalingStateChange (): Observable<number> { return this.signalingSubject.asObservable() }
 
   clean (): void {
-    if (this.webChannel !== undefined) {
-      this.webChannel.leave()
+    if (this.wg !== undefined) {
+      this.wg.leave()
       this.leaveSubject.next()
 
       this.disposeSubject.complete()
@@ -204,19 +203,16 @@ export class NetworkService {
   inviteBot (url: string): void {
     if (!this.botUrls.includes(url)) {
       const fullUrl = url.startsWith('ws') ? url : `ws://${url}`
-      this.webChannel.invite(fullUrl)
-        .then(() => {
-          log.info('network', `Bot ${fullUrl} has been invited`)
-        })
+      this.wg.invite(fullUrl)
     }
   }
 
   send (service: string, content:  Uint8Array, id?: number|undefined): void {
     const msg = Message.create({ service, content})
     if (id === undefined) {
-      this.webChannel.send(Message.encode(msg).finish())
+      this.wg.send(Message.encode(msg).finish())
     } else {
-      this.webChannel.sendTo(id, Message.encode(msg).finish())
+      this.wg.sendTo(id, Message.encode(msg).finish())
     }
   }
 }
