@@ -24,14 +24,14 @@
   [@inputState]="'active'"
   (@inputState.done)="inputStateDone($event)"
   >
-  <md-input-container>
+  <md-form-field>
     <input mdInput #ipElm
         placeholder="Bot address"
         (keyup)="validate($event)"
         (keyup.enter)="ok()"
     />
     <md-hint *ngIf="error" [ngStyle]="{'color': 'red'}" align="start">{{errorMessage}}</md-hint>
-  </md-input-container>
+  </md-form-field>
   <button md-icon-button (click)="ok()"><md-icon>done</md-icon></button>
   <button md-icon-button (click)="cancel()"><md-icon>cancel</md-icon></button>
 </div>-->

@@ -4,7 +4,7 @@
       <md-icon>menu</md-icon>
     </button>
     <div class="profile" fxHide fxShow.gt-sm='true'>
-      <md-input-container dividerColor="accent" floatPlaceholder="never">
+      <md-form-field dividerColor="accent" floatPlaceholder="never">
         <md-icon mdPrefix>account_circle</md-icon>
         <input #inputPseudo mdInput
             [value]="profile.onPseudonym | async"
@@ -12,7 +12,7 @@
             (blur)="updatePseudo($event)"
             (focus)="selectPseudo()"
         />
-      </md-input-container>
+      </md-form-field>
     </div>
   </div>
 
@@ -31,14 +31,14 @@
         defaultValue="Untitled document" (onDone)="updateTitle($event)">
       </mute-edit-field> -->
       <div class="central-part doc-title" [style.xs]="{'width.px': 200}">
-        <md-input-container class="full-width" dividerColor="accent" floatPlaceholder="never">
+        <md-form-field class="full-width" dividerColor="accent" floatPlaceholder="never">
           <input #inputTitle mdInput
               [value]="rootFileTitle | async"
               (keydown)="updateTitle($event)"
               (blur)="updateTitle($event)"
               (focus)="selectTitle()"
           />
-        </md-input-container>
+        </md-form-field>
       </div>
       <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
         <ng-container [ngSwitch]="syncIcon">

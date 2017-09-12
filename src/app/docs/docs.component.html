@@ -15,8 +15,8 @@
         (dblclick)="openDoc(doc)"
       >
       <md-card-header>
-        <div *ngIf="doc.sync; else elseBlock" md-card-avatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
-        <ng-template #elseBlock><div md-card-avatar class="status"><md-icon mdTooltip="Document Non-Sync">cloud_off</md-icon></div></ng-template>
+        <div *ngIf="doc.sync; else elseBlock" mdCardAvatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
+        <ng-template #elseBlock><div mdCardAvatar class="status"><md-icon mdTooltip="Document Non-Sync">cloud_off</md-icon></div></ng-template>
         <md-card-title>
           {{doc.title}}
         </md-card-title>

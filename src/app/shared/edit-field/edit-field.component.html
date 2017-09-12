@@ -3,7 +3,7 @@
     [@btnState]="'active'"
     (@btnState.done)="btnStateDone($event)"
 >{{value}}</button>
-<md-input-container *ngIf="this.editState"
+<md-form-field *ngIf="this.editState"
     dividerColor="accent"
     floatPlaceholder="never"
     [@inputState]="'active'"
@@ -14,4 +14,4 @@
       (keydown)="done($event)"
       (blur)="done($event)"
   />
-</md-input-container>
+</md-form-field>
