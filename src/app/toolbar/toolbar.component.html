@@ -47,7 +47,7 @@
           <md-icon class="only-icon" *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
           <md-icon class="only-icon syncing" *ngSwitchDefault>sync</md-icon>
         </ng-container>
-        <button md-icon-button (click)="ui.toggleDocNav()">
+        <button *ngIf="media.isActive('lt-md')" md-icon-button (click)="ui.toggleDocNav()">
           <md-icon>info</md-icon>
         </button>
       </div>

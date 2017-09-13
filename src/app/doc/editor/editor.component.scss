@@ -1,14 +1,30 @@
 @import 'theme';
 @import 'variables';
 
-:host {
-  display: inline;
-}
-
 md-card {
-  margin: 14px auto;
-  max-width: 800px;
   overflow: hidden;
+  box-sizing: border-box;
+
+  &.card-lt-sm {
+    flex-basis: 100%;
+    margin: 0 8px;
+  }
+  &.card-lt-lg {
+    flex-basis: 100%;
+    margin: 0 16px;
+  }
+  &.card-lg {
+    margin-left: calc(50% - (400px));
+    flex-basis: 800px;
+    min-width: 800px;
+    max-width: 800px;
+  }
+  &.card-gt-lg {
+    margin-left: calc(62.5% - (425px));
+    flex-basis: 850px;
+    min-width: 850px;
+    max-width: 850px;
+  }
 }
 
 .airbag {

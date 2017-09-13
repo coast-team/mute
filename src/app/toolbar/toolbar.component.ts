@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { Router, NavigationStart, UrlSegment } from '@angular/router'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { WebGroupState, SignalingState } from 'netflux'
 
 import { UiService } from '../core/ui/ui.service'
@@ -35,7 +36,8 @@ export class ToolbarComponent implements OnInit {
     private networkService: NetworkService,
     private changeDetectorRef: ChangeDetectorRef,
     private router: Router,
-    public profile: ProfileService
+    public profile: ProfileService,
+    public media: ObservableMedia
   ) {
     this.signalingStatus = undefined
     this.onLineStatus = undefined

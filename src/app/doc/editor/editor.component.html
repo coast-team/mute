@@ -1,9 +1,10 @@
 <div fxShow.xs="false"><mute-style-toolbar [cm]="editor"></mute-style-toolbar></div>
 <md-card
-  fxFlex="800px"
-  fxFlex.md="86%"
-  fxFlex.sm="90%"
-  fxFlex.xs="98%"
+  [ngClass.lt-sm]="'card-lt-sm'"
+  [ngClass.lt-lg]="'card-lt-lg'"
+  [ngClass.lg]="'card-lg'"
+  [ngClass.gt-lg]="'card-gt-lg'"
+
 >
   <textarea #editorElt muteCursors [cm]="editor" [mcDocService]="docService"></textarea>
 </md-card>

@@ -1,22 +1,35 @@
 <md-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
-  <md-sidenav #leftSidenavElm class="leftsidenav"
-      mode="over"
-  >
+  <md-sidenav #leftSidenavElm class="leftsidenav" mode="over">
     <mute-nav></mute-nav>
   </md-sidenav>
-
+  
   <!-- Content -->
-  <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
+  <div
+  [ngClass]="'editor'"
+  [ngClass.lt-md]="'editor editor-lt-md'"
+  [ngClass.md]="'editor editor-md'"
+  [ngClass.lg]="'editor editor-lg'"
+  >
+    <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
+  </div>
+  <mute-right-side
+    *ngIf="media.isActive('gt-sm')"
+    class="right-side"
+    [ngClass.md]="'right-side right-side-md'"
+    [ngClass.lg]="'right-side right-side-lg'"
+  ></mute-right-side>
 
   <!-- Right Sidenav-->
-  <md-sidenav #rightSidenavElm class="rightsidenav"
-      align="end"
-      [opened]="!this.media.isActive('xs')"
-      [mode]="rightSideNavMode"
+  <md-sidenav #rightSidenavElm class="right-nav"
+    align="end"
+    [opened]="!media.isActive('lt-md')"
+    mode="over"
+    [ngClass.lt-sm]="'right-nav right-nav-lt-sm'"
+    *ngIf="media.isActive('lt-md')"
   >
-    <mute-right-side></mute-right-side>
+  <mute-right-side></mute-right-side>
   </md-sidenav>
 
 </md-sidenav-container>

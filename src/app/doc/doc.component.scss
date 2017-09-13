@@ -6,6 +6,45 @@
   overflow: auto;
 }
 
+.editor {
+  display: inline-block;
+  width: 80%;
+  margin-top: 16px;
+
+  &.editor-lt-md {
+    width: 100%;
+  }
+  &.editor-md {
+    width: 65%;
+  }
+  &.editor-lg {
+    width: 75%;
+  }
+}
+
+
+.right-side{
+  position: sticky;
+  width: 20%;
+  float: right;
+  top: 0;
+  right: 0;
+}
+
+.right-side-md {
+  width: 35%;
+}
+
+.right-side-lg {
+  width: 25%;
+}
+
+md-sidenav {
+  mute-right-side {
+    width: 100%;
+  }
+}
+
 md-sidenav-container {
   background-color: $bg-background !important;
   height: 100%;
@@ -14,9 +53,12 @@ md-sidenav-container {
     min-width: 24rem;
   }
 
-  .rightsidenav {
+  .right-nav {
     background-color: $bg-background !important;
-    min-width: 34rem;
-    max-width: 34rem;
+    width: 400px;
+
+    &.right-nav-lt-sm {
+      width: 100%;
+    }
   }
 }
