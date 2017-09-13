@@ -50,15 +50,13 @@ export class EditorService {
 
   initEditor (editor: CodeMirror.Editor): void {
     this.editor = editor
-    this.initHyperMD()
+    // Init HyperMD
+    const editorHyperMd = editor as any
+    editorHyperMd.hmdHoverInit()
+    editorHyperMd.hmdClickInit()
+
     this.addShortcuts()
     this.setupGlobalForTests()
-  }
-
-  initHyperMD (): void {
-    const tmp = this.editor as any
-    tmp.hmdHoverInit()
-    tmp.hmdClickInit()
   }
 
   addShortcuts (): void {
