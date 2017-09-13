@@ -46,7 +46,7 @@ export class DocComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit () {
-    this.mediaSubscription = this.media.subscribe((change: MediaChange) => {
+    this.mediaSubscription = this.media.asObservable().subscribe((change: MediaChange) => {
       this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
       if ( change.mqAlias === 'xs') {
         this.rightSideNavMode = 'over'

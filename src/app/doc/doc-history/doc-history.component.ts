@@ -20,7 +20,7 @@ import { DocHistoryService, Delete, Insert } from './doc-history.service'
 import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
 import { CONTROLS } from './history-controls/controls'
 import { UiService } from '../../core/ui/ui.service'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
+import { ObservableMedia } from '@angular/flex-layout'
 
 import { OPERATIONS } from './mock-operations'
 
@@ -62,8 +62,8 @@ export class DocHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
-    public media: ObservableMedia,
-    private router: Router
+    private router: Router,
+    public media: ObservableMedia
   ) {}
 
   ngOnInit () {

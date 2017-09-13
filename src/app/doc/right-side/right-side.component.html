@@ -7,7 +7,7 @@
   </div>
   <md-tab-group>
     <md-tab label="Details">
-      <div class="details">
+      <div class="details" fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
         <div fxLayout="row" fxLayoutAlign="start center" class="location">
           <span class="mat-caption meta-title">Location</span>
           <md-icon *ngFor="let icon of storageIcons" class="storage-icon">
@@ -15,7 +15,7 @@
           </md-icon>
         </div>
         <h2 class="mat-title collaborators-header">Collaborators</h2>
-        <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators> 
+        <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
       </div>
     </md-tab>
     <md-tab label="Cheat sheets">
