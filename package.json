@@ -20,7 +20,7 @@
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
-    "sw": "workbox-cli generate:sw",
+    "sw": "workbox generate:sw",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
@@ -96,7 +96,7 @@
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.3.3",
     "validate-commit-msg": "^2.14.0",
-    "workbox-cli": "^1.3.0"
+    "workbox-cli": "^2.0.1"
   },
   "repository": {},
   "config": {
