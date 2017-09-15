@@ -41,12 +41,25 @@
         </md-form-field>
       </div>
       <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
-        <ng-container [ngSwitch]="syncIcon">
-          <md-icon class="only-icon" *ngSwitchCase="SYNC">sync</md-icon>
-          <md-icon class="only-icon" *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
-          <md-icon class="only-icon" *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
-          <md-icon class="only-icon syncing" *ngSwitchDefault>sync</md-icon>
-        </ng-container>
+        <span [ngSwitch]="syncState" fxLayout="column" fxLayoutAlign="center center"
+          (mouseenter)='showSyncDetails()' (mouseleave)='hideSyncDetails()'
+        >
+          <md-icon *ngSwitchCase="SYNC">sync</md-icon>
+          <md-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
+          <md-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
+          <md-icon class="syncing" *ngSwitchDefault>sync</md-icon>
+        </span>
+        <div class="sync-details" [@syncDetails]="syncDetailsState">
+          <h4 class="mat-subheading-1">{{syncDetails}}</h4>
+          <p class="mat-body-1">
+            <span class="mat-body-2">Signaling state: </span>
+            {{signalingDetails}}
+          </p>
+          <p class="mat-body-1">
+            <span class="mat-body-2">Group state: </span>
+            {{groupDetails}}
+          </p>
+        </div>
         <button *ngIf="media.isActive('lt-md')" md-icon-button (click)="ui.toggleDocNav()">
           <md-icon>info</md-icon>
         </button>
@@ -62,44 +75,3 @@
     </ng-container>
   </ng-container>
 </md-toolbar>
-
-<!-- <md-card class="networkState">
-        <md-card-header>
-          <md-card-title>Status</md-card-title>
-        </md-card-header>
-        <md-card-content>
-          <md-list>
-            <md-list-item>
-              <div class="indicator" [ngSwitch]="onLineStatus">
-                <md-icon *ngSwitchCase="true">check</md-icon>
-                <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
-                </md-progress-spinner>
-              </div>
-              Network
-            </md-list-item>
-
-            <md-divider *ngIf="isDoc()"></md-divider>
-            <md-list-item *ngIf="isDoc()">
-              <div class="indicator" [ngSwitch]="signalingStatus">
-                <md-icon *ngSwitchCase="true">check</md-icon>
-                <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
-                </md-progress-spinner>
-              </div>
-              Signaling
-            </md-list-item>
-
-            <md-divider *ngIf="isDoc()"></md-divider>
-            <md-list-item *ngIf="isDoc()">
-              <div class="indicator" [ngSwitch]="networkStatus">
-                <md-icon *ngSwitchCase="true">check</md-icon>
-                <md-icon *ngSwitchCase="false">clear</md-icon>
-                <md-progress-spinner *ngSwitchCase="undefined" color="warn" mode="indeterminate">
-                </md-progress-spinner>
-              </div>
-              P2P Net
-            </md-list-item>
-          </md-list>
-        </md-card-content>
-      </md-card> -->

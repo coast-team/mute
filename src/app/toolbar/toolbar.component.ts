@@ -3,6 +3,13 @@ import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { Router, NavigationStart, UrlSegment } from '@angular/router'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { WebGroupState, SignalingState } from 'netflux'
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition
+} from '@angular/animations'
 
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
@@ -11,7 +18,19 @@ import { NetworkService } from '../doc/network/network.service'
 @Component({
   selector: 'mute-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
+  animations: [
+    trigger('syncDetails', [
+      state('hidden', style({
+        transform: 'scale(0)'
+      })),
+      state('visible',   style({
+        transform: 'scale(1)'
+      })),
+      transition('void <=> *', animate('0ms')),
+      transition('hidden <=> visible', animate('150ms ease-out'))
+    ])
+  ]
 })
 export class ToolbarComponent implements OnInit {
 
@@ -26,10 +45,13 @@ export class ToolbarComponent implements OnInit {
   public routeName: string
 
   // Here add subscription
-  public syncIcon: number
-  public signalingStatus: boolean
-  public onLineStatus: boolean
-  public networkStatus: boolean
+  public syncDetailsState = 'hidden'
+  public syncDetails: string
+  public syncState: number
+  public signalingState: SignalingState
+  public signalingDetails: string
+  public groupState: WebGroupState
+  public groupDetails: string
 
   constructor (
     public ui: UiService,
@@ -39,9 +61,11 @@ export class ToolbarComponent implements OnInit {
     public profile: ProfileService,
     public media: ObservableMedia
   ) {
-    this.signalingStatus = undefined
-    this.onLineStatus = undefined
-    this.networkStatus = undefined
+    this.signalingState = undefined
+    this.groupState = undefined
+    this.setSyncDetails()
+    this.setSignalingDetails()
+    this.setGroupDetails()
 
     this.rootFileTitle = this.ui.onActiveFile
       .filter((file) => file !== null)
@@ -50,30 +74,34 @@ export class ToolbarComponent implements OnInit {
 
   ngOnInit () {
     this.inputPseudo.nativeElement.value = this.profile.pseudonym
-    this.networkService.onStateChange.subscribe((state: number) => {
-      log.info('NetworkState', state)
-      if (navigator.onLine) {
+    this.networkService.onStateChange.subscribe((state: WebGroupState) => {
+      this.groupState = state
+      this.setGroupDetails()
+      if (window.navigator.onLine) {
         if (state === WebGroupState.JOINED) {
-          this.syncIcon = this.SYNC
+          this.syncState = this.SYNC
         } else {
-          this.syncIcon = undefined
+          this.syncState = undefined
         }
+        this.setSyncDetails()
         this.changeDetectorRef.detectChanges()
       }
     })
 
-    this.networkService.onSignalingStateChange.subscribe((state: number) => {
-      log.info('SignalingState', state)
-      if (navigator.onLine && this.syncIcon !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
-        this.syncIcon = undefined
+    this.networkService.onSignalingStateChange.subscribe((state: SignalingState) => {
+      this.signalingState = state
+      this.setSignalingDetails()
+      if (window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
+        this.syncState = undefined
+        this.setSyncDetails()
         this.changeDetectorRef.detectChanges()
       }
     })
 
     this.networkService.onLine.subscribe((online: boolean) => {
-      log.info('ONLINE/OFFLINE', 'Is online ' + online)
       if (!online) {
-        this.syncIcon = this.SYNC_PROBLEM
+        this.syncState = this.SYNC_PROBLEM
+        this.setSyncDetails()
         this.changeDetectorRef.detectChanges()
       }
     })
@@ -125,6 +153,68 @@ export class ToolbarComponent implements OnInit {
     this.inputTitle.nativeElement.select()
   }
 
+  showSyncDetails () {
+    this.syncDetailsState = 'visible'
+  }
+
+  hideSyncDetails () {
+    this.syncDetailsState = 'hidden'
+  }
+
+  private setSyncDetails () {
+    switch (this.syncState) {
+    case this.SYNC:
+      this.syncDetails = 'Synchronized'
+      break
+    case this.SYNC_DISABLED:
+      this.syncDetails = 'Synchronization disabled'
+      break
+    case this.SYNC_PROBLEM:
+      this.syncDetails = 'No network connectivity!'
+      break
+    default:
+      this.syncDetails = 'Synchronizing...'
+    }
+  }
+
+  private setGroupDetails () {
+    switch (this.groupState) {
+    case WebGroupState.JOINING:
+      this.groupDetails = 'joining...'
+      break
+    case WebGroupState.JOINED:
+      this.groupDetails = 'joined.'
+      break
+    case WebGroupState.LEFT:
+      this.groupDetails = 'alone.'
+      break
+    default:
+      this.groupDetails = 'undefined.'
+    }
+  }
+
+  private setSignalingDetails () {
+    switch (this.signalingState) {
+    case SignalingState.CONNECTING:
+      this.signalingDetails = 'connecting...'
+      break
+    case SignalingState.OPEN:
+      this.signalingDetails = 'connected.'
+      break
+    case SignalingState.FIRST_CONNECTED:
+      this.signalingDetails = 'connected & start joining...'
+      break
+    case SignalingState.READY_TO_JOIN_OTHERS:
+      this.signalingDetails = 'connected & ready to join others.'
+      break
+    case SignalingState.CLOSED:
+      this.signalingDetails = 'closed.'
+      break
+    default:
+      this.signalingDetails = 'undefined.'
+    }
+  }
+
   private routeNameFromUrl (url: string) {
     if (url.includes('/docs')) {
       return 'docs'
@@ -134,5 +224,4 @@ export class ToolbarComponent implements OnInit {
       return 'history'
     }
   }
-
 }

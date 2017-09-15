@@ -63,17 +63,27 @@ md-progress-spinner {
   }
 }
 
-.only-icon {
-  position: relative;
-  top: 1px;
-  margin: 16px;
-}
-
 .syncing {
   animation-name: rotating;
   animation-duration: 1s;
   animation-iteration-count: infinite;
   animation-timing-function: ease-out;
+}
+
+.sync-details {
+  background-color: dimgray;
+  opacity: 0.9;
+  color: white;
+  position: absolute;
+  transform-origin: top right;
+  top: 30px;
+  right: 26px;
+  border-radius: 3px;
+  padding: 8px;
+
+  h4 {
+    text-align: center;
+  }
 }
 
 md-toolbar {
