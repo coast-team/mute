@@ -78,7 +78,7 @@ export class DocComponent implements OnDestroy, OnInit {
       if (this.inited) {
         // Need to clean the services before
         this.network.clean()
-        this.muteCore.clean()
+        this.muteCore.dispose()
       }
 
       // TODO: Retrieve previous id for this document if existing
@@ -118,7 +118,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
   ngOnDestroy () {
     this.network.clean()
-    this.muteCore.clean()
+    this.muteCore.dispose()
     this.mediaSubscription.unsubscribe()
     if (true) {
       this.doc.setSync(true)
