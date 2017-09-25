@@ -10,7 +10,7 @@ declare var BRAGI: any
 
 // For Quentin's test
 interface Window {
-  wc: any,
+  wg: any,
   muteTest: {
     insert: (index: number, text: string) => void,
     delete: (index: number, length: number) => void,
