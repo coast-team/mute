@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
-import { Observable, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
-import { WebGroup, WebGroupState } from 'netflux'
+import { Observable, Observer, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
+import { WebGroup, WebGroupState, SignalingState } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
@@ -10,7 +10,6 @@ import { Message, BotResponse, BotProtocol } from './message_pb'
 export class NetworkService {
 
   public wg: WebGroup
-  public key: string
   private botUrls: string[]
 
   private disposeSubject: Subject<void>
@@ -34,14 +33,12 @@ export class NetworkService {
   private messageToSendToSubscription: Subscription
 
   // Connection state subject
-  private stateSubject: Subject<number>
-  private signalingSubject: Subject<number>
-  private goneOfflineOnce: boolean
+  private stateSubject: Subject<WebGroupState>
+  private signalingSubject: Subject<SignalingState>
 
   constructor (
   ) {
     this.botUrls = []
-    this.goneOfflineOnce = !navigator.onLine
 
     // Initialize subjects
     this.peerJoinSubject = new ReplaySubject()
@@ -56,21 +53,43 @@ export class NetworkService {
     this.leaveSubject = new Subject()
 
     this.init()
-    // Leave webChannel before closing a tab or the browser
-    window.addEventListener('beforeunload', () => {
-      if (this.wg !== undefined) {
-        this.wg.leave()
-      }
-    })
-    window.addEventListener('online', () => {
-      console.log('I am online: ', this.goneOfflineOnce)
-      if (this.goneOfflineOnce) {
-        this.wg.join(this.key)
-        this.lineSubject.next(true)
-      }
-    })
+
+    let goneOfflineOnce = !navigator.onLine
+    /**
+     * Rejoin web group when some events fired some time later (see throttleTime method).
+     * The rejoin delay is because sometimes may fire Online/Offline events several times
+     * in a relatively short period of time.
+     */
+    Observable.create((observer: Observer<void>) => {
+      window.addEventListener('online', () => {
+        log.info('network', 'Gone ONLINE')
+        if (goneOfflineOnce) {
+          observer.next(undefined)
+          this.lineSubject.next(true)
+        }
+      })
+      window.document.addEventListener('visibilitychange', () => {
+        if (window.document.visibilityState === 'visible') {
+          observer.next(undefined)
+
+        // Leave when the tab is hidden and there are nobody apart you in the web group
+        } else if (window.document.visibilityState === 'hidden' && this.wg.members.length === 0) {
+          this.wg.leave()
+        }
+      })
+    }).throttleTime(1000)
+      .subscribe(() => this.join())
+
+    /**
+     * Leave web group in some specific situations
+     */
+    // Leave before closing a tab or the browser
+    window.addEventListener('beforeunload', () => this.wg.leave())
+
+    // Leave when gone Offline
     window.addEventListener('offline', () => {
-      this.goneOfflineOnce = true
+      log.info('network', 'Gone OFFLINE')
+      goneOfflineOnce = true
       this.wg.leave()
       this.lineSubject.next(false)
     })
@@ -81,17 +100,24 @@ export class NetworkService {
       signalingURL: environment.signalingURL,
       iceServers: environment.iceServers
     })
-    window.wc = this.wg
+    window.wg = this.wg
 
     // Handle network events
-    this.wg.onMemberJoin = (id) => {
-      return this.peerJoinSubject.next(id)
+    this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
+    this.wg.onMemberLeave = (id) => {
+      this.peerLeaveSubject.next(id)
+      // Leave web group when no other members in the group and the tab is not visible
+      if (this.wg.members.length === 0 && document.visibilityState === 'hidden') {
+        this.wg.leave()
+      }
     }
-    this.wg.onMemberLeave = (id) => this.peerLeaveSubject.next(id)
-    this.wg.onSignalingStateChanged = (state) => this.signalingSubject.next(state)
-    this.wg.onStateChanged = (state) => {
+    this.wg.onSignalingStateChange = (state: SignalingState) => {
+      log.info('Signaling', SignalingState[state.toString()])
+      this.signalingSubject.next(state)
+    }
+    this.wg.onStateChange = (state: WebGroupState) => {
+      log.info('WebGroup', WebGroupState[state.toString()])
       if (state === WebGroupState.JOINED) {
-        log.info('network', `Joined successfully via ${this.wg.signalingURL} with ${this.key} key`)
         const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 0)
         this.joinSubject.next(joinEvt)
       }
@@ -118,14 +144,10 @@ export class NetworkService {
     this.wg.leave()
   }
 
+  get key (): string { return this.wg !== undefined ? this.wg.key : '' }
+
   set initSource (source: Observable<string>) {
-    source.takeUntil(this.disposeSubject)
-      .subscribe((key: string) => {
-        this.key = key
-        if (navigator.onLine) {
-          this.wg.join(key)
-        }
-      })
+    source.takeUntil(this.disposeSubject).subscribe((key: string) => this.join(key))
   }
 
   set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
@@ -213,6 +235,15 @@ export class NetworkService {
       this.wg.send(Message.encode(msg).finish())
     } else {
       this.wg.sendTo(id, Message.encode(msg).finish())
+    }
+  }
+
+  private join (key: string = this.key) {
+    if (window.navigator.onLine &&
+        window.document.visibilityState === 'visible' &&
+       this.wg.state === WebGroupState.LEFT
+    ) {
+      this.wg.join(key)
     }
   }
 }
