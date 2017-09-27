@@ -1,7 +1,7 @@
 import { Directive, Injectable, Input, OnChanges, OnInit, OnDestroy } from '@angular/core'
 import { Subscription } from 'rxjs/Subscription'
 import * as CodeMirror from 'codemirror'
-import { DocService, NetworkMessage } from 'mute-core'
+import { DocService, NetworkMessage, Position } from 'mute-core'
 import { TextDelete, TextInsert, Identifier } from 'mute-structs'
 
 import { CollaboratorCursor } from './CollaboratorCursor'
@@ -9,13 +9,6 @@ import { RichCollaborator, RichCollaboratorsService } from '../../rich-collabora
 import { NetworkService } from '../../network/'
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
 import { CursorMsg, PositionMsg, State } from './cursor_pb'
-
-
-interface MuteCorePosition {
-  index: number,
-  last?: number,
-  base?: number[]
-}
 
 @Directive({
   selector: '[muteCursors]'
@@ -110,8 +103,8 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             let newPos: CodeMirror.Position
             if (pbMsg.from) {
               const pbFrom = pbMsg.from
-              const identifier = new Identifier(pbFrom.base, pbFrom.last)
-              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.index)
+              const id = Identifier.fromPlain(pbFrom.id)
+              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbFrom.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
@@ -124,16 +117,16 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
             let toPos: CodeMirror.Position
             if (pbMsg.from) {
               const pbFrom = pbMsg.from
-              const identifier = new Identifier(pbFrom.base, pbFrom.last)
-              fromPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbFrom.index)
+              const id = Identifier.fromPlain(pbFrom.id)
+              fromPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbFrom.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               fromPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
             }
             if (pbMsg.to) {
               const pbTo = pbMsg.to
-              const identifier = new Identifier(pbTo.base, pbTo.last)
-              toPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(identifier) + pbTo.index)
+              const id = Identifier.fromPlain(pbTo.id)
+              toPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbTo.index)
             } else {
               const lastLine = this.cmDoc.lastLine()
               toPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
@@ -165,24 +158,22 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
       this.pbCursor.state = state
 
       // Retreive mute-core identifiers from codemirror positions
-      const mcFromId: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(fromPos))
-      const mcToId: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(toPos))
+      const mcFromPos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(fromPos))
+      const mcToPos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(toPos))
 
       // Started position for selection
-      if (mcFromId !== null) {
-        this.pbFrom.index = mcFromId.index
-        this.pbFrom.last = mcFromId.last
-        this.pbFrom.base = mcFromId.base
+      if (mcFromPos !== null) {
+        this.pbFrom.id = mcFromPos.id
+        this.pbFrom.index = mcFromPos.index
         this.pbCursor.from = this.pbFrom
       } else {
         this.pbCursor.from = undefined
       }
 
       // Ended position for selection
-      if (mcToId !== null) {
-        this.pbTo.index = mcToId.index
-        this.pbTo.last = mcToId.last
-        this.pbTo.base = mcToId.base
+      if (mcToPos !== null) {
+        this.pbTo.id = mcToPos.id
+        this.pbTo.index = mcToPos.index
         this.pbCursor.to = this.pbTo
       } else {
         this.pbCursor.to = undefined
@@ -191,11 +182,10 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
       // Prepare message for cursor only update
       this.pbCursor.state = State.FROM
-      const id: MuteCorePosition | null = this.mcDocService.idFromIndex(this.cmDoc.indexFromPos(cursorPos))
-      if (id !== null) {
-        this.pbFrom.index = id.index
-        this.pbFrom.last = id.last
-        this.pbFrom.base = id.base
+      const pos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(cursorPos))
+      if (pos !== null) {
+        this.pbFrom.id = pos.id
+        this.pbFrom.index = pos.index
         this.pbCursor.from = this.pbFrom
       } else {
         this.pbCursor.from = undefined
