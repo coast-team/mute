@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "../../../../../node_modules/mute-core/proto/sync.proto";
 
 message CursorMsg {
   PositionMsg from = 1;
@@ -14,7 +15,6 @@ enum State {
 }
 
 message PositionMsg {
-  repeated double base = 1;
-  int32 last = 2;
-  int32 index = 3;
+  sync.IdentifierMsg id = 1;
+  int32 index = 2;
 }
