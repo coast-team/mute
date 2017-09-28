@@ -206,23 +206,16 @@ export class NetworkService {
       this.disposeSubject.complete()
       this.messageSubject.complete()
       this.joinSubject.complete()
-      this.lineSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
 
-      this.stateSubject.complete()
-      this.signalingSubject.complete()
-
       this.disposeSubject = new Subject<void>()
       this.messageSubject = new ReplaySubject<NetworkMessage>()
       this.joinSubject = new Subject()
-      this.lineSubject = new BehaviorSubject(navigator.onLine)
       this.leaveSubject = new Subject()
       this.peerJoinSubject = new ReplaySubject<number>()
       this.peerLeaveSubject = new ReplaySubject<number>()
-      this.stateSubject = new Subject()
-      this.signalingSubject = new Subject()
 
       this.messageToBroadcastSubscription.unsubscribe()
       this.messageToSendRandomlySubscription.unsubscribe()

@@ -72,10 +72,7 @@ export class ToolbarComponent implements OnInit {
     this.rootFileTitle = this.ui.onActiveFile
       .filter((file) => file !== null)
       .pluck('title')
-  }
 
-  ngOnInit () {
-    this.inputPseudo.nativeElement.value = this.profile.pseudonym
     this.networkService.onStateChange.subscribe((state: WebGroupState) => {
       this.groupState = state
       this.setGroupDetails()
@@ -96,8 +93,8 @@ export class ToolbarComponent implements OnInit {
       if (this.windowRef.window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
         this.syncState = undefined
         this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
       }
+      this.changeDetectorRef.detectChanges()
     })
 
     this.networkService.onLine.subscribe((online: boolean) => {
@@ -107,6 +104,11 @@ export class ToolbarComponent implements OnInit {
         this.changeDetectorRef.detectChanges()
       }
     })
+  }
+
+  ngOnInit () {
+    this.inputPseudo.nativeElement.value = this.profile.pseudonym
+
 
     this.router.events
       .filter((event) => event instanceof NavigationStart)
