@@ -11,6 +11,7 @@ import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { BotStorageService } from '../core/storage'
+import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-doc',
@@ -41,6 +42,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private botStorage: BotStorageService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
+    private windowRef: WindowRefService,
     public ui: UiService,
     public media: ObservableMedia
   ) { }
@@ -83,7 +85,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
       // TODO: Retrieve previous id for this document if existing
       const ids = new Int32Array(1)
-      window.crypto.getRandomValues(ids)
+      this.windowRef.window.crypto.getRandomValues(ids)
       const id: number = ids[0]
 
       this.zone.runOutsideAngular(() => {

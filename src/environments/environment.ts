@@ -6,6 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
+  netfluxLog: true,
   iceServers: [],
   signalingURL: 'ws://localhost:8010',
   storages: [

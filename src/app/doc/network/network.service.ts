@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core'
 import { Observable, Observer, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
-import { WebGroup, WebGroupState, SignalingState } from 'netflux'
+import { WebGroup, WebGroupState, SignalingState, enableLog } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
 import { Message, BotResponse, BotProtocol } from './message_pb'
+import { WindowRefService } from '../../core/WindowRefService'
 
 @Injectable()
 export class NetworkService {
 
   public wg: WebGroup
+  public key: string
   private botUrls: string[]
 
   private disposeSubject: Subject<void>
@@ -37,8 +39,11 @@ export class NetworkService {
   private signalingSubject: Subject<SignalingState>
 
   constructor (
+    private windowRef: WindowRefService
   ) {
     this.botUrls = []
+    this.key = ''
+
 
     // Initialize subjects
     this.peerJoinSubject = new ReplaySubject()
@@ -52,6 +57,9 @@ export class NetworkService {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
 
+    // Configure Netflux logs
+    enableLog(environment.netfluxLog)
+
     this.init()
 
     let goneOfflineOnce = !navigator.onLine
@@ -61,33 +69,33 @@ export class NetworkService {
      * in a relatively short period of time.
      */
     Observable.create((observer: Observer<void>) => {
-      window.addEventListener('online', () => {
+      this.windowRef.window.addEventListener('online', () => {
         log.info('network', 'Gone ONLINE')
         if (goneOfflineOnce) {
           observer.next(undefined)
           this.lineSubject.next(true)
         }
       })
-      window.document.addEventListener('visibilitychange', () => {
-        if (window.document.visibilityState === 'visible') {
+      this.windowRef.window.document.addEventListener('visibilitychange', () => {
+        if (this.windowRef.window.document.visibilityState === 'visible') {
           observer.next(undefined)
 
         // Leave when the tab is hidden and there are nobody apart you in the web group
-        } else if (window.document.visibilityState === 'hidden' && this.wg.members.length === 0) {
+        } else if (this.windowRef.window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
           this.wg.leave()
         }
       })
     }).throttleTime(1000)
-      .subscribe(() => this.join())
+      .subscribe(() => this.join(this.key))
 
     /**
      * Leave web group in some specific situations
      */
     // Leave before closing a tab or the browser
-    window.addEventListener('beforeunload', () => this.wg.leave())
+    this.windowRef.window.addEventListener('beforeunload', () => this.wg.leave())
 
     // Leave when gone Offline
-    window.addEventListener('offline', () => {
+    this.windowRef.window.addEventListener('offline', () => {
       log.info('network', 'Gone OFFLINE')
       goneOfflineOnce = true
       this.wg.leave()
@@ -100,25 +108,23 @@ export class NetworkService {
       signalingURL: environment.signalingURL,
       iceServers: environment.iceServers
     })
-    window.wg = this.wg
+    this.windowRef.window.wg = this.wg
 
     // Handle network events
     this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
     this.wg.onMemberLeave = (id) => {
       this.peerLeaveSubject.next(id)
       // Leave web group when no other members in the group and the tab is not visible
-      if (this.wg.members.length === 0 && document.visibilityState === 'hidden') {
+      if (this.wg.members.length === 1 && document.visibilityState === 'hidden') {
         this.wg.leave()
       }
     }
     this.wg.onSignalingStateChange = (state: SignalingState) => {
-      log.info('Signaling', SignalingState[state.toString()])
       this.signalingSubject.next(state)
     }
     this.wg.onStateChange = (state: WebGroupState) => {
-      log.info('WebGroup', WebGroupState[state.toString()])
       if (state === WebGroupState.JOINED) {
-        const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 0)
+        const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 1)
         this.joinSubject.next(joinEvt)
       }
       this.stateSubject.next(state)
@@ -144,10 +150,11 @@ export class NetworkService {
     this.wg.leave()
   }
 
-  get key (): string { return this.wg !== undefined ? this.wg.key : '' }
-
   set initSource (source: Observable<string>) {
-    source.takeUntil(this.disposeSubject).subscribe((key: string) => this.join(key))
+    source.takeUntil(this.disposeSubject).subscribe((key: string) => {
+      this.key = key
+      this.join(key)
+    })
   }
 
   set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
@@ -158,8 +165,9 @@ export class NetworkService {
 
   set messageToSendRandomlySource (source: Observable<SendRandomlyMessage>) {
     this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
-      const index: number = Math.ceil(Math.random() * this.members.length) - 1
-      const id: number = this.members[index]
+      const otherMembers: number[] = this.members.filter((id: number) => id !== this.wg.myId)
+      const index: number = Math.ceil(Math.random() * otherMembers.length) - 1
+      const id: number = otherMembers[index]
       this.send(sendRandomlyMessage.service, sendRandomlyMessage.content, id)
     })
   }
@@ -238,9 +246,10 @@ export class NetworkService {
     }
   }
 
-  private join (key: string = this.key) {
-    if (window.navigator.onLine &&
-        window.document.visibilityState === 'visible' &&
+  private join (key) {
+    console.assert(key !== '')
+    if (this.windowRef.window.navigator.onLine &&
+        this.windowRef.window.document.visibilityState === 'visible' &&
        this.wg.state === WebGroupState.LEFT
     ) {
       this.wg.join(key)

@@ -13,6 +13,7 @@ import { DocModule } from './doc'
 import { DocsModule } from './docs'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
+import { WindowRefService } from './core/WindowRefService'
 
 @NgModule({
   imports: [
@@ -34,9 +35,10 @@ import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
 })
 export class AppModule {
   constructor (
-    private snackBar: MdSnackBar
+    private snackBar: MdSnackBar,
+    private windowRef: WindowRefService
   ) {
-    const serviceWorker = new ServiceWorkerRegister()
+    const serviceWorker = new ServiceWorkerRegister(windowRef.window)
     serviceWorker.registerSW()
     serviceWorker.observableState.subscribe((message) => {
       this.snackBar.open(message, 'Close', {

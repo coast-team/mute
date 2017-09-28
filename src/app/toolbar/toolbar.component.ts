@@ -14,6 +14,7 @@ import {
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
 import { NetworkService } from '../doc/network/network.service'
+import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-toolbar',
@@ -57,6 +58,7 @@ export class ToolbarComponent implements OnInit {
     public ui: UiService,
     private networkService: NetworkService,
     private changeDetectorRef: ChangeDetectorRef,
+    private windowRef: WindowRefService,
     private router: Router,
     public profile: ProfileService,
     public media: ObservableMedia
@@ -77,7 +79,7 @@ export class ToolbarComponent implements OnInit {
     this.networkService.onStateChange.subscribe((state: WebGroupState) => {
       this.groupState = state
       this.setGroupDetails()
-      if (window.navigator.onLine) {
+      if (this.windowRef.window.navigator.onLine) {
         if (state === WebGroupState.JOINED) {
           this.syncState = this.SYNC
         } else {
@@ -91,7 +93,7 @@ export class ToolbarComponent implements OnInit {
     this.networkService.onSignalingStateChange.subscribe((state: SignalingState) => {
       this.signalingState = state
       this.setSignalingDetails()
-      if (window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
+      if (this.windowRef.window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
         this.syncState = undefined
         this.setSyncDetails()
         this.changeDetectorRef.detectChanges()
@@ -201,7 +203,7 @@ export class ToolbarComponent implements OnInit {
     case SignalingState.OPEN:
       this.signalingDetails = 'connected.'
       break
-    case SignalingState.FIRST_CONNECTED:
+    case SignalingState.CONNECTED_WITH_FIRST_MEMBER:
       this.signalingDetails = 'connected & start joining...'
       break
     case SignalingState.READY_TO_JOIN_OTHERS:

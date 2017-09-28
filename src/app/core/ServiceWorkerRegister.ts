@@ -2,6 +2,8 @@ import { Subject } from 'rxjs/Subject'
 
 export class ServiceWorkerRegister {
 
+  constructor (private windowRef: Window) {}
+
   public observableState = new Subject<string>()
 
   emitEvent (message: string) {
@@ -14,7 +16,7 @@ export class ServiceWorkerRegister {
       // Delay registration until after the page has loaded, to ensure that our
       // precaching requests don't degrade the first visit experience.
       // See https://developers.google.com/web/fundamentals/instant-and-offline/service-worker/registration
-      window.addEventListener('load', () => {
+      this.windowRef.addEventListener('load', () => {
         // Your service-worker.js *must* be located at the top-level directory relative to your site.
         // It won't be able to control pages unless it's located at the same level or higher than them.
         // *Don't* register service worker file in, e.g., a scripts/ sub-directory!

@@ -6,6 +6,9 @@ export const environment = {
   // in the bottom right corner of the application window
   devLabel: true,
 
+  // Enable/Disable Netflux console logs
+  netfluxLog: true,
+
   // STUN/TURN servers for WebRTC
   // Can be an empty array: []
   // See https://developer.mozilla.org/en/docs/Web/API/RTCIceServer/urls

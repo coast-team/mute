@@ -9,6 +9,7 @@ import { Folder } from '../core/Folder'
 import { File } from '../core/File'
 import { Doc } from '../core/Doc'
 import { UiService } from '../core/ui/ui.service'
+import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-docs',
@@ -36,6 +37,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private snackBar: MdSnackBar,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
+    private windowRef: WindowRefService,
     public ui: UiService,
     private ref: ChangeDetectorRef,
     public media: ObservableMedia,
@@ -141,7 +143,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   shareDoc (doc: Doc) { // Workaround, but not pretty
     const aux = document.createElement('input')
-    aux.setAttribute('value', 'https://' + window.location.hostname + '/doc/' + doc.id.toString())
+    aux.setAttribute('value', 'https://' + this.windowRef.window.location.hostname + '/doc/' + doc.id.toString())
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')

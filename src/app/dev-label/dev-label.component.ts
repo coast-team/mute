@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnIn
 import { Http } from '@angular/http'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import { hash } from '../../lastcommithash'
-
 import 'rxjs/add/operator/toPromise'
 
-import { UiService } from '../core/ui/ui.service'
-
 import * as mnemonic from 'mnemonicjs'
+
+import { UiService } from '../core/ui/ui.service'
+import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-dev-label',
@@ -51,7 +51,8 @@ export class DevLabelComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private renderer: Renderer,
     private ui: UiService,
-    private detectRef: ChangeDetectorRef
+    private detectRef: ChangeDetectorRef,
+    private windowRef: WindowRefService
   ) {
     this.nbOfDetectChanges = 0
     this.url += hash
@@ -71,7 +72,7 @@ export class DevLabelComponent implements OnInit {
   }
 
   exportLog (): void {
-    const urlParts: string[] = window.location.href.split('/')
+    const urlParts: string[] = this.windowRef.window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
     this.filename = `log-${docID}-${this.digest}.json`
     const db = jIO.createJIO({ type: 'query',  sub_storage: { type: 'indexeddb', database: 'mute' } })
@@ -85,7 +86,7 @@ export class DevLabelComponent implements OnInit {
   }
 
   exportTree (): void {
-    const urlParts: string[] = window.location.href.split('/')
+    const urlParts: string[] = this.windowRef.window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
     this.filename = `tree-${docID}-${this.digest}.json`
     const blob = new Blob([this.tree], { type : 'text\/json' })

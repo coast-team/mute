@@ -6,6 +6,7 @@ import { BotStorageService } from './storage/bot-storage/bot-storage.service'
 import { LocalStorageService } from './storage/local-storage/local-storage.service'
 import { ProfileService } from './profile/profile.service'
 import { FakeStorageService } from './storage/fake-storage/fake-storage.service'
+import { WindowRefService } from './WindowRefService'
 import { UiService } from './ui/ui.service'
 
 @NgModule({
@@ -20,7 +21,8 @@ import { UiService } from './ui/ui.service'
     LocalStorageService,
     ProfileService,
     FakeStorageService,
-    UiService
+    UiService,
+    WindowRefService
   ]
 })
 export class CoreModule {}
