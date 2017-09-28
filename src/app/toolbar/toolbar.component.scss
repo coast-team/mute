@@ -5,7 +5,7 @@
   z-index: 1000;
 }
 
-md-progress-spinner {
+mat-progress-spinner {
   width: 24px;
   height: 24px;
 }
@@ -51,13 +51,13 @@ md-progress-spinner {
   margin-left: 14px;
   width: 170px;
 
-  input, md-icon {
+  input, mat-icon {
     position: relative;
   }
   input {
     top: 5px;
   }
-  md-icon {
+  mat-icon {
     top: 10px;
     margin-right: 5px;
   }
@@ -86,7 +86,7 @@ md-progress-spinner {
   }
 }
 
-md-toolbar {
+mat-toolbar {
 
   .indicator {
     margin-right: 8px;

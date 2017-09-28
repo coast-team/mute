@@ -11,8 +11,8 @@
   margin: 20px;
 }
 
-md-card {
-  md-card-title {
+mat-card {
+  mat-card-title {
     font-weight: bold;
   }
 
@@ -24,7 +24,7 @@ md-card {
   .status {
     background-color: #9D9D9D;
     margin-bottom: 10px; 
-    md-icon {
+    mat-icon {
       position: relative;
       top: 6px;
       left: 8px;
@@ -52,7 +52,7 @@ md-card {
  
 }
 
-md-card:hover {
+mat-card:hover {
   .actions{
     opacity: 1;
     
@@ -77,11 +77,11 @@ md-card:hover {
   background-color: $bg-background !important;
 }
 
-md-sidenav-container {
+mat-sidenav-container {
   background-color: $bg-background !important;
   height: 100%;
 
-  md-sidenav {
+  mat-sidenav {
     min-width: 24rem;
   }
 

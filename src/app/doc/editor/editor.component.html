@@ -1,5 +1,5 @@
 <div fxShow.xs="false"><mute-style-toolbar [cm]="editor"></mute-style-toolbar></div>
-<md-card
+<mat-card
   [ngClass.lt-sm]="'card-lt-sm'"
   [ngClass.lt-lg]="'card-lt-lg'"
   [ngClass.lg]="'card-lg'"
@@ -7,5 +7,5 @@
 
 >
   <textarea #editorElt muteCursors [cm]="editor" [mcDocService]="docService"></textarea>
-</md-card>
+</mat-card>
 <div fxShow fxHide.xs="true" class="airbag"></div>

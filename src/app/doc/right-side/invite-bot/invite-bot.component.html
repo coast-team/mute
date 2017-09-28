@@ -1,17 +1,17 @@
-<button md-raised-button [mdMenuTriggerFor]="menu" color="accent">
+<button mat-raised-button [matMenuTriggerFor]="menu" color="accent">
   Invite bot
 </button>
-<md-menu #menu="mdMenu">
-  <button md-menu-item *ngFor="let bot of bots"
+<mat-menu #menu="matMenu">
+  <button mat-menu-item *ngFor="let bot of bots"
     (click)="inviteBot(bot.wsURL)"
   >
     {{bot.title}}
   </button>
-  <button md-menu-item>New Bot</button>
-</md-menu>
+  <button mat-menu-item>New Bot</button>
+</mat-menu>
 
 <!--<button
-  md-raised-button
+  mat-raised-button
   color="accent"
   *ngIf="btnActive"
   [@btnState]="'active'"
@@ -24,14 +24,14 @@
   [@inputState]="'active'"
   (@inputState.done)="inputStateDone($event)"
   >
-  <md-form-field>
-    <input mdInput #ipElm
+  <mat-form-field>
+    <input matInput #ipElm
         placeholder="Bot address"
         (keyup)="validate($event)"
         (keyup.enter)="ok()"
     />
-    <md-hint *ngIf="error" [ngStyle]="{'color': 'red'}" align="start">{{errorMessage}}</md-hint>
-  </md-form-field>
-  <button md-icon-button (click)="ok()"><md-icon>done</md-icon></button>
-  <button md-icon-button (click)="cancel()"><md-icon>cancel</md-icon></button>
+    <mat-hint *ngIf="error" [ngStyle]="{'color': 'red'}" align="start">{{errorMessage}}</mat-hint>
+  </mat-form-field>
+  <button mat-icon-button (click)="ok()"><mat-icon>done</mat-icon></button>
+  <button mat-icon-button (click)="cancel()"><mat-icon>cancel</mat-icon></button>
 </div>-->

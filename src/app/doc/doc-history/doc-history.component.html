@@ -1,17 +1,17 @@
-<md-sidenav-container #sidenavElm>
+<mat-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
-  <md-sidenav #leftSidenavElm class="leftsidenav"
+  <mat-sidenav #leftSidenavElm class="leftsidenav"
       mode="over"
   >
     <mute-nav></mute-nav>
-  </md-sidenav>
+  </mat-sidenav>
 
   <div class="content">
-    <md-card class="matContent">
+    <mat-card class="matContent">
       <div #editorElt id="textArea"></div>
 
-      <md-divider></md-divider>
+      <mat-divider></mat-divider>
       <mute-history-controls 
         (onControls)="onControlsChange($event)" 
         (onSlide)="updateStep($event)"
@@ -28,10 +28,10 @@
         (onSlide)="showVersion($event)"
         [delay]="300">
       </mute-timeline>
-    </md-card>
+    </mat-card>
   </div>
 
-  <md-sidenav #rightSidenavElm class="rightsidenav"
+  <mat-sidenav #rightSidenavElm class="rightsidenav"
     align="end"
     [opened]="!this.media.isActive('xs')"
     [mode]="rightSideNavMode"
@@ -41,6 +41,6 @@
     (change)="onToggle($event)">
     </mute-collaborators>
 
-  </md-sidenav>
+  </mat-sidenav>
 
-</md-sidenav-container>
+</mat-sidenav-container>

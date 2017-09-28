@@ -1,18 +1,18 @@
-<md-toolbar color="primary">
+<mat-toolbar color="primary">
   <div class="left-part" fxLayout="row" fxLayoutAlign="start center">
-    <button md-icon-button (click)="ui.toggleNav()">
-      <md-icon>menu</md-icon>
+    <button mat-icon-button (click)="ui.toggleNav()">
+      <mat-icon>menu</mat-icon>
     </button>
     <div class="profile" fxHide fxShow.gt-sm='true'>
-      <md-form-field dividerColor="accent" floatPlaceholder="never">
-        <md-icon mdPrefix>account_circle</md-icon>
-        <input #inputPseudo mdInput
+      <mat-form-field dividerColor="accent" floatPlaceholder="never">
+        <mat-icon matPrefix>account_circle</mat-icon>
+        <input #inputPseudo matInput
             [value]="profile.onPseudonym | async"
             (keydown)="updatePseudo($event)"
             (blur)="updatePseudo($event)"
             (focus)="selectPseudo()"
         />
-      </md-form-field>
+      </mat-form-field>
     </div>
   </div>
 
@@ -20,8 +20,8 @@
     <!-- Toolbar content for Docs -->
     <ng-container *ngSwitchCase="'docs'">
       <h2 class="central-part">{{rootFileTitle | async}}</h2>
-      <button class="right-part" md-icon-button (click)="ui.toggleDocNav()">
-        <md-icon>info</md-icon>
+      <button class="right-part" mat-icon-button (click)="ui.toggleDocNav()">
+        <mat-icon>info</mat-icon>
       </button>
     </ng-container>
   
@@ -31,23 +31,23 @@
         defaultValue="Untitled document" (onDone)="updateTitle($event)">
       </mute-edit-field> -->
       <div class="central-part doc-title" [ngStyle.xs]="{'width.px': 200}">
-        <md-form-field class="full-width" dividerColor="accent" floatPlaceholder="never">
-          <input #inputTitle mdInput
+        <mat-form-field class="full-width" dividerColor="accent" floatPlaceholder="never">
+          <input #inputTitle matInput
               [value]="rootFileTitle | async"
               (keydown)="updateTitle($event)"
               (blur)="updateTitle($event)"
               (focus)="selectTitle()"
           />
-        </md-form-field>
+        </mat-form-field>
       </div>
       <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
         <span [ngSwitch]="syncState" fxLayout="column" fxLayoutAlign="center center"
           (mouseenter)='showSyncDetails()' (mouseleave)='hideSyncDetails()'
         >
-          <md-icon *ngSwitchCase="SYNC">sync</md-icon>
-          <md-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</md-icon>
-          <md-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</md-icon>
-          <md-icon class="syncing" *ngSwitchDefault>sync</md-icon>
+          <mat-icon *ngSwitchCase="SYNC">sync</mat-icon>
+          <mat-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</mat-icon>
+          <mat-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</mat-icon>
+          <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
         </span>
         <div class="sync-details" [@syncDetails]="syncDetailsState">
           <h4 class="mat-subheading-1">{{syncDetails}}</h4>
@@ -60,8 +60,8 @@
             {{groupDetails}}
           </p>
         </div>
-        <button *ngIf="media.isActive('lt-md')" md-icon-button (click)="ui.toggleDocNav()">
-          <md-icon>info</md-icon>
+        <button *ngIf="media.isActive('lt-md')" mat-icon-button (click)="ui.toggleDocNav()">
+          <mat-icon>info</mat-icon>
         </button>
       </div>
     </ng-container>
@@ -69,9 +69,9 @@
     <!-- Toolbar content for Doc History -->
     <ng-container *ngSwitchCase="'history'">
       <h2 class="central-part">{{rootFileTitle | async}}</h2>
-      <button class="right-part" md-icon-button (click)="ui.toggleDocNav()">
-        <md-icon>info</md-icon>
+      <button class="right-part" mat-icon-button (click)="ui.toggleDocNav()">
+        <mat-icon>info</mat-icon>
       </button>
     </ng-container>
   </ng-container>
-</md-toolbar>
+</mat-toolbar>

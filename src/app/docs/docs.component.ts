@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core'
-import { MdSnackBar, MdMenuTrigger, MdMenu } from '@angular/material'
+import { MatSnackBar, MatMenuTrigger, MatMenu } from '@angular/material'
 import { Router } from '@angular/router'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
@@ -34,7 +34,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   constructor (
     private router: Router,
-    private snackBar: MdSnackBar,
+    private snackBar: MatSnackBar,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
     private windowRef: WindowRefService,

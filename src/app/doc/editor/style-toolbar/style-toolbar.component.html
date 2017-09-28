@@ -1,55 +1,55 @@
-<md-button-toggle-group class="mute-style-toolbar inactive mat-elevation-z6" multiple>
-  <md-button-toggle (click)="toggleBold()" mdTooltip="Ctrl+B">
-    <md-icon>format_bold</md-icon>
-  </md-button-toggle>
+<mat-button-toggle-group class="mute-style-toolbar inactive mat-elevation-z6" multiple>
+  <mat-button-toggle (click)="toggleBold()" matTooltip="Ctrl+B">
+    <mat-icon>format_bold</mat-icon>
+  </mat-button-toggle>
 
-  <md-button-toggle (click)="toggleItalic()" mdTooltip="Ctrl+I">
-    <md-icon>format_italic</md-icon>
-  </md-button-toggle>
+  <mat-button-toggle (click)="toggleItalic()" matTooltip="Ctrl+I">
+    <mat-icon>format_italic</mat-icon>
+  </mat-button-toggle>
 
-  <md-button-toggle (click)="toggleStrikethrough()" mdTooltip="Ctrl+Alt+S">
+  <mat-button-toggle (click)="toggleStrikethrough()" matTooltip="Ctrl+Alt+S">
     <i class="material-icons">strikethrough_s</i>
-  </md-button-toggle>
+  </mat-button-toggle>
 
-  <md-button-toggle (click)="createQuotation()" mdTooltip="Quotation">
-    <md-icon>format_quote</md-icon>
-  </md-button-toggle>
+  <mat-button-toggle (click)="createQuotation()" matTooltip="Quotation">
+    <mat-icon>format_quote</mat-icon>
+  </mat-button-toggle>
 
-  <md-button-toggle (click)="handleLink()" mdTooltip="Ctrl+K">
-    <md-icon>link</md-icon>
-  </md-button-toggle>
+  <mat-button-toggle (click)="handleLink()" matTooltip="Ctrl+K">
+    <mat-icon>link</mat-icon>
+  </mat-button-toggle>
   
-  <button md-button [mdMenuTriggerFor]="headers" mdTooltip="Headers">
-    <md-icon class="disabled">format_size</md-icon>
-    <md-icon>arrow_drop_down</md-icon>
+  <button mat-button [matMenuTriggerFor]="headers" matTooltip="Headers">
+    <mat-icon class="disabled">format_size</mat-icon>
+    <mat-icon>arrow_drop_down</mat-icon>
   </button>
-  <md-menu #headers="mdMenu" [overlapTrigger]="false">
-      <button md-menu-item (click)="addHeader(1)"><span>Headline</span></button>
-      <button md-menu-item (click)="addHeader(2)"><span>Title</span></button>
-      <button md-menu-item (click)="addHeader(3)"><span>Subheading 3</span></button>
-      <button md-menu-item (click)="addHeader(4)"><span>Subheading 4</span></button>
-      <button md-menu-item (click)="addHeader(5)"><span>Subheading 5</span></button>
-  </md-menu>
+  <mat-menu #headers="matMenu" [overlapTrigger]="false">
+      <button mat-menu-item (click)="addHeader(1)"><span>Headline</span></button>
+      <button mat-menu-item (click)="addHeader(2)"><span>Title</span></button>
+      <button mat-menu-item (click)="addHeader(3)"><span>Subheading 3</span></button>
+      <button mat-menu-item (click)="addHeader(4)"><span>Subheading 4</span></button>
+      <button mat-menu-item (click)="addHeader(5)"><span>Subheading 5</span></button>
+  </mat-menu>
 
-  <button md-button [mdMenuTriggerFor]="bulletedlists" mdTooltip="Lists">
-      <md-icon class="disabled">list</md-icon>
-      <md-icon>arrow_drop_down</md-icon>
+  <button mat-button [matMenuTriggerFor]="bulletedlists" matTooltip="Lists">
+      <mat-icon class="disabled">list</mat-icon>
+      <mat-icon>arrow_drop_down</mat-icon>
   </button>
-  <md-menu #bulletedlists="mdMenu" [overlapTrigger]="false">
-    <button md-menu-item  (click)="createList(0)">
-      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_numbered</md-icon> numbered</span>
+  <mat-menu #bulletedlists="matMenu" [overlapTrigger]="false">
+    <button mat-menu-item  (click)="createList(0)">
+      <span fxLayout="row" fxLayoutAlign="start center"><mat-icon>format_list_numbered</mat-icon> numbered</span>
     </button>
-    <button md-menu-item (click)="createList(1)">
-      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">-</span></span>
+    <button mat-menu-item (click)="createList(1)">
+      <span fxLayout="row" fxLayoutAlign="start center"><mat-icon>format_list_bulleted</mat-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">-</span></span>
     </button>
-    <button md-menu-item (click)="createList(2)">
-      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">*</span></span>
+    <button mat-menu-item (click)="createList(2)">
+      <span fxLayout="row" fxLayoutAlign="start center"><mat-icon>format_list_bulleted</mat-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">*</span></span>
     </button>
-    <button md-menu-item (click)="createList(3)">
-      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>format_list_bulleted</md-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">+</span></span>
+    <button mat-menu-item (click)="createList(3)">
+      <span fxLayout="row" fxLayoutAlign="start center"><mat-icon>format_list_bulleted</mat-icon> with&nbsp;&nbsp;&nbsp;<span class="list-character">+</span></span>
     </button>
-    <button md-menu-item (click)="createList(4)">
-      <span fxLayout="row" fxLayoutAlign="start center"><md-icon>check_box</md-icon> check list</span>
+    <button mat-menu-item (click)="createList(4)">
+      <span fxLayout="row" fxLayoutAlign="start center"><mat-icon>check_box</mat-icon> check list</span>
     </button>
-  </md-menu>
-</md-button-toggle-group>
+  </mat-menu>
+</mat-button-toggle-group>

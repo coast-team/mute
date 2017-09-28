@@ -1,64 +1,64 @@
-<md-sidenav-container fxFlex>
+<mat-sidenav-container fxFlex>
 
   <!-- Left Sidenav-->
-  <md-sidenav #leftSidenavElm class="leftsidenav" [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
+  <mat-sidenav #leftSidenavElm class="leftsidenav" [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
     <mute-nav></mute-nav>
-  </md-sidenav>
+  </mat-sidenav>
 
   <!-- Content -->
   <div fxLayout="column">
 
     <div class="doc-grid" fxLayoutWrap fxLayout="row" >
       <h3 class="noDoc" *ngIf="docs.length === 0">No documents!</h3>
-      <md-card *ngFor="let doc of docs; let i = index"
+      <mat-card *ngFor="let doc of docs; let i = index"
         fxLayout="column" fxFlex.xs="1 0 150px"
         (dblclick)="openDoc(doc)"
       >
-      <md-card-header>
-        <div *ngIf="doc.sync; else elseBlock" mdCardAvatar class="status"><md-icon mdTooltip="Document Sync">cloud_done</md-icon></div>
-        <ng-template #elseBlock><div mdCardAvatar class="status"><md-icon mdTooltip="Document Non-Sync">cloud_off</md-icon></div></ng-template>
-        <md-card-title>
+      <mat-card-header>
+        <div *ngIf="doc.sync; else elseBlock" matCardAvatar class="status"><mat-icon matTooltip="Document Sync">cloud_done</mat-icon></div>
+        <ng-template #elseBlock><div matCardAvatar class="status"><mat-icon matTooltip="Document Non-Sync">cloud_off</mat-icon></div></ng-template>
+        <mat-card-title>
           {{doc.title}}
-        </md-card-title>
-        <md-card-subtitle>
+        </mat-card-title>
+        <mat-card-subtitle>
           {{ doc.syncDate | date:'short'}}
-        </md-card-subtitle>
-      </md-card-header>
+        </mat-card-subtitle>
+      </mat-card-header>
 
-      <md-card-content>
+      <mat-card-content>
         <div>
           Key: 
           {{doc.id}}
         </div>
         <div>
           Location: 
-          <md-icon class="locationIcon" *ngFor="let icon of doc.getStorageIcons()">
+          <mat-icon class="locationIcon" *ngFor="let icon of doc.getStorageIcons()">
             {{icon}}
-          </md-icon>
+          </mat-icon>
         </div>
-      </md-card-content>
+      </mat-card-content>
       
-      <md-card-actions class="actions">
-        <button md-button (click)="openDoc(doc)"><md-icon>mode_edit</md-icon></button>
-        <button md-button (click)="shareDoc(doc)"><md-icon>share</md-icon></button>
-        <button md-button (click)="deleteDoc(doc)">
-          <md-icon>delete</md-icon>
+      <mat-card-actions class="actions">
+        <button mat-button (click)="openDoc(doc)"><mat-icon>mode_edit</mat-icon></button>
+        <button mat-button (click)="shareDoc(doc)"><mat-icon>share</mat-icon></button>
+        <button mat-button (click)="deleteDoc(doc)">
+          <mat-icon>delete</mat-icon>
         </button>
-      </md-card-actions>
+      </mat-card-actions>
 
       
 
-      </md-card>
+      </mat-card>
     </div>
 
   </div>
 
   <!-- Right Sidenav-->
-  <md-sidenav #rightSidenavElm class="rightsidenav" [mode]="sideNavMode" align="end" [opened]="!this.media.isActive('xs')">
+  <mat-sidenav #rightSidenavElm class="rightsidenav" [mode]="sideNavMode" align="end" [opened]="!this.media.isActive('xs')">
     <div fxLayout="column" fxLayoutAlign="start stretch" class="content">
       <div fxLayout="row" fxLayoutAlign="end center" class="line global-actions">
-        <button md-mini-fab (click)="deleteAllDocs()" mdTooltip="Delete all" color="accent">
-          <md-icon>delete_forever</md-icon>
+        <button mat-mini-fab (click)="deleteAllDocs()" matTooltip="Delete all" color="accent">
+          <mat-icon>delete_forever</mat-icon>
         </button>
       </div>
       <hr class='divider' />
@@ -66,6 +66,6 @@
         <span class="secondary-text">Number of documents</span><span>{{docs.length}}</span>
       </div>
     </div>
-  </md-sidenav>
+  </mat-sidenav>
 
-</md-sidenav-container>
+</mat-sidenav-container>

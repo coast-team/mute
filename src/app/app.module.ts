@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { NgModule } from '@angular/core'
-import { MdSnackBar } from '@angular/material'
+import { MatSnackBar, MATERIAL_COMPATIBILITY_MODE } from '@angular/material'
 
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -31,11 +31,14 @@ import { WindowRefService } from './core/WindowRefService'
     DevLabelComponent,
     ToolbarComponent
   ],
+  providers: [
+    {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
   constructor (
-    private snackBar: MdSnackBar,
+    private snackBar: MatSnackBar,
     private windowRef: WindowRefService
   ) {
     const serviceWorker = new ServiceWorkerRegister(windowRef.window)

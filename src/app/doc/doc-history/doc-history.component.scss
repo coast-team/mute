@@ -10,7 +10,7 @@ $padding-left-right: 2%;
   align-items: center;
 }
 
-md-card {
+mat-card {
   @media screen and (max-width: $break-small) {
     width: 95%;
     margin: 10px auto;
@@ -29,7 +29,7 @@ md-card {
   flex-direction: column;
 }
 
-md-sidenav-container {
+mat-sidenav-container {
   background-color: $bg-background !important;
   height: 100%;
 

@@ -9,7 +9,7 @@
   max-width: 200px;
 }
 
-md-list {
+mat-list {
   height: 100%;
 
   mute-edit-field {
@@ -20,16 +20,16 @@ md-list {
     text-align: left;
   }
 
-  md-divider {
+  mat-divider {
     margin-bottom: 10px;
   }
 
-  md-progress-spinner {
+  mat-progress-spinner {
     width: 24px;
     height: 24px;
   }
 
-  md-list-item {
+  mat-list-item {
     margin-left: auto;
     margin-right: auto;
     width: auto;

@@ -1,17 +1,17 @@
-<button md-button *ngIf="this.viewState"
+<button mat-button *ngIf="this.viewState"
     (click)="edit()"
     [@btnState]="'active'"
     (@btnState.done)="btnStateDone($event)"
 >{{value}}</button>
-<md-form-field *ngIf="this.editState"
+<mat-form-field *ngIf="this.editState"
     dividerColor="accent"
     floatPlaceholder="never"
     [@inputState]="'active'"
     (@inputState.done)="inputStateDone($event)"
 >
-  <input #inputElm mdInput
+  <input #inputElm matInput
       [value]="value"
       (keydown)="done($event)"
       (blur)="done($event)"
   />
-</md-form-field>
+</mat-form-field>

@@ -1,9 +1,9 @@
-<md-sidenav-container #sidenavElm>
+<mat-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
-  <md-sidenav #leftSidenavElm class="leftsidenav" mode="over">
+  <mat-sidenav #leftSidenavElm class="leftsidenav" mode="over">
     <mute-nav></mute-nav>
-  </md-sidenav>
+  </mat-sidenav>
   
   <!-- Content -->
   <div
@@ -22,7 +22,7 @@
   ></mute-right-side>
 
   <!-- Right Sidenav-->
-  <md-sidenav #rightSidenavElm class="right-nav"
+  <mat-sidenav #rightSidenavElm class="right-nav"
     align="end"
     [opened]="!media.isActive('lt-md')"
     mode="over"
@@ -30,6 +30,6 @@
     *ngIf="media.isActive('lt-md')"
   >
   <mute-right-side></mute-right-side>
-  </md-sidenav>
+  </mat-sidenav>
 
-</md-sidenav-container>
+</mat-sidenav-container>

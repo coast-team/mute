@@ -1,52 +1,52 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
   <h1><a routerLink="/">MUTE</a></h1>
   <div class="profile" fxShow fxHide.gt-sm='true'>
-    <md-form-field dividerColor="accent" floatPlaceholder="never">
-      <md-icon mdPrefix>account_circle</md-icon>
-      <input #inputPseudo mdInput
+    <mat-form-field dividerColor="accent" floatPlaceholder="never">
+      <mat-icon matPrefix>account_circle</mat-icon>
+      <input #inputPseudo matInput
           [value]="profile.onPseudonym | async"
           (keydown)="updatePseudo($event)"
           (blur)="updatePseudo($event)"
           (focus)="selectPseudo()"
       />
-    </md-form-field>
+    </mat-form-field>
   </div>
-  <button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="newDoc()">New Document</button>
-  <!--<button fxFlexAlign="center" class='btn' md-raised-button color="accent" (click)="openDialog()">Add Storage</button>-->
+  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="newDoc()">New Document</button>
+  <!--<button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="openDialog()">Add Storage</button>-->
 
-  <md-button-toggle-group fxLayout="column" fxLayoutAlign="start stretch"
+  <mat-button-toggle-group fxLayout="column" fxLayoutAlign="start stretch"
       vertical="true"
       (change)="setActiveFile($event)"
   >
 
     <!-- All documents folder -->
-    <md-button-toggle
+    <mat-button-toggle
           [routerLink]="'/docs/' + allDocuments.id"
           [value]="allDocuments"
           [checked]="activeFolder === allDocuments"
           (click)="onStorageClick()"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{allDocuments.icon}}</md-icon>
+        <mat-icon>{{allDocuments.icon}}</mat-icon>
         {{allDocuments.title}}
       </span>
-    </md-button-toggle>
+    </mat-button-toggle>
 
     <!-- Local Storage folder -->
-    <md-button-toggle
+    <mat-button-toggle
           [routerLink]="'/docs/' + local.id"
           [checked]="activeFolder === local"
           [value]="local"
           (click)="onStorageClick()"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{local.icon}}</md-icon>
+        <mat-icon>{{local.icon}}</mat-icon>
         {{local.title}}
       </span>
-    </md-button-toggle>
+    </mat-button-toggle>
 
     <!-- Bots' folders -->
-    <md-button-toggle
+    <mat-button-toggle
         *ngFor="let botFolder of botFoldersSubject.asObservable() | async; let isLast = last"
         [routerLink]="'/docs/' + botFolder.id"
         [checked]="activeFolder === botFolder"
@@ -54,23 +54,23 @@
         (click)="onStorageClick()"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{botFolder.icon}}</md-icon>
+        <mat-icon>{{botFolder.icon}}</mat-icon>
         {{botFolder.title}}
       </span>
-    </md-button-toggle>
+    </mat-button-toggle>
 
     <!-- Trash folder -->
     <hr class='divider' />
-    <md-button-toggle
+    <mat-button-toggle
           [routerLink]="'/docs/' + trash.id"
           [checked]="activeFolder === trash"
           [value]="trash"
           (click)="onStorageClick()"
     >
       <span class="content" fxLayout="row" fxLayoutAlign="left center">
-        <md-icon>{{trash.icon}}</md-icon>
+        <mat-icon>{{trash.icon}}</mat-icon>
         {{trash.title}}
       </span>
-    </md-button-toggle>
-  </md-button-toggle-group>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
 </div>

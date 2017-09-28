@@ -1,15 +1,15 @@
 <div class="controls-buttons">
-  <button md-mini-fab><md-icon (click)="onClickFastRewind($event)">fast_rewind</md-icon></button>
-  <button md-mini-fab><md-icon (click)="onClickPlay($event)">{{ (isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow' }}</md-icon></button>
-  <button md-mini-fab><md-icon (click)="onClickFastForward($event)" >fast_forward</md-icon></button>
-  <md-slider thumbLabel 
+  <button mat-mini-fab><mat-icon (click)="onClickFastRewind($event)">fast_rewind</mat-icon></button>
+  <button mat-mini-fab><mat-icon (click)="onClickPlay($event)">{{ (isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow' }}</mat-icon></button>
+  <button mat-mini-fab><mat-icon (click)="onClickFastForward($event)" >fast_forward</mat-icon></button>
+  <mat-slider thumbLabel 
     min="1"
     max="{{ max }}"
     (input)="updateStep($event.value)">
-  </md-slider>
+  </mat-slider>
   <button
       style="margin-left: auto"
-      md-raised-button
+      mat-raised-button
       color="accent"
       (click)='showEditor()'>
       Back to edition

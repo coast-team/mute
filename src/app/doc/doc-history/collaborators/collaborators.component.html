@@ -1,25 +1,25 @@
-<md-card class="rightSide" fxLayout="column">
+<mat-card class="rightSide" fxLayout="column">
   <div class="slider">
     Authors
-    <md-slide-toggle #displayMode (change)="onChange($event)"></md-slide-toggle>  
+    <mat-slide-toggle #displayMode (change)="onChange($event)"></mat-slide-toggle>  
     Add/Del
   </div>
 
 
-  <md-list dense *ngIf="displayMode.checked">
-    <md-list-item [style.background-color] = "'#4CAF50'">
+  <mat-list dense *ngIf="displayMode.checked">
+    <mat-list-item [style.background-color] = "'#4CAF50'">
       Addition
-    </md-list-item>
-    <md-list-item [style.background-color] = "'#E57373'">
+    </mat-list-item>
+    <mat-list-item [style.background-color] = "'#E57373'">
       Deletion
-    </md-list-item>
-  </md-list>
+    </mat-list-item>
+  </mat-list>
 
-  <md-list dense *ngIf="!displayMode.checked">
-    <md-list-item *ngFor="let author of docAuthors" [style.background-color] = "author.getColor()">
+  <mat-list dense *ngIf="!displayMode.checked">
+    <mat-list-item *ngFor="let author of docAuthors" [style.background-color] = "author.getColor()">
       {{ author.authorName }}
-    </md-list-item>
-  </md-list>
+    </mat-list-item>
+  </mat-list>
 
 
-</md-card>
+</mat-card>
