@@ -299,11 +299,8 @@ export namespace sync {
     /** Properties of an IdentifierMsg. */
     interface IIdentifierMsg {
 
-        /** IdentifierMsg base */
-        base?: number[];
-
-        /** IdentifierMsg last */
-        last?: number;
+        /** IdentifierMsg tuples */
+        tuples?: sync.IIdentifierTupleMsg[];
     }
 
     /** Represents an IdentifierMsg. */
@@ -315,11 +312,8 @@ export namespace sync {
          */
         constructor(properties?: sync.IIdentifierMsg);
 
-        /** IdentifierMsg base. */
-        public base: number[];
-
-        /** IdentifierMsg last. */
-        public last: number;
+        /** IdentifierMsg tuples. */
+        public tuples: sync.IIdentifierTupleMsg[];
 
         /**
          * Creates a new IdentifierMsg instance using the specified properties.
@@ -345,6 +339,69 @@ export namespace sync {
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierMsg;
+    }
+
+    /** Properties of an IdentifierTupleMsg. */
+    interface IIdentifierTupleMsg {
+
+        /** IdentifierTupleMsg random */
+        random?: number;
+
+        /** IdentifierTupleMsg replicaNumber */
+        replicaNumber?: number;
+
+        /** IdentifierTupleMsg clock */
+        clock?: number;
+
+        /** IdentifierTupleMsg offset */
+        offset?: number;
+    }
+
+    /** Represents an IdentifierTupleMsg. */
+    class IdentifierTupleMsg {
+
+        /**
+         * Constructs a new IdentifierTupleMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IIdentifierTupleMsg);
+
+        /** IdentifierTupleMsg random. */
+        public random: number;
+
+        /** IdentifierTupleMsg replicaNumber. */
+        public replicaNumber: number;
+
+        /** IdentifierTupleMsg clock. */
+        public clock: number;
+
+        /** IdentifierTupleMsg offset. */
+        public offset: number;
+
+        /**
+         * Creates a new IdentifierTupleMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns IdentifierTupleMsg instance
+         */
+        public static create(properties?: sync.IIdentifierTupleMsg): sync.IdentifierTupleMsg;
+
+        /**
+         * Encodes the specified IdentifierTupleMsg message. Does not implicitly {@link sync.IdentifierTupleMsg.verify|verify} messages.
+         * @param message IdentifierTupleMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IIdentifierTupleMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes an IdentifierTupleMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns IdentifierTupleMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierTupleMsg;
     }
 
     /** Properties of a LogootSDelMsg. */
@@ -395,11 +452,8 @@ export namespace sync {
     /** Properties of an IdentifierIntervalMsg. */
     interface IIdentifierIntervalMsg {
 
-        /** IdentifierIntervalMsg base */
-        base?: number[];
-
-        /** IdentifierIntervalMsg begin */
-        begin?: number;
+        /** IdentifierIntervalMsg idBegin */
+        idBegin?: sync.IIdentifierMsg;
 
         /** IdentifierIntervalMsg end */
         end?: number;
@@ -414,11 +468,8 @@ export namespace sync {
          */
         constructor(properties?: sync.IIdentifierIntervalMsg);
 
-        /** IdentifierIntervalMsg base. */
-        public base: number[];
-
-        /** IdentifierIntervalMsg begin. */
-        public begin: number;
+        /** IdentifierIntervalMsg idBegin. */
+        public idBegin?: (sync.IIdentifierMsg|null);
 
         /** IdentifierIntervalMsg end. */
         public end: number;
