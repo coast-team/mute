@@ -56,7 +56,7 @@
     "material-design-icons": "^3.0.1",
     "mathjax": "^2.7.1",
     "mute-core": "^0.3.5",
-    "mute-structs": "^0.3.3",
+    "mute-structs": "^0.4.0-0",
     "netflux": "^2.1.0",
     "ng2-ui-auth": "^7.0.2",
     "normalize.css": "^7.0.0",
