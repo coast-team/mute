@@ -1,12 +1,12 @@
-import { Injectable, ChangeDetectorRef } from '@angular/core'
+import { ChangeDetectorRef, Injectable } from '@angular/core'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 import { Collaborator } from 'mute-core'
-import { RichCollaborator } from './RichCollaborator'
-import { COLORS } from './colors'
 import { ProfileService } from '../../core/profile/profile.service'
+import { COLORS } from './colors'
+import { RichCollaborator } from './RichCollaborator'
 
 @Injectable()
 export class RichCollaboratorsService {
@@ -108,7 +108,7 @@ export class RichCollaboratorsService {
   }
 
   handleNewCollaborator (collab: Collaborator): void {
-    const color = this.pickColor(collab.id)
+    const color = this.pickColor()
     const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
     this.collaborators.push(newRCollab)
     this.joinSubject.next(newRCollab)
@@ -116,7 +116,7 @@ export class RichCollaboratorsService {
     this.changeDetector.detectChanges()
   }
 
-  pickColor (id?: number): string {
+  pickColor (): string {
     if (this.availableColors.length !== 0) {
       const index = Math.floor(Math.random() * this.availableColors.length)
       for (let i = 0; i < this.availableColors.length; i++) {

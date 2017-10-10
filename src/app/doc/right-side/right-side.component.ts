@@ -1,11 +1,8 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { Subscription } from 'rxjs/Subscription'
-import { ActivatedRoute, Params } from '@angular/router'
+import { Component, OnInit } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 
-import { NetworkService } from '../../doc/network'
-import { ProfileService } from '../../core/profile/profile.service'
 import { Doc } from '../../core/Doc'
-import { RichCollaboratorsService } from '../../doc/rich-collaborators'
+import { ProfileService } from '../../core/profile/profile.service'
 
 @Component({
   selector: 'mute-right-side',
@@ -42,15 +39,10 @@ export class RightSideComponent implements OnInit {
     {md: 'Quotation', s: '> Quotation', class: 'quotation quotation::before'}
   ]
 
-
   constructor (
     private route: ActivatedRoute,
-    private collabService: RichCollaboratorsService,
-    private networkService: NetworkService,
     public profile: ProfileService
-  ) {
-    this.collaborators = collabService.onCollaborators
-  }
+  ) {}
 
   ngOnInit () {
     this.route.data.subscribe(({ file }: {file: Doc}) => {

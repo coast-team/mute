@@ -1,17 +1,17 @@
 import {
-  Component,
-  ChangeDetectionStrategy,
-  Input
-} from '@angular/core'
-import {
-  trigger,
+  animate,
   state,
   style,
-  animate,
-  transition
+  transition,
+  trigger
 } from '@angular/animations'
-import { RichCollaborator } from '../../../doc/rich-collaborators'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input
+} from '@angular/core'
 import { Observable } from 'rxjs/Rx'
+import { RichCollaborator } from '../../../doc/rich-collaborators'
 
 @Component({
   selector: 'mute-collaborators',

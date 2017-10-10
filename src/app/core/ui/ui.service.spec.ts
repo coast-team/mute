@@ -1,5 +1,5 @@
-import { UiService } from './ui.service'
 import { async } from '@angular/core/testing'
+import { UiService } from './ui.service'
 
 describe('UiService', () => {
   let uiService: UiService

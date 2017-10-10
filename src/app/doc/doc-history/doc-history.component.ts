@@ -1,28 +1,25 @@
 import {
   Component,
-  OnInit,
+  ElementRef,
   Injectable,
   Input,
-  ViewChild,
-  ElementRef,
-  NgZone } from '@angular/core'
-import { ActivatedRoute, Params, Router } from '@angular/router'
+  NgZone,
+  OnInit,
+  ViewChild } from '@angular/core'
+import { ObservableMedia } from '@angular/flex-layout'
+import { ActivatedRoute } from '@angular/router'
+import * as CodeMirror from 'codemirror'
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert } from 'mute-structs'
-import * as CodeMirror from 'codemirror'
-import { Observable } from 'rxjs/Observable'
 
-import { TimelineComponent } from './timeline/timeline.component'
-import { HistoryControlsComponent } from './history-controls/history-controls.component'
-import { Doc } from '../../core/Doc'
 import { Author } from '../../core/Author'
-import { DocHistoryService, Delete, Insert } from './doc-history.service'
-import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
-import { CONTROLS } from './history-controls/controls'
+import { Doc } from '../../core/Doc'
 import { UiService } from '../../core/ui/ui.service'
-import { ObservableMedia } from '@angular/flex-layout'
-
-import { OPERATIONS } from './mock-operations'
+import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
+import { DocHistoryService, IDelete, IInsert } from './doc-history.service'
+import { CONTROLS } from './history-controls/controls'
+import { HistoryControlsComponent } from './history-controls/history-controls.component'
+import { TimelineComponent } from './timeline/timeline.component'
 
 import 'codemirror/mode/gfm/gfm'
 import 'codemirror/mode/javascript/javascript'
@@ -37,8 +34,7 @@ import 'codemirror/mode/javascript/javascript'
 @Injectable()
 export class DocHistoryComponent implements OnInit {
 
-  private isInited = false
-  private operations: (Delete | Insert)[]
+  private operations: Array<IDelete | IInsert>
   public docAuthors: Author[]
   private state = false
 
@@ -62,7 +58,6 @@ export class DocHistoryComponent implements OnInit {
     private route: ActivatedRoute,
     private docHistory: DocHistoryService,
     public ui: UiService,
-    private router: Router,
     public media: ObservableMedia
   ) {}
 
@@ -76,7 +71,7 @@ export class DocHistoryComponent implements OnInit {
         })
 
       this.docHistory.getOperations(data.doc)
-        .then((ops: (Delete | Insert)[]) => {
+        .then((ops: Array<IDelete | IInsert>) => {
           this.operations = ops
           this.showVersion(this.operations.length)
 
@@ -99,7 +94,6 @@ export class DocHistoryComponent implements OnInit {
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
     const elm1 = document.getElementById('textArea')
-    const elm2 = this.editorElt.nativeElement
     /*
     * Here you have elm1 === elm2.
     * The first is a native browser approach.
@@ -163,9 +157,6 @@ export class DocHistoryComponent implements OnInit {
       const diff = this.docHistory.getDiff(this.oldText, generatedText)
       this.oldText = generatedText
       this.currentOp = numOperation
-      diff.forEach((part) => {
-       // console.log(part.value)
-      })
     }
 
     if (this.state) {
@@ -283,7 +274,6 @@ export class DocHistoryComponent implements OnInit {
 
   updateStep (step: number) {
     this.step = step <= 0 ? 1 : step
-    console.log(this.step)
   }
 
 }

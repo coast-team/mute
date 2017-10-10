@@ -1,6 +1,4 @@
-import { TextDelete, TextInsert } from 'mute-structs'
-
-export const AUTHORS: [number, string][] = [
+export const AUTHORS: Array<[number, string]> = [
   [randId(), 'Mr Smith'],
   [randId(), 'Dostoevsky'],
   [randId(), 'Neil Armstrong'],

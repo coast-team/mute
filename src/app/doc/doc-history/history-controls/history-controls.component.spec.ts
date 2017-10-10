@@ -1,9 +1,8 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { CUSTOM_ELEMENTS_SCHEMA, Injectable } from '@angular/core'
 import { RouterTestingModule } from '@angular/router/testing'
-import { HistoryControlsComponent } from './history-controls.component'
 import { UiService } from '../../../core/ui/ui.service'
-
+import { HistoryControlsComponent } from './history-controls.component'
 
 let comp: HistoryControlsComponent
 let fixture: ComponentFixture<HistoryControlsComponent>
@@ -37,7 +36,6 @@ describe('HistoryControlsComponent', () => {
 
 function tests () {
   it('Correct Init', () => {
-    console.log(comp)
     expect(comp).toBeTruthy()
   })
 }

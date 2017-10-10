@@ -1,12 +1,11 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { CUSTOM_ELEMENTS_SCHEMA, Injectable } from '@angular/core'
+import { MdSnackBar } from '@angular/material'
 import { RouterTestingModule } from '@angular/router/testing'
-import { ToolbarComponent } from './toolbar.component'
+import { ProfileService } from '../core/profile/profile.service'
 import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network/network.service'
-import { ProfileService } from '../core/profile/profile.service'
-import { MdSnackBar } from '@angular/material'
-
+import { ToolbarComponent } from './toolbar.component'
 
 let comp: ToolbarComponent
 let fixture: ComponentFixture<ToolbarComponent>

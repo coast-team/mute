@@ -1,9 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { CollaboratorsComponent } from './collaborators.component'
 import { DocHistoryService } from '../doc-history.service'
-
+import { CollaboratorsComponent } from './collaborators.component'
 
 let comp: CollaboratorsComponent
 let fixture: ComponentFixture<CollaboratorsComponent>

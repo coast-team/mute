@@ -15,11 +15,9 @@ describe( 'Author', () => {
     expect(author.getName() === 'name').toBeTruthy()
   })
 
-
   it('Get color', () => {
     expect(author.getColor() === 'blue').toBeTruthy()
   })
-
 
   it('Get name', () => {
     expect(author.getId() === 10).toBeTruthy()

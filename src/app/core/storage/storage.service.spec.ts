@@ -1,5 +1,5 @@
-import { LocalStorageService } from './local-storage.service'
 import { Doc } from '../../Doc'
+import { LocalStorageService } from './local-storage.service'
 
 describe('LocalStorageService', () => {
   let localStorage: LocalStorageService
@@ -27,7 +27,5 @@ describe('LocalStorageService', () => {
       })
     })
   })
-
-
 
 })

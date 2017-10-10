@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
 import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
-import { File } from '../../File'
-import { Folder } from '../../Folder'
-import { Doc } from '../../Doc'
 import { environment } from '../../../../environments/environment'
 import { BotInfo } from './BotInfo'
 
@@ -30,8 +27,8 @@ export class BotStorageService {
       const url = `${protocol}://${hostPort}`
       promises.push(
         this.http.get(`${url}/name`).toPromise()
-          .then((response) => {
-            const bot = new BotInfo(response.text(), secure, hostPort)
+          .then(() => {
+            // const bot = new BotInfo(response.text(), secure, hostPort)
             // const folder = new FolderBot(bot, 'cloud', this)
             // return [bot, folder]
           })
@@ -74,7 +71,7 @@ export class BotStorageService {
   //     })
   // }
 
-  deleteFiles (folder: Folder): Promise<any> {
+  deleteFiles (): Promise<any> {
     return Promise.reject(new Error('This feature has not been implemented on bot yet'))
   }
 

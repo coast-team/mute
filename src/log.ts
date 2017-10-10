@@ -3,14 +3,14 @@ const loglevel: any = log.noConflict()
 BRAGI.transports.get('console').property('showMeta', false)
 
 /**
-* Logging wrapper. Uses 2 frameworks:
-* - *BRAGI*: 'node_modules/bragi-browser/dist/bragi.min.js'
-* - *Loglevel*: 'node_modules/loglevel/dist/loglevel.min.js'
-*
-* Both are included into 'angular-cli.json' file and both declare global variables:
-* `log` and `BRAGI`.
-* This script is then imported into *app.module.ts*.
-*/
+ * Logging wrapper. Uses 2 frameworks:
+ * - *BRAGI*: 'node_modules/bragi-browser/dist/bragi.min.js'
+ * - *Loglevel*: 'node_modules/loglevel/dist/loglevel.min.js'
+ *
+ * Both are included into 'angular-cli.json' file and both declare global variables:
+ * `log` and `BRAGI`.
+ * This script is then imported into *app.module.ts*.
+ */
 export class Log {
   /**
    * Colored 'Debug' group log.
@@ -100,9 +100,7 @@ export class Log {
 
 function _window (): Window {
   /* tslint:disable: no-invalid-this */
-  const windowObj = typeof this === 'object' ? this : Function('return this')()
-  console.log('My window from log is ', windowObj)
-  return windowObj
+  return typeof this === 'object' ? this : Function('return this')()
 }
 
 (_window() as any).log = new Log()

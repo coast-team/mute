@@ -9,8 +9,6 @@ function _window (): Window {
 export class WindowRefService {
 
   get window (): Window {
-    console.log('Window object through function ', _window())
-    console.log('Window object ', window)
     return _window()
   }
 }

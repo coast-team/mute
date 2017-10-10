@@ -5,8 +5,7 @@ import { Observer } from 'rxjs/Observer'
 import { Doc } from '../../core/Doc'
 import { StorageService } from '../../core/storage/storage.service'
 
-import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
-
+import { RichLogootSOperation, State } from 'mute-core'
 
 @Injectable()
 export class SyncStorageService {
@@ -14,7 +13,7 @@ export class SyncStorageService {
   private doc: Doc
 
   private storedStateObservable: Observable<State>
-  private storedStateObservers: Observer<State>[] = []
+  private storedStateObservers: Array<Observer<State>> = []
 
   constructor (private storage: StorageService) {
     this.storedStateObservable = Observable.create((observer) => {
@@ -38,7 +37,7 @@ export class SyncStorageService {
             observer.next(new State(new Map(), richLogootSOps))
           })
         })
-        .catch((err) => {
+        .catch(() => {
           this.storedStateObservers.forEach((observer: Observer<State>) => {
             observer.next(new State(new Map(), []))
           })

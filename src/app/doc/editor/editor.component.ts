@@ -1,23 +1,21 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Injectable,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
-  SimpleChanges,
-  ViewChild,
-  NgZone,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ViewChild
 } from '@angular/core'
-import { Subscription } from 'rxjs/Subscription'
-import { Observable } from 'rxjs/Observable'
 import { DocService } from 'mute-core'
-import { EditorService } from './editor.service'
 import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
+import { Observable } from 'rxjs/Observable'
+import { Subscription } from 'rxjs/Subscription'
+import { EditorService } from './editor.service'
 
 import * as CodeMirror from 'codemirror'
 
@@ -101,20 +99,11 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
       this.docService.localTextOperationsSource = this.textOperationsObservable
 
-    // multipleOperationsStream.subscribe(
-    //   (changeEvents: ChangeEvent[]) => {
-    //     console.log(`${changeEvents.length} operations:`)
-    //     changeEvents.forEach((changeEvent: ChangeEvent) => {
-    //       console.log(changeEvent.instance)
-    //       console.log(changeEvent.change)
-    //     })
-    //   })
-
       this.isReady.next(undefined)
     })
   }
 
-  ngOnChanges (changes: SimpleChanges): void {
+  ngOnChanges (): void {
     this.zone.runOutsideAngular(() => {
       if (this.isInited) {
         this.editor.setValue('')

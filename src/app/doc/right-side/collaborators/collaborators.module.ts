@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { NgModule } from '@angular/core'
 
-import { CollaboratorsComponent } from './collaborators.component'
 import { SharedModule } from '../../../shared'
+import { CollaboratorsComponent } from './collaborators.component'
 
 @NgModule({
   declarations: [

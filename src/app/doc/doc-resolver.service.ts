@@ -1,25 +1,21 @@
 import { Injectable } from '@angular/core'
-import { Router, Resolve, RouterStateSnapshot,
-         ActivatedRouteSnapshot } from '@angular/router'
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router'
 
+import { Doc } from '../core/Doc'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { File } from '../core/File'
-import { Doc } from '../core/Doc'
 
 @Injectable()
 export class DocResolverService implements Resolve<Doc> {
 
   constructor (
-    private router: Router,
     private ui: UiService,
     private storage: StorageService
   ) {}
 
-  resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Doc> {
+  resolve (route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
     const activeFile = this.ui.activeFile
-    log.debug('Resolver ', activeFile)
     // If user come from another part of the application
     if (activeFile && activeFile.isDoc) {
       return Promise.resolve(activeFile)
@@ -32,7 +28,6 @@ export class DocResolverService implements Resolve<Doc> {
           if (docs.length !== 0) {
             // FIXME: maybe found several documents (in the future when folders are implemented)
             this.ui.setActiveFile(docs[0])
-            log.debug('Set active file to ', this.ui.activeFile.title)
             return docs[0]
           } else {
             log.info(`Creating a new document identified by "${key}" key`)

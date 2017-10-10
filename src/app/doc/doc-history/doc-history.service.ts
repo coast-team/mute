@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core'
-import { Observable } from 'rxjs/Observable'
-import { Observer } from 'rxjs/Observer'
-import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
-import { LogootSAdd, LogootSDel, TextDelete, TextInsert } from 'mute-structs'
+import { RichLogootSOperation } from 'mute-core'
 import { DocService } from 'mute-core'
+import { LogootSAdd, LogootSDel, TextDelete, TextInsert } from 'mute-structs'
+import { Observable } from 'rxjs/Observable'
 
+import * as diff from 'diff'
+import { Author } from '../../core/Author'
 import { Doc } from '../../core/Doc'
 import { StorageService } from '../../core/storage/storage.service'
-import { AUTHORS } from './mock-authors'
-import { Author } from '../../core/Author'
 import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
-import * as diff from 'diff'
+import { AUTHORS } from './mock-authors'
 
 @Injectable()
 export class DocHistoryService {
@@ -24,11 +23,11 @@ export class DocHistoryService {
     return diff.diffChars(strA, strB)
   }
 
-  getOperations (doc: Doc): Promise<(Delete|Insert)[]> {
-    return new Promise((resolve, reject) => {
+  getOperations (doc: Doc): Promise<Array<IDelete|IInsert>> {
+    return new Promise((resolve) => {
       this.storage.getDocBody(doc)
         .then((body: any) => {
-          const logootSOp: (LogootSAdd | LogootSDel)[] = body.richLogootSOps
+          const logootSOp: Array<LogootSAdd | LogootSDel> = body.richLogootSOps
             .map((richLogootSOp: any): RichLogootSOperation | null => {
               return RichLogootSOperation.fromPlain(richLogootSOp)
             })
@@ -38,8 +37,8 @@ export class DocHistoryService {
             .map((richLogootSOp: RichLogootSOperation) => richLogootSOp.logootSOp)
           const mcDocService = new DocService(42)
           mcDocService.onRemoteTextOperations
-            .map((ops: (TextDelete | TextInsert)[]) => {
-              return ops.map((op: Delete | Insert) => {
+            .map((ops: Array<TextDelete | TextInsert>) => {
+              return ops.map((op: IDelete | IInsert) => {
                 const randAuthor = AUTHORS[Math.floor(Math.random() * AUTHORS.length)]
                 op.authorId = randAuthor[0]
                 op.authorName = randAuthor[1]
@@ -48,21 +47,20 @@ export class DocHistoryService {
             }).subscribe((ops) => resolve(ops))
           mcDocService.remoteLogootSOperationSource = Observable.from([logootSOp])
         })
-        .catch((err) => {
+        .catch(() => {
           log.error('Error getting document body of: ', doc)
         })
     })
   }
 
-
   getAuthors (doc: Doc): Promise<Author[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const docAuthors: Author[] = []
       this.getOperations(doc)
-          .then((ops: (Delete | Insert)[]) => {
+          .then((ops: Array<IDelete | IInsert>) => {
             for (const o of ops) {
               // log.debug(o.authorName)
-              const author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor(o.authorId))
+              const author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor())
 
               if (docAuthors.filter((e) => {
                 return e.getId() === author.getId()
@@ -77,13 +75,12 @@ export class DocHistoryService {
 
 }
 
-export interface Delete extends TextDelete {
+export interface IDelete extends TextDelete {
   authorId: number,
   authorName: string
 }
 
-export interface Insert extends TextInsert {
+export interface IInsert extends TextInsert {
   authorId: number,
   authorName: string
 }
-

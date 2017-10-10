@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
+import { NavModule } from '../nav'
 import { SharedModule } from '../shared'
 import { DocsComponent } from './docs.component'
-import { NavModule } from '../nav'
 import { RenameDocumentDialogComponent } from './docs.component'
 
 @NgModule({

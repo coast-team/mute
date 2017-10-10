@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core'
-import { Observable, Observer, BehaviorSubject, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
-import { WebGroup, WebGroupState, SignalingState, enableLog } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
+import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
+import { BehaviorSubject, Observable, Observer, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { environment } from '../../../environments/environment'
 import { UiService } from '../../core/ui/ui.service'
-import { Message, BotResponse, BotProtocol } from './message_pb'
 import { WindowRefService } from '../../core/WindowRefService'
+import { BotProtocol, BotResponse, Message } from './message_pb'
 
 @Injectable()
 export class NetworkService {
@@ -46,7 +46,6 @@ export class NetworkService {
     this.botUrls = []
     this.key = ''
 
-
     // Initialize subjects
     this.peerJoinSubject = new ReplaySubject()
     this.peerLeaveSubject = new ReplaySubject()
@@ -72,7 +71,7 @@ export class NetworkService {
      */
     Observable.create((observer: Observer<void>) => {
       this.windowRef.window.addEventListener('online', () => {
-        if (ui.activeFile && ui.activeFile.isDoc) {
+        if (this.ui.activeFile && ui.activeFile.isDoc) {
           log.info('network', 'Gone ONLINE')
           if (goneOfflineOnce) {
             observer.next(undefined)
@@ -81,7 +80,7 @@ export class NetworkService {
         }
       })
       this.windowRef.window.document.addEventListener('visibilitychange', () => {
-        if (ui.activeFile && ui.activeFile.isDoc) {
+        if (this.ui.activeFile && ui.activeFile.isDoc) {
           if (this.windowRef.window.document.visibilityState === 'visible') {
             observer.next(undefined)
 

@@ -20,7 +20,7 @@ export class StyleToolbarComponent implements OnInit {
 
   @Input() cm: CodeMirror.Editor
 
-  private buttons: Array<any> = new Array()
+  private buttons: any[] = new Array()
   private toolbarWidth: number
   private toolbar: any
 
@@ -80,7 +80,7 @@ export class StyleToolbarComponent implements OnInit {
 
   // SET TOOLBAR UP
   resetToggledButtons (): void {
-    this.buttons.forEach(function (button) {
+    this.buttons.forEach((button) => {
       if (button.classList.contains('mat-button-toggle-checked')) {
         button.classList.remove('mat-button-toggle-checked')
       }

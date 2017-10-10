@@ -1,7 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { DocHistoryService, Delete, Insert } from '../doc-history.service'
-import { ActivatedRoute } from '@angular/router'
-import { Doc } from '../../../core/Doc'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { Author } from '../../../core/Author'
 
 @Component({
@@ -14,7 +11,7 @@ export class CollaboratorsComponent implements OnInit {
   @Input() docAuthors: Author[]
   @Output() change = new EventEmitter<boolean>()
 
-  constructor (private docHistoryService: DocHistoryService, private route: ActivatedRoute) { }
+  constructor () { }
 
   ngOnInit () {
   }

@@ -1,19 +1,19 @@
 import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger
+} from '@angular/animations'
+import {
   Component,
   Injectable,
   OnInit,
   ViewChild } from '@angular/core'
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition
-} from '@angular/animations'
 
-import { NetworkService } from '../../../doc/network/network.service'
 import { BotStorageService, BotTuple } from '../../../core/storage/bot-storage/bot-storage.service'
 import { BotInfo } from '../../../core/storage/bot-storage/BotInfo'
+import { NetworkService } from '../../../doc/network/network.service'
 
 @Component({
   selector: 'mute-invite-bot',
@@ -78,7 +78,7 @@ export class InviteBotComponent implements OnInit {
     }
   }
 
-  validate (event) {
+  validate () {
     if (this.ipElm.nativeElement.value.match(`${this.regexIP}|${this.regexHostName}`)) {
       this.error = false
     } else {

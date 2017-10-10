@@ -22,7 +22,6 @@ export class CollaboratorCursor {
   // CodeMirror TextMakrer bookmark object. Cursor indicator for Codemirror
   private bookmark: any
 
-
   constructor (cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
     this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
@@ -136,9 +135,4 @@ export class CollaboratorCursor {
       this.selection = undefined
     }
   }
-
-  private isPosChanged () {
-    return this.bookmark !== undefined && this.previousBookmarkPos !== this.bookmark.find()
-  }
 }
-

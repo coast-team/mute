@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core'
-import { ReplaySubject, Observable } from 'rxjs/Rx'
-
-import { File } from '../File'
-import { Doc } from '../Doc'
-import { Folder } from '../Folder'
 import { State } from 'mute-core'
+
+import { Doc } from '../Doc'
+import { File } from '../File'
+import { Folder } from '../Folder'
 
 const selectList = [
   'type',
@@ -91,7 +90,7 @@ export class StorageService {
   updateFile (file: File): Promise<undefined> {
     return new Promise((resolve, reject) => {
       this.db.put(file.dbId, file.serialize())
-        .then((dbId: string) => resolve(), (err) => reject(err))
+        .then(() => resolve(), (err) => reject(err))
     })
   }
 
@@ -152,7 +151,7 @@ export class StorageService {
         .then(
           (body) => {
             const reader = new FileReader()
-            reader.onload = (event) => {
+            reader.onload = () => {
               const json = JSON.parse(reader.result)
               resolve(json)
             }

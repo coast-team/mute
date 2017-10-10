@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild, NgZone } from '@angular/core'
-import { Http } from '@angular/http'
+import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild } from '@angular/core'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
-import { hash } from '../../lastcommithash'
 import 'rxjs/add/operator/toPromise'
+import { hash } from '../../lastcommithash'
 
 import * as mnemonic from 'mnemonicjs'
 

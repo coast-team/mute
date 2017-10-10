@@ -1,13 +1,13 @@
-import * as $protobuf from "protobufjs";
+import * as $protobuf from 'protobufjs'
 
 /** Properties of a Message. */
 export interface IMessage {
 
     /** Message service */
-    service?: string;
+  service?: string
 
     /** Message content */
-    content?: Uint8Array;
+  content?: Uint8Array
 }
 
 /** Represents a Message. */
@@ -17,20 +17,20 @@ export class Message {
      * Constructs a new Message.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IMessage);
+  constructor (properties?: IMessage);
 
     /** Message service. */
-    public service: string;
+  public service: string
 
     /** Message content. */
-    public content: Uint8Array;
+  public content: Uint8Array
 
     /**
      * Creates a new Message instance using the specified properties.
      * @param [properties] Properties to set
      * @returns Message instance
      */
-    public static create(properties?: IMessage): Message;
+  public static create (properties?: IMessage): Message
 
     /**
      * Encodes the specified Message message. Does not implicitly {@link Message.verify|verify} messages.
@@ -38,7 +38,7 @@ export class Message {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IMessage, writer?: $protobuf.Writer): $protobuf.Writer;
+  public static encode (message: IMessage, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Decodes a Message message from the specified reader or buffer.
@@ -48,14 +48,14 @@ export class Message {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Message;
+  public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): Message
 }
 
 /** Properties of a BotProtocol. */
 export interface IBotProtocol {
 
     /** BotProtocol key */
-    key?: string;
+  key?: string
 }
 
 /** Represents a BotProtocol. */
@@ -65,17 +65,17 @@ export class BotProtocol {
      * Constructs a new BotProtocol.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IBotProtocol);
+  constructor (properties?: IBotProtocol);
 
     /** BotProtocol key. */
-    public key: string;
+  public key: string
 
     /**
      * Creates a new BotProtocol instance using the specified properties.
      * @param [properties] Properties to set
      * @returns BotProtocol instance
      */
-    public static create(properties?: IBotProtocol): BotProtocol;
+  public static create (properties?: IBotProtocol): BotProtocol
 
     /**
      * Encodes the specified BotProtocol message. Does not implicitly {@link BotProtocol.verify|verify} messages.
@@ -83,7 +83,7 @@ export class BotProtocol {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IBotProtocol, writer?: $protobuf.Writer): $protobuf.Writer;
+  public static encode (message: IBotProtocol, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Decodes a BotProtocol message from the specified reader or buffer.
@@ -93,14 +93,14 @@ export class BotProtocol {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): BotProtocol;
+  public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): BotProtocol
 }
 
 /** Properties of a BotResponse. */
 export interface IBotResponse {
 
     /** BotResponse url */
-    url?: string;
+  url?: string
 }
 
 /** Represents a BotResponse. */
@@ -110,17 +110,17 @@ export class BotResponse {
      * Constructs a new BotResponse.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IBotResponse);
+  constructor (properties?: IBotResponse);
 
     /** BotResponse url. */
-    public url: string;
+  public url: string
 
     /**
      * Creates a new BotResponse instance using the specified properties.
      * @param [properties] Properties to set
      * @returns BotResponse instance
      */
-    public static create(properties?: IBotResponse): BotResponse;
+  public static create (properties?: IBotResponse): BotResponse
 
     /**
      * Encodes the specified BotResponse message. Does not implicitly {@link BotResponse.verify|verify} messages.
@@ -128,7 +128,7 @@ export class BotResponse {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IBotResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+  public static encode (message: IBotResponse, writer?: $protobuf.Writer): $protobuf.Writer
 
     /**
      * Decodes a BotResponse message from the specified reader or buffer.
@@ -138,5 +138,5 @@ export class BotResponse {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): BotResponse;
+  public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): BotResponse
 }

@@ -24,9 +24,6 @@
   
     <!-- Toolbar content for Doc -->
     <ng-container *ngSwitchCase="'doc'">
-      <!-- <mute-edit-field fxLayout="row" fxLayoutAlign="center center" [value]="rootFileTitle | async"
-        defaultValue="Untitled document" (onDone)="updateTitle($event)">
-      </mute-edit-field> -->
       <div class="central-part doc-title" [ngStyle.xs]="{'width.px': 200}">
         <mat-form-field class="full-width" dividerColor="accent" floatPlaceholder="never">
           <input #inputTitle matInput

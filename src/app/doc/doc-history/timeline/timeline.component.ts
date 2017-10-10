@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Injectable, Input, Output, EventEmitter } from '@angular/core'
+import { Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { Observable, Subscription } from 'rxjs/Rx'
 
 @Component({
@@ -14,7 +14,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() nbOperations: number
   @Input() max: number
   @Input() step: number
-  @Output() onSlide: EventEmitter<Number>
+  @Output() onSlide: EventEmitter<number>
 
   player: any
   private subscriptionPlayer: Subscription
@@ -41,7 +41,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   play () {
-    this.subscriptionPlayer = this.player.subscribe( (t) => {
+    this.subscriptionPlayer = this.player.subscribe(() => {
       this.updateOperation(this.currentOp + this.step)
     })
   }

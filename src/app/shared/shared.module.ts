@@ -1,29 +1,27 @@
+import { CommonModule } from '@angular/common'
+import { NgModule } from '@angular/core'
+import { FlexLayoutModule } from '@angular/flex-layout'
 import {
-  MatInputModule,
   MatButtonModule,
   MatButtonToggleModule,
   MatCardModule,
-  MatSliderModule,
-  MatSidenavModule,
-  MatListModule,
-  MatGridListModule,
-  MatProgressSpinnerModule,
-  MatSnackBarModule,
-  MatToolbarModule,
-  MatIconModule,
-  MatTooltipModule,
-  MatMenuModule,
-  MatSlideToggleModule,
   MatChipsModule,
-  MatTabsModule,
+  MatGridListModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatProgressSpinnerModule,
+  MatSidenavModule,
+  MatSliderModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
   MatTableModule,
+  MatTabsModule,
+  MatToolbarModule,
+  MatTooltipModule,
   MdDialogModule } from '@angular/material'
-import { NgModule } from '@angular/core'
 import 'hammerjs/hammer'
-import { CommonModule } from '@angular/common'
-import { FlexLayoutModule } from '@angular/flex-layout'
-
-import { EditFieldComponent } from './edit-field/edit-field.component'
 
 @NgModule({
   imports: [
@@ -49,7 +47,7 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MatTableModule,
     MdDialogModule
   ],
-  declarations: [ EditFieldComponent ],
+  declarations: [ ],
   exports: [
     CommonModule,
     MatInputModule,
@@ -69,7 +67,6 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MatMenuModule,
     MatSlideToggleModule,
     FlexLayoutModule,
-    EditFieldComponent,
     MatTabsModule,
     MatTableModule,
     MdDialogModule

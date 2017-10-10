@@ -1,13 +1,13 @@
-import { Directive, Injectable, Input, OnChanges, OnInit, OnDestroy } from '@angular/core'
-import { Subscription } from 'rxjs/Subscription'
+import { Directive, Injectable, Input, OnDestroy, OnInit } from '@angular/core'
 import * as CodeMirror from 'codemirror'
 import { DocService, NetworkMessage, Position } from 'mute-core'
-import { TextDelete, TextInsert, Identifier } from 'mute-structs'
+import { Identifier } from 'mute-structs'
+import { Subscription } from 'rxjs/Subscription'
 
-import { CollaboratorCursor } from './CollaboratorCursor'
-import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
-import { NetworkService } from '../../network/'
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
+import { NetworkService } from '../../network/'
+import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
+import { CollaboratorCursor } from './CollaboratorCursor'
 import { CursorMsg, PositionMsg, State } from './cursor_pb'
 
 @Directive({
@@ -29,7 +29,6 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
   private pbCursor: CursorMsg
   private pbFrom: PositionMsg
   private pbTo: PositionMsg
-
 
   constructor (
     private collabService: RichCollaboratorsService,
@@ -194,7 +193,6 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
   }
-
 
   listenEventsForCursorChange () {
     let movedByMouse = false

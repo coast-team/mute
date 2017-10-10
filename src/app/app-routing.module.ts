@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core'
-import { Routes, RouterModule } from '@angular/router'
+import { RouterModule, Routes } from '@angular/router'
 
-import { DocsComponent } from './docs/docs.component'
-import { DocComponent } from './doc/doc.component'
 import { DocResolverService } from './doc/doc-resolver.service'
+import { DocComponent } from './doc/doc.component'
 import { DocsResolverService } from './docs/docs-resolver.service'
+import { DocsComponent } from './docs/docs.component'
 
 const routes: Routes = [
   {

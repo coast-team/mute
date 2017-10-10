@@ -1,22 +1,20 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ElementRef } from '@angular/core'
-import { Observable, Subject, Subscription } from 'rxjs/Rx'
-import { Router, ResolveEnd, UrlSegment, ActivatedRoute } from '@angular/router'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { WebGroupState, SignalingState } from 'netflux'
 import {
-  trigger,
+  animate,
   state,
   style,
-  animate,
-  transition
+  transition,
+  trigger,
 } from '@angular/animations'
+import {  Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
+import { ObservableMedia } from '@angular/flex-layout'
+import { ResolveEnd, Router } from '@angular/router'
+import { SignalingState, WebGroupState } from 'netflux'
 
-import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
 import { StorageService } from '../core/storage/storage.service'
-import { NetworkService } from '../doc/network/network.service'
+import { UiService } from '../core/ui/ui.service'
 import { WindowRefService } from '../core/WindowRefService'
-import { File } from '../core/File'
+import { NetworkService } from '../doc/network/network.service'
 
 @Component({
   selector: 'mute-toolbar',
@@ -31,9 +29,9 @@ import { File } from '../core/File'
         transform: 'scale(1)'
       })),
       transition('void <=> *', animate('0ms')),
-      transition('hidden <=> visible', animate('150ms ease-out'))
-    ])
-  ]
+      transition('hidden <=> visible', animate('150ms ease-out')),
+    ]),
+  ],
 })
 export class ToolbarComponent implements OnInit {
 
@@ -61,10 +59,9 @@ export class ToolbarComponent implements OnInit {
     private networkService: NetworkService,
     private windowRef: WindowRefService,
     private router: Router,
-    private route: ActivatedRoute,
     private storage: StorageService,
     public profile: ProfileService,
-    public media: ObservableMedia
+    public media: ObservableMedia,
   ) {
     this.signalingState = undefined
     this.groupState = undefined
@@ -107,12 +104,10 @@ export class ToolbarComponent implements OnInit {
 
     this.inputPseudo.nativeElement.value = this.profile.pseudonym
 
-
     this.router.events
       .filter((event) => event instanceof ResolveEnd)
       .subscribe((event: ResolveEnd) => {
         this.routeName = this.routeNameFromUrl(event.url)
-        log.debug('Route name ', this.routeName)
         this.rootFileTitle = this.ui.activeFile.title
       })
 

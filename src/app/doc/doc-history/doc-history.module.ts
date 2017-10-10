@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 
-import { SharedModule } from '../../shared'
-import { TimelineComponent } from './timeline/timeline.component'
-import { DocHistoryComponent } from './doc-history.component'
-import { CollaboratorsComponent } from './collaborators/collaborators.component'
-import { HistoryControlsComponent } from './history-controls/history-controls.component'
 import { NavModule } from '../../nav'
+import { SharedModule } from '../../shared'
+import { CollaboratorsComponent } from './collaborators/collaborators.component'
+import { DocHistoryComponent } from './doc-history.component'
+import { HistoryControlsComponent } from './history-controls/history-controls.component'
+import { TimelineComponent } from './timeline/timeline.component'
 
 @NgModule({
   declarations: [

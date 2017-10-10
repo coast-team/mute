@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { CONTROLS } from './controls'
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui/ui.service'
+import { CONTROLS } from './controls'
 
 @Component({
   selector: 'mute-history-controls',
@@ -15,8 +15,8 @@ export class HistoryControlsComponent implements OnInit {
   @Input() currentOp: number
   @Input() nbOperations: number
   @Input() max: number
-  @Output() onControls: EventEmitter<Number>
-  @Output() onSlide: EventEmitter<Number>
+  @Output() onControls: EventEmitter<number>
+  @Output() onSlide: EventEmitter<number>
 
   constructor (
     private route: ActivatedRoute,
@@ -30,7 +30,7 @@ export class HistoryControlsComponent implements OnInit {
     this.isPlaying = false
   }
 
-  onClickPlay (event: any) {
+  onClickPlay () {
 
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
@@ -41,11 +41,11 @@ export class HistoryControlsComponent implements OnInit {
     }
   }
 
-  onClickFastForward (event: any) {
+  onClickFastForward () {
     this.onControls.emit(CONTROLS.FAST_FORWARD)
   }
 
-  onClickFastRewind (event: any) {
+  onClickFastRewind () {
     this.onControls.emit(CONTROLS.FAST_REWIND)
   }
 

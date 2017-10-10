@@ -1,16 +1,16 @@
-import { Component, Injectable, OnDestroy, OnInit, ViewChild, NgZone } from '@angular/core'
-import { ActivatedRoute, Params } from '@angular/router'
+import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { Subscription } from 'rxjs/Rx'
+import { ActivatedRoute } from '@angular/router'
 import { MuteCore } from 'mute-core'
+import { Subscription } from 'rxjs/Rx'
 
 import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
+import { UiService } from '../core/ui/ui.service'
+import { WindowRefService } from '../core/WindowRefService'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
-import { UiService } from '../core/ui/ui.service'
-import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-doc',
@@ -102,7 +102,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
 
         this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-        this.syncStorage.initSource = this.muteCore.onInit.map((key: string) => this.doc)
+        this.syncStorage.initSource = this.muteCore.onInit.map(() => this.doc)
         this.syncStorage.stateSource = this.muteCore.syncService.onState
 
         this.muteCore.docService.onDocDigest.subscribe((digest: number) => {

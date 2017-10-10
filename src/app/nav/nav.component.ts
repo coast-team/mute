@@ -1,13 +1,11 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core'
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { ObservableMedia } from '@angular/flex-layout'
 import { Router } from '@angular/router'
-import { BehaviorSubject, Subscription } from 'rxjs/Rx'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 
-import { StorageService } from '../core/storage/storage.service'
 import { Folder } from '../core/Folder'
-import { File } from '../core/File'
-import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
+import { StorageService } from '../core/storage/storage.service'
+import { UiService } from '../core/ui/ui.service'
 
 @Component({
   selector: 'mute-nav',
@@ -37,7 +35,6 @@ export class NavComponent implements OnInit {
       break
     }
     this.rootFolders = this.storage.getRootFolders()
-    log.debug('Root folders: ', this.rootFolders)
   }
 
   ngOnInit () {
@@ -82,7 +79,6 @@ export class NavComponent implements OnInit {
   }
 
   getRouterLink (folder: Folder) {
-    const link = folder.key === 'home' ? '/' : folder.route
     return folder.key === 'home' ? '/' : folder.route
   }
 }

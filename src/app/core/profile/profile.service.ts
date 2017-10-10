@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
-
 @Injectable()
 export class ProfileService {
 
@@ -21,10 +20,6 @@ export class ProfileService {
     return pseudonym
   }
 
-  get onPseudonym (): Observable<string> {
-    return this.pseudoSubject.asObservable()
-  }
-
   set pseudonym (value) {
     if (value !== '') {
       this.setItem('pseudonym', value)
@@ -32,6 +27,10 @@ export class ProfileService {
       this.removeItem('pseudonym')
     }
     this.pseudoSubject.next(this.pseudonym)
+  }
+
+  get onPseudonym (): Observable<string> {
+    return this.pseudoSubject.asObservable()
   }
 
   private setItem (key, value) {

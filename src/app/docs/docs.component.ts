@@ -1,18 +1,18 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild, Inject, ElementRef } from '@angular/core'
-import { MatInput, MatSnackBar, MatMenuTrigger, MatMenu, MdDialog, MdDialogRef, MD_DIALOG_DATA } from '@angular/material'
-import { Router, ActivatedRoute } from '@angular/router'
+import { DataSource } from '@angular/cdk/collections'
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
+import { FormControl, Validators } from '@angular/forms'
+import { MatSnackBar, MD_DIALOG_DATA, MdDialog, MdDialogRef } from '@angular/material'
+import { ActivatedRoute, Router } from '@angular/router'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { DataSource } from '@angular/cdk/collections'
-import { FormControl, Validators } from '@angular/forms'
 
-import { StorageService } from '../core/storage/storage.service'
-import { Folder } from '../core/Folder'
-import { File } from '../core/File'
 import { Doc } from '../core/Doc'
+import { File } from '../core/File'
+import { Folder } from '../core/Folder'
+import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { WindowRefService } from '../core/WindowRefService'
 
@@ -47,7 +47,6 @@ export class DocsComponent implements OnDestroy, OnInit {
     private snackBar: MatSnackBar,
     private windowRef: WindowRefService,
     private route: ActivatedRoute,
-    private ref: ChangeDetectorRef,
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
@@ -65,7 +64,7 @@ export class DocsComponent implements OnDestroy, OnInit {
         this.isFinishFetching = false
         this.storage.getFiles(file)
           .then((files: File[]) => {
-            this.docs = <Doc[]> files.filter((file: File) => file.isDoc)
+            this.docs = files.filter((file: File) => file.isDoc) as Doc[]
             this.docsSubject.next(this.docs)
             this.isFinishFetching = true
           })
@@ -90,9 +89,6 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.rightSidenavElm.opened = !this.rightSidenavElm.opened
     })
 
-
-
-
     this.snackBarSubject
       .throttleTime(500)
       .subscribe((message: string) => {
@@ -116,7 +112,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       .then(() => {
         this.snackBar.open(`"${doc.title}" moved to trash.`, 'Undo', {
           duration: 5000
-        }).onAction().subscribe((obj) => {
+        }).onAction().subscribe(() => {
           this.storage.moveDoc(doc, doc.previousLocation)
             .then(() => {
               this.docs[this.docs.length] = doc
@@ -138,7 +134,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       })
   }
 
-  infoDoc (doc: Doc) {
+  infoDoc () {
     this.rightSidenavElm.open()
   }
 
@@ -208,7 +204,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   updateTitleDialog (doc: Doc) {
-    log.debug('Doc ', doc)
     const dialogRef = this.dialog.open(RenameDocumentDialogComponent, {
       data: { title: doc.title }
     })

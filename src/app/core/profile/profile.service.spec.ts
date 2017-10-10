@@ -1,5 +1,5 @@
-import { ProfileService } from './profile.service'
 import { async } from '@angular/core/testing'
+import { ProfileService } from './profile.service'
 
 describe('ProfileService', () => {
   let profileService: ProfileService
@@ -9,7 +9,6 @@ describe('ProfileService', () => {
   it('Correct Init', () => expect(profileService).toBeTruthy())
 
   it('Get default pseudo', () => {
-    console.log(profileService.pseudonymDefault)
     expect(profileService.pseudonymDefault === 'Anonymous').toBe(true)
   })
 
@@ -25,7 +24,6 @@ describe('ProfileService', () => {
 
   it('Remove an item', () => {
     profileService['setItem']('testKey', 'testValue')
-    console.log(profileService['getItem']('testKey'))
     profileService['removeItem']('testKey')
     expect(profileService['getItem']('testKey')).toBeFalsy()
   })
