@@ -4,6 +4,7 @@ import { WebGroup, WebGroupState, SignalingState, enableLog } from 'netflux'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 
 import { environment } from '../../../environments/environment'
+import { UiService } from '../../core/ui/ui.service'
 import { Message, BotResponse, BotProtocol } from './message_pb'
 import { WindowRefService } from '../../core/WindowRefService'
 
@@ -39,7 +40,8 @@ export class NetworkService {
   private signalingSubject: Subject<SignalingState>
 
   constructor (
-    private windowRef: WindowRefService
+    private windowRef: WindowRefService,
+    private ui: UiService
   ) {
     this.botUrls = []
     this.key = ''
@@ -53,7 +55,7 @@ export class NetworkService {
     this.messageSubject = new ReplaySubject()
 
     this.disposeSubject = new Subject<void>()
-    this.lineSubject = new BehaviorSubject(navigator.onLine)
+    this.lineSubject = new BehaviorSubject(this.windowRef.window.navigator.onLine)
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
 
@@ -62,7 +64,7 @@ export class NetworkService {
 
     this.init()
 
-    let goneOfflineOnce = !navigator.onLine
+    let goneOfflineOnce = !this.windowRef.window.navigator.onLine
     /**
      * Rejoin web group when some events fired some time later (see throttleTime method).
      * The rejoin delay is because sometimes may fire Online/Offline events several times
@@ -70,19 +72,23 @@ export class NetworkService {
      */
     Observable.create((observer: Observer<void>) => {
       this.windowRef.window.addEventListener('online', () => {
-        log.info('network', 'Gone ONLINE')
-        if (goneOfflineOnce) {
-          observer.next(undefined)
-          this.lineSubject.next(true)
+        if (ui.activeFile && ui.activeFile.isDoc) {
+          log.info('network', 'Gone ONLINE')
+          if (goneOfflineOnce) {
+            observer.next(undefined)
+            this.lineSubject.next(true)
+          }
         }
       })
       this.windowRef.window.document.addEventListener('visibilitychange', () => {
-        if (this.windowRef.window.document.visibilityState === 'visible') {
-          observer.next(undefined)
+        if (ui.activeFile && ui.activeFile.isDoc) {
+          if (this.windowRef.window.document.visibilityState === 'visible') {
+            observer.next(undefined)
 
-        // Leave when the tab is hidden and there are nobody apart you in the web group
-        } else if (this.windowRef.window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
-          this.wg.leave()
+          // Leave when the tab is hidden and there are nobody apart you in the web group
+          } else if (this.windowRef.window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
+            this.wg.leave()
+          }
         }
       })
     }).throttleTime(1000)

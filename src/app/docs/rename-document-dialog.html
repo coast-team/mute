@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Rename the document</h2>
+<mat-dialog-content>
+  <mat-form-field>
+    <input #titleRef matInput placeholder="Document name"
+      [(ngModel)]="data.title" 
+      [formControl]="titleControl"
+      (focus)="selectAll()"
+    >
+    <mat-error *ngIf="titleControl.hasError('required')">
+      Name cannot be empty!
+    </mat-error>
+  </mat-form-field>   
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="space-between center">
+  <button mat-button (click)="close()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.title" [disabled]="titleControl.hasError('required')">OK</button>
+</mat-dialog-actions>

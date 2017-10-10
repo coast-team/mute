@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef } from '@angular/core'
+import { Component, OnInit, Input, ViewChild, ChangeDetectionStrategy, ElementRef } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs/Rx'
-import { Router, NavigationStart, UrlSegment } from '@angular/router'
+import { Router, ResolveEnd, UrlSegment, ActivatedRoute } from '@angular/router'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { WebGroupState, SignalingState } from 'netflux'
 import {
@@ -13,8 +13,10 @@ import {
 
 import { UiService } from '../core/ui/ui.service'
 import { ProfileService } from '../core/profile/profile.service'
+import { StorageService } from '../core/storage/storage.service'
 import { NetworkService } from '../doc/network/network.service'
 import { WindowRefService } from '../core/WindowRefService'
+import { File } from '../core/File'
 
 @Component({
   selector: 'mute-toolbar',
@@ -42,7 +44,7 @@ export class ToolbarComponent implements OnInit {
   public SYNC = 1
   public SYNC_DISABLED = 2
   public SYNC_PROBLEM = 3
-  public rootFileTitle: Observable<string>
+  public rootFileTitle: string
   public routeName: string
 
   // Here add subscription
@@ -57,21 +59,19 @@ export class ToolbarComponent implements OnInit {
   constructor (
     public ui: UiService,
     private networkService: NetworkService,
-    private changeDetectorRef: ChangeDetectorRef,
     private windowRef: WindowRefService,
     private router: Router,
+    private route: ActivatedRoute,
+    private storage: StorageService,
     public profile: ProfileService,
     public media: ObservableMedia
   ) {
     this.signalingState = undefined
     this.groupState = undefined
+    this.rootFileTitle = ''
     this.setSyncDetails()
     this.setSignalingDetails()
     this.setGroupDetails()
-
-    this.rootFileTitle = this.ui.onActiveFile
-      .filter((file) => file !== null)
-      .pluck('title')
 
     this.networkService.onStateChange.subscribe((state: WebGroupState) => {
       this.groupState = state
@@ -83,7 +83,6 @@ export class ToolbarComponent implements OnInit {
           this.syncState = undefined
         }
         this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
       }
     })
 
@@ -94,27 +93,27 @@ export class ToolbarComponent implements OnInit {
         this.syncState = undefined
         this.setSyncDetails()
       }
-      this.changeDetectorRef.detectChanges()
     })
 
     this.networkService.onLine.subscribe((online: boolean) => {
       if (!online) {
         this.syncState = this.SYNC_PROBLEM
         this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
       }
     })
   }
 
   ngOnInit () {
+
     this.inputPseudo.nativeElement.value = this.profile.pseudonym
 
 
     this.router.events
-      .filter((event) => event instanceof NavigationStart)
-      .subscribe((event: NavigationStart) => {
+      .filter((event) => event instanceof ResolveEnd)
+      .subscribe((event: ResolveEnd) => {
         this.routeName = this.routeNameFromUrl(event.url)
-        this.changeDetectorRef.detectChanges()
+        log.debug('Route name ', this.routeName)
+        this.rootFileTitle = this.ui.activeFile.title
       })
 
   }
@@ -148,7 +147,7 @@ export class ToolbarComponent implements OnInit {
         } else {
           doc.title = newTitle
         }
-        doc.save()
+        this.storage.updateFile(doc)
       }
     }
   }
@@ -220,12 +219,12 @@ export class ToolbarComponent implements OnInit {
   }
 
   private routeNameFromUrl (url: string) {
-    if (url.includes('/docs')) {
+    if (['/', '/trash'].includes(url)) {
       return 'docs'
-    } else if (url.includes('/doc/') && !url.includes('/history/')) {
-      return 'doc'
-    } else if (url.includes('history')) {
+    } else if (url.startsWith('/history')) {
       return 'history'
+    } else {
+      return 'doc'
     }
   }
 }

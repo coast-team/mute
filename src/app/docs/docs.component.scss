@@ -7,60 +7,47 @@
   align-items: flex-start;
 }
 
-.doc-grid {
-  margin: 20px;
+.mat-table {
+  overflow: auto;
 }
 
-mat-card {
-  mat-card-title {
-    font-weight: bold;
-  }
-
-  .locationIcon {
-    position: relative;
-    top: 7px;
-  }
-
-  .status {
-    background-color: #9D9D9D;
-    margin-bottom: 10px; 
-    mat-icon {
-      position: relative;
-      top: 6px;
-      left: 8px;
-      color: white;
-    }
-    
-  }
-  margin: 2px;
-  .actions {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 0px;
-    @media (max-width: 600px) {
-      flex-direction: column;
-    }
-    
-    button {
-      transition-property: all;
-      transition-duration: 200ms;
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
- 
+.title-icon {
+  color: $fg-icon;
+  margin-right: 5px;
 }
 
-mat-card:hover {
-  .actions{
-    opacity: 1;
-    
-    button { 
-      opacity: 1;
-      visibility: visible;
-    }
-  }
+.table-container {
+  height: 100%;
+  padding: 30px 20px;
+}
+
+.info-values {
+  font-weight: 700;
+}
+
+.table-container-mobile {
+  height: 100%;
+}
+
+.table-header {
+  font-weight: 700;
+}
+
+.name-cell {
+  align-self: stretch;
+}
+
+.actions {
+  margin-right: 30px;
+}
+
+.title-button {
+  position: relative;
+  bottom: 1px;
+}
+
+.secondary-text {
+  color: $fg-secondary-text;
 }
 
 .noDoc {
@@ -68,9 +55,7 @@ mat-card:hover {
   margin-left: auto;
   margin-right: auto;
   margin-top: 120px;
-  font-family: Roboto; 
-  font-size: xx-large;
-  color: #9E9E9E;
+  color: $fg-hint-text;
 }
 
 .leftsidenav {
@@ -97,19 +82,7 @@ mat-sidenav-container {
     }
 
     .content {
-      margin-top: 10px;
-
-      .line {
-
-        &.global-actions {
-          padding: 0 20px 0 0;
-        }
-
-        .secondary-text {
-          margin-right: 20px;
-          color: $fg-secondary-text;
-        }
-      }
+      margin-top: 30px;
     }
   }
 }

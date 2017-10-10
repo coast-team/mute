@@ -19,10 +19,7 @@
   <ng-container [ngSwitch]="routeName">
     <!-- Toolbar content for Docs -->
     <ng-container *ngSwitchCase="'docs'">
-      <h2 class="central-part">{{rootFileTitle | async}}</h2>
-      <button class="right-part" mat-icon-button (click)="ui.toggleDocNav()">
-        <mat-icon>info</mat-icon>
-      </button>
+      <h2 class="central-part">{{rootFileTitle}}</h2>
     </ng-container>
   
     <!-- Toolbar content for Doc -->
@@ -33,7 +30,7 @@
       <div class="central-part doc-title" [ngStyle.xs]="{'width.px': 200}">
         <mat-form-field class="full-width" dividerColor="accent" floatPlaceholder="never">
           <input #inputTitle matInput
-              [value]="rootFileTitle | async"
+              [value]="rootFileTitle"
               (keydown)="updateTitle($event)"
               (blur)="updateTitle($event)"
               (focus)="selectTitle()"
@@ -68,7 +65,7 @@
   
     <!-- Toolbar content for Doc History -->
     <ng-container *ngSwitchCase="'history'">
-      <h2 class="central-part">{{rootFileTitle | async}}</h2>
+      <h2 class="central-part">{{rootFileTitle}}</h2>
       <button class="right-part" mat-icon-button (click)="ui.toggleDocNav()">
         <mat-icon>info</mat-icon>
       </button>

@@ -6,7 +6,7 @@ import { LogootSAdd, LogootSDel, TextDelete, TextInsert } from 'mute-structs'
 import { DocService } from 'mute-core'
 
 import { Doc } from '../../core/Doc'
-import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
+import { StorageService } from '../../core/storage/storage.service'
 import { AUTHORS } from './mock-authors'
 import { Author } from '../../core/Author'
 import { RichCollaboratorsService } from '../rich-collaborators/rich-collaborators.service'
@@ -16,7 +16,7 @@ import * as diff from 'diff'
 export class DocHistoryService {
 
   constructor (
-    private localStorage: LocalStorageService,
+    private storage: StorageService,
     private collaboratorsService: RichCollaboratorsService
   ) {}
 
@@ -26,7 +26,7 @@ export class DocHistoryService {
 
   getOperations (doc: Doc): Promise<(Delete|Insert)[]> {
     return new Promise((resolve, reject) => {
-      this.localStorage.getBody(doc)
+      this.storage.getDocBody(doc)
         .then((body: any) => {
           const logootSOp: (LogootSAdd | LogootSDel)[] = body.richLogootSOps
             .map((richLogootSOp: any): RichLogootSOperation | null => {

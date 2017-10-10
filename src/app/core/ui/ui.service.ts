@@ -7,7 +7,7 @@ import { File } from '../File'
 @Injectable()
 export class UiService {
 
-  private activeFileSubject: BehaviorSubject<File | null>
+  private activeFileSubject: Subject<File | null>
 
   private docDigestSubject: Subject<number>
   private docTreeSubject: Subject<string>
@@ -19,7 +19,7 @@ export class UiService {
   public activeFile: File|null
 
   constructor () {
-    this.activeFileSubject = new BehaviorSubject(null)
+    this.activeFileSubject = new Subject()
     this.docDigestSubject = new Subject()
     this.docTreeSubject = new Subject()
     this.navToggleSubject = new Subject<void>()

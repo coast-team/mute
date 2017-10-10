@@ -1,31 +1,44 @@
-import { StorageServiceInterface } from './storage/StorageServiceInterface'
 import { File } from './File'
 
 export class Folder extends File {
-  private service: StorageServiceInterface
-
-  public route: string
   public icon: string
 
-  constructor (
-    route: string,
-    title: string,
-    icon: string,
-    service: StorageServiceInterface
-  ) {
-    super(title)
-    this.route = route
+  static deserialize (dbId: string, serialized: any): Folder {
+    const folder =  new Folder(serialized.key, serialized.title, serialized.icon, serialized.location)
+    File.deserialize(dbId, serialized, folder)
+    return folder
+  }
+
+  constructor (routeName: string, title: string, icon: string, location?: string) {
+    super(routeName, title, location)
     this.icon = icon
-    this.service = service
   }
 
-  get id (): string { return this.route }
-
-  fetchFiles (): Promise<File[]> {
-    return this.service.fetchFiles(this)
+  get route (): string {
+    if (this.location === undefined) {
+      return this.key
+    } else if (this.location === '/') {
+      return `/${this.key}`
+    } else {
+      return `${this.location}/${this.key}`
+    }
   }
 
-  deleteFiles (): Promise<any>  {
-    return this.service.deleteFiles(this)
+  get title () {
+    return this._title
+  }
+
+  set title (newTitle: string) {
+    this._title = newTitle
+  }
+
+  get isDoc () { return false }
+
+  serialize (): object {
+    return Object.assign(super.serialize(), {
+      type: 'folder',
+      route: this.route,
+      icon: this.icon
+    })
   }
 }

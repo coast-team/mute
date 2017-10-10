@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core'
-import { RouterModule } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 
-import { DocResolverService } from '../doc-resolver.service'
 import { SharedModule } from '../../shared'
 import { TimelineComponent } from './timeline/timeline.component'
 import { DocHistoryComponent } from './doc-history.component'
@@ -20,16 +18,7 @@ import { NavModule } from '../../nav'
   imports: [
     SharedModule,
     NavModule,
-    FormsModule,
-    RouterModule.forChild([
-      {
-        path: 'doc/history/:key',
-        component: DocHistoryComponent,
-        resolve: {
-          doc: DocResolverService
-        }
-      }
-    ])
+    FormsModule
   ]
 })
 export class DocHistoryModule {}

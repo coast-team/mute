@@ -6,36 +6,7 @@
   position: absolute;
   transition: opacity 0.15s;
   transition-timing-function: ease-in-out;
-}
-
-.mat-button {
-  background-color: #ffc400;
-  border-radius: 0;
-}
-
-.mat-button:hover:not([disabled]) {
-  background-color: #ffc400;
-}
-
-.mat-button-toggle {
-  background-color: #ffc400;
-}
-
-.mat-button-toggle:hover {
-  background-color: #E5B000;
-}
-
-.mat-button-toggle-checked {
-  background-color: #ffc400;
-}
-
-.mat-menu-item {
-  background-color: #ffc400;
-  font-family: $font-header;
-}
-
-.mat-menu-item:hover:not([disabled]) {
-  background-color: #E5B000;
+  background-color: whitesmoke;
 }
 
 .active {

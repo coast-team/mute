@@ -4,8 +4,6 @@ import { ActivatedRoute, Params } from '@angular/router'
 
 import { NetworkService } from '../../doc/network'
 import { ProfileService } from '../../core/profile/profile.service'
-import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
-import { BotStorageService } from '../../core/storage/bot-storage/bot-storage.service'
 import { Doc } from '../../core/Doc'
 import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 
@@ -18,7 +16,7 @@ export class RightSideComponent implements OnInit {
 
   public storageIcons: string[]
   public collaborators: any
-  public docKey: string
+  public doc: Doc
   public headers: any[] = [
     {md: 'Header', s: '# Header', class: 'header-1 header-1::after'},
     {md: 'Header', s: '## Header', class: 'header-2 header-2::after'},
@@ -48,22 +46,15 @@ export class RightSideComponent implements OnInit {
   constructor (
     private route: ActivatedRoute,
     private collabService: RichCollaboratorsService,
-    private localStorage: LocalStorageService,
-    private botStorage: BotStorageService,
     private networkService: NetworkService,
     public profile: ProfileService
   ) {
-    this.storageIcons = []
     this.collaborators = collabService.onCollaborators
   }
 
   ngOnInit () {
-    this.route.data.subscribe(({doc}: {doc: Doc}) => {
-      doc.isSaved()
-        .then(() => {
-          this.storageIcons = doc.getStorageIcons()
-          this.docKey = doc.id
-        })
+    this.route.data.subscribe(({ file }: {file: Doc}) => {
+      this.doc = file
     })
   }
 

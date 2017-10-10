@@ -1,6 +1,6 @@
 <div fxLayout="column" fxLayouAlign="start stretch">
   <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px" class="actions">
-    <a mat-raised-button [routerLink]="['/doc/history', docKey]" color="accent"
+    <a mat-raised-button [routerLink]="['/doc/history', doc.key]" color="accent"
       class="action"
     >See revision history</a>
     <mute-invite-bot class="action"></mute-invite-bot>
@@ -10,9 +10,9 @@
       <div class="details" fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
         <div fxLayout="row" fxLayoutAlign="start center" class="location">
           <span class="mat-caption meta-title">Location</span>
-          <mat-icon *ngFor="let icon of storageIcons" class="storage-icon">
+          <!-- <mat-icon *ngFor="let icon of storageIcons" class="storage-icon">
             {{icon}}
-          </mat-icon>
+          </mat-icon> -->
         </div>
         <h2 class="mat-title collaborators-header">Collaborators</h2>
         <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>

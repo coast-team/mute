@@ -12,7 +12,7 @@ export class ServiceWorkerRegister {
 
   public registerSW (): void {
 
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in this.windowRef.window.navigator) {
       // Delay registration until after the page has loaded, to ensure that our
       // precaching requests don't degrade the first visit experience.
       // See https://developers.google.com/web/fundamentals/instant-and-offline/service-worker/registration
@@ -21,7 +21,7 @@ export class ServiceWorkerRegister {
         // It won't be able to control pages unless it's located at the same level or higher than them.
         // *Don't* register service worker file in, e.g., a scripts/ sub-directory!
         // See https://github.com/slightlyoff/ServiceWorker/issues/468
-        navigator.serviceWorker.register('service-worker.js')
+        this.windowRef.window.navigator.serviceWorker.register('service-worker.js')
           .then((reg) => {
             // updatefound is fired if service-worker.js changes.
             reg.onupdatefound = () => {
@@ -32,7 +32,7 @@ export class ServiceWorkerRegister {
               installingWorker.onstatechange = () => {
                 switch (installingWorker.state) {
                 case 'installed':
-                  if (navigator.serviceWorker.controller) {
+                  if (this.windowRef.window.navigator.serviceWorker.controller) {
                       // At this point, the old content will have been purged and the fresh content will
                       // have been added to the cache.
                       // It's the perfect time to display a "New content is available; please refresh."

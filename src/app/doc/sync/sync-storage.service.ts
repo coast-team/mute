@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable'
 import { Observer } from 'rxjs/Observer'
 
 import { Doc } from '../../core/Doc'
-import { LocalStorageService } from '../../core/storage/local-storage/local-storage.service'
+import { StorageService } from '../../core/storage/storage.service'
 
 import { JoinEvent, RichLogootSOperation, State } from 'mute-core'
 
@@ -16,7 +16,7 @@ export class SyncStorageService {
   private storedStateObservable: Observable<State>
   private storedStateObservers: Observer<State>[] = []
 
-  constructor (private localStorageService: LocalStorageService) {
+  constructor (private storage: StorageService) {
     this.storedStateObservable = Observable.create((observer) => {
       this.storedStateObservers.push(observer)
     })
@@ -25,7 +25,7 @@ export class SyncStorageService {
   set initSource (source: Observable<Doc>) {
     source.subscribe((doc: Doc) => {
       this.doc = doc
-      this.localStorageService.getBody(doc)
+      this.storage.getDocBody(doc)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
             .map((richLogootSOp: any): RichLogootSOperation | null => {
@@ -39,7 +39,6 @@ export class SyncStorageService {
           })
         })
         .catch((err) => {
-          log.info('Document\' local content is empty')
           this.storedStateObservers.forEach((observer: Observer<State>) => {
             observer.next(new State(new Map(), []))
           })
@@ -53,7 +52,7 @@ export class SyncStorageService {
       .filter((states: State[]) => states.length > 0)
       .subscribe((states: State[]) => {
         const lastIndex = states.length - 1
-        this.localStorageService.save(this.doc, states[lastIndex])
+        this.storage.saveDocBody(this.doc, states[lastIndex])
       })
   }
 

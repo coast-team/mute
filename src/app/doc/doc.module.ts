@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core'
-import { RouterModule } from '@angular/router'
 
 import { CursorsDirective } from '../doc/editor/cursor/cursors.directive'
 import { RightSideModule } from './right-side'
@@ -23,16 +22,7 @@ import { StyleToolbarComponent } from './editor/style-toolbar/style-toolbar.comp
     SharedModule,
     NavModule,
     RightSideModule,
-    DocHistoryModule,
-    RouterModule.forChild([
-      {
-        path: 'doc/:key',
-        component: DocComponent,
-        resolve: {
-          doc: DocResolverService
-        }
-      }
-    ])
+    DocHistoryModule
   ],
   providers: [ NetworkService, DocResolverService ]
 })

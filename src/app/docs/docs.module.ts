@@ -1,28 +1,22 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { RouterModule } from '@angular/router'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { SharedModule } from '../shared'
 import { DocsComponent } from './docs.component'
 import { NavModule } from '../nav'
+import { RenameDocumentDialogComponent } from './docs.component'
 
 @NgModule({
-  declarations: [ DocsComponent ],
+  declarations: [DocsComponent, RenameDocumentDialogComponent],
   imports: [
     CommonModule,
     SharedModule,
     NavModule,
-    RouterModule.forChild([
-      {
-        path: 'docs',
-        redirectTo: '/docs/all',
-        pathMatch: 'full'
-      }, {
-        path: 'docs/:storage',
-        component: DocsComponent
-      }
-    ])
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: []
+  providers: [],
+  entryComponents: [RenameDocumentDialogComponent]
 })
 export class DocsModule {}

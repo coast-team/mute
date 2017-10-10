@@ -1,5 +1,3 @@
-import { FolderBot } from './FolderBot'
-
 export class BotInfo {
   private route: string
 

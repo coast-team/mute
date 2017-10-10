@@ -22,6 +22,9 @@ export const environment = {
   // See https://github.com/coast-team/sigver
   signalingURL: 'wss://www.coedit.re:10443',
 
+  // Enable/Disable service worker
+  serviceWorker: true,
+
   // Whether MUTE should try to look for a Bot Storage
   // Can be an empty array: []
   // See https://github.com/coast-team/mute-bot-storage

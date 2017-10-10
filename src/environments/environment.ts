@@ -9,6 +9,7 @@ export const environment = {
   netfluxLog: true,
   iceServers: [],
   signalingURL: 'ws://localhost:8010',
+  serviceWorker: false,
   storages: [
     {secure: false, host: 'localhost', port: 20000}
   ]

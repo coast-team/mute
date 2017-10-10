@@ -2,26 +2,22 @@ import { Injectable } from '@angular/core'
 import { Http } from '@angular/http'
 import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
-import { StorageServiceInterface } from '../StorageServiceInterface'
 import { File } from '../../File'
 import { Folder } from '../../Folder'
 import { Doc } from '../../Doc'
 import { environment } from '../../../../environments/environment'
 import { BotInfo } from './BotInfo'
-import { FolderBot } from './FolderBot'
-import { LocalStorageService } from '../local-storage/local-storage.service'
 
-export type BotTuple = [BotInfo, FolderBot]
+export type BotTuple = [BotInfo]
 
 @Injectable()
-export class BotStorageService implements StorageServiceInterface {
+export class BotStorageService {
   private botsSubject: BehaviorSubject<BotTuple[]>
 
   public bots: BotTuple[]
 
   constructor (
-    private http: Http,
-    private localStorage: LocalStorageService
+    private http: Http
   ) {
     this.botsSubject = new BehaviorSubject([])
     this.bots = []
@@ -36,8 +32,8 @@ export class BotStorageService implements StorageServiceInterface {
         this.http.get(`${url}/name`).toPromise()
           .then((response) => {
             const bot = new BotInfo(response.text(), secure, hostPort)
-            const folder = new FolderBot(bot, 'cloud', this)
-            return [bot, folder]
+            // const folder = new FolderBot(bot, 'cloud', this)
+            // return [bot, folder]
           })
           .catch((err) => {
             log.warn(`Bot storage ${url} is unavailable`, err)
@@ -64,19 +60,19 @@ export class BotStorageService implements StorageServiceInterface {
       .then(() => true)
   }
 
-  fetchFiles (folder: FolderBot): Promise<File[]> {
-    return this.http.get(`${folder.bot.httpURL}/docs`)
-      .toPromise()
-      .then((response) => response.json())
-      .then((keys: Array<Object>) => {
-        return keys.map(({id, title}: {id: string, title?: string}) => {
-          const doc = new Doc(id, title || 'Untitled Document', this.localStorage)
-          doc.bot = folder.bot
-          doc.botFolder = folder
-          return doc
-        })
-      })
-  }
+  // fetchFiles (folder: FolderBot): Promise<File[]> {
+  //   return this.http.get(`${folder.bot.httpURL}/docs`)
+  //     .toPromise()
+  //     .then((response) => response.json())
+  //     .then((keys: Array<Object>) => {
+  //       return keys.map(({id, title}: {id: string, title?: string}) => {
+  //         const doc = new Doc(id, title || 'Untitled Document', this.localStorage)
+  //         // doc.bot = folder.bot
+  //         // doc.botFolder = folder
+  //         return doc
+  //       })
+  //     })
+  // }
 
   deleteFiles (folder: Folder): Promise<any> {
     return Promise.reject(new Error('This feature has not been implemented on bot yet'))

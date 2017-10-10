@@ -15,7 +15,9 @@ import {
   MatMenuModule,
   MatSlideToggleModule,
   MatChipsModule,
-  MatTabsModule, } from '@angular/material'
+  MatTabsModule,
+  MatTableModule,
+  MdDialogModule } from '@angular/material'
 import { NgModule } from '@angular/core'
 import 'hammerjs/hammer'
 import { CommonModule } from '@angular/common'
@@ -43,7 +45,9 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MatMenuModule,
     MatSlideToggleModule,
     FlexLayoutModule,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule,
+    MdDialogModule
   ],
   declarations: [ EditFieldComponent ],
   exports: [
@@ -66,7 +70,9 @@ import { EditFieldComponent } from './edit-field/edit-field.component'
     MatSlideToggleModule,
     FlexLayoutModule,
     EditFieldComponent,
-    MatTabsModule
+    MatTabsModule,
+    MatTableModule,
+    MdDialogModule
   ]
 })
 export class SharedModule {}

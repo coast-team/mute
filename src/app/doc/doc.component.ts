@@ -10,7 +10,6 @@ import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { BotStorageService } from '../core/storage'
 import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
@@ -39,7 +38,6 @@ export class DocComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private richCollaboratorsService: RichCollaboratorsService,
     private profile: ProfileService,
-    private botStorage: BotStorageService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private windowRef: WindowRefService,
@@ -63,18 +61,18 @@ export class DocComponent implements OnDestroy, OnInit {
       this.rightSidenavElm.opened = !this.rightSidenavElm.opened
     })
 
-    this.route.data.subscribe((data: {doc: Doc}) => {
-      this.doc = data.doc
+    this.route.data.subscribe(({ file }: { file: Doc }) => {
+      this.doc = file
       this.networkSubscription = this.network.onJoin.subscribe(() => {
-        if (this.doc.bot) {
-          this.botStorage.check(this.doc.bot)
-            .then(() => {
-              this.network.inviteBot(this.doc.bot.wsURL)
-            })
-            .catch((err) => {
-              log.warn('Could not invite previously added bot', err)
-            })
-        }
+        // if (this.doc.bot) {
+        //   this.botStorage.check(this.doc.bot)
+        //     .then(() => {
+        //       this.network.inviteBot(this.doc.bot.wsURL)
+        //     })
+        //     .catch((err) => {
+        //       log.warn('Could not invite previously added bot', err)
+        //     })
+        // }
       })
 
       if (this.inited) {
@@ -122,13 +120,10 @@ export class DocComponent implements OnDestroy, OnInit {
     this.network.clean()
     this.muteCore.dispose()
     this.mediaSubscription.unsubscribe()
-    if (true) {
-      this.doc.setSync(true)
-    }
   }
 
   editorReady (): void {
-    this.muteCore.init(this.doc.id)
+    this.muteCore.init(this.doc.key)
     this.inited = true
   }
 

@@ -98,4 +98,11 @@ export class Log {
   }
 }
 
-(window as any).log = new Log()
+function _window (): Window {
+  /* tslint:disable: no-invalid-this */
+  const windowObj = typeof this === 'object' ? this : Function('return this')()
+  console.log('My window from log is ', windowObj)
+  return windowObj
+}
+
+(_window() as any).log = new Log()

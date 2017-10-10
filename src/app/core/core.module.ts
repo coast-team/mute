@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core'
 import { HttpModule } from '@angular/http'
 import { CommonModule } from '@angular/common'
 
+import { StorageService } from './storage/storage.service'
 import { BotStorageService } from './storage/bot-storage/bot-storage.service'
-import { LocalStorageService } from './storage/local-storage/local-storage.service'
 import { ProfileService } from './profile/profile.service'
-import { FakeStorageService } from './storage/fake-storage/fake-storage.service'
 import { WindowRefService } from './WindowRefService'
 import { UiService } from './ui/ui.service'
 
@@ -17,10 +16,9 @@ import { UiService } from './ui/ui.service'
   exports: [],
   declarations: [],
   providers: [
+    StorageService,
     BotStorageService,
-    LocalStorageService,
     ProfileService,
-    FakeStorageService,
     UiService,
     WindowRefService
   ]

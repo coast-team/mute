@@ -22,7 +22,14 @@ html {
     margin: 0;
   }
 
-  .md-sidenav-content {
-    transition: all .4s cubic-bezier(.25,.8,.25,1);
+
+  .contenteditable {
+    padding: 4px;
+  }
+
+  .contenteditable:active,
+  .contenteditable:focus{
+    outline-width: 1px;
+    outline-color: mat-color($accent, A400);
   }
 }

@@ -14,6 +14,7 @@ import { DocsModule } from './docs'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
 import { WindowRefService } from './core/WindowRefService'
+import { environment } from '../environments/environment'
 
 @NgModule({
   imports: [
@@ -41,12 +42,14 @@ export class AppModule {
     private snackBar: MatSnackBar,
     private windowRef: WindowRefService
   ) {
-    const serviceWorker = new ServiceWorkerRegister(windowRef.window)
-    serviceWorker.registerSW()
-    serviceWorker.observableState.subscribe((message) => {
-      this.snackBar.open(message, 'Close', {
-        duration: 5000
+    if (environment.serviceWorker) {
+      const serviceWorker = new ServiceWorkerRegister(windowRef.window)
+      serviceWorker.registerSW()
+      serviceWorker.observableState.subscribe((message) => {
+        this.snackBar.open(message, 'Close', {
+          duration: 5000
+        })
       })
-    })
+    }
   }
 }

@@ -56,7 +56,7 @@ export class HistoryControlsComponent implements OnInit {
   showEditor () {
     this.route.data.subscribe((data: {doc: Doc}) => {
       this.ui.setActiveFile(data.doc)
-      this.router.navigate(['/doc/' + data.doc.id])
+      this.router.navigate(['/doc/' + data.doc.key])
     })
   }
 }
