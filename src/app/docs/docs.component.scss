@@ -21,6 +21,12 @@
   padding: 30px 20px;
 }
 
+.mat-cell {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-right: 10px;
+}
+
 .info-values {
   font-weight: 700;
 }
