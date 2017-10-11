@@ -7,18 +7,16 @@
   
   <!-- Content -->
   <div
-  [ngClass]="'editor'"
-  [ngClass.lt-md]="'editor editor-lt-md'"
-  [ngClass.md]="'editor editor-md'"
-  [ngClass.lg]="'editor editor-lg'"
+    [ngClass]="'editor'"
+    [ngClass.lt-md]="'editor editor-lt-md'"
+    [ngClass.md]="'editor editor-md'"
+    [ngClass.lg]="'editor editor-lg'"
   >
     <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
   </div>
   <mute-right-side
     *ngIf="media.isActive('gt-sm')"
     class="right-side"
-    [ngClass.md]="'right-side right-side-md'"
-    [ngClass.lg]="'right-side right-side-lg'"
   ></mute-right-side>
 
   <!-- Right Sidenav-->
@@ -29,7 +27,7 @@
     [ngClass.lt-sm]="'right-nav right-nav-lt-sm'"
     *ngIf="media.isActive('lt-md')"
   >
-  <mute-right-side></mute-right-side>
+    <mute-right-side></mute-right-side>
   </mat-sidenav>
 
 </mat-sidenav-container>

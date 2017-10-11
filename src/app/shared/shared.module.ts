@@ -6,6 +6,7 @@ import {
   MatButtonToggleModule,
   MatCardModule,
   MatChipsModule,
+  MatDialogModule,
   MatGridListModule,
   MatIconModule,
   MatInputModule,
@@ -19,8 +20,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatTooltipModule,
-  MdDialogModule } from '@angular/material'
+  MatTooltipModule } from '@angular/material'
 import 'hammerjs/hammer'
 
 @NgModule({
@@ -45,7 +45,7 @@ import 'hammerjs/hammer'
     FlexLayoutModule,
     MatTabsModule,
     MatTableModule,
-    MdDialogModule
+    MatDialogModule
   ],
   declarations: [ ],
   exports: [
@@ -69,7 +69,7 @@ import 'hammerjs/hammer'
     FlexLayoutModule,
     MatTabsModule,
     MatTableModule,
-    MdDialogModule
+    MatDialogModule
   ]
 })
 export class SharedModule {}

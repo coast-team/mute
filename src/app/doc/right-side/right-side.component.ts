@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 
 import { Doc } from '../../core/Doc'
 import { ProfileService } from '../../core/profile/profile.service'
+import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 
 @Component({
   selector: 'mute-right-side',
@@ -41,8 +42,11 @@ export class RightSideComponent implements OnInit {
 
   constructor (
     private route: ActivatedRoute,
+    private collabService: RichCollaboratorsService,
     public profile: ProfileService
-  ) {}
+  ) {
+    this.collaborators = collabService.onCollaborators
+  }
 
   ngOnInit () {
     this.route.data.subscribe(({ file }: {file: Doc}) => {

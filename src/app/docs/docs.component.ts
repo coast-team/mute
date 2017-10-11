@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/collections'
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { FormControl, Validators } from '@angular/forms'
-import { MatSnackBar, MD_DIALOG_DATA, MdDialog, MdDialogRef } from '@angular/material'
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material'
 import { ActivatedRoute, Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
@@ -50,7 +50,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
-    public dialog: MdDialog
+    public dialog: MatDialog
   ) {
     this.snackBarSubject = new Subject()
     this.docsSubject = new BehaviorSubject([])
@@ -242,8 +242,8 @@ export class RenameDocumentDialogComponent {
   titleControl: FormControl
 
   constructor (
-    public dialogRef: MdDialogRef<RenameDocumentDialogComponent>,
-    @Inject(MD_DIALOG_DATA) public data: { title: string }
+    public dialogRef: MatDialogRef<RenameDocumentDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { title: string }
   ) {
     this.titleControl = new FormControl('', [Validators.required])
   }

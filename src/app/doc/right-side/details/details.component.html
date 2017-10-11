@@ -1,0 +1,19 @@
+<ul>
+  <li>
+    <div fxLayoutAlign="start end">
+      <span class="mat-caption meta-title">Created</span>
+      <span class="mat-body-2">{{doc.created | date:'longDate'}}</span>
+    </div>
+  </li>
+  <li class="collaborators-item">
+    <div class="collaborators" fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
+      <span class="mat-caption meta-title" fxFlexAlign="center">Collaborators</span>
+      <span class="mat-body-2 collab" *ngFor="let collab of collaborators | async"
+        [style.background-color]="collab.color"
+        [@peerArriving]="'active'"
+      >
+        {{collab.pseudo}}
+      </span>
+    </div>
+  </li>
+</ul>

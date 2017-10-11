@@ -1,30 +1,21 @@
-<div fxLayout="column" fxLayouAlign="start stretch">
+<div class="container" fxLayout="column" fxLayouAlign="start stretch">
   <div fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="20px" class="actions">
     <a mat-raised-button [routerLink]="['/doc/history', doc.key]" color="accent"
       class="action"
     >See revision history</a>
     <mute-invite-bot class="action"></mute-invite-bot>
   </div>
-  <mat-tab-group>
+  <mat-tab-group class="main-tabs">
     <mat-tab label="Details">
-      <div class="details" fxFlexFill fxLayout="column" fxLayoutAlign="start stretch">
-        <div fxLayout="row" fxLayoutAlign="start center" class="location">
-          <span class="mat-caption meta-title">Location</span>
-          <!-- <mat-icon *ngFor="let icon of storageIcons" class="storage-icon">
-            {{icon}}
-          </mat-icon> -->
-        </div>
-        <h2 class="mat-title collaborators-header">Collaborators</h2>
-        <mute-collaborators fxFlex="1 1 100%" [collaborators]="collaborators"></mute-collaborators>
-      </div>
+      <mute-details [doc]="doc" [collaborators]="collaborators"></mute-details>
     </mat-tab>
     <mat-tab label="Cheat sheets">
-      <mat-tab-group>
+      <mat-tab-group class="cheatsheet-tabs">
         <mat-tab label="Markdown">
-          <mute-markdown-cheatsheet></mute-markdown-cheatsheet>
+          <mute-markdown-cheatsheet class="cheatsheet-tab"></mute-markdown-cheatsheet>
         </mat-tab>
         <mat-tab label="Math formulas">
-          <mute-mathjax-cheatsheet></mute-mathjax-cheatsheet>
+          <mute-mathjax-cheatsheet class="cheatsheet-tab"></mute-mathjax-cheatsheet>
         </mat-tab>
       </mat-tab-group>
     </mat-tab>

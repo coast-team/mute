@@ -1,9 +1,30 @@
+@import 'theme';
+
 .details {
   padding-left: 5px;
 }
 
 .actions {
   margin: 20px 20px 20px 0;
+}
+
+.container {
+  height: 100%;
+  overflow: hidden;
+}
+
+.cheatsheet-tabs {
+  height: 100%;
+}
+
+.main-tabs {
+  height: 100%;
+}
+
+@-moz-document url-prefix() {
+  .main-tabs {
+    height: calc(100% - 78px) !important;
+  }
 }
 
 .pseudo {
@@ -15,17 +36,20 @@
   }
 }
 
+.cheatsheet-tab {
+  box-sizing: content-box;
+  padding: 20px 10px 0px 5px;
+  height: 100%;
+  // overflow: auto;
+}
+
+
 .storage-icon {
   margin-right: 10px;
 }
 
 .location {
   margin: 20px 0;
-}
-
-.meta-title {
-  text-align: left;
-  margin: 0 15px 0 0;
 }
 
 .collaborators-header {

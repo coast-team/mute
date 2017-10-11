@@ -18,17 +18,24 @@
     width: 65%;
   }
   &.editor-lg {
-    width: 75%;
+    width: 80%;
   }
 }
 
 
-.right-side{
-  position: sticky;
-  width: 20%;
-  float: right;
-  top: 0;
+.right-side {
+  position: fixed;
+  min-width: 360px;
+  max-width: 360px;
+  top: 64px;
   right: 0;
+  bottom: 0;
+}
+
+@-moz-document url-prefix() {
+  .right-side {
+    right: 15px !important;
+  }
 }
 
 .right-side-md {
