@@ -76,6 +76,7 @@ export class NavComponent implements OnInit {
     if (this.media.isActive('xs')) {
       this.ui.toggleNav()
     }
+    log.debug('storage click')
   }
 
   getRouterLink (folder: Folder) {

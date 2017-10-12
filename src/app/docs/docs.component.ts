@@ -179,7 +179,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   shareDoc (doc: Doc) { // Workaround, but not pretty
     const aux = document.createElement('input')
-    aux.setAttribute('value', 'https://' + this.windowRef.window.location.hostname + '/' + doc.key)
+    aux.setAttribute('value', `${this.windowRef.window.location.href}${doc.key}`)
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')
