@@ -1,8 +1,15 @@
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Observable } from 'rxjs/Observable'
+
 import { File } from './File'
+import { BotStorage } from './storage/bot-storage/BotStorage'
 
 export class Doc extends File {
+  private botStoragesSubject: BehaviorSubject<BotStorage[]>
+
   public created: Date
   public synchronized: Date
+  public botStorages: BotStorage[]
 
   static deserialize (dbId: string, serialized: any): Doc {
     const doc = new Doc(serialized.key, serialized.title, serialized.location)
@@ -17,6 +24,8 @@ export class Doc extends File {
     this.key = key
     this.created = new Date()
     this.synchronized = new Date()
+    this.botStorages = []
+    this.botStoragesSubject = new BehaviorSubject([])
   }
 
   get isDoc () { return true }
@@ -31,6 +40,15 @@ export class Doc extends File {
     } else {
       this._title = newTitle
     }
+  }
+
+  get onBotStorages (): Observable<BotStorage[]> {
+    return this.botStoragesSubject.asObservable()
+  }
+
+  addBotStorage (bot: BotStorage) {
+    this.botStorages[this.botStorages.length] = bot
+    this.botStoragesSubject.next(this.botStorages)
   }
 
   serialize (): any {

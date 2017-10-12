@@ -1,16 +1,16 @@
-import * as $protobuf from 'protobufjs'
+import * as $protobuf from "protobufjs";
 
 /** Properties of a CursorMsg. */
 export interface ICursorMsg {
 
     /** CursorMsg from */
-  from?: IPositionMsg
+    from?: IPositionMsg;
 
     /** CursorMsg to */
-  to?: IPositionMsg
+    to?: IPositionMsg;
 
     /** CursorMsg state */
-  state?: State
+    state?: State;
 }
 
 /** Represents a CursorMsg. */
@@ -20,23 +20,23 @@ export class CursorMsg {
      * Constructs a new CursorMsg.
      * @param [properties] Properties to set
      */
-  constructor (properties?: ICursorMsg);
+    constructor(properties?: ICursorMsg);
 
     /** CursorMsg from. */
-  public from?: (IPositionMsg|null)
+    public from?: (IPositionMsg|null);
 
     /** CursorMsg to. */
-  public to?: (IPositionMsg|null)
+    public to?: (IPositionMsg|null);
 
     /** CursorMsg state. */
-  public state: State
+    public state: State;
 
     /**
      * Creates a new CursorMsg instance using the specified properties.
      * @param [properties] Properties to set
      * @returns CursorMsg instance
      */
-  public static create (properties?: ICursorMsg): CursorMsg
+    public static create(properties?: ICursorMsg): CursorMsg;
 
     /**
      * Encodes the specified CursorMsg message. Does not implicitly {@link CursorMsg.verify|verify} messages.
@@ -44,7 +44,7 @@ export class CursorMsg {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: ICursorMsg, writer?: $protobuf.Writer): $protobuf.Writer
+    public static encode(message: ICursorMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
      * Decodes a CursorMsg message from the specified reader or buffer.
@@ -54,7 +54,7 @@ export class CursorMsg {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): CursorMsg
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): CursorMsg;
 }
 
 /** State enum. */
@@ -69,10 +69,10 @@ export enum State {
 export interface IPositionMsg {
 
     /** PositionMsg id */
-  id?: sync.IIdentifierMsg
+    id?: sync.IIdentifierMsg;
 
     /** PositionMsg index */
-  index?: number
+    index?: number;
 }
 
 /** Represents a PositionMsg. */
@@ -82,20 +82,20 @@ export class PositionMsg {
      * Constructs a new PositionMsg.
      * @param [properties] Properties to set
      */
-  constructor (properties?: IPositionMsg);
+    constructor(properties?: IPositionMsg);
 
     /** PositionMsg id. */
-  public id?: (sync.IIdentifierMsg|null)
+    public id?: (sync.IIdentifierMsg|null);
 
     /** PositionMsg index. */
-  public index: number
+    public index: number;
 
     /**
      * Creates a new PositionMsg instance using the specified properties.
      * @param [properties] Properties to set
      * @returns PositionMsg instance
      */
-  public static create (properties?: IPositionMsg): PositionMsg
+    public static create(properties?: IPositionMsg): PositionMsg;
 
     /**
      * Encodes the specified PositionMsg message. Does not implicitly {@link PositionMsg.verify|verify} messages.
@@ -103,7 +103,7 @@ export class PositionMsg {
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-  public static encode (message: IPositionMsg, writer?: $protobuf.Writer): $protobuf.Writer
+    public static encode(message: IPositionMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
      * Decodes a PositionMsg message from the specified reader or buffer.
@@ -113,7 +113,7 @@ export class PositionMsg {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-  public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): PositionMsg
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PositionMsg;
 }
 
 /** Namespace sync. */
@@ -123,13 +123,13 @@ export namespace sync {
     interface ISyncMsg {
 
         /** SyncMsg richLogootSOpMsg */
-      richLogootSOpMsg?: sync.IRichLogootSOperationMsg
+        richLogootSOpMsg?: sync.IRichLogootSOperationMsg;
 
         /** SyncMsg querySync */
-      querySync?: sync.IQuerySyncMsg
+        querySync?: sync.IQuerySyncMsg;
 
         /** SyncMsg replySync */
-      replySync?: sync.IReplySyncMsg
+        replySync?: sync.IReplySyncMsg;
     }
 
     /** Represents a SyncMsg. */
@@ -139,26 +139,26 @@ export namespace sync {
          * Constructs a new SyncMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.ISyncMsg);
+        constructor(properties?: sync.ISyncMsg);
 
         /** SyncMsg richLogootSOpMsg. */
-      public richLogootSOpMsg?: (sync.IRichLogootSOperationMsg|null)
+        public richLogootSOpMsg?: (sync.IRichLogootSOperationMsg|null);
 
         /** SyncMsg querySync. */
-      public querySync?: (sync.IQuerySyncMsg|null)
+        public querySync?: (sync.IQuerySyncMsg|null);
 
         /** SyncMsg replySync. */
-      public replySync?: (sync.IReplySyncMsg|null)
+        public replySync?: (sync.IReplySyncMsg|null);
 
         /** SyncMsg type. */
-      public type?: string
+        public type?: string;
 
         /**
          * Creates a new SyncMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns SyncMsg instance
          */
-      public static create (properties?: sync.ISyncMsg): sync.SyncMsg
+        public static create(properties?: sync.ISyncMsg): sync.SyncMsg;
 
         /**
          * Encodes the specified SyncMsg message. Does not implicitly {@link sync.SyncMsg.verify|verify} messages.
@@ -166,7 +166,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.ISyncMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.ISyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a SyncMsg message from the specified reader or buffer.
@@ -176,23 +176,23 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.SyncMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.SyncMsg;
     }
 
     /** Properties of a RichLogootSOperationMsg. */
     interface IRichLogootSOperationMsg {
 
         /** RichLogootSOperationMsg id */
-      id?: number
+        id?: number;
 
         /** RichLogootSOperationMsg clock */
-      clock?: number
+        clock?: number;
 
         /** RichLogootSOperationMsg logootSAddMsg */
-      logootSAddMsg?: sync.ILogootSAddMsg
+        logootSAddMsg?: sync.ILogootSAddMsg;
 
         /** RichLogootSOperationMsg logootSDelMsg */
-      logootSDelMsg?: sync.ILogootSDelMsg
+        logootSDelMsg?: sync.ILogootSDelMsg;
     }
 
     /** Represents a RichLogootSOperationMsg. */
@@ -202,29 +202,29 @@ export namespace sync {
          * Constructs a new RichLogootSOperationMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IRichLogootSOperationMsg);
+        constructor(properties?: sync.IRichLogootSOperationMsg);
 
         /** RichLogootSOperationMsg id. */
-      public id: number
+        public id: number;
 
         /** RichLogootSOperationMsg clock. */
-      public clock: number
+        public clock: number;
 
         /** RichLogootSOperationMsg logootSAddMsg. */
-      public logootSAddMsg?: (sync.ILogootSAddMsg|null)
+        public logootSAddMsg?: (sync.ILogootSAddMsg|null);
 
         /** RichLogootSOperationMsg logootSDelMsg. */
-      public logootSDelMsg?: (sync.ILogootSDelMsg|null)
+        public logootSDelMsg?: (sync.ILogootSDelMsg|null);
 
         /** RichLogootSOperationMsg type. */
-      public type?: string
+        public type?: string;
 
         /**
          * Creates a new RichLogootSOperationMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns RichLogootSOperationMsg instance
          */
-      public static create (properties?: sync.IRichLogootSOperationMsg): sync.RichLogootSOperationMsg
+        public static create(properties?: sync.IRichLogootSOperationMsg): sync.RichLogootSOperationMsg;
 
         /**
          * Encodes the specified RichLogootSOperationMsg message. Does not implicitly {@link sync.RichLogootSOperationMsg.verify|verify} messages.
@@ -232,7 +232,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IRichLogootSOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IRichLogootSOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a RichLogootSOperationMsg message from the specified reader or buffer.
@@ -242,17 +242,17 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichLogootSOperationMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichLogootSOperationMsg;
     }
 
     /** Properties of a LogootSAddMsg. */
     interface ILogootSAddMsg {
 
         /** LogootSAddMsg id */
-      id?: sync.IIdentifierMsg
+        id?: sync.IIdentifierMsg;
 
         /** LogootSAddMsg content */
-      content?: string
+        content?: string;
     }
 
     /** Represents a LogootSAddMsg. */
@@ -262,20 +262,20 @@ export namespace sync {
          * Constructs a new LogootSAddMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.ILogootSAddMsg);
+        constructor(properties?: sync.ILogootSAddMsg);
 
         /** LogootSAddMsg id. */
-      public id?: (sync.IIdentifierMsg|null)
+        public id?: (sync.IIdentifierMsg|null);
 
         /** LogootSAddMsg content. */
-      public content: string
+        public content: string;
 
         /**
          * Creates a new LogootSAddMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns LogootSAddMsg instance
          */
-      public static create (properties?: sync.ILogootSAddMsg): sync.LogootSAddMsg
+        public static create(properties?: sync.ILogootSAddMsg): sync.LogootSAddMsg;
 
         /**
          * Encodes the specified LogootSAddMsg message. Does not implicitly {@link sync.LogootSAddMsg.verify|verify} messages.
@@ -283,7 +283,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.ILogootSAddMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.ILogootSAddMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a LogootSAddMsg message from the specified reader or buffer.
@@ -293,17 +293,17 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSAddMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSAddMsg;
     }
 
     /** Properties of an IdentifierMsg. */
     interface IIdentifierMsg {
 
         /** IdentifierMsg base */
-      base?: number[]
+        base?: number[];
 
         /** IdentifierMsg last */
-      last?: number
+        last?: number;
     }
 
     /** Represents an IdentifierMsg. */
@@ -313,20 +313,20 @@ export namespace sync {
          * Constructs a new IdentifierMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IIdentifierMsg);
+        constructor(properties?: sync.IIdentifierMsg);
 
         /** IdentifierMsg base. */
-      public base: number[]
+        public base: number[];
 
         /** IdentifierMsg last. */
-      public last: number
+        public last: number;
 
         /**
          * Creates a new IdentifierMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns IdentifierMsg instance
          */
-      public static create (properties?: sync.IIdentifierMsg): sync.IdentifierMsg
+        public static create(properties?: sync.IIdentifierMsg): sync.IdentifierMsg;
 
         /**
          * Encodes the specified IdentifierMsg message. Does not implicitly {@link sync.IdentifierMsg.verify|verify} messages.
@@ -334,7 +334,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IIdentifierMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IIdentifierMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an IdentifierMsg message from the specified reader or buffer.
@@ -344,14 +344,14 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierMsg;
     }
 
     /** Properties of a LogootSDelMsg. */
     interface ILogootSDelMsg {
 
         /** LogootSDelMsg lid */
-      lid?: sync.IIdentifierIntervalMsg[]
+        lid?: sync.IIdentifierIntervalMsg[];
     }
 
     /** Represents a LogootSDelMsg. */
@@ -361,17 +361,17 @@ export namespace sync {
          * Constructs a new LogootSDelMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.ILogootSDelMsg);
+        constructor(properties?: sync.ILogootSDelMsg);
 
         /** LogootSDelMsg lid. */
-      public lid: sync.IIdentifierIntervalMsg[]
+        public lid: sync.IIdentifierIntervalMsg[];
 
         /**
          * Creates a new LogootSDelMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns LogootSDelMsg instance
          */
-      public static create (properties?: sync.ILogootSDelMsg): sync.LogootSDelMsg
+        public static create(properties?: sync.ILogootSDelMsg): sync.LogootSDelMsg;
 
         /**
          * Encodes the specified LogootSDelMsg message. Does not implicitly {@link sync.LogootSDelMsg.verify|verify} messages.
@@ -379,7 +379,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.ILogootSDelMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.ILogootSDelMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a LogootSDelMsg message from the specified reader or buffer.
@@ -389,20 +389,20 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSDelMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSDelMsg;
     }
 
     /** Properties of an IdentifierIntervalMsg. */
     interface IIdentifierIntervalMsg {
 
         /** IdentifierIntervalMsg base */
-      base?: number[]
+        base?: number[];
 
         /** IdentifierIntervalMsg begin */
-      begin?: number
+        begin?: number;
 
         /** IdentifierIntervalMsg end */
-      end?: number
+        end?: number;
     }
 
     /** Represents an IdentifierIntervalMsg. */
@@ -412,23 +412,23 @@ export namespace sync {
          * Constructs a new IdentifierIntervalMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IIdentifierIntervalMsg);
+        constructor(properties?: sync.IIdentifierIntervalMsg);
 
         /** IdentifierIntervalMsg base. */
-      public base: number[]
+        public base: number[];
 
         /** IdentifierIntervalMsg begin. */
-      public begin: number
+        public begin: number;
 
         /** IdentifierIntervalMsg end. */
-      public end: number
+        public end: number;
 
         /**
          * Creates a new IdentifierIntervalMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns IdentifierIntervalMsg instance
          */
-      public static create (properties?: sync.IIdentifierIntervalMsg): sync.IdentifierIntervalMsg
+        public static create(properties?: sync.IIdentifierIntervalMsg): sync.IdentifierIntervalMsg;
 
         /**
          * Encodes the specified IdentifierIntervalMsg message. Does not implicitly {@link sync.IdentifierIntervalMsg.verify|verify} messages.
@@ -436,7 +436,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IIdentifierIntervalMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IIdentifierIntervalMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an IdentifierIntervalMsg message from the specified reader or buffer.
@@ -446,14 +446,14 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierIntervalMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierIntervalMsg;
     }
 
     /** Properties of a QuerySyncMsg. */
     interface IQuerySyncMsg {
 
         /** QuerySyncMsg vector */
-      vector?: { [k: string]: number }
+        vector?: { [k: string]: number };
     }
 
     /** Represents a QuerySyncMsg. */
@@ -463,17 +463,17 @@ export namespace sync {
          * Constructs a new QuerySyncMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IQuerySyncMsg);
+        constructor(properties?: sync.IQuerySyncMsg);
 
         /** QuerySyncMsg vector. */
-      public vector: { [k: string]: number }
+        public vector: { [k: string]: number };
 
         /**
          * Creates a new QuerySyncMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns QuerySyncMsg instance
          */
-      public static create (properties?: sync.IQuerySyncMsg): sync.QuerySyncMsg
+        public static create(properties?: sync.IQuerySyncMsg): sync.QuerySyncMsg;
 
         /**
          * Encodes the specified QuerySyncMsg message. Does not implicitly {@link sync.QuerySyncMsg.verify|verify} messages.
@@ -481,7 +481,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IQuerySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IQuerySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a QuerySyncMsg message from the specified reader or buffer.
@@ -491,17 +491,17 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.QuerySyncMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.QuerySyncMsg;
     }
 
     /** Properties of a ReplySyncMsg. */
     interface IReplySyncMsg {
 
         /** ReplySyncMsg richLogootSOpsMsg */
-      richLogootSOpsMsg?: sync.IRichLogootSOperationMsg[]
+        richLogootSOpsMsg?: sync.IRichLogootSOperationMsg[];
 
         /** ReplySyncMsg intervals */
-      intervals?: sync.IIntervalMsg[]
+        intervals?: sync.IIntervalMsg[];
     }
 
     /** Represents a ReplySyncMsg. */
@@ -511,20 +511,20 @@ export namespace sync {
          * Constructs a new ReplySyncMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IReplySyncMsg);
+        constructor(properties?: sync.IReplySyncMsg);
 
         /** ReplySyncMsg richLogootSOpsMsg. */
-      public richLogootSOpsMsg: sync.IRichLogootSOperationMsg[]
+        public richLogootSOpsMsg: sync.IRichLogootSOperationMsg[];
 
         /** ReplySyncMsg intervals. */
-      public intervals: sync.IIntervalMsg[]
+        public intervals: sync.IIntervalMsg[];
 
         /**
          * Creates a new ReplySyncMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns ReplySyncMsg instance
          */
-      public static create (properties?: sync.IReplySyncMsg): sync.ReplySyncMsg
+        public static create(properties?: sync.IReplySyncMsg): sync.ReplySyncMsg;
 
         /**
          * Encodes the specified ReplySyncMsg message. Does not implicitly {@link sync.ReplySyncMsg.verify|verify} messages.
@@ -532,7 +532,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IReplySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IReplySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes a ReplySyncMsg message from the specified reader or buffer.
@@ -542,20 +542,20 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.ReplySyncMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.ReplySyncMsg;
     }
 
     /** Properties of an IntervalMsg. */
     interface IIntervalMsg {
 
         /** IntervalMsg id */
-      id?: number
+        id?: number;
 
         /** IntervalMsg begin */
-      begin?: number
+        begin?: number;
 
         /** IntervalMsg end */
-      end?: number
+        end?: number;
     }
 
     /** Represents an IntervalMsg. */
@@ -565,23 +565,23 @@ export namespace sync {
          * Constructs a new IntervalMsg.
          * @param [properties] Properties to set
          */
-      constructor (properties?: sync.IIntervalMsg);
+        constructor(properties?: sync.IIntervalMsg);
 
         /** IntervalMsg id. */
-      public id: number
+        public id: number;
 
         /** IntervalMsg begin. */
-      public begin: number
+        public begin: number;
 
         /** IntervalMsg end. */
-      public end: number
+        public end: number;
 
         /**
          * Creates a new IntervalMsg instance using the specified properties.
          * @param [properties] Properties to set
          * @returns IntervalMsg instance
          */
-      public static create (properties?: sync.IIntervalMsg): sync.IntervalMsg
+        public static create(properties?: sync.IIntervalMsg): sync.IntervalMsg;
 
         /**
          * Encodes the specified IntervalMsg message. Does not implicitly {@link sync.IntervalMsg.verify|verify} messages.
@@ -589,7 +589,7 @@ export namespace sync {
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-      public static encode (message: sync.IIntervalMsg, writer?: $protobuf.Writer): $protobuf.Writer
+        public static encode(message: sync.IIntervalMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
          * Decodes an IntervalMsg message from the specified reader or buffer.
@@ -599,6 +599,6 @@ export namespace sync {
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-      public static decode (reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IntervalMsg
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IntervalMsg;
     }
 }

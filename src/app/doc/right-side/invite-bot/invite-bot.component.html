@@ -2,36 +2,11 @@
   Invite bot
 </button>
 <mat-menu #menu="matMenu">
-  <button mat-menu-item *ngFor="let bot of bots"
+  <button mat-menu-item *ngFor="let bot of botStorage.onBots | async"
     (click)="inviteBot(bot.wsURL)"
   >
-    {{bot.title}}
+    {{bot.id}}
   </button>
   <button mat-menu-item>New Bot</button>
 </mat-menu>
 
-<!--<button
-  mat-raised-button
-  color="accent"
-  *ngIf="btnActive"
-  [@btnState]="'active'"
-  (@btnState.done)="btnStateDone($event)"
-  (click)='showInput()'>
-  Invite Bot
-</button>
-<div
-  *ngIf="inputActive"
-  [@inputState]="'active'"
-  (@inputState.done)="inputStateDone($event)"
-  >
-  <mat-form-field>
-    <input matInput #ipElm
-        placeholder="Bot address"
-        (keyup)="validate($event)"
-        (keyup.enter)="ok()"
-    />
-    <mat-hint *ngIf="error" [ngStyle]="{'color': 'red'}" align="start">{{errorMessage}}</mat-hint>
-  </mat-form-field>
-  <button mat-icon-button (click)="ok()"><mat-icon>done</mat-icon></button>
-  <button mat-icon-button (click)="cancel()"><mat-icon>cancel</mat-icon></button>
-</div>-->

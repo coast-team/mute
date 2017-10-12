@@ -1,17 +1,15 @@
 import { Injectable } from '@angular/core'
-import { Http } from '@angular/http'
+import { Headers, Http } from '@angular/http'
 import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
 import { environment } from '../../../../environments/environment'
-import { BotInfo } from './BotInfo'
-
-export type BotTuple = [BotInfo]
+import { BotStorage } from './BotStorage'
 
 @Injectable()
 export class BotStorageService {
-  private botsSubject: BehaviorSubject<BotTuple[]>
+  private botsSubject: BehaviorSubject<BotStorage[]>
 
-  public bots: BotTuple[]
+  public bots: BotStorage[]
 
   constructor (
     private http: Http
@@ -22,18 +20,16 @@ export class BotStorageService {
     // Fetch all storage bots
     const promises = new Array<Promise<void>>()
     environment.storages.forEach(({secure, host, port}) => {
-      const protocol = secure ? 'https' : 'http'
-      const hostPort = `${host}:${port}`
-      const url = `${protocol}://${hostPort}`
+      const bot = new BotStorage('', secure, host, port)
       promises.push(
-        this.http.get(`${url}/name`).toPromise()
-          .then(() => {
-            // const bot = new BotInfo(response.text(), secure, hostPort)
-            // const folder = new FolderBot(bot, 'cloud', this)
-            // return [bot, folder]
+        this.http.get(`${bot.httpURL}/name`).toPromise()
+          .then((response) => {
+            bot.name = response.text()
+            log.debug('Fetched: ', bot.name)
+            return bot
           })
           .catch((err) => {
-            log.warn(`Bot storage ${url} is unavailable`, err)
+            log.warn(`Bot storage "${bot.httpURL}" is unavailable: ${err.message}`)
             return undefined
           })
       )
@@ -42,17 +38,30 @@ export class BotStorageService {
       .then((bots: any[]) => {
         return bots.filter((bot) => bot !== undefined)
       })
-      .then((bots: BotTuple[]) => {
+      .then((bots: BotStorage[]) => {
         this.bots = bots
+        log.debug('bots: ', bots)
         this.botsSubject.next(bots)
       })
   }
 
-  get onBots (): Observable<BotTuple[]> {
+  get onBots (): Observable<BotStorage[]> {
     return this.botsSubject.asObservable()
   }
 
-  check (bot: BotInfo): Promise<boolean> {
+  whichExist (keys: string[], bot): Promise<string[]> {
+    const existedKeys = []
+    return this.http.post(`${bot.httpURL}/exist`, JSON.stringify(keys), {
+      headers: new Headers({'Content-Type': 'application/json'})
+    }).toPromise()
+    .then((response) => response.json())
+    .catch((err) => {
+      log.warn(`Bot storage "${bot.httpURL}" is unavailable: ${err.message}`)
+      return []
+    })
+  }
+
+  check (bot: BotStorage): Promise<boolean> {
     return this.http.get(`${bot.httpURL}/name`).toPromise()
       .then(() => true)
   }
@@ -70,9 +79,5 @@ export class BotStorageService {
   //       })
   //     })
   // }
-
-  deleteFiles (): Promise<any> {
-    return Promise.reject(new Error('This feature has not been implemented on bot yet'))
-  }
 
 }

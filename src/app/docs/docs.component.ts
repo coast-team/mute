@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs/Subscription'
 import { Doc } from '../core/Doc'
 import { File } from '../core/File'
 import { Folder } from '../core/Folder'
+import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
+import { BotStorage } from '../core/storage/bot-storage/BotStorage'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { WindowRefService } from '../core/WindowRefService'
@@ -47,6 +49,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private snackBar: MatSnackBar,
     private windowRef: WindowRefService,
     private route: ActivatedRoute,
+    private botStorage: BotStorageService,
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
@@ -67,6 +70,15 @@ export class DocsComponent implements OnDestroy, OnInit {
             this.docs = files.filter((file: File) => file.isDoc) as Doc[]
             this.docsSubject.next(this.docs)
             this.isFinishFetching = true
+            const keys = this.docs.map((doc: Doc) => doc.key)
+            return this.botStorage.whichExist(keys, this.botStorage.bots[0])
+          })
+          .then((existedKeys) => {
+            this.docs.forEach((doc: Doc) => {
+              if (existedKeys.includes(doc.key)) {
+                doc.addBotStorage(this.botStorage.bots[0])
+              }
+            })
           })
       })
 

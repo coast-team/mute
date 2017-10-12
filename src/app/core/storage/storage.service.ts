@@ -134,7 +134,7 @@ export class StorageService {
   searchDoc (key: string): Promise<Doc[]> {
     return new Promise((resolve, reject) => {
       this.db.allDocs({
-        query: `(type:"doc") AND (key:"${key}")`,
+        query: `(type:"doc") AND (key:"${key}") AND NOT (location:"trash")`,
         select_list: selectList
       })
         .then(({ data }: any) => {

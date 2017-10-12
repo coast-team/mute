@@ -27,6 +27,7 @@ import { WindowRefService } from '../core/WindowRefService'
       font-size: 1.1rem;
       bottom: 20px;
       right: 20px;
+      z-index: 100;
     }
     button {
       padding: 0;

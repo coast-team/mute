@@ -46,7 +46,7 @@
               </ng-container>
               <ng-template #editableTitle>
                 <mat-icon class="title-icon ">note</mat-icon>
-                <span  matTooltip="rename" class="contenteditable" (blur)="updateTitle($event, doc)" (keydown)="updateTitle($event, doc)" contenteditable>{{doc.title}}</span>
+                <span matTooltip="rename" class="contenteditable" (blur)="updateTitle($event, doc)" (keydown)="updateTitle($event, doc)" contenteditable>{{doc.title}}</span>
               </ng-template>
               <div fxFlex fxLayoutAlign="end center">
                 <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="getActionsVisible(doc)" fxLayoutGap="10px">
@@ -95,7 +95,15 @@
           
           <ng-container matColumnDef="storage">
             <mat-header-cell class="table-header" *matHeaderCellDef>Storages</mat-header-cell>
-            <mat-cell class="secondary-text" *matCellDef="let doc"> - </mat-cell>
+            <mat-cell class="secondary-text" *matCellDef="let doc">
+              <ng-container *ngIf="doc.onBotStorages | async as bots; else fetchingBots">
+                <span *ngFor="let bot of bots">
+                  <mat-icon matTooltip="{{bot.id}}" aria-label="stored in bot storage">cloud</mat-icon>
+                </span>
+              </ng-container>
+
+              <ng-template #fetchingBots><span class="mat-caption">fetching...</span></ng-template>
+            </mat-cell>
           </ng-container>
       
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
