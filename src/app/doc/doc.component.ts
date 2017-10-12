@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/Rx'
 
 import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
+import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { WindowRefService } from '../core/WindowRefService'
 import { NetworkService } from '../doc/network'
@@ -41,6 +42,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private windowRef: WindowRefService,
+    private botStorage: BotStorageService,
     public ui: UiService,
     public media: ObservableMedia
   ) { }
@@ -64,15 +66,17 @@ export class DocComponent implements OnDestroy, OnInit {
     this.route.data.subscribe(({ file }: { file: Doc }) => {
       this.doc = file
       this.networkSubscription = this.network.onJoin.subscribe(() => {
-        // if (this.doc.bot) {
-        //   this.botStorage.check(this.doc.bot)
-        //     .then(() => {
-        //       this.network.inviteBot(this.doc.bot.wsURL)
-        //     })
-        //     .catch((err) => {
-        //       log.warn('Could not invite previously added bot', err)
-        //     })
-        // }
+        log.debug('Hello')
+        if (this.doc.botStorages.length !== 0) {
+          this.network.inviteBot(this.doc.botStorages[0].wsURL)
+        } else {
+          this.botStorage.whichExist([this.doc.key], this.botStorage.bots[0])
+            .then((existedKeys) => {
+              if (existedKeys.includes(this.doc.key)) {
+                this.network.inviteBot(this.botStorage.bots[0].wsURL)
+              }
+            })
+        }
       })
 
       if (this.inited) {
