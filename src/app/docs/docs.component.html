@@ -46,7 +46,7 @@
               </ng-container>
               <ng-template #editableTitle>
                 <mat-icon class="title-icon ">note</mat-icon>
-                <span matTooltip="rename" class="contenteditable" (blur)="updateTitle($event, doc)" (keydown)="updateTitle($event, doc)" contenteditable>{{doc.title}}</span>
+                <span (dblclick)="stopPropagation($event)" matTooltip="rename" class="contenteditable" (blur)="updateTitle($event, doc)" (keydown)="updateTitle($event, doc)" contenteditable>{{doc.title}}</span>
               </ng-template>
               <div fxFlex fxLayoutAlign="end center">
                 <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="getActionsVisible(doc)" fxLayoutGap="10px">

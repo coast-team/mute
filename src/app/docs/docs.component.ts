@@ -228,6 +228,10 @@ export class DocsComponent implements OnDestroy, OnInit {
   getTitleEditable (doc: any) {
     return doc.titleEditable
   }
+
+  stopPropagation (event: Event) {
+    event.stopPropagation()
+  }
 }
 
 class DocsSource extends DataSource<any> {
