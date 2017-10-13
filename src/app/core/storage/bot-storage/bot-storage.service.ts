@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Headers, Http } from '@angular/http'
-import { BehaviorSubject, Observable } from 'rxjs/Rx'
+import { AsyncSubject, BehaviorSubject, Observable } from 'rxjs/Rx'
 
 import { environment } from '../../../../environments/environment'
 import { BotStorage } from './BotStorage'
@@ -9,39 +9,27 @@ import { BotStorage } from './BotStorage'
 export class BotStorageService {
   private botsSubject: BehaviorSubject<BotStorage[]>
 
-  public bots: BotStorage[]
+  public bot: BotStorage
+  public isAvailable: AsyncSubject<boolean>
 
   constructor (
     private http: Http
   ) {
     this.botsSubject = new BehaviorSubject([])
-    this.bots = []
-
-    // Fetch all storage bots
-    const promises = new Array<Promise<void>>()
-    environment.storages.forEach(({secure, host, port}) => {
-      const bot = new BotStorage('', secure, host, port)
-      promises.push(
-        this.http.get(`${bot.httpURL}/name`).toPromise()
-          .then((response) => {
-            bot.name = response.text()
-            log.debug('Fetched: ', bot.name)
-            return bot
-          })
-          .catch((err) => {
-            log.warn(`Bot storage "${bot.httpURL}" is unavailable: ${err.message}`)
-            return undefined
-          })
-      )
-    })
-    Promise.all(promises)
-      .then((bots: any[]) => {
-        return bots.filter((bot) => bot !== undefined)
+    this.isAvailable = new AsyncSubject()
+    const storage = environment.storages[0]
+    this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
+    this.http.get(`${this.bot.httpURL}/name`).toPromise()
+      .then((response) => {
+        this.bot.name = response.text()
+        this.botsSubject.next([this.bot])
+        this.isAvailable.next(true)
+        this.isAvailable.complete()
       })
-      .then((bots: BotStorage[]) => {
-        this.bots = bots
-        log.debug('bots: ', bots)
-        this.botsSubject.next(bots)
+      .catch((err) => {
+        log.warn(`Bot storage "${this.bot.httpURL}" is unavailable: ${err.message}`)
+        this.isAvailable.next(false)
+        this.isAvailable.complete()
       })
   }
 
@@ -49,35 +37,28 @@ export class BotStorageService {
     return this.botsSubject.asObservable()
   }
 
-  whichExist (keys: string[], bot): Promise<string[]> {
-    const existedKeys = []
-    return this.http.post(`${bot.httpURL}/exist`, JSON.stringify(keys), {
-      headers: new Headers({'Content-Type': 'application/json'})
-    }).toPromise()
-    .then((response) => response.json())
-    .catch((err) => {
-      log.warn(`Bot storage "${bot.httpURL}" is unavailable: ${err.message}`)
-      return []
+  whichExist (keys: string[]): Promise<string[]> {
+    return new Promise ((resolve, reject) => {
+      log.debug('whichExist call, ', keys)
+      this.isAvailable.subscribe((isAvailable) => {
+        log.debug('whichExist is avaialbel: ', isAvailable)
+        if (isAvailable) {
+          this.http.post(
+            `${this.bot.httpURL}/exist`,
+            JSON.stringify(keys), {
+              headers: new Headers({'Content-Type': 'application/json'})
+            }
+          ).toPromise()
+            .then((response) => {
+              log.debug('keys: ', response.json())
+              resolve(response.json())
+            })
+            .catch((err) => reject(err))
+        } else {
+          resolve([])
+        }
+      })
     })
   }
-
-  check (bot: BotStorage): Promise<boolean> {
-    return this.http.get(`${bot.httpURL}/name`).toPromise()
-      .then(() => true)
-  }
-
-  // fetchFiles (folder: FolderBot): Promise<File[]> {
-  //   return this.http.get(`${folder.bot.httpURL}/docs`)
-  //     .toPromise()
-  //     .then((response) => response.json())
-  //     .then((keys: Array<Object>) => {
-  //       return keys.map(({id, title}: {id: string, title?: string}) => {
-  //         const doc = new Doc(id, title || 'Untitled Document', this.localStorage)
-  //         // doc.bot = folder.bot
-  //         // doc.botFolder = folder
-  //         return doc
-  //       })
-  //     })
-  // }
 
 }

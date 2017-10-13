@@ -9,7 +9,7 @@
 
   <div class="content">
     <mat-card class="matContent">
-      <div #editorElt id="textArea"></div>
+      <div #editorElt></div>
 
       <mat-divider></mat-divider>
       <mute-history-controls 
@@ -17,7 +17,8 @@
         (onSlide)="updateStep($event)"
         [nbOperations]="countOperations()"
         [currentOp]="currentOp"
-        [max]="countMax()">
+        [max]="countMax()"
+        [doc]="doc">
       </mute-history-controls>
 
       <mute-timeline
@@ -36,11 +37,7 @@
     [opened]="!this.media.isActive('xs')"
     [mode]="rightSideNavMode"
   >
-
-    <mute-collaborators [docAuthors]="docAuthors"
-    (change)="onToggle($event)">
-    </mute-collaborators>
-
+    <mute-collaborators [docAuthors]="docAuthors" (change)="onToggle($event)"></mute-collaborators>
   </mat-sidenav>
 
 </mat-sidenav-container>

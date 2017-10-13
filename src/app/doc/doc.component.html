@@ -14,20 +14,23 @@
   >
     <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
   </div>
-  <mute-right-side
-    *ngIf="media.isActive('gt-sm')"
-    class="right-side"
-  ></mute-right-side>
 
-  <!-- Right Sidenav-->
-  <mat-sidenav #rightSidenavElm class="right-nav"
-    align="end"
-    [opened]="!media.isActive('lt-md')"
-    mode="over"
-    [ngClass.lt-sm]="'right-nav right-nav-lt-sm'"
-    *ngIf="media.isActive('lt-md')"
-  >
-    <mute-right-side></mute-right-side>
-  </mat-sidenav>
+  <!-- Right part -->
+  <ng-container *ngIf="media.isActive('gt-sm'); else mobileRightSide">
+    <mute-right-side [doc]="doc" class="right-side"></mute-right-side>
+  </ng-container>
+
+  <!-- Mobile Right Sidenav-->
+  <ng-template #mobileRightSide>
+    <mat-sidenav #rightSidenavElm class="right-nav"
+      align="end"
+      [opened]="!media.isActive('lt-md')"
+      mode="over"
+      [ngClass.lt-sm]="'right-nav right-nav-lt-sm'"
+      *ngIf="media.isActive('lt-md')"
+    >
+      <mute-right-side [doc]="doc"></mute-right-side>
+    </mat-sidenav>
+  </ng-template>
 
 </mat-sidenav-container>

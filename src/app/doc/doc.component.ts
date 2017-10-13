@@ -8,7 +8,6 @@ import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { WindowRefService } from '../core/WindowRefService'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
@@ -25,7 +24,7 @@ export class DocComponent implements OnDestroy, OnInit {
   @ViewChild('sidenavElm') sidenavElm
   @ViewChild('rightSidenavElm') rightSidenavElm
   @ViewChild('leftSidenavElm') leftSidenavElm
-  private doc: Doc
+  public doc: Doc
   private mediaSubscription: Subscription
   private networkSubscription: Subscription
   private activeMediaQuery: string
@@ -41,13 +40,21 @@ export class DocComponent implements OnDestroy, OnInit {
     private profile: ProfileService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
-    private windowRef: WindowRefService,
     private botStorage: BotStorageService,
     public ui: UiService,
     public media: ObservableMedia
-  ) { }
+  ) {
+    this.doc = new Doc('', '', '')
+    log.debug('Init DOC: ', this.doc)
+  }
 
   ngOnInit () {
+    if (this.inited) {
+      this.network.clean()
+      this.muteCore.dispose()
+    }
+    this.network.init()
+
     this.mediaSubscription = this.media.asObservable().subscribe((change: MediaChange) => {
       this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
       if ( change.mqAlias === 'xs') {
@@ -65,30 +72,24 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.route.data.subscribe(({ file }: { file: Doc }) => {
       this.doc = file
+      log.debug('Route DOC: ', this.doc)
       this.networkSubscription = this.network.onJoin.subscribe(() => {
-        log.debug('Hello')
         if (this.doc.botStorages.length !== 0) {
           this.network.inviteBot(this.doc.botStorages[0].wsURL)
         } else {
-          this.botStorage.whichExist([this.doc.key], this.botStorage.bots[0])
+          this.botStorage.whichExist([this.doc.key])
             .then((existedKeys) => {
               if (existedKeys.includes(this.doc.key)) {
-                this.network.inviteBot(this.botStorage.bots[0].wsURL)
+                this.network.inviteBot(this.botStorage.bot.wsURL)
               }
             })
         }
       })
 
-      if (this.inited) {
-        // Need to clean the services before
-        this.network.clean()
-        this.muteCore.dispose()
-      }
-
       // TODO: Retrieve previous id for this document if existing
       const ids = new Int32Array(1)
-      this.windowRef.window.crypto.getRandomValues(ids)
-      const id: number = ids[0]
+      global.window.crypto.getRandomValues(ids)
+      const id = ids[0]
 
       this.zone.runOutsideAngular(() => {
         this.muteCore = new MuteCore(id)

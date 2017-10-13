@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
@@ -21,7 +21,6 @@ export class RichCollaboratorsService {
   public collaborators: RichCollaborator[]
 
   constructor (
-    private changeDetector: ChangeDetectorRef,
     public profile: ProfileService
   ) {
     this.joinSubject = new Subject()
@@ -68,7 +67,6 @@ export class RichCollaboratorsService {
         rc.pseudo = collab.pseudo
         this.changeSubject.next({collab: rc, prop: 'pseudo'})
         this.collaboratorsSubject.next(this.collaborators)
-        this.changeDetector.detectChanges()
       } else {
         this.handleNewCollaborator(collab)
       }
@@ -78,7 +76,7 @@ export class RichCollaboratorsService {
   set joinSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
       const rc = this.findRichCollaborator(collab.id)
-
+      log.debug('new collab: ', collab)
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
       if (rc === undefined) {
@@ -95,25 +93,10 @@ export class RichCollaboratorsService {
           this.collaborators.splice(i, 1)
           this.leaveSubject.next(id)
           this.collaboratorsSubject.next(this.collaborators)
-          this.changeDetector.detectChanges()
           break
         }
       }
     })
-  }
-
-  findRichCollaborator (id: number): RichCollaborator | undefined {
-    return this.collaborators
-      .find((rc: RichCollaborator): boolean => rc.id === id)
-  }
-
-  handleNewCollaborator (collab: Collaborator): void {
-    const color = this.pickColor()
-    const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
-    this.collaborators.push(newRCollab)
-    this.joinSubject.next(newRCollab)
-    this.collaboratorsSubject.next(this.collaborators)
-    this.changeDetector.detectChanges()
   }
 
   pickColor (): string {
@@ -131,7 +114,20 @@ export class RichCollaboratorsService {
     }
   }
 
-  recycleColor (color: string) {
+  private findRichCollaborator (id: number): RichCollaborator | undefined {
+    return this.collaborators
+      .find((rc: RichCollaborator): boolean => rc.id === id)
+  }
+
+  private handleNewCollaborator (collab: Collaborator): void {
+    const color = this.pickColor()
+    const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
+    this.collaborators.push(newRCollab)
+    this.joinSubject.next(newRCollab)
+    this.collaboratorsSubject.next(this.collaborators)
+  }
+
+  private recycleColor (color: string) {
     if (!this.availableColors.includes(color)) {
       this.availableColors.push(color)
     }

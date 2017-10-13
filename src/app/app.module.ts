@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
 import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
-import { WindowRefService } from './core/WindowRefService'
 import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
 import { DocsModule } from './docs'
@@ -39,11 +38,10 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
 })
 export class AppModule {
   constructor (
-    private snackBar: MatSnackBar,
-    private windowRef: WindowRefService
+    private snackBar: MatSnackBar
   ) {
     if (environment.serviceWorker) {
-      const serviceWorker = new ServiceWorkerRegister(this.windowRef.window)
+      const serviceWorker = new ServiceWorkerRegister(global.window)
       serviceWorker.registerSW()
       serviceWorker.observableState.subscribe((message) => {
         this.snackBar.open(message, 'Close', {

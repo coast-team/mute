@@ -16,7 +16,6 @@ import { BotStorageService } from '../core/storage/bot-storage/bot-storage.servi
 import { BotStorage } from '../core/storage/bot-storage/BotStorage'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { WindowRefService } from '../core/WindowRefService'
 
 @Component({
   selector: 'mute-docs',
@@ -47,7 +46,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   constructor (
     private router: Router,
     private snackBar: MatSnackBar,
-    private windowRef: WindowRefService,
     private route: ActivatedRoute,
     private botStorage: BotStorageService,
     public storage: StorageService,
@@ -71,12 +69,12 @@ export class DocsComponent implements OnDestroy, OnInit {
             this.docsSubject.next(this.docs)
             this.isFinishFetching = true
             const keys = this.docs.map((doc: Doc) => doc.key)
-            return this.botStorage.whichExist(keys, this.botStorage.bots[0])
+            return this.botStorage.whichExist(keys)
           })
           .then((existedKeys) => {
             this.docs.forEach((doc: Doc) => {
               if (existedKeys.includes(doc.key)) {
-                doc.addBotStorage(this.botStorage.bots[0])
+                doc.addBotStorage(this.botStorage.bot)
               }
             })
           })
@@ -179,7 +177,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   shareDoc (doc: Doc) { // Workaround, but not pretty
     const aux = document.createElement('input')
-    aux.setAttribute('value', `${this.windowRef.window.location.href}${doc.key}`)
+    aux.setAttribute('value', `${global.window.location.href}${doc.key}`)
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')

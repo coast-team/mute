@@ -43,7 +43,7 @@
           <mat-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</mat-icon>
           <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
         </span>
-        <div class="sync-details" [@syncDetails]="syncDetailsState">
+        <div class="sync-details" [fxHide]="!detailsVisible">
           <h4 class="mat-subheading-1">{{syncDetails}}</h4>
           <p class="mat-body-1">
             <span class="mat-body-2">Signaling state: </span>

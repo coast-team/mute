@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
+
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui/ui.service'
 import { CONTROLS } from './controls'
@@ -12,16 +13,20 @@ import { CONTROLS } from './controls'
 export class HistoryControlsComponent implements OnInit {
 
   public isPlaying: boolean
+  public pausePlayBtn: string
   @Input() currentOp: number
   @Input() nbOperations: number
   @Input() max: number
+  @Input() doc: Doc
   @Output() onControls: EventEmitter<number>
   @Output() onSlide: EventEmitter<number>
 
   constructor (
     private route: ActivatedRoute,
     private router: Router,
-    public ui: UiService) {
+    public ui: UiService
+  ) {
+    this.pausePlayBtn = 'play_arrow'
     this.onControls = new EventEmitter<number>(),
     this.onSlide = new EventEmitter<number>()
   }
@@ -35,10 +40,14 @@ export class HistoryControlsComponent implements OnInit {
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
       this.onControls.emit(CONTROLS.PAUSE)
+      log.debug('here')
     } else {
+      log.debug('here 2')
       this.isPlaying = !this.isPlaying
       this.onControls.emit(this.isPlaying ? CONTROLS.PLAY : CONTROLS.PAUSE)
     }
+    this.pausePlayBtn = (this.isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow'
+    log.debug('btn ', this.pausePlayBtn)
   }
 
   onClickFastForward () {
@@ -54,9 +63,6 @@ export class HistoryControlsComponent implements OnInit {
   }
 
   showEditor () {
-    this.route.data.subscribe((data: {doc: Doc}) => {
-      this.ui.setActiveFile(data.doc)
-      this.router.navigate(['/doc/' + data.doc.key])
-    })
+    this.router.navigate(['/' + this.doc.key])
   }
 }

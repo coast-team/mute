@@ -47,7 +47,7 @@ export class DocHistoryComponent implements OnInit {
   @ViewChild('rightSidenavElm') rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
-  private doc: Doc
+  public doc: Doc
   public step: number
   private oldText: string
 
@@ -59,18 +59,22 @@ export class DocHistoryComponent implements OnInit {
     private docHistory: DocHistoryService,
     public ui: UiService,
     public media: ObservableMedia
-  ) {}
+  ) {
+    this.step = 1
+    this.oldText = ''
+  }
 
   ngOnInit () {
     // TODO replace by the specified service which maybe exist
-    this.route.data.subscribe((data: {doc: Doc}) => {
-      this.doc = data.doc
-      this.docHistory.getAuthors(data.doc)
+    this.route.data.subscribe(({ file }: {file: Doc}) => {
+      this.doc = file
+      log.debug('Doc: ', this.doc)
+      this.docHistory.getAuthors(this.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths
         })
 
-      this.docHistory.getOperations(data.doc)
+      this.docHistory.getOperations(this.doc)
         .then((ops: Array<IDelete | IInsert>) => {
           this.operations = ops
           this.showVersion(this.operations.length)
@@ -88,12 +92,8 @@ export class DocHistoryComponent implements OnInit {
       this.currentOp = 0
     })
 
-    this.step = 1
-    this.oldText = ''
-
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
-    const elm1 = document.getElementById('textArea')
     /*
     * Here you have elm1 === elm2.
     * The first is a native browser approach.
@@ -114,7 +114,7 @@ export class DocHistoryComponent implements OnInit {
     * as Angular would run detectChanges mechanism infinitely.
     */
     this.zone.runOutsideAngular(() => {
-      this.editor = CodeMirror(elm1, {
+      this.editor = CodeMirror(this.editorElt.nativeElement, {
         value: '',
         mode: 'gfm',
         readOnly: 'true',

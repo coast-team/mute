@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 
+import { DocHistoryComponent } from './doc/doc-history/doc-history.component'
 import { DocResolverService } from './doc/doc-resolver.service'
 import { DocComponent } from './doc/doc.component'
 import { DocsResolverService } from './docs/docs-resolver.service'
@@ -32,17 +33,15 @@ const routes: Routes = [
       }
     ]
   }, {
-    path: 'history', redirectTo: ''
-  }, {
     path: 'history/:key',
-    component: DocComponent,
+    component: DocHistoryComponent,
     resolve: { file: DocResolverService }
+  }, {
+    path: 'history', redirectTo: ''
   }, {
     path: ':key',
     component: DocComponent,
     resolve: { file: DocResolverService }
-  }, {
-    path: '**', redirectTo: ''
   }
 ]
 

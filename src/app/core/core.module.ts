@@ -6,7 +6,6 @@ import { ProfileService } from './profile/profile.service'
 import { BotStorageService } from './storage/bot-storage/bot-storage.service'
 import { StorageService } from './storage/storage.service'
 import { UiService } from './ui/ui.service'
-import { WindowRefService } from './WindowRefService'
 
 @NgModule({
   imports: [
@@ -19,8 +18,7 @@ import { WindowRefService } from './WindowRefService'
     StorageService,
     BotStorageService,
     ProfileService,
-    UiService,
-    WindowRefService
+    UiService
   ]
 })
 export class CoreModule {}

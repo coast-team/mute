@@ -27,12 +27,10 @@ import 'hypermd/hypermd/addon/click'
 import 'hypermd/hypermd/addon/hover'
 import 'hypermd/hypermd/addon/paste'
 
-import { WindowRefService } from '../../core/WindowRefService'
-
 @Injectable()
 export class EditorService {
 
-  constructor (private windowRef: WindowRefService) {}
+  constructor () {}
 
   private configuration = {
     lineNumbers: false,
@@ -190,7 +188,7 @@ export class EditorService {
 
   setupGlobalForTests () {
     const doc = this.editor.getDoc() as any
-    this.windowRef.window.muteTest = {
+    global.window.muteTest = {
       insert: (index: number, text: string) => {
         doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
       },

@@ -6,11 +6,13 @@ import {
   trigger
 } from '@angular/animations'
 import {
-  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Input
+  Input,
+  OnDestroy,
+  OnInit
 } from '@angular/core'
-import { Observable } from 'rxjs/Rx'
+import { Observable, Subscription } from 'rxjs/Rx'
 
 import { Doc } from '../../../core/Doc'
 import { RichCollaborator } from '../../../doc/rich-collaborators'
@@ -19,7 +21,6 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
   selector: 'mute-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('peerArriving', [
       state('active', style({transform: 'translateX(0)'})),
@@ -29,11 +30,29 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
     ])
   ]
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit, OnDestroy {
 
   @Input() collaborators: Observable<RichCollaborator[]>
   @Input() doc: Doc
 
-  constructor () { }
+  private subs: Subscription
+
+  public collabs: RichCollaborator[]
+
+  constructor (
+    private changeDetectorRef: ChangeDetectorRef
+  ) {}
+
+  ngOnInit () {
+    this.subs = this.collaborators.subscribe((collabs: RichCollaborator[]) => {
+      log.debug('New collabs: ', collabs)
+      this.collabs = collabs
+      this.changeDetectorRef.detectChanges()
+    })
+  }
+
+  ngOnDestroy () {
+    this.subs.unsubscribe()
+  }
 
 }

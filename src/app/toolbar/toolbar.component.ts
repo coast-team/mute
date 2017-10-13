@@ -5,7 +5,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations'
-import {  Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
+import {  ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
 import { ObservableMedia } from '@angular/flex-layout'
 import { ResolveEnd, Router } from '@angular/router'
 import { SignalingState, WebGroupState } from 'netflux'
@@ -13,7 +13,6 @@ import { SignalingState, WebGroupState } from 'netflux'
 import { ProfileService } from '../core/profile/profile.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { WindowRefService } from '../core/WindowRefService'
 import { NetworkService } from '../doc/network/network.service'
 
 @Component({
@@ -46,7 +45,7 @@ export class ToolbarComponent implements OnInit {
   public routeName: string
 
   // Here add subscription
-  public syncDetailsState = 'hidden'
+  public detailsVisible = false
   public syncDetails: string
   public syncState: number
   public signalingState: SignalingState
@@ -57,9 +56,9 @@ export class ToolbarComponent implements OnInit {
   constructor (
     public ui: UiService,
     private networkService: NetworkService,
-    private windowRef: WindowRefService,
     private router: Router,
     private storage: StorageService,
+    private changeDetectorRef: ChangeDetectorRef,
     public profile: ProfileService,
     public media: ObservableMedia,
   ) {
@@ -69,35 +68,6 @@ export class ToolbarComponent implements OnInit {
     this.setSyncDetails()
     this.setSignalingDetails()
     this.setGroupDetails()
-
-    this.networkService.onStateChange.subscribe((state: WebGroupState) => {
-      this.groupState = state
-      this.setGroupDetails()
-      if (this.windowRef.window.navigator.onLine) {
-        if (state === WebGroupState.JOINED) {
-          this.syncState = this.SYNC
-        } else {
-          this.syncState = undefined
-        }
-        this.setSyncDetails()
-      }
-    })
-
-    this.networkService.onSignalingStateChange.subscribe((state: SignalingState) => {
-      this.signalingState = state
-      this.setSignalingDetails()
-      if (this.windowRef.window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
-        this.syncState = undefined
-        this.setSyncDetails()
-      }
-    })
-
-    this.networkService.onLine.subscribe((online: boolean) => {
-      if (!online) {
-        this.syncState = this.SYNC_PROBLEM
-        this.setSyncDetails()
-      }
-    })
   }
 
   ngOnInit () {
@@ -110,6 +80,38 @@ export class ToolbarComponent implements OnInit {
         this.routeName = this.routeNameFromUrl(event.url)
         this.rootFileTitle = this.ui.activeFile.title
       })
+
+    this.networkService.onStateChange.subscribe((state: WebGroupState) => {
+      this.groupState = state
+      this.setGroupDetails()
+      if (global.window.navigator.onLine) {
+        if (state === WebGroupState.JOINED) {
+          this.syncState = this.SYNC
+        } else {
+          this.syncState = undefined
+        }
+        this.setSyncDetails()
+        this.changeDetectorRef.detectChanges()
+      }
+    })
+
+    this.networkService.onSignalingStateChange.subscribe((state: SignalingState) => {
+      this.signalingState = state
+      this.setSignalingDetails()
+      if (global.window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
+        this.syncState = undefined
+        this.setSyncDetails()
+        this.changeDetectorRef.detectChanges()
+      }
+    })
+
+    this.networkService.onLine.subscribe((online: boolean) => {
+      if (!online) {
+        this.syncState = this.SYNC_PROBLEM
+        this.setSyncDetails()
+        this.changeDetectorRef.detectChanges()
+      }
+    })
 
   }
 
@@ -152,11 +154,14 @@ export class ToolbarComponent implements OnInit {
   }
 
   showSyncDetails () {
-    this.syncDetailsState = 'visible'
+    this.detailsVisible = true
+    log.debug('Show ', this.detailsVisible)
+    this.changeDetectorRef.detectChanges()
   }
 
   hideSyncDetails () {
-    this.syncDetailsState = 'hidden'
+    this.detailsVisible = false
+    this.changeDetectorRef.detectChanges()
   }
 
   private setSyncDetails () {

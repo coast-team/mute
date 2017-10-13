@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, Input } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 
 import { Doc } from '../../core/Doc'
@@ -10,11 +10,11 @@ import { RichCollaboratorsService } from '../../doc/rich-collaborators'
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss']
 })
-export class RightSideComponent implements OnInit {
+export class RightSideComponent {
 
   public storageIcons: string[]
   public collaborators: any
-  public doc: Doc
+  @Input() doc: Doc
   public headers: any[] = [
     {md: 'Header', s: '# Header', class: 'header-1 header-1::after'},
     {md: 'Header', s: '## Header', class: 'header-2 header-2::after'},
@@ -46,12 +46,6 @@ export class RightSideComponent implements OnInit {
     public profile: ProfileService
   ) {
     this.collaborators = collabService.onCollaborators
-  }
-
-  ngOnInit () {
-    this.route.data.subscribe(({ file }: {file: Doc}) => {
-      this.doc = file
-    })
   }
 
   updatePseudo (pseudo: string) {

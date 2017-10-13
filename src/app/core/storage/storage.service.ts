@@ -4,7 +4,6 @@ import { State } from 'mute-core'
 import { Doc } from '../Doc'
 import { File } from '../File'
 import { Folder } from '../Folder'
-import { WindowRefService } from '../WindowRefService'
 
 const selectList = [
   'type',
@@ -26,9 +25,7 @@ export class StorageService {
   public home: Folder
   public trash: Folder
 
-  constructor (
-    private windowRef: WindowRefService
-  ) {
+  constructor () {
     this.root = new Folder('/', '', '')
     this.home = new Folder('home', 'All documents', 'view_module', this.root.route)
     this.trash = new Folder('trash', 'Trash', 'delete', this.root.route)
@@ -189,7 +186,7 @@ export class StorageService {
     const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     const length = 42 // Should be less then MAX_KEY_LENGTH value
     const values = new Uint32Array(length)
-    this.windowRef.window.crypto.getRandomValues(values)
+    global.window.crypto.getRandomValues(values)
     let result = ''
     for (let i = 0; i < length; i++) {
       result += mask[values[i] % mask.length]

@@ -1,7 +1,7 @@
 <div class="controls-buttons">
-  <button mat-mini-fab><mat-icon (click)="onClickFastRewind($event)">fast_rewind</mat-icon></button>
-  <button mat-mini-fab><mat-icon (click)="onClickPlay($event)">{{ (isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow' }}</mat-icon></button>
-  <button mat-mini-fab><mat-icon (click)="onClickFastForward($event)" >fast_forward</mat-icon></button>
+  <button mat-mini-fab><mat-icon (click)="onClickFastRewind()">fast_rewind</mat-icon></button>
+  <button mat-mini-fab><mat-icon (click)="onClickPlay()">{{ pausePlayBtn }}</mat-icon></button>
+  <button mat-mini-fab><mat-icon (click)="onClickFastForward()" >fast_forward</mat-icon></button>
   <mat-slider thumbLabel 
     min="1"
     max="{{ max }}"
