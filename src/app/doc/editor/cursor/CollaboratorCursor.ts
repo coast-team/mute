@@ -43,7 +43,7 @@ export class CollaboratorCursor {
     this.pseudoElm.className = 'collaborator-pseudo'
     this.pseudoElm.style.backgroundColor = collab.color
     this.pseudoElm.style.width = '0'
-    this.updatePseudo(collab.pseudo)
+    this.updateDisplayName(collab.pseudo)
 
     // Append elements to DOM
     this.cursorElm.appendChild(this.pseudoElm)
@@ -58,7 +58,7 @@ export class CollaboratorCursor {
     }, 1500)
   }
 
-  updatePseudo (pseudo: string) {
+  updateDisplayName (pseudo: string) {
     this.pseudoElm.innerHTML = `&nbsp;${pseudo}`
     this.pseudoElmWidth = `${15 + pseudo.length * 5}px`
   }

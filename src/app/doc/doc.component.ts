@@ -45,7 +45,6 @@ export class DocComponent implements OnDestroy, OnInit {
     public media: ObservableMedia
   ) {
     this.doc = new Doc('', '', '')
-    log.debug('Init DOC: ', this.doc)
   }
 
   ngOnInit () {
@@ -72,7 +71,6 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.route.data.subscribe(({ file }: { file: Doc }) => {
       this.doc = file
-      log.debug('Route DOC: ', this.doc)
       this.networkSubscription = this.network.onJoin.subscribe(() => {
         if (this.doc.botStorages.length !== 0) {
           this.network.inviteBot(this.doc.botStorages[0].wsURL)
@@ -104,7 +102,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
         this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
         this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-        this.muteCore.collaboratorsService.pseudoSource = this.profile.onPseudonym
+        this.muteCore.collaboratorsService.pseudoSource = this.profile.onProfile.map((profile) => profile.displayName)
 
         this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
         this.syncStorage.initSource = this.muteCore.onInit.map(() => this.doc)

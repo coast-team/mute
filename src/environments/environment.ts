@@ -12,5 +12,12 @@ export const environment = {
   serviceWorker: false,
   storages: [
     {secure: false, host: 'localhost', port: 20000}
-  ]
+  ],
+  auth: {
+    baseUrl: 'http://localhost:4000/',
+    providers: {
+      github: { clientId: 'aa9276bbe09317cace57' },
+      google: { clientId: '900988055557-r0u3sq6o1rg2t3tjidh7pq2h0nbjpp3d.apps.googleusercontent.com' }
+    }
+  }
 }

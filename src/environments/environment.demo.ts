@@ -11,5 +11,6 @@ export const environment = {
   ],
   signalingURL: 'ws://192.168.0.101:8000',
   serviceWorker: false,
-  storages: []
+  storages: [],
+  auth: {}
 }

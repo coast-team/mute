@@ -40,14 +40,11 @@ export class HistoryControlsComponent implements OnInit {
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
       this.onControls.emit(CONTROLS.PAUSE)
-      log.debug('here')
     } else {
-      log.debug('here 2')
       this.isPlaying = !this.isPlaying
       this.onControls.emit(this.isPlaying ? CONTROLS.PLAY : CONTROLS.PAUSE)
     }
     this.pausePlayBtn = (this.isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow'
-    log.debug('btn ', this.pausePlayBtn)
   }
 
   onClickFastForward () {

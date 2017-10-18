@@ -39,9 +39,7 @@ export class BotStorageService {
 
   whichExist (keys: string[]): Promise<string[]> {
     return new Promise ((resolve, reject) => {
-      log.debug('whichExist call, ', keys)
       this.isAvailable.subscribe((isAvailable) => {
-        log.debug('whichExist is avaialbel: ', isAvailable)
         if (isAvailable) {
           this.http.post(
             `${this.bot.httpURL}/exist`,
@@ -50,7 +48,6 @@ export class BotStorageService {
             }
           ).toPromise()
             .then((response) => {
-              log.debug('keys: ', response.json())
               resolve(response.json())
             })
             .catch((err) => reject(err))

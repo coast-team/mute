@@ -147,7 +147,6 @@ export class NetworkService {
           service: 'botprotocol',
           content: BotProtocol.encode(content).finish()
         })
-        log.debug('Sending doc key to bot: ', this.key)
         this.wg.sendTo(id, Message.encode(msg).finish())
       } else if (serviceName === 'botresponse') {
         const url = BotResponse.decode(msg.content).url
@@ -166,7 +165,6 @@ export class NetworkService {
   set initSource (source: Observable<string>) {
     source.takeUntil(this.disposeSubject).subscribe((key: string) => {
       this.key = key
-      log.debug('DOC KEY: ', key)
       this.join(key)
     })
   }

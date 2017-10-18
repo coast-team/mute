@@ -59,7 +59,6 @@ export class DocHistoryService {
       this.getOperations(doc)
           .then((ops: Array<IDelete | IInsert>) => {
             for (const o of ops) {
-              // log.debug(o.authorName)
               const author: Author = new Author(o.authorName, o.authorId, this.collaboratorsService.pickColor())
 
               if (docAuthors.filter((e) => {

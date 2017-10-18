@@ -45,7 +45,6 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit () {
     this.subs = this.collaborators.subscribe((collabs: RichCollaborator[]) => {
-      log.debug('New collabs: ', collabs)
       this.collabs = collabs
       this.changeDetectorRef.detectChanges()
     })

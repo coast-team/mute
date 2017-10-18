@@ -2,7 +2,7 @@
 
 :host {
   box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.2);
-  z-index: 1000;
+  z-index: 100;
 }
 
 mat-progress-spinner {
@@ -63,41 +63,14 @@ mat-progress-spinner {
   }
 }
 
-.syncing {
-  animation-name: rotating;
-  animation-duration: 1s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-out;
-}
-
-.sync-details {
-  background-color: dimgray;
-  opacity: 0.9;
-  color: white;
-  position: absolute;
-  transform-origin: top right;
-  top: 30px;
-  right: 26px;
-  border-radius: 3px;
-  padding: 8px;
-
-  h4 {
-    text-align: center;
-  }
+.toolbar-icon {
+  padding: 4px;
 }
 
 mat-toolbar {
 
   .indicator {
     margin-right: 8px;
-  }
-
-  .networkState {
-    visibility: hidden;
-    position: fixed;
-    top: 70px;
-    right: 30px;
-    
   }
 
   .networkIcon:hover + .networkState {

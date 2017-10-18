@@ -34,5 +34,14 @@ export const environment = {
       host: 'www.coedit.re', // Server hostname or IP address
       port: 11443 // Server port
     }
-  ]
+  ],
+
+  // Authentication providers
+  auth: {
+    baseUrl: 'https://www.coedit.re/',
+    providers: {
+      github: { clientId: '' }, // Github application clientId
+      google: { clientId: '' }  // Google application clientId
+    }
+  }
 }

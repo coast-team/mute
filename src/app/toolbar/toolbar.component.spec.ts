@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { MdSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
 import { RouterTestingModule } from '@angular/router/testing'
 import { ProfileService } from '../core/profile/profile.service'
 import { UiService } from '../core/ui/ui.service'
@@ -31,7 +31,7 @@ describe('ToolbarComponent', () => {
         { provide: UiService, useValue: uiServiceStub },
         { provide: NetworkService, useValue: networkServiceStub },
         { provide: ProfileService, useValue: profileServiceStub },
-        { provide: MdSnackBar, useValue: mdSnackBarStub }
+        { provide: MatSnackBar, useValue: mdSnackBarStub }
       ]
     })
     .compileComponents()

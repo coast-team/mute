@@ -65,7 +65,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
     this.collabService.onChange.subscribe(({collab}: {collab: RichCollaborator}) => {
       const cursor = this.cursors.get(collab.id)
       if (cursor !== undefined) {
-        cursor.updatePseudo(collab.pseudo)
+        cursor.updateDisplayName(collab.pseudo)
       }
     })
 

@@ -60,7 +60,6 @@ export class DevLabelComponent implements OnInit {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
       this.detectRef.detectChanges()
-      // log.debug("Current digest " + this.digest)
     })
 
     this.ui.onDocTree.subscribe((tree: string) => {

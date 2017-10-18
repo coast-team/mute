@@ -38,6 +38,22 @@
        url('/assets/fonts/Cinzel-Decorative/Cinzel-Decorative-regular.woff') format('woff');
 }
 
+@font-face {
+  font-family: 'Cinzel Decorative';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/assets/fonts/Cinzel-Decorative/Cinzel-Decorative-regular.woff2') format('woff2'),
+       url('/assets/fonts/Cinzel-Decorative/Cinzel-Decorative-regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'fontello';
+  font-weight: normal;
+  font-style: normal;
+  src: url('/assets/fonts/fontello/font/fontello.woff2') format('woff2'),
+       url('/assets/fonts/fontello/font/fontello.woff') format('woff');
+}
+
 
 // Document body
 $font: 'Droid Sans', sans-serif;

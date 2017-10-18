@@ -3,6 +3,7 @@ import { ObservableMedia } from '@angular/flex-layout'
 import { Router } from '@angular/router'
 
 import { Folder } from '../core/Folder'
+import { Profile } from '../core/profile/Profile'
 import { ProfileService } from '../core/profile/profile.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
@@ -18,13 +19,14 @@ export class NavComponent implements OnInit {
 
   public activeFolder: Folder
   public rootFolders: Folder[]
+  public profile: Profile
 
   constructor (
     public router: Router,
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
-    public profile: ProfileService
+    public profileService: ProfileService
   ) {
     switch (this.router.url) {
     case `/docs/${this.storage.home.route}`:
@@ -38,9 +40,12 @@ export class NavComponent implements OnInit {
   }
 
   ngOnInit () {
+    this.profileService.onProfile.subscribe((profile: Profile) => {
+      this.profile = profile
+      this.inputPseudo.nativeElement.value = profile.displayName
+    })
 
     // Initialize profile name
-    this.inputPseudo.nativeElement.value = this.profile.pseudonym
     if (this.activeFolder) {
       this.ui.setActiveFile(this.activeFolder)
     }
@@ -56,14 +61,14 @@ export class NavComponent implements OnInit {
     this.ui.setActiveFile(value)
   }
 
-  updatePseudo (event) {
+  updateDisplayName (event) {
     if (event.type === 'keydown' && event.keyCode === 13) {
       this.inputPseudo.nativeElement.blur()
     } else if (event.type === 'blur') {
       const newPseudo = this.inputPseudo.nativeElement.value
-      if (this.profile.pseudonym !== newPseudo) {
-        this.profile.pseudonym = (newPseudo === '') ?
-          this.profile.pseudonymDefault : newPseudo
+      if (this.profile.displayName !== newPseudo) {
+        this.profile.displayName = (newPseudo === '') ? this.profile.displayName : newPseudo
+        this.profileService.updateProfile()
       }
     }
   }
@@ -76,7 +81,6 @@ export class NavComponent implements OnInit {
     if (this.media.isActive('xs')) {
       this.ui.toggleNav()
     }
-    log.debug('storage click')
   }
 
   getRouterLink (folder: Folder) {

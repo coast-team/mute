@@ -21,7 +21,7 @@ export class RichCollaboratorsService {
   public collaborators: RichCollaborator[]
 
   constructor (
-    public profile: ProfileService
+    public profileService: ProfileService
   ) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
@@ -29,11 +29,11 @@ export class RichCollaboratorsService {
     this.collaboratorsSubject = new BehaviorSubject([])
 
     this.availableColors = COLORS.slice()
-    const me = new RichCollaborator(-1, profile.pseudonym, this.pickColor())
+    const me = new RichCollaborator(-1, profileService.profile.displayName, this.pickColor())
     this.collaborators = [me]
-    profile.onPseudonym.subscribe(
-      (pseudo) => {
-        me.pseudo = pseudo
+    profileService.onProfile.subscribe(
+      (profile) => {
+        me.pseudo = profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})
         this.collaboratorsSubject.next(this.collaborators)
       }
@@ -76,7 +76,6 @@ export class RichCollaboratorsService {
   set joinSource (source: Observable<Collaborator>) {
     source.subscribe((collab: Collaborator) => {
       const rc = this.findRichCollaborator(collab.id)
-      log.debug('new collab: ', collab)
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
       if (rc === undefined) {

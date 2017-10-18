@@ -1,0 +1,53 @@
+<button #profileIcon mat-icon-button (click)='toggleCard()' (blur)='hideCard()'>
+  <ng-container *ngIf="profile.avatar; else anonymousIcon">
+    <img class='avatar-img' src="{{profile.avatar}}" alt="avatar" height="32" width="32" />
+  </ng-container>
+  <ng-template #anonymousIcon>
+    <mat-icon aria-label="show profile information">account_circle</mat-icon>
+  </ng-template>
+</button>
+
+<mat-card *ngIf="cardState === 'visible'"
+  class="profile-card mat-elevation-z8"
+  [@cardState]='cardState'
+  (mouseenter)='setMouseOver(true)'
+  (mouseleave)='setMouseOver(false)'
+>
+  <span class="arrow"></span>
+  <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
+    <ng-container *ngIf="profile.avatar; else anonymousIconBig">
+      <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
+    </ng-container>
+    <ng-template #anonymousIconBig>
+      <mat-icon class="anonymous-icon-big" aria-label="show profile information">account_circle</mat-icon>
+    </ng-template>
+
+    <div fxLayout="column">
+      <span class="mat-body-2 name">{{profile.displayName}}</span>
+      <span class="mat-caption secondary-text">{{profile.login}}</span>
+      <button mat-raised-button color="accent" class="my-account">
+        My account
+      </button>
+    </div>
+  </div>
+
+  <mat-card-actions>
+    <div fxLayoutAlign="end center" *ngIf="profileService.isAuthenticated(); else signin">
+      <!-- <button mat-button disabled>Add account</button> -->
+      <button mat-button (click)="signout()">Sign Out</button>
+    </div>
+    <ng-template #signin>
+      <div fxLayoutAlign="end center">
+        <span class="mat-caption secondary-text">Sign in with: </span>
+        <button mat-icon-button (click)="signinWith('github')" matTooltip="Github">
+          <mat-icon aria-label="Sign in with Github" fontSet="icon-github-circled"></mat-icon>
+        </button>
+        <button mat-icon-button (click)="signinWith('google')" matTooltip="Google">
+          <mat-icon aria-label="Sign in with Google" fontSet="icon-google"></mat-icon>
+        </button>
+      </div>
+      
+    </ng-template>
+  </mat-card-actions>
+</mat-card>
+

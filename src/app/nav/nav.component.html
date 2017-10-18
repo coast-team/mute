@@ -4,9 +4,9 @@
     <mat-form-field dividerColor="accent" floatPlaceholder="never">
       <mat-icon matPrefix>account_circle</mat-icon>
       <input #inputPseudo matInput
-          [value]="profile.onPseudonym | async"
-          (keydown)="updatePseudo($event)"
-          (blur)="updatePseudo($event)"
+          [value]="profile?.displayName"
+          (keydown)="updateDisplayName($event)"
+          (blur)="updateDisplayName($event)"
           (focus)="selectPseudo()"
       />
     </mat-form-field>

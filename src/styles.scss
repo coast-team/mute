@@ -3,6 +3,7 @@
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~codemirror/lib/codemirror.css';
 
+@import 'assets/fonts/fontello/css/fontello.css';
 @import 'theme';
 @import 'mute-codemirror.scss';
 @import 'variables';
@@ -31,5 +32,10 @@ html {
   .contenteditable:focus{
     outline-width: 1px;
     outline-color: mat-color($accent, A400);
+  }
+
+  [class^="icon-"]:before, [class*=" icon-"]:before {
+    margin: 0;
+    font-size: 24px;
   }
 }

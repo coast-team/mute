@@ -3,23 +3,15 @@
     <button mat-icon-button (click)="ui.toggleNav()">
       <mat-icon>menu</mat-icon>
     </button>
-    <div class="profile" fxHide fxShow.gt-sm='true'>
-      <mat-form-field dividerColor="accent" floatPlaceholder="never">
-        <mat-icon matPrefix>account_circle</mat-icon>
-        <input #inputPseudo matInput
-            [value]="profile.onPseudonym | async"
-            (keydown)="updatePseudo($event)"
-            (blur)="updatePseudo($event)"
-            (focus)="selectPseudo()"
-        />
-      </mat-form-field>
-    </div>
   </div>
 
   <ng-container [ngSwitch]="routeName">
     <!-- Toolbar content for Docs -->
     <ng-container *ngSwitchCase="'docs'">
       <h2 class="central-part">{{rootFileTitle}}</h2>
+      <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
+        <mute-profile class="toolbar-icon" [profile]='profile'></mute-profile>
+      </div>
     </ng-container>
   
     <!-- Toolbar content for Doc -->
@@ -35,37 +27,25 @@
         </mat-form-field>
       </div>
       <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
-        <span [ngSwitch]="syncState" fxLayout="column" fxLayoutAlign="center center"
-          (mouseenter)='showSyncDetails()' (mouseleave)='hideSyncDetails()'
-        >
-          <mat-icon *ngSwitchCase="SYNC">sync</mat-icon>
-          <mat-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</mat-icon>
-          <mat-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</mat-icon>
-          <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
-        </span>
-        <div class="sync-details" [fxHide]="!detailsVisible">
-          <h4 class="mat-subheading-1">{{syncDetails}}</h4>
-          <p class="mat-body-1">
-            <span class="mat-body-2">Signaling state: </span>
-            {{signalingDetails}}
-          </p>
-          <p class="mat-body-1">
-            <span class="mat-body-2">Group state: </span>
-            {{groupDetails}}
-          </p>
-        </div>
-        <button *ngIf="media.isActive('lt-md')" mat-icon-button (click)="ui.toggleDocNav()">
+        <mute-sync class="toolbar-icon"></mute-sync>
+        <button class="toolbar-icon" *ngIf="media.isActive('lt-md')" mat-icon-button (click)="ui.toggleDocNav()">
           <mat-icon>info</mat-icon>
         </button>
+        <mute-profile class="toolbar-icon" [profile]='profile'></mute-profile>
       </div>
     </ng-container>
   
     <!-- Toolbar content for Doc History -->
     <ng-container *ngSwitchCase="'history'">
       <h2 class="central-part">{{rootFileTitle}}</h2>
-      <button class="right-part" mat-icon-button (click)="ui.toggleDocNav()">
-        <mat-icon>info</mat-icon>
-      </button>
+      <div class="right-part" fxLayout="row" fxLayoutAlign="end center">
+        <button class="toolbar-icon" mat-icon-button (click)="ui.toggleDocNav()">
+          <mat-icon>info</mat-icon>
+        </button>
+        <mute-profile class="toolbar-icon" [profile]='profile'></mute-profile>
+      </div>
+      
     </ng-container>
   </ng-container>
+
 </mat-toolbar>

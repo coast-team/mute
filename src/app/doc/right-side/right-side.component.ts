@@ -48,7 +48,8 @@ export class RightSideComponent {
     this.collaborators = collabService.onCollaborators
   }
 
-  updatePseudo (pseudo: string) {
-    this.profile.pseudonym = pseudo
+  updateDisplayName (pseudo: string) {
+    this.profile.profile.displayName = pseudo
+    this.profile.updateProfile()
   }
 }

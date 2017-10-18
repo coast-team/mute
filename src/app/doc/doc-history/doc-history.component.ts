@@ -68,7 +68,6 @@ export class DocHistoryComponent implements OnInit {
     // TODO replace by the specified service which maybe exist
     this.route.data.subscribe(({ file }: {file: Doc}) => {
       this.doc = file
-      log.debug('Doc: ', this.doc)
       this.docHistory.getAuthors(this.doc)
         .then((docAuths: Author[]) => {
           this.docAuthors = docAuths

@@ -13,7 +13,9 @@ import { DocModule } from './doc'
 import { DocsModule } from './docs'
 import { NavModule } from './nav'
 import { SharedModule } from './shared'
-import { ToolbarComponent } from './toolbar/toolbar.component'
+import { ProfileComponent } from './toolbar/profile/profile.component'
+import { ToolbarComponent } from './toolbar/toolbar.component';
+import { SyncComponent } from './toolbar/sync/sync.component'
 
 @NgModule({
   imports: [
@@ -29,7 +31,9 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
   declarations: [
     AppComponent,
     DevLabelComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    ProfileComponent,
+    SyncComponent
   ],
   providers: [
     {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}
