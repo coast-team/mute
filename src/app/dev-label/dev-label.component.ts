@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild } from '@angular/core'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
-import * as mnemonic from 'mnemonicjs'
+// import * as mnemonic from 'mnemonicjs'
 import 'rxjs/add/operator/toPromise'
 
 import { hash } from '../../lastcommithash'
@@ -58,7 +58,7 @@ export class DevLabelComponent implements OnInit {
 
   ngOnInit (): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
-      this.digest = mnemonic.encode_int32(digest)
+      this.digest = '' + digest // mnemonic.encode_int32(digest)
       this.detectRef.detectChanges()
     })
 

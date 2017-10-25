@@ -4,6 +4,7 @@ import { State } from 'mute-core'
 import { Doc } from '../Doc'
 import { File } from '../File'
 import { Folder } from '../Folder'
+import { ProfileService } from '../profile/profile.service'
 
 const selectList = [
   'type',
@@ -25,26 +26,33 @@ export class StorageService {
   public home: Folder
   public trash: Folder
 
-  constructor () {
+  constructor (
+    private profileService: ProfileService
+  ) {
     this.root = new Folder('/', '', '')
     this.home = new Folder('home', 'All documents', 'view_module', this.root.route)
     this.trash = new Folder('trash', 'Trash', 'delete', this.root.route)
-    this.db = jIO.createJIO({
-      type: 'query',
-      sub_storage: {
-        type: 'uuid',
-        sub_storage: {
-          type: 'indexeddb',
-          database: 'muteDocuments'
+    profileService.onProfile.filter((profile) => profile !== undefined)
+      .subscribe(
+        (profile) => {
+          this.db = jIO.createJIO({
+            type: 'query',
+            sub_storage: {
+              type: 'uuid',
+              sub_storage: {
+                type: 'indexeddb',
+                database: `documents-${profile.login}`
+              }
+            }
+          })
+          this.searchFolder(this.home.route)
+            .then((folder: Folder) => this.home.dbId = folder.dbId)
+            .catch(() => this.createFile(this.home))
+          this.searchFolder(this.trash.route)
+            .then((folder: Folder) => this.trash.dbId = folder.dbId)
+            .catch(() => this.createFile(this.trash))
         }
-      }
-    })
-    this.searchFolder(this.home.route)
-      .then((folder: Folder) => this.home.dbId = folder.dbId)
-      .catch(() => this.createFile(this.home))
-    this.searchFolder(this.trash.route)
-      .then((folder: Folder) => this.trash.dbId = folder.dbId)
-      .catch(() => this.createFile(this.trash))
+      )
   }
 
   getRootFolders (): Folder[] {

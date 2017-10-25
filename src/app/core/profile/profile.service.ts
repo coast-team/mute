@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
-import { BehaviorSubject, Observable, Subject } from 'rxjs/Rx'
+import { BehaviorSubject, Observable } from 'rxjs/Rx'
 
 import { IAccount } from './IAccount'
 import { Profile } from './Profile'
@@ -23,8 +23,7 @@ export class ProfileService {
     private auth: AuthService
   ) {
     // Create default profile just for the time to get actual profile (authenticated or anonymous)
-    this._profile = new Profile([{ provider: '', login: '', name: '' }])
-    this.profileSubject = new BehaviorSubject(this._profile)
+    this.profileSubject = new BehaviorSubject(undefined)
 
     // Create profiles database if doesn't exist already
     this.db = jIO.createJIO({
@@ -123,6 +122,7 @@ export class ProfileService {
 
   private setProfile (profile: Profile) {
     this._profile = profile
+    log.debug('Set profile: ', profile)
     this.profileSubject.next(profile)
   }
 

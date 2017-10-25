@@ -37,7 +37,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private zone: NgZone,
     private route: ActivatedRoute,
     private richCollaboratorsService: RichCollaboratorsService,
-    private profile: ProfileService,
+    private profileService: ProfileService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
@@ -102,7 +102,10 @@ export class DocComponent implements OnDestroy, OnInit {
         this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
         this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
         this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-        this.muteCore.collaboratorsService.pseudoSource = this.profile.onProfile.map((profile) => profile.displayName)
+        this.muteCore.collaboratorsService.pseudoSource = this.profileService.onProfile.map((profile) => {
+          log.debug('Current display name: ', profile.displayName)
+          return profile.displayName
+        })
 
         this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
         this.syncStorage.initSource = this.muteCore.onInit.map(() => this.doc)

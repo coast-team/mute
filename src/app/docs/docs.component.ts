@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs/Subscription'
 import { Doc } from '../core/Doc'
 import { File } from '../core/File'
 import { Folder } from '../core/Folder'
+import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { BotStorage } from '../core/storage/bot-storage/BotStorage'
 import { StorageService } from '../core/storage/storage.service'
@@ -48,6 +49,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private botStorage: BotStorageService,
+    private profileService: ProfileService,
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
@@ -74,10 +76,29 @@ export class DocsComponent implements OnDestroy, OnInit {
           .then((existedKeys) => {
             this.docs.forEach((doc: Doc) => {
               if (existedKeys.includes(doc.key)) {
-                doc.addBotStorage(this.botStorage.bot)
+                doc.setBotStorage([this.botStorage.bot])
               }
             })
           })
+      })
+
+    this.profileService.onProfile
+      .subscribe((profile) => {
+        this.storage.getFiles(this.activeFolder)
+        .then((files: File[]) => {
+          this.docs = files.filter((file: File) => file.isDoc) as Doc[]
+          this.docsSubject.next(this.docs)
+          this.isFinishFetching = true
+          const keys = this.docs.map((doc: Doc) => doc.key)
+          return this.botStorage.whichExist(keys)
+        })
+        .then((existedKeys) => {
+          this.docs.forEach((doc: Doc) => {
+            if (existedKeys.includes(doc.key)) {
+              doc.setBotStorage([this.botStorage.bot])
+            }
+          })
+        })
       })
 
     this.mediaSubscription = this.media.asObservable().subscribe((change: MediaChange) => {
@@ -163,16 +184,9 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   newDoc () {
-    const MIN_LENGTH = 10
-    const DELTA_LENGTH = 0
-    const MASK = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let key = ''
-    const length = MIN_LENGTH + Math.round(Math.random() * DELTA_LENGTH)
-
-    for (let i = 0; i < length; i++) {
-      key += MASK[Math.round(Math.random() * (MASK.length - 1))]
-    }
-    this.router.navigate(['doc/' + key])
+    const doc = this.storage.createDoc()
+    this.ui.setActiveFile(doc)
+    this.router.navigate(['/', doc.key])
   }
 
   shareDoc (doc: Doc) { // Workaround, but not pretty

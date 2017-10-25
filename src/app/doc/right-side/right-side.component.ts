@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 
 import { Doc } from '../../core/Doc'
@@ -10,7 +10,7 @@ import { RichCollaboratorsService } from '../../doc/rich-collaborators'
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss']
 })
-export class RightSideComponent {
+export class RightSideComponent implements OnInit {
 
   public storageIcons: string[]
   public collaborators: any
@@ -45,7 +45,13 @@ export class RightSideComponent {
     private collabService: RichCollaboratorsService,
     public profile: ProfileService
   ) {
-    this.collaborators = collabService.onCollaborators
+    this.collaborators = this.collabService.onCollaborators
+  }
+
+  ngOnInit () {
+    // this.collabService.onCollaborators.subscribe((collaborators) => {
+    //   this.collaborators = collaborators
+    // })
   }
 
   updateDisplayName (pseudo: string) {

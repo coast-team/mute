@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { environment } from '../environments/environment'
+import { AppResolverService } from './app-resolver.service'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
@@ -14,8 +15,8 @@ import { DocsModule } from './docs'
 import { NavModule } from './nav'
 import { SharedModule } from './shared'
 import { ProfileComponent } from './toolbar/profile/profile.component'
-import { ToolbarComponent } from './toolbar/toolbar.component';
 import { SyncComponent } from './toolbar/sync/sync.component'
+import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
   imports: [
@@ -36,7 +37,8 @@ import { SyncComponent } from './toolbar/sync/sync.component'
     SyncComponent
   ],
   providers: [
-    {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}
+    {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
+    AppResolverService
   ],
   bootstrap: [AppComponent]
 })

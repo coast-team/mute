@@ -48,7 +48,6 @@ export class ProfileComponent {
         this.profileIcon.focus()
         snackBarRef.afterDismissed().subscribe(() => {
           this.cardState = 'void'
-          this.changeDetectorRef.detectChanges()
         })
       })
   }
@@ -63,7 +62,6 @@ export class ProfileComponent {
         this.profileIcon.focus()
         snackBarRef.afterDismissed().subscribe(() => {
           this.cardState = 'void'
-          this.changeDetectorRef.detectChanges()
         })
       })
       .catch(() => {

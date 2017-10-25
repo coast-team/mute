@@ -46,8 +46,8 @@ export class Doc extends File {
     return this.botStoragesSubject.asObservable()
   }
 
-  addBotStorage (bot: BotStorage) {
-    this.botStorages[this.botStorages.length] = bot
+  setBotStorage (bots: BotStorage[]) {
+    this.botStorages = bots
     this.botStoragesSubject.next(this.botStorages)
   }
 
