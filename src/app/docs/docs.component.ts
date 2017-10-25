@@ -174,7 +174,9 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.docsSubject.next(this.docs)
     this.storage.deleteDoc(doc)
       .then(() => {
-        this.snackBar.open(`"${doc.title}" has been deleted.`)
+        this.snackBar.open(`"${doc.title}" has been deleted.`, 'close', {
+          duration: 3000
+        })
       })
   }
 
