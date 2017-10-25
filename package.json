@@ -46,6 +46,7 @@
     "@angular/platform-browser": "^4.4.5",
     "@angular/platform-browser-dynamic": "^4.4.5",
     "@angular/router": "^4.4.5",
+    "@coast-team/mnemonicjs": "^1.0.0",
     "@types/text-encoding": "0.0.32",
     "bragi-browser": "0.0.12",
     "codemirror": "~5.28.0",
