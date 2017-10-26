@@ -17,20 +17,22 @@ export class BotStorageService {
   ) {
     this.botsSubject = new BehaviorSubject([])
     this.isAvailable = new AsyncSubject()
-    const storage = environment.storages[0]
-    this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
-    this.http.get(`${this.bot.httpURL}/name`).toPromise()
-      .then((response) => {
-        this.bot.name = response.text()
-        this.botsSubject.next([this.bot])
-        this.isAvailable.next(true)
-        this.isAvailable.complete()
-      })
-      .catch((err) => {
-        log.warn(`Bot storage "${this.bot.httpURL}" is unavailable: ${err.message}`)
-        this.isAvailable.next(false)
-        this.isAvailable.complete()
-      })
+    if (environment.storages.length !== 0) {
+      const storage = environment.storages[0]
+      this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
+      this.http.get(`${this.bot.httpURL}/name`).toPromise()
+        .then((response) => {
+          this.bot.name = response.text()
+          this.botsSubject.next([this.bot])
+          this.isAvailable.next(true)
+          this.isAvailable.complete()
+        })
+        .catch((err) => {
+          log.warn(`Bot storage "${this.bot.httpURL}" is unavailable: ${err.message}`)
+          this.isAvailable.next(false)
+          this.isAvailable.complete()
+        })
+    }
   }
 
   get onBots (): Observable<BotStorage[]> {

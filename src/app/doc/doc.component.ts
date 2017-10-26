@@ -103,7 +103,6 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
         this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
         this.muteCore.collaboratorsService.pseudoSource = this.profileService.onProfile.map((profile) => {
-          log.debug('Current display name: ', profile.displayName)
           return profile.displayName
         })
 

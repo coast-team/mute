@@ -15,12 +15,8 @@ export class AppResolverService implements Resolve<Profile> {
     if (this.profileService.profile) {
       return Promise.resolve(this.profileService.profile)
     } else {
-      log.debug('App resolver: ')
       return this.profileService.onProfile
-        .filter((profile) => {
-          log.debug('new profile: ', profile)
-          return profile !== undefined
-        })
+        .filter((profile) => profile !== undefined)
         .first()
         .toPromise()
     }

@@ -16,7 +16,6 @@ export class DocsResolverService implements Resolve<Folder> {
   ) {}
 
   resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Folder> {
-    log.debug('DocsResolverService: ', state.url)
     if (state.url === '/') {
       this.ui.setActiveFile(this.storage.home)
       return Promise.resolve(this.storage.home)

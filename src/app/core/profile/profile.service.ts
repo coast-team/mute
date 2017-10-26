@@ -122,7 +122,6 @@ export class ProfileService {
 
   private setProfile (profile: Profile) {
     this._profile = profile
-    log.debug('Set profile: ', profile)
     this.profileSubject.next(profile)
   }
 

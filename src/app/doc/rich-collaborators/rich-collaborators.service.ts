@@ -37,7 +37,6 @@ export class RichCollaboratorsService {
         me.pseudo = profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})
         this.collaboratorsSubject.next(this.collaborators)
-        log.debug('new collabs')
       }
     )
   }
@@ -65,7 +64,6 @@ export class RichCollaboratorsService {
       // In some cases, it is possible to receive a message from a peer
       // before the corresponding peerJoin event is triggered.
       // In that case, add the new peer instead of trying to perform an update.
-      log.debug('pseudoChangeSource', collab)
       if (rc instanceof RichCollaborator) {
         rc.pseudo = collab.pseudo
         this.changeSubject.next({collab: rc, prop: 'pseudo'})
@@ -81,7 +79,6 @@ export class RichCollaboratorsService {
       const rc = this.findRichCollaborator(collab.id)
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
-      log.debug('joinSource: ', rc)
       if (rc === undefined) {
         this.handleNewCollaborator(collab)
       } else {
