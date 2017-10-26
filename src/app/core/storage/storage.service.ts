@@ -26,9 +26,7 @@ export class StorageService {
   public home: Folder
   public trash: Folder
 
-  constructor (
-    private profileService: ProfileService
-  ) {
+  constructor (profileService: ProfileService) {
     this.root = new Folder('/', '', '')
     this.home = new Folder('home', 'All documents', 'view_module', this.root.route)
     this.trash = new Folder('trash', 'Trash', 'delete', this.root.route)

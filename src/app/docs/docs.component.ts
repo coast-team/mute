@@ -14,7 +14,6 @@ import { File } from '../core/File'
 import { Folder } from '../core/Folder'
 import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
-import { BotStorage } from '../core/storage/bot-storage/BotStorage'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
 

@@ -77,7 +77,9 @@
       "ban-keywords",
       "check-format"
     ],
-    "no-unused-variable": true,
+    "no-unused-variable": {
+      "severity": "warning"
+    },
     "ter-indent": [true, 2],
     "directive-selector": [true, "attribute", "mute", "camelCase"],
     "component-selector": [true, "element", "mute", "kebab-case"],

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { ActivatedRoute } from '@angular/router'
 
 import { Doc } from '../../core/Doc'
 import { ProfileService } from '../../core/profile/profile.service'
@@ -41,7 +40,6 @@ export class RightSideComponent implements OnInit {
   ]
 
   constructor (
-    private route: ActivatedRoute,
     private collabService: RichCollaboratorsService,
     public profile: ProfileService
   ) {

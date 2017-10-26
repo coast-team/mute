@@ -47,7 +47,7 @@ export class AppModule {
     private snackBar: MatSnackBar
   ) {
     if (environment.serviceWorker) {
-      const serviceWorker = new ServiceWorkerRegister(global.window)
+      const serviceWorker = new ServiceWorkerRegister()
       serviceWorker.registerSW()
       serviceWorker.observableState.subscribe((message) => {
         this.snackBar.open(message, 'Close', {

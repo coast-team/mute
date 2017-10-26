@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { ActivatedRoute, Router } from '@angular/router'
+import { Router } from '@angular/router'
 
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui/ui.service'
@@ -22,7 +22,6 @@ export class HistoryControlsComponent implements OnInit {
   @Output() onSlide: EventEmitter<number>
 
   constructor (
-    private route: ActivatedRoute,
     private router: Router,
     public ui: UiService
   ) {

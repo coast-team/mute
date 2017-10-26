@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
-import { BehaviorSubject, Observable, Observer, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
+import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
 
 import { environment } from '../../../environments/environment'
-import { UiService } from '../../core/ui/ui.service'
 import { BotProtocol, BotResponse, Message } from './message_pb'
 
 @Injectable()
@@ -45,9 +44,7 @@ export class NetworkService {
   private stateSubject: Subject<WebGroupState>
   private signalingSubject: Subject<SignalingState>
 
-  constructor (
-    private ui: UiService
-  ) {
+  constructor () {
     this.botUrls = []
     this.key = ''
 

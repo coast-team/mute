@@ -153,7 +153,6 @@ export class DocHistoryComponent implements OnInit {
       const generatedText = this.generateText(0, numOperation - 1)
       // just replace the content of editor the generated text.
       doc.setValue(generatedText)
-      const diff = this.docHistory.getDiff(this.oldText, generatedText)
       this.oldText = generatedText
       this.currentOp = numOperation
     }

@@ -2,8 +2,6 @@ import { Subject } from 'rxjs/Subject'
 
 export class ServiceWorkerRegister {
 
-  constructor (private windowRef: Window) {}
-
   public observableState = new Subject<string>()
 
   emitEvent (message: string) {

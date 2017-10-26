@@ -1,13 +1,11 @@
-import {  ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core'
+import {  Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { ObservableMedia } from '@angular/flex-layout'
 import { ResolveEnd, Router } from '@angular/router'
-import { AuthService } from 'ng2-ui-auth'
 
 import { Profile } from '../core/profile/Profile'
 import { ProfileService } from '../core/profile/profile.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { NetworkService } from '../doc/network/network.service'
 
 @Component({
   selector: 'mute-toolbar',
@@ -27,11 +25,8 @@ export class ToolbarComponent implements OnInit {
 
   constructor (
     public ui: UiService,
-    private networkService: NetworkService,
     private router: Router,
     private storage: StorageService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private auth: AuthService,
     public profileService: ProfileService,
     public media: ObservableMedia,
   ) {
