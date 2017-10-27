@@ -3,11 +3,11 @@
 @import '~material-design-icons/iconfont/material-icons.css';
 @import '~codemirror/lib/codemirror.css';
 
-@import 'assets/fonts/fontello/css/fontello.css';
 @import 'theme';
-@import 'mute-codemirror.scss';
+@import 'mute-codemirror';
 @import 'variables';
-@import 'spinner.scss';
+@import 'spinner';
+@import 'fontello';
 
 html {
   font-size: 10px;

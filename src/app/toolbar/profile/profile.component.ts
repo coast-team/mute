@@ -64,7 +64,8 @@ export class ProfileComponent {
           this.cardState = 'void'
         })
       })
-      .catch(() => {
+      .catch((err) => {
+        log.error('Failed to signin: ', err)
         provider = provider[0].toUpperCase() + provider.substr(1)
         this.snackBar.open(`FAILED to sign in with ${provider}`, 'close', {
           duration: 5000
