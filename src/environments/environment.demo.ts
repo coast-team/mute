@@ -16,5 +16,8 @@ export const environment = {
     host: '192.168.0.101',
     port: 8100
   }],
-  auth: {}
+  auth: {
+    baseUrl: '',
+    providers: {}
+  }
 }

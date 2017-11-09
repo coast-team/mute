@@ -14,8 +14,10 @@ export class AuthConfig extends CustomConfig {
 
   constructor () {
     super()
-    this.baseUrl = environment.auth.baseUrl
-    this.providers = environment.auth.providers
+    if (environment.auth.baseUrl !== '') {
+      this.baseUrl = environment.auth.baseUrl
+      this.providers = environment.auth.providers
+    }
     this.defaultHeaders = { 'Content-Type': 'application/json' }
   }
 
