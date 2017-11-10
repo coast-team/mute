@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/
 import { ActivatedRoute, Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
+import { throttleTime } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
@@ -111,16 +112,11 @@ export class DocsComponent implements OnDestroy, OnInit {
       }
     })
 
-    this.ui.onNavToggle.subscribe(() => {
-      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
-    })
+    this.ui.onNavToggle.subscribe(() => this.leftSidenavElm.opened = !this.leftSidenavElm.opened)
 
-    this.ui.onDocNavToggle.subscribe(() => {
-      this.rightSidenavElm.opened = !this.rightSidenavElm.opened
-    })
+    this.ui.onDocNavToggle.subscribe(() => this.rightSidenavElm.opened = !this.rightSidenavElm.opened)
 
-    this.snackBarSubject
-      .throttleTime(500)
+    this.snackBarSubject.pipe(throttleTime(500))
       .subscribe((message: string) => {
         this.snackBar.open(message, 'close', {
           duration: 5000
@@ -156,7 +152,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.menuDoc = doc
   }
 
-  restore (doc: Doc): Promise<undefined> {
+  restore (doc: Doc): Promise<void> {
     return this.storage.moveDoc(doc, doc.previousLocation)
       .then(() => {
         this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)

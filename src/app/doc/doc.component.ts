@@ -2,7 +2,8 @@ import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@an
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore } from 'mute-core'
-import { Subscription } from 'rxjs/Rx'
+import { map } from 'rxjs/operators'
+import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
 import { ProfileService } from '../core/profile/profile.service'
@@ -102,9 +103,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
         this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
         this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-        this.muteCore.collaboratorsService.pseudoSource = this.profileService.onProfile.map((profile) => {
-          return profile.displayName
-        })
+        this.muteCore.collaboratorsService.pseudoSource = this.profileService.onProfile.pipe(map((profile) => profile.displayName))
 
         this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
         this.syncStorage.initSource = this.muteCore.onInit.map(() => this.doc)

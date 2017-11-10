@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer, ViewChild } from '@angular/core'
+import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
 import 'rxjs/add/operator/toPromise'
@@ -47,7 +47,7 @@ export class DevLabelComponent implements OnInit {
 
   constructor (
     private sanitizer: DomSanitizer,
-    private renderer: Renderer,
+    private renderer: Renderer2,
     private ui: UiService,
     private detectRef: ChangeDetectorRef
   ) {
@@ -74,10 +74,8 @@ export class DevLabelComponent implements OnInit {
     const db = jIO.createJIO({ type: 'query',  sub_storage: { type: 'indexeddb', database: 'mute' } })
     db.getAttachment(docID, 'body').then((body) => {
       this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
-      const clickEvent = new MouseEvent('click')
       this.detectRef.detectChanges()
-
-      this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+      this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new global.Event('log'))
     })
   }
 
@@ -88,9 +86,7 @@ export class DevLabelComponent implements OnInit {
     const blob = new Blob([this.tree], { type : 'text\/json' })
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
     this.detectRef.detectChanges()
-
-    const clickEvent = new MouseEvent('click')
-    this.renderer.invokeElementMethod(this.link.nativeElement, 'dispatchEvent', [clickEvent])
+    this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new global.Event('tree'))
   }
 
   detectChangesRun () {

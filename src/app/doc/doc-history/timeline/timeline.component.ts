@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output } from '@angular/core'
-import { Observable, Subscription } from 'rxjs/Rx'
+import { timer } from 'rxjs/observable/timer'
+import { Subscription } from 'rxjs/Subscription'
 
 @Component({
   selector: 'mute-timeline',
@@ -27,7 +28,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   ngOnInit () {
     this.step = 1
     this.stepSize = 1
-    this.player = Observable.timer(0, this.delay)
+    this.player = timer(0, this.delay)
   }
 
   updateOperation (newOp: number) {

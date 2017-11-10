@@ -17,7 +17,7 @@ export class DocResolverService implements Resolve<Doc> {
     const key = route.params['key']
     const activeFile = this.ui.activeFile
     // If user come from another part of the application
-    if (activeFile && activeFile.isDoc) {
+    if (activeFile instanceof Doc) {
       return Promise.resolve(activeFile)
 
     // If user come here directly via URL
@@ -35,9 +35,6 @@ export class DocResolverService implements Resolve<Doc> {
             this.ui.setActiveFile(doc)
             return doc
           }
-        })
-        .catch((err) => {
-          log.error('Failed to find a doc', err)
         })
     }
   }

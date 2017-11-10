@@ -12,7 +12,8 @@ import {
   OnDestroy,
   OnInit
 } from '@angular/core'
-import { Observable, Subscription } from 'rxjs/Rx'
+import { Observable } from 'rxjs/Observable'
+import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../../../core/Doc'
 import { RichCollaborator } from '../../../doc/rich-collaborators'

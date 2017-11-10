@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { RichLogootSOperation } from 'mute-core'
 import { DocService } from 'mute-core'
 import { LogootSAdd, LogootSDel, TextDelete, TextInsert } from 'mute-structs'
-import { Observable } from 'rxjs/Observable'
+import { from } from 'rxjs/observable/from'
 
 import * as diff from 'diff'
 import { Author } from '../../core/Author'
@@ -45,7 +45,7 @@ export class DocHistoryService {
                 return op
               })
             }).subscribe((ops) => resolve(ops))
-          mcDocService.remoteLogootSOperationSource = Observable.from([logootSOp])
+          mcDocService.remoteLogootSOperationSource = from([logootSOp])
         })
         .catch(() => {
           log.error('Error getting document body of: ', doc)

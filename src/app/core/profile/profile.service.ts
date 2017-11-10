@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
-import { BehaviorSubject, Observable } from 'rxjs/Rx'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Observable } from 'rxjs/Observable'
 
 import { IAccount } from './IAccount'
 import { Profile } from './Profile'
@@ -56,7 +57,7 @@ export class ProfileService {
     return this.profileSubject.asObservable()
   }
 
-  public async updateProfile (): Promise<undefined> {
+  public async updateProfile (): Promise<void> {
     return await this.db.put(this._profile.dbId, this._profile.serialize())
   }
 
@@ -64,7 +65,7 @@ export class ProfileService {
     return this.auth.isAuthenticated()
   }
 
-  public signout (): Promise<undefined> {
+  public signout (): Promise<void> {
     return this.auth.logout().toPromise()
       .then(() => this.getProfile([this.getAnonymousAccount()]))
       .then((profile: Profile) => this.setProfile(profile))

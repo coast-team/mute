@@ -1,6 +1,7 @@
 import {  Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { ObservableMedia } from '@angular/flex-layout'
 import { ResolveEnd, Router } from '@angular/router'
+import { filter } from 'rxjs/operators'
 
 import { Profile } from '../core/profile/Profile'
 import { ProfileService } from '../core/profile/profile.service'
@@ -40,8 +41,7 @@ export class ToolbarComponent implements OnInit {
       this.profile = profile
     })
 
-    this.router.events
-      .filter((event) => event instanceof ResolveEnd)
+    this.router.events.pipe(filter((event) => event instanceof ResolveEnd))
       .subscribe((event: ResolveEnd) => {
         this.routeName = this.routeNameFromUrl(event.url)
         this.rootFileTitle = this.ui.activeFile.title

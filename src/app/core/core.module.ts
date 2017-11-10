@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
+import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
-import { HttpModule } from '@angular/http'
 import { Ng2UiAuthModule } from 'ng2-ui-auth'
 
 import { CustomConfig } from 'ng2-ui-auth'
@@ -26,7 +26,7 @@ export class AuthConfig extends CustomConfig {
 @NgModule({
   imports: [
     CommonModule,
-    HttpModule,
+    HttpClientModule,
     Ng2UiAuthModule.forRoot(AuthConfig)
   ],
   exports: [],

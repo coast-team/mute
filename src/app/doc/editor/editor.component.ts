@@ -14,6 +14,8 @@ import {
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
 import { Observable } from 'rxjs/Observable'
+import { fromEventPattern } from 'rxjs/observable/fromEventPattern'
+import { filter, map, share } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 import { EditorService } from './editor.service'
 
@@ -56,46 +58,38 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, this.editorService.editorConfiguration as any)
       this.editorService.initEditor(this.editor)
 
-      const operationStream: Observable<ChangeEvent> = Observable.fromEventPattern(
-      (h: ChangeEventHandler) => {
-        this.editor.on('change', h)
-      },
-      (h: ChangeEventHandler) => {
-        this.editor.off('change', h)
-      },
-      (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => {
-        return new ChangeEvent(instance, change)
-      })
-      .filter((changeEvent: ChangeEvent) => {
-        // The change's origin indicates the kind of changes performed
-        // When the application updates the editor programatically, this field remains undefined
-        // Allow to filter the changes performed by our application
-        return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
-      })
+      const operationStream: Observable<ChangeEvent> = fromEventPattern(
+        (h: ChangeEventHandler) => this.editor.on('change', h),
+        (h: ChangeEventHandler) => this.editor.off('change', h),
+        (instance, change) => new ChangeEvent(instance, change)
+      )
+        .pipe(
+          filter((changeEvent: ChangeEvent) => {
+            // The change's origin indicates the kind of changes performed
+            // When the application updates the editor programatically, this field remains undefined
+            // Allow to filter the changes performed by our application
+            return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
+          })
+        )
 
       const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
-      .map((changeEvent: ChangeEvent) => {
-        return [changeEvent]
-      })
+        .pipe(map((changeEvent) => [changeEvent]))
       /*
-      .bufferTime(1000)
-      .filter((changeEvents: ChangeEvent[]) => {
-        // From time to time, the buffer returns an empty array
-        // Allow to filter these cases
-        return changeEvents.length > 0
-      })
+        .bufferTime(1000)
+        .filter((changeEvents: ChangeEvent[]) => {
+          // From time to time, the buffer returns an empty array
+          // Allow to filter these cases
+          return changeEvents.length > 0
+        })
       */
 
-      this.textOperationsObservable =
-        multipleOperationsStream
-          .map((changeEvents: ChangeEvent[]) => {
-            return changeEvents.map((changeEvent: ChangeEvent) => {
-              return changeEvent.toTextOperations()
-            }).reduce((acc: TextOperation[], textOperations: TextOperation[]) => {
-              return acc.concat(textOperations)
-            }, [])
-          })
-          .share()
+      this.textOperationsObservable = multipleOperationsStream.pipe(
+        map((changeEvents: ChangeEvent[]) => changeEvents
+          .map((changeEvent: ChangeEvent) => changeEvent.toTextOperations())
+          .reduce((acc, textOperations) => acc.concat(textOperations), [])
+        ),
+        share()
+      )
 
       this.docService.localTextOperationsSource = this.textOperationsObservable
 

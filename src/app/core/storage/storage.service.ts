@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
+import { filter } from 'rxjs/operators'
 
 import { Doc } from '../Doc'
 import { File } from '../File'
@@ -30,7 +31,7 @@ export class StorageService {
     this.root = new Folder('/', '', '')
     this.home = new Folder('home', 'All documents', 'view_module', this.root.route)
     this.trash = new Folder('trash', 'Trash', 'delete', this.root.route)
-    profileService.onProfile.filter((profile) => profile !== undefined)
+    profileService.onProfile.pipe(filter((profile) => profile !== undefined))
       .subscribe(
         (profile) => {
           this.db = jIO.createJIO({
@@ -126,7 +127,7 @@ export class StorageService {
     })
   }
 
-  moveDoc (doc: Doc, location: string): Promise<undefined> {
+  moveDoc (doc: Doc, location: string): Promise<void> {
     if (doc.location !== location)  {
       doc.location = location
       return this.updateFile(doc)

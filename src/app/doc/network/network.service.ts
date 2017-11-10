@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
-import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } from 'rxjs/Rx'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Observable } from 'rxjs/Observable'
+import { throttleTime } from 'rxjs/operators'
+import { ReplaySubject } from 'rxjs/ReplaySubject'
+import { Subject } from 'rxjs/Subject'
+import { Subscription } from 'rxjs/Subscription'
 
 import { environment } from '../../../environments/environment'
 import { BotProtocol, BotResponse, Message } from './message_pb'
@@ -98,7 +103,7 @@ export class NetworkService {
     global.window.addEventListener('online', this.onlineListener)
     global.window.document.addEventListener('visibilitychange', this.visibilitychangeListener)
 
-    this.rejoinSubject.throttleTime(1000).subscribe(() => this.join(this.key))
+    this.rejoinSubject.pipe(throttleTime(1000)).subscribe(() => this.join(this.key))
 
     /**
      * Leave web group in some specific situations
@@ -203,9 +208,9 @@ export class NetworkService {
 
   get onPeerLeave (): Observable<number> { return this.peerLeaveSubject.asObservable() }
 
-  get onStateChange (): Observable<number> { return this.stateSubject.asObservable() }
+  get onStateChange (): Observable<WebGroupState> { return this.stateSubject.asObservable() }
 
-  get onSignalingStateChange (): Observable<number> { return this.signalingSubject.asObservable() }
+  get onSignalingStateChange (): Observable<SignalingState> { return this.signalingSubject.asObservable() }
 
   clean (): void {
     if (this.wg !== undefined) {

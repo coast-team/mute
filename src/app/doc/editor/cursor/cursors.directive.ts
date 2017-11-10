@@ -2,6 +2,7 @@ import { Directive, Injectable, Input, OnDestroy, OnInit } from '@angular/core'
 import * as CodeMirror from 'codemirror'
 import { DocService, NetworkMessage, Position } from 'mute-core'
 import { Identifier } from 'mute-structs'
+import { filter } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
 import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
@@ -86,7 +87,7 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
 
     // On message from the network
     this.networkMsgSubs = this.network.onMessage
-      .filter((msg: NetworkMessage) => msg.service === this.id)
+      .pipe(filter((msg: NetworkMessage) => msg.service === this.id))
       .subscribe((msg: NetworkMessage) => {
         const pbMsg = CursorMsg.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
