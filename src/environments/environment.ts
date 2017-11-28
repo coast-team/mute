@@ -11,7 +11,11 @@ export const environment = {
   signalingURL: 'ws://localhost:8010',
   serviceWorker: false,
   storages: [
-    {secure: false, host: 'localhost', port: 20000}
+    {
+      secure: false,
+      host: 'localhost',
+      port: 20000
+    }
   ],
   auth: {
     baseUrl: 'http://localhost:4000/',

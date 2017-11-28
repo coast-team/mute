@@ -20,7 +20,7 @@ export const environment = {
 
   // Signaling server URL
   // See https://github.com/coast-team/sigver
-  signalingURL: 'wss://www.coedit.re:10443',
+  signalingURL: 'wss://signaling.coedit.re',
 
   // Enable/Disable service worker
   serviceWorker: true,
@@ -31,14 +31,14 @@ export const environment = {
   storages: [
     {
       secure: true, // If true: https & wss protocols are used
-      host: 'www.coedit.re', // Server hostname or IP address
-      port: 11443 // Server port
+      host: 'botstorage.coedit.re', // Server hostname or IP address
+      port: 443 // Server port
     }
   ],
 
   // Authentication providers
   auth: {
-    baseUrl: 'https://www.coedit.re/',
+    baseUrl: 'https://auth.coedit.re/',
     providers: {
       github: { clientId: '' }, // Github application clientId
       google: { clientId: '' }  // Google application clientId
