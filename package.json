@@ -6,13 +6,11 @@
     "ng": "ng",
     "prestart": "pm2 gracefulReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
-    "start-sw": "ng build --env=dev && npm run sw && live-server dist/ --port=4300 --host=0.0.0.0 --entry-file=/index.html",
     "prebuild": "sed -i -- \"s/'.*'/'$(git log -n 1 --pretty=format:'%H')'/g\" src/lastcommithash.ts",
-    "build": "ng build --prod --build-optimizer -oh none",
-    "prebuilddev": "npm run prebuild",
-    "builddev": "ng build --prod -oh none --env ovhdev",
-    "postbuilddev": "npm run postbuild && tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
-    "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && npm run sw && zopfli dist/*.js dist/*.css dist/*.html",
+    "build": "ng build --prod",
+    "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && zopfli dist/*.js dist/*.css dist/*.html",
+    "builddev": "npm run build -- --env ovhdev",
+    "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
     "lint": "ng lint --type-check",
     "test": "ng test",
     "e2e": "ng e2e",
@@ -20,7 +18,6 @@
     "precommit": "npm run lint",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
-    "sw": "workbox generate:sw",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
   },
   "keywords": [],
@@ -46,6 +43,7 @@
     "@angular/platform-browser": "^5.1.2",
     "@angular/platform-browser-dynamic": "^5.1.2",
     "@angular/router": "^5.1.2",
+    "@angular/service-worker": "^5.1.2",
     "@coast-team/mnemonicjs": "^1.0.0",
     "@types/text-encoding": "0.0.32",
     "bragi-browser": "0.0.12",
@@ -96,8 +94,7 @@
     "tslint": "~5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.5.3",
-    "validate-commit-msg": "^2.14.0",
-    "workbox-cli": "^2.1.2"
+    "validate-commit-msg": "^2.14.0"
   },
   "repository": {},
   "config": {

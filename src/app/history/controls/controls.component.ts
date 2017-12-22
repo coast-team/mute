@@ -35,7 +35,6 @@ export class ControlsComponent implements OnInit {
   }
 
   onClickPlay () {
-    log.debug('here')
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
       this.onControls.emit(CONTROLS.PAUSE)

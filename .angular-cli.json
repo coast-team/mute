@@ -41,7 +41,8 @@
         "ovhprod": "environments/environment.ovhprod.ts",
         "demo": "environments/environment.demo.ts",
         "ghpages": "environments/environment.ghpages.ts"
-      }
+      },
+      "serviceWorker": true
     }
   ],
   "e2e": {

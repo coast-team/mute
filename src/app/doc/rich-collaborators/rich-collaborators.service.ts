@@ -64,7 +64,6 @@ export class RichCollaboratorsService {
       // In some cases, it is possible to receive a message from a peer
       // before the corresponding peerJoin event is triggered.
       // In that case, add the new peer instead of trying to perform an update.
-      log.debug('Peer name changed: ', collab)
       if (collab.pseudo !== '') {
         if (rc instanceof RichCollaborator) {
           rc.pseudo = collab.pseudo
@@ -83,7 +82,6 @@ export class RichCollaboratorsService {
       const rc = this.findRichCollaborator(collab.id)
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
-      log.debug('Peer joined: ', collab)
       if (rc === undefined) {
         this.handleNewCollaborator(collab)
       } else {

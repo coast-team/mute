@@ -2,6 +2,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
 import { AuthService } from 'ng2-ui-auth'
 
 import { environment } from '../environments/environment'
@@ -9,7 +10,6 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
 import { ProfileService } from './core/profile/profile.service'
-import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
 import { BotStorageService } from './core/storage/bot-storage/bot-storage.service'
 import { StorageService } from './core/storage/storage.service'
 import { DevLabelComponent } from './dev-label/dev-label.component'
@@ -20,6 +20,7 @@ import { HistoryModule } from './history/history.module'
 @NgModule({
   imports: [
     BrowserModule,
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     BrowserAnimationsModule,
     CoreModule,
     AppRoutingModule,
@@ -51,16 +52,18 @@ import { HistoryModule } from './history/history.module'
 })
 export class AppModule {
   constructor (
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private sw: SwUpdate
   ) {
-    if (environment.serviceWorker) {
-      const serviceWorker = new ServiceWorkerRegister()
-      serviceWorker.registerSW()
-      serviceWorker.observableState.subscribe((message) => {
-        this.snackBar.open(message, 'Close', {
-          duration: 5000
-        })
+    sw.available.subscribe((event) => {
+      this.snackBar.open('New application version is available. Please refresh the page.', 'Close', {
+        duration: 5000
       })
-    }
+    })
+    sw.activated.subscribe((event) => {
+      this.snackBar.open('Application has been updated successfully.', 'Close', {
+        duration: 5000
+      })
+    })
   }
 }
