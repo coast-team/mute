@@ -1,0 +1,56 @@
+@import 'theme';
+
+.sync-icon {
+  margin-right: 16px;
+  position: relative;
+  top: 1px;
+  display: flex;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.syncing {
+  animation-name: rotating;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+}
+
+.sync-details {
+  position: fixed;
+  top: 66px;
+  right: 20px;
+  z-index: 1000;
+  opacity: 0;
+
+  h4 {
+    text-align: center;
+  }
+
+  .header {
+    text-align: center
+  }
+
+  .secondary-text {
+    color: $fg-secondary-text;
+  }
+
+  .arrow {
+    border-color: transparent;
+    border-bottom-color: #fff;
+    border-style: dashed dashed solid;
+    border-width: 0 8.5px 8.5px;
+    position: fixed;
+    right: 76px;
+    top: 58px;
+    z-index: 1000;
+  }
+}

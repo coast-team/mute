@@ -188,7 +188,7 @@ export class EditorService {
 
   setupGlobalForTests () {
     const doc = this.editor.getDoc() as any
-    global.window.muteTest = {
+    window.muteTest = {
       insert: (index: number, text: string) => {
         doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
       },

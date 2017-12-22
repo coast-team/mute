@@ -8,22 +8,15 @@
 
 .editor {
   display: inline-block;
-  width: 80%;
+  width: 100%;
   margin-top: 16px;
 
-  &.editor-lt-md {
-    width: 100%;
-  }
-  &.editor-md {
-    width: 65%;
-  }
-  &.editor-lg {
-    width: 80%;
-  }
+  &.editor-md { width: 65%; }
+  &.editor-lg { width: 80%; }
+  &.editor-gt-lg { width: 80%; }
 }
 
-
-.right-side {
+.info-panel {
   position: fixed;
   min-width: 360px;
   max-width: 360px;
@@ -33,39 +26,31 @@
 }
 
 @-moz-document url-prefix() {
-  .right-side {
+  .info-panel {
     right: 15px !important;
-  }
-}
-
-.right-side-md {
-  width: 35%;
-}
-
-.right-side-lg {
-  width: 25%;
-}
-
-mat-sidenav {
-  mute-right-side {
-    width: 100%;
   }
 }
 
 mat-sidenav-container {
   background-color: $bg-background !important;
   height: 100%;
+}
 
-  .leftsidenav {
-    min-width: 24rem;
+.menu-sidenav {
+  min-width: 24rem;
+}
+
+.info-sidenav {
+  background-color: $bg-background !important;
+  width: 400px;
+
+  &.info-sidenav-lt-sm {
+    width: 100%;
   }
+}
 
-  .right-nav {
-    background-color: $bg-background !important;
-    width: 400px;
-
-    &.right-nav-lt-sm {
-      width: 100%;
-    }
+mat-sidenav {
+  mute-right-side {
+    width: 100%;
   }
 }

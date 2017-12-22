@@ -1,36 +1,26 @@
-<mat-sidenav-container #sidenavElm>
+<mute-toolbar [doc]="doc" (menu)="menuSidenav.toggle()" (info)="infoSidenav.toggle()">
+</mute-toolbar>
 
-  <!-- Left Sidenav-->
-  <mat-sidenav #leftSidenavElm class="leftsidenav" mode="over">
+<mat-sidenav-container>
+
+  <!-- Menu Sidenav-->
+  <mat-sidenav mode="over" #menuSidenav class="menu-sidenav">
     <mute-nav></mute-nav>
   </mat-sidenav>
-  
+
   <!-- Content -->
-  <div
-    [ngClass]="'editor'"
-    [ngClass.lt-md]="'editor editor-lt-md'"
-    [ngClass.md]="'editor editor-md'"
-    [ngClass.lg]="'editor editor-lg'"
-  >
+  <div class="editor" ngClass.md="editor-md"
+    ngClass.lg="editor-lg" ngClass.gt-lg="editor-gt-lg">
     <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
   </div>
 
-  <!-- Right part -->
-  <ng-container *ngIf="media.isActive('gt-sm'); else mobileRightSide">
-    <mute-right-side [doc]="doc" class="right-side"></mute-right-side>
-  </ng-container>
+  <!-- Desktop Info panel -->
+    <mute-right-side fxHide.lt-md [doc]="doc" class="info-panel"></mute-right-side>
 
-  <!-- Mobile Right Sidenav-->
-  <ng-template #mobileRightSide>
-    <mat-sidenav #rightSidenavElm class="right-nav"
-      align="end"
-      [opened]="!media.isActive('lt-md')"
-      mode="over"
-      [ngClass.lt-sm]="'right-nav right-nav-lt-sm'"
-      *ngIf="media.isActive('lt-md')"
-    >
+  <!-- Mobile Info Sidenav only -->
+    <mat-sidenav align="end" mode="over" #infoSidenav
+      fxHide.gt-sm class="info-sidenav" ngClass.lt-sm="info-sidenav-lt-sm">
       <mute-right-side [doc]="doc"></mute-right-side>
     </mat-sidenav>
-  </ng-template>
 
 </mat-sidenav-container>

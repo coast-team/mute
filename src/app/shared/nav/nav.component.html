@@ -1,0 +1,40 @@
+<div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
+  <h1><a routerLink="/">MUTE</a></h1>
+  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="createDoc()">
+    New Document
+  </button>
+
+  <mat-button-toggle-group fxLayout="column" fxLayoutAlign="start stretch"
+    vertical="true"
+  >
+    <!-- All Documents -->
+    <mat-button-toggle
+      routerLink="/docs"
+      routerLinkActive #rlaHome="routerLinkActive"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [value]="storage.home"
+      [checked]="isHome(rlaHome)"
+      (click)="onFolder.emit(storage.home)"
+    >
+      <span [ngClass]="{content: true, 'mat-button': true, selected: isHome(rlaHome)}" fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon [color]="isHome(rlaHome) ? 'primary' : ''">{{storage.home.icon}}</mat-icon>
+        {{storage.home.title}}
+      </span>
+    </mat-button-toggle>
+
+    <!-- Trash -->
+    <mat-button-toggle
+      routerLink="/docs/trash"
+      routerLinkActive #rlaTrash="routerLinkActive"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [value]="storage.trash"
+      [checked]="rlaTrash.isActive"
+      (click)="onFolder.emit(storage.trash)"
+    >
+      <span [ngClass]="{content: true, 'mat-button': true, selected: rlaTrash.isActive}" fxLayout="row" fxLayoutAlign="left center">
+        <mat-icon [color]="rlaTrash.isActive ? 'primary' : ''">{{storage.trash.icon}}</mat-icon>
+        {{storage.trash.title}}
+      </span>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>

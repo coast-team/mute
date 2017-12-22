@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Injectable } from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
 import { AsyncSubject } from 'rxjs/AsyncSubject'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
@@ -12,31 +12,30 @@ export class BotStorageService {
   private botsSubject: BehaviorSubject<BotStorage[]>
 
   public bot: BotStorage
-  public isAvailable: AsyncSubject<boolean>
 
   constructor (
     private http: HttpClient
   ) {
     this.botsSubject = new BehaviorSubject([])
-    this.isAvailable = new AsyncSubject()
+  }
+
+  async init () {
     if (environment.storages.length !== 0) {
       const storage = environment.storages[0]
-      this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
-      this.http.get(`${this.bot.httpURL}/name`)
+      const url = `${storage.secure ? 'https' : 'http'}://${storage.host}:${storage.port}/name`
+      return await this.http.get(url, { responseType: 'text' })
         .subscribe(
           (data: string) => {
+            this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
             this.bot.name = data
             this.botsSubject.next([this.bot])
-            this.isAvailable.next(true)
-            this.isAvailable.complete()
           },
           (err) => {
-            log.warn(`Bot storage "${this.bot.httpURL}" is unavailable: ${err.message}`)
-            this.isAvailable.next(false)
-            this.isAvailable.complete()
+            log.warn(`Bot storage "${storage.host}" is unavailable: ${err.message}`)
           }
         )
     }
+    return Promise.resolve()
   }
 
   get onBots (): Observable<BotStorage[]> {
@@ -44,17 +43,18 @@ export class BotStorageService {
   }
 
   async whichExist (keys: string[]): Promise<string[]> {
-    const isAvailable = await this.isAvailable.toPromise()
-    if (isAvailable) {
+    if (this.bot) {
       return await this.http.post<string[]>(
         `${this.bot.httpURL}/exist`,
         JSON.stringify(keys), {
           headers: new HttpHeaders({'Content-Type': 'application/json'})
         }
-      ).toPromise()
-    } else {
-      return []
+      ).toPromise().catch((err) => {
+        log.warn(`Failed to check documents existence at Bot Storage "${this.bot.httpURL}"`)
+        return []
+      })
     }
+    return []
   }
 
 }

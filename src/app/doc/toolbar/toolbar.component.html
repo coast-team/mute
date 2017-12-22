@@ -1,0 +1,23 @@
+<mat-toolbar color="primary" class="mat-elevation-z6">
+  <button mat-icon-button (click)="menu.emit()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <div fxFlex class="title">
+    <mat-form-field ngClass.sm="sm" ngClass.md="md" ngClass.gt-md="gt-md" dividerColor="accent" floatPlaceholder="never">
+      <input #input matInput
+          [value]="doc.title"
+          (keydown)="updateTitle($event)"
+          (blur)="updateTitle($event)"
+          (focus)="selectTitle()"
+      />
+    </mat-form-field>
+  </div>
+
+  <mute-sync fxHide.lt-md></mute-sync>
+  <button fxHide.gt-sm mat-icon-button (click)="info.emit()">
+    <mat-icon>info</mat-icon>
+  </button>
+  <mute-profile fxHide.lt-md></mute-profile>
+
+</mat-toolbar>

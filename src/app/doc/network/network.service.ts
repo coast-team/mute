@@ -3,7 +3,7 @@ import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendT
 import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
-import { throttleTime } from 'rxjs/operators'
+import { takeUntil, throttleTime } from 'rxjs/operators'
 import { ReplaySubject } from 'rxjs/ReplaySubject'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
@@ -61,7 +61,7 @@ export class NetworkService {
     this.messageSubject = new ReplaySubject()
 
     this.disposeSubject = new Subject<void>()
-    this.lineSubject = new BehaviorSubject(global.window.navigator.onLine)
+    this.lineSubject = new BehaviorSubject(window.navigator.onLine)
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.rejoinSubject = new Subject()
@@ -75,10 +75,10 @@ export class NetworkService {
       signalingURL: environment.signalingURL,
       iceServers: environment.iceServers
     })
-    global.window.wg = this.wg
+    window.wg = this.wg
 
     // Window event listeners
-    let goneOfflineOnce = !global.window.navigator.onLine
+    let goneOfflineOnce = !window.navigator.onLine
     /**
      * Rejoin web group when some events fired some time later (see throttleTime method).
      * The rejoin delay is because sometimes may fire Online/Offline events several times
@@ -92,16 +92,16 @@ export class NetworkService {
       }
     }
     this.visibilitychangeListener = () => {
-      if (global.window.document.visibilityState === 'visible') {
+      if (window.document.visibilityState === 'visible') {
         this.rejoinSubject.next(undefined)
 
       // Leave when the tab is hidden and there are nobody apart you in the web group
-      } else if (global.window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
+      } else if (window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
         this.wg.leave()
       }
     }
-    global.window.addEventListener('online', this.onlineListener)
-    global.window.document.addEventListener('visibilitychange', this.visibilitychangeListener)
+    window.addEventListener('online', this.onlineListener)
+    window.document.addEventListener('visibilitychange', this.visibilitychangeListener)
 
     this.rejoinSubject.pipe(throttleTime(1000)).subscribe(() => this.join(this.key))
 
@@ -110,7 +110,7 @@ export class NetworkService {
      */
     // Leave before closing a tab or the browser
     this.beforeunloadListener = () => this.wg.leave()
-    global.window.addEventListener('beforeunload', this.beforeunloadListener)
+    window.addEventListener('beforeunload', this.beforeunloadListener)
 
     // Leave when gone Offline
     this.offlineListener = () => {
@@ -119,7 +119,7 @@ export class NetworkService {
       this.wg.leave()
       this.lineSubject.next(false)
     }
-    global.window.addEventListener('offline', this.offlineListener)
+    window.addEventListener('offline', this.offlineListener)
 
     // Handle network events
     this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
@@ -165,10 +165,11 @@ export class NetworkService {
   }
 
   set initSource (source: Observable<string>) {
-    source.takeUntil(this.disposeSubject).subscribe((key: string) => {
-      this.key = key
-      this.join(key)
-    })
+    source.pipe(takeUntil(this.disposeSubject))
+      .subscribe((key: string) => {
+        this.key = key
+        this.join(key)
+      })
   }
 
   set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
@@ -214,10 +215,10 @@ export class NetworkService {
 
   clean (): void {
     if (this.wg !== undefined) {
-      global.window.removeEventListener('online', this.onlineListener)
-      global.window.removeEventListener('visibilitychange', this.visibilitychangeListener)
-      global.window.removeEventListener('beforeunload', this.beforeunloadListener)
-      global.window.removeEventListener('offline', this.offlineListener)
+      window.removeEventListener('online', this.onlineListener)
+      window.removeEventListener('visibilitychange', this.visibilitychangeListener)
+      window.removeEventListener('beforeunload', this.beforeunloadListener)
+      window.removeEventListener('offline', this.offlineListener)
       this.wg.leave()
       this.leaveSubject.next()
 
@@ -260,8 +261,8 @@ export class NetworkService {
 
   private join (key) {
     console.assert(key !== '')
-    if (global.window.navigator.onLine &&
-        global.window.document.visibilityState === 'visible' &&
+    if (window.navigator.onLine &&
+        window.document.visibilityState === 'visible' &&
        this.wg.state === WebGroupState.LEFT
     ) {
       this.wg.join(key)

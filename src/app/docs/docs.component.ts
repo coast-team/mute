@@ -1,8 +1,7 @@
 import { DataSource } from '@angular/cdk/collections'
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { FormControl, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar } from '@angular/material'
+import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material'
 import { ActivatedRoute, Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
@@ -17,6 +16,7 @@ import { ProfileService } from '../core/profile/profile.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
+import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
 
 @Component({
   selector: 'mute-docs',
@@ -25,22 +25,19 @@ import { UiService } from '../core/ui/ui.service'
 })
 export class DocsComponent implements OnDestroy, OnInit {
 
-  @ViewChild('leftSidenavElm') leftSidenavElm
-  @ViewChild('rightSidenavElm') rightSidenavElm
+  @ViewChild('leftSidenav') leftSidenav: MatSidenav
+  @ViewChild('rightSidenav') rightSidenav
 
-  private mediaSubscription: Subscription
-  private activeMediaQuery: string
-
-  private snackBarSubject: Subject<string>
-  private activeFolderSubs: Subscription
-  public activeFolder: Folder
+  private subs: Subscription[]
+  public folder: Folder
+  public title: string
   public displayedColumns = ['title', 'key', 'created', 'storage']
 
   public docsSubject: BehaviorSubject<Doc[]>
   public docsSource: DocsSource
   public docs: Doc[]
   public sideNavMode = 'side'
-  public isFinishFetching: boolean
+  public isFinishOpen: boolean
   public isMenu: boolean
   public menuDoc: Doc
 
@@ -55,54 +52,20 @@ export class DocsComponent implements OnDestroy, OnInit {
     public media: ObservableMedia,
     public dialog: MatDialog
   ) {
-    this.snackBarSubject = new Subject()
     this.docsSubject = new BehaviorSubject([])
     this.docsSource = new DocsSource(this.docsSubject)
+    this.title = ''
+    this.subs = []
   }
 
   ngOnInit () {
-    this.activeFolderSubs = this.route.data
-      .subscribe(({ file }: {file: Folder}) => {
-        this.activeFolder = file
-        this.isFinishFetching = false
-        this.storage.getFiles(file)
-          .then((files: File[]) => {
-            this.docs = files.filter((file: File) => file.isDoc) as Doc[]
-            this.docsSubject.next(this.docs)
-            this.isFinishFetching = true
-            const keys = this.docs.map((doc: Doc) => doc.key)
-            return this.botStorage.whichExist(keys)
-          })
-          .then((existedKeys) => {
-            this.docs.forEach((doc: Doc) => {
-              if (existedKeys.includes(doc.key)) {
-                doc.setBotStorage([this.botStorage.bot])
-              }
-            })
-          })
-      })
+    this.subs[this.subs.length] = this.route.data
+      .subscribe(({ folder }) => this.openFolder(folder))
 
-    this.profileService.onProfile
-      .subscribe((profile) => {
-        this.storage.getFiles(this.activeFolder)
-        .then((files: File[]) => {
-          this.docs = files.filter((file: File) => file.isDoc) as Doc[]
-          this.docsSubject.next(this.docs)
-          this.isFinishFetching = true
-          const keys = this.docs.map((doc: Doc) => doc.key)
-          return this.botStorage.whichExist(keys)
-        })
-        .then((existedKeys) => {
-          this.docs.forEach((doc: Doc) => {
-            if (existedKeys.includes(doc.key)) {
-              doc.setBotStorage([this.botStorage.bot])
-            }
-          })
-        })
-      })
+    this.subs[this.subs.length] = this.profileService.onChange
+      .subscribe(() => this.openFolder(this.storage.home))
 
-    this.mediaSubscription = this.media.asObservable().subscribe((change: MediaChange) => {
-      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
+    this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {
         this.sideNavMode = 'over'
       }
@@ -111,24 +74,11 @@ export class DocsComponent implements OnDestroy, OnInit {
         this.displayedColumns = ['title']
       }
     })
-
-    this.ui.onNavToggle.subscribe(() => this.leftSidenavElm.opened = !this.leftSidenavElm.opened)
-
-    this.ui.onDocNavToggle.subscribe(() => this.rightSidenavElm.opened = !this.rightSidenavElm.opened)
-
-    this.snackBarSubject.pipe(throttleTime(500))
-      .subscribe((message: string) => {
-        this.snackBar.open(message, 'close', {
-          duration: 5000
-        })
-      })
   }
 
   ngOnDestroy () {
-    this.snackBarSubject.complete()
-    this.mediaSubscription.unsubscribe()
-    this.activeFolderSubs.unsubscribe()
     this.docsSubject.complete()
+    this.subs.forEach((s) => s.unsubscribe())
   }
 
   moveToTrash (doc: Doc) {
@@ -161,10 +111,10 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   infoDoc () {
-    this.rightSidenavElm.open()
+    this.rightSidenav.open()
   }
 
-  deleteDoc (doc: Doc) {
+  delete (doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
     this.docsSubject.next(this.docs)
     this.storage.deleteDoc(doc)
@@ -175,25 +125,22 @@ export class DocsComponent implements OnDestroy, OnInit {
       })
   }
 
-  openDoc (doc: Doc) {
-    this.ui.setActiveFile(doc)
-    this.router.navigate(['/', doc.key])
+  open (doc: Doc) {
+    if (this.folder.route !== '/trash') {
+      this.router.navigate(['/', doc.key])
+    }
   }
 
-  newDoc () {
-    const doc = this.storage.createDoc()
-    this.ui.setActiveFile(doc)
-    this.router.navigate(['/', doc.key])
-  }
-
-  shareDoc (doc: Doc) { // Workaround, but not pretty
+  share (doc: Doc) { // Workaround, but not pretty
     const aux = document.createElement('input')
-    aux.setAttribute('value', `${global.window.location.href}${doc.key}`)
+    aux.setAttribute('value', `${window.location.origin}/${doc.key}`)
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')
     document.body.removeChild(aux)
-    this.snackBarSubject.next(`"${doc.title}" shared link has been copied.`)
+    this.snackBar.open(`Link copied to clipboard.`, 'Close', {
+      duration: 5000
+    })
   }
 
   showActions (doc: any) {
@@ -208,7 +155,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
-  getActionsVisible (doc) {
+  isActionsVisible (doc) {
     return doc.actionsVisible
   }
 
@@ -225,7 +172,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   updateTitleDialog (doc: Doc) {
-    const dialogRef = this.dialog.open(RenameDocumentDialogComponent, {
+    const dialogRef = this.dialog.open(RenameDocDialogComponent, {
       data: { title: doc.title }
     })
     dialogRef.afterClosed().subscribe((newTitle: string) => {
@@ -243,6 +190,26 @@ export class DocsComponent implements OnDestroy, OnInit {
   stopPropagation (event: Event) {
     event.stopPropagation()
   }
+
+  openFolder (folder) {
+    this.folder = folder
+    this.isFinishOpen = false
+    this.storage.getFiles(folder)
+      .then((files: File[]) => {
+        this.docs = files.filter((file: File) => file.isDoc) as Doc[]
+        this.docsSubject.next(this.docs)
+        this.isFinishOpen = true
+        const keys = this.docs.map((doc: Doc) => doc.key)
+        return this.botStorage.whichExist(keys)
+      })
+      .then((existedKeys) => {
+        this.docs.forEach((doc: Doc) => {
+          if (existedKeys.includes(doc.key)) {
+            doc.setBotStorage([this.botStorage.bot])
+          }
+        })
+      })
+  }
 }
 
 class DocsSource extends DataSource<any> {
@@ -255,30 +222,4 @@ class DocsSource extends DataSource<any> {
     return this.docs
   }
   disconnect () {}
-}
-
-@Component({
-  selector: 'mute-rename-document-dialog',
-  templateUrl: 'rename-document-dialog.html',
-})
-export class RenameDocumentDialogComponent {
-
-  @ViewChild('titleRef') titleRef: ElementRef
-  titleControl: FormControl
-
-  constructor (
-    public dialogRef: MatDialogRef<RenameDocumentDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { title: string }
-  ) {
-    this.titleControl = new FormControl('', [Validators.required])
-  }
-
-  selectAll () {
-    this.titleRef.nativeElement.select()
-  }
-
-  close (): void {
-    this.dialogRef.close()
-  }
-
 }

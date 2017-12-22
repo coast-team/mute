@@ -1,44 +1,51 @@
-import { NgModule } from '@angular/core'
-import { MATERIAL_COMPATIBILITY_MODE, MatSnackBar } from '@angular/material'
+import { APP_INITIALIZER, NgModule } from '@angular/core'
+import { MatSnackBar } from '@angular/material'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { AuthService } from 'ng2-ui-auth'
 
 import { environment } from '../environments/environment'
-import { AppResolverService } from './app-resolver.service'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
+import { ProfileService } from './core/profile/profile.service'
 import { ServiceWorkerRegister } from './core/ServiceWorkerRegister'
+import { BotStorageService } from './core/storage/bot-storage/bot-storage.service'
+import { StorageService } from './core/storage/storage.service'
 import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
-import { DocsModule } from './docs'
-import { NavModule } from './nav'
-import { SharedModule } from './shared'
-import { ProfileComponent } from './toolbar/profile/profile.component'
-import { SyncComponent } from './toolbar/sync/sync.component'
-import { ToolbarComponent } from './toolbar/toolbar.component'
+import { DocsModule } from './docs/docs.module'
+import { HistoryModule } from './history/history.module'
 
 @NgModule({
   imports: [
     BrowserModule,
-    CoreModule,
     BrowserAnimationsModule,
-    SharedModule,
-    NavModule,
+    CoreModule,
+    AppRoutingModule,
     DocsModule,
     DocModule,
-    AppRoutingModule
+    HistoryModule
   ],
   declarations: [
     AppComponent,
-    DevLabelComponent,
-    ToolbarComponent,
-    ProfileComponent,
-    SyncComponent
+    DevLabelComponent
   ],
   providers: [
-    {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
-    AppResolverService
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (profile: ProfileService, storage: StorageService) => {
+        return () => profile.init().then(() => storage.init(profile))
+      },
+      deps: [ProfileService, StorageService],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (botStorage: BotStorageService) => () => botStorage.init(),
+      deps: [BotStorageService],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

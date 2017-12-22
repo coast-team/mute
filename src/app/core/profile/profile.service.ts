@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
+import { Subject } from 'rxjs/Subject'
 
 import { IAccount } from './IAccount'
 import { Profile } from './Profile'
@@ -16,17 +16,18 @@ const selectList = [
 export class ProfileService {
 
   private db: any
-  private profileSubject: BehaviorSubject<Profile>
+  private profileSubject: Subject<Profile>
 
   public _profile: Profile
 
   constructor (
     private auth: AuthService
   ) {
-    // Create default profile just for the time to get actual profile (authenticated or anonymous)
-    this.profileSubject = new BehaviorSubject(undefined)
+    this.profileSubject = new Subject()
+  }
 
-    // Create profiles database if doesn't exist already
+  init (): Promise<void> {
+     // Create profiles database if doesn't exist already
     this.db = jIO.createJIO({
       type: 'query',
       sub_storage: {
@@ -38,46 +39,44 @@ export class ProfileService {
       }
     })
 
-    // Check whether already authenticated
-    let accounts: IAccount[]
-    if (this.auth.isAuthenticated()) {
-      accounts = [this.auth.getPayload()]
-    } else {
-      accounts = [this.getAnonymousAccount()]
-    }
+    // Get authenticated or anonymous account(s)
+    const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.getAnonymousAccount()]
 
-    // Retreive profile from database (with associated account and settings)
-    this.getProfile(accounts).then((profile) => this.setProfile(profile))
-
+    // Retrieve profile from database (with associated account and settings)
+    return this.getProfile(accounts).then((profile) => this.setProfile(profile))
   }
 
   get profile (): Profile { return this._profile }
 
-  get onProfile (): Observable<Profile> {
+  get onChange (): Observable<Profile> {
     return this.profileSubject.asObservable()
   }
 
-  public async updateProfile (): Promise<void> {
+  async updateProfile (): Promise<void> {
     return await this.db.put(this._profile.dbId, this._profile.serialize())
   }
 
-  public isAuthenticated () {
+  isAuthenticated () {
     return this.auth.isAuthenticated()
   }
 
-  public signout (): Promise<void> {
+  signout (): Promise<void> {
     return this.auth.logout().toPromise()
       .then(() => this.getProfile([this.getAnonymousAccount()]))
       .then((profile: Profile) => this.setProfile(profile))
   }
 
-  public signin (provider: string): Promise<Profile> {
+  signin (provider: string): Promise<Profile> {
     return this.auth.authenticate(provider).toPromise()
       .then(() => this.getProfile([this.auth.getPayload()]))
       .then((profile: Profile) => {
         this.setProfile(profile)
         return profile
       })
+  }
+
+  resendNotification () {
+    this.profileSubject.next(this.profile)
   }
 
   private async getProfile (accounts: IAccount[]): Promise<Profile> {
@@ -115,7 +114,7 @@ export class ProfileService {
 
   private getAnonymousAccount () {
     return {
-      provider: global.window.location.hostname,
+      provider: window.location.hostname,
       login: `anonymous`,
       name: 'Anonymous'
     }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
-import { filter } from 'rxjs/operators'
 
 import { Doc } from '../Doc'
 import { File } from '../File'
@@ -23,35 +22,23 @@ const selectList = [
 export class StorageService {
   private db: any
 
-  public root: Folder
   public home: Folder
   public trash: Folder
 
-  constructor (profileService: ProfileService) {
-    this.root = new Folder('/', '', '')
-    this.home = new Folder('home', 'All documents', 'view_module', this.root.route)
-    this.trash = new Folder('trash', 'Trash', 'delete', this.root.route)
-    profileService.onProfile.pipe(filter((profile) => profile !== undefined))
-      .subscribe(
-        (profile) => {
-          this.db = jIO.createJIO({
-            type: 'query',
-            sub_storage: {
-              type: 'uuid',
-              sub_storage: {
-                type: 'indexeddb',
-                database: `documents-${profile.login}`
-              }
-            }
-          })
-          this.searchFolder(this.home.route)
-            .then((folder: Folder) => this.home.dbId = folder.dbId)
-            .catch(() => this.createFile(this.home))
-          this.searchFolder(this.trash.route)
-            .then((folder: Folder) => this.trash.dbId = folder.dbId)
-            .catch(() => this.createFile(this.trash))
-        }
-      )
+  constructor () {
+    this.home = new Folder('home', 'All documents', 'view_module')
+    this.trash = new Folder('trash', 'Trash', 'delete')
+  }
+
+  async init (profileService: ProfileService): Promise<void> {
+    this.setDb(profileService.profile.login)
+    profileService.onChange.subscribe((profile) => this.setDb(profile.login))
+    await this.searchFolder(this.home.route)
+      .then((folder: Folder) => this.home.dbId = folder.dbId)
+      .catch(() => this.createFile(this.home)),
+    await this.searchFolder(this.trash.route)
+      .then((folder: Folder) => this.trash.dbId = folder.dbId)
+      .catch(() => this.createFile(this.trash))
   }
 
   getRootFolders (): Folder[] {
@@ -189,16 +176,29 @@ export class StorageService {
     return doc
   }
 
-  private generateKey (): string {
+  generateKey (): string {
     const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     const length = 42 // Should be less then MAX_KEY_LENGTH value
     const values = new Uint32Array(length)
-    global.window.crypto.getRandomValues(values)
+    window.crypto.getRandomValues(values)
     let result = ''
     for (let i = 0; i < length; i++) {
       result += mask[values[i] % mask.length]
     }
     return result
+  }
+
+  private setDb (login: string) {
+    this.db = jIO.createJIO({
+      type: 'query',
+      sub_storage: {
+        type: 'uuid',
+        sub_storage: {
+          type: 'indexeddb',
+          database: `documents-${login}`
+        }
+      }
+    })
   }
 
 }

@@ -68,25 +68,25 @@ export class DevLabelComponent implements OnInit {
   }
 
   exportLog (): void {
-    const urlParts: string[] = global.window.location.href.split('/')
+    const urlParts: string[] = window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
     this.filename = `log-${docID}-${this.digest}.json`
     const db = jIO.createJIO({ type: 'query',  sub_storage: { type: 'indexeddb', database: 'mute' } })
     db.getAttachment(docID, 'body').then((body) => {
       this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
       this.detectRef.detectChanges()
-      this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new global.Event('log'))
+      this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new Event('log'))
     })
   }
 
   exportTree (): void {
-    const urlParts: string[] = global.window.location.href.split('/')
+    const urlParts: string[] = window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
     this.filename = `tree-${docID}-${this.digest}.json`
     const blob = new Blob([this.tree], { type : 'text\/json' })
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
     this.detectRef.detectChanges()
-    this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new global.Event('tree'))
+    this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new Event('tree'))
   }
 
   detectChangesRun () {

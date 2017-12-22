@@ -32,7 +32,7 @@ export class RichCollaboratorsService {
     const me = new RichCollaborator(-1, profileService.profile.displayName, this.pickColor())
     this.collaborators = [me]
     this.collaboratorsSubject.next(this.collaborators)
-    profileService.onProfile.subscribe(
+    profileService.onChange.subscribe(
       (profile) => {
         me.pseudo = profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})
@@ -64,21 +64,26 @@ export class RichCollaboratorsService {
       // In some cases, it is possible to receive a message from a peer
       // before the corresponding peerJoin event is triggered.
       // In that case, add the new peer instead of trying to perform an update.
-      if (rc instanceof RichCollaborator) {
-        rc.pseudo = collab.pseudo
-        this.changeSubject.next({collab: rc, prop: 'pseudo'})
-        this.collaboratorsSubject.next(this.collaborators)
-      } else {
-        this.handleNewCollaborator(collab)
+      log.debug('Peer name changed: ', collab)
+      if (collab.pseudo !== '') {
+        if (rc instanceof RichCollaborator) {
+          rc.pseudo = collab.pseudo
+          this.changeSubject.next({collab: rc, prop: 'pseudo'})
+          this.collaboratorsSubject.next(this.collaborators)
+        } else {
+          this.handleNewCollaborator(collab)
+        }
       }
     })
   }
 
   set joinSource (source: Observable<Collaborator>) {
+    // FIXME: simplify join/leave/pseudoUpdate procedure
     source.subscribe((collab: Collaborator) => {
       const rc = this.findRichCollaborator(collab.id)
       // Prevent from overriding the pseudo of the collaborator with
       // the default one if we already received a message from this peer.
+      log.debug('Peer joined: ', collab)
       if (rc === undefined) {
         this.handleNewCollaborator(collab)
       } else {

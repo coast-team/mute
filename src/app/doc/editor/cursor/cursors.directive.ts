@@ -5,7 +5,6 @@ import { Identifier } from 'mute-structs'
 import { filter } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
-import { ServiceIdentifier } from '../../../helper/ServiceIdentifier'
 import { NetworkService } from '../../network/'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { CollaboratorCursor } from './CollaboratorCursor'
@@ -16,7 +15,7 @@ import { CursorMsg, PositionMsg, State } from './cursor_pb'
 })
 
 @Injectable()
-export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDestroy {
+export class CursorsDirective implements OnInit, OnDestroy {
 
   @Input() cm: CodeMirror.Editor
   @Input() mcDocService: DocService
@@ -31,11 +30,13 @@ export class CursorsDirective extends ServiceIdentifier implements OnInit, OnDes
   private pbFrom: PositionMsg
   private pbTo: PositionMsg
 
+  protected id: string
+
   constructor (
     private collabService: RichCollaboratorsService,
     private network: NetworkService
   ) {
-    super('Cursor')
+    this.id = 'Cursor'
     this.pbCursor = CursorMsg.create()
     this.pbFrom = PositionMsg.create()
     this.pbTo = PositionMsg.create()

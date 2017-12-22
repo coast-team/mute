@@ -1,28 +1,35 @@
 import { Injectable } from '@angular/core'
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router'
+import { MatSnackBar } from '@angular/material'
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router'
 
 import { Folder } from '../core/Folder'
 import { StorageService } from '../core/storage/storage.service'
-import { UiService } from '../core/ui/ui.service'
 
 @Injectable()
 export class DocsResolverService implements Resolve<Folder> {
 
   constructor (
-    private ui: UiService,
+    private router: Router,
+    private snackBar: MatSnackBar,
     private storage: StorageService
   ) {}
 
-  resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Folder> {
-    if (state.url === '/') {
-      this.ui.setActiveFile(this.storage.home)
-      return Promise.resolve(this.storage.home)
-    } else {
-      return this.storage.searchFolder(state.url)
-        .then((folder) => {
-          this.ui.setActiveFile(folder)
-          return folder
-        })
+  async resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Folder> {
+    const path = state.url.substr(5)
+    log.debug('path: ', path)
+    try {
+      if (path === '' || path === '/home') {
+        return this.storage.home
+      } else if (path === '/trash') {
+        return this.storage.trash
+      } else {
+        throw new Error(`Unknown location: "${path}"`)
+      }
+    } catch (err) {
+      log.warn(`Failed to locate "${path}" folder.`, err.message)
+      this.snackBar.open(`Couldn't resolve the URL. Redirect to home.`, 'close', {duration: 4000})
+      this.router.navigateByUrl('/docs', {skipLocationChange: false})
+      return undefined
     }
   }
 }

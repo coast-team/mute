@@ -1,22 +1,24 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
-import { NavModule } from '../nav'
-import { SharedModule } from '../shared'
+import { SharedModule } from '../shared/shared.module'
+import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
+import { DocsResolverService } from './docs-resolver.service'
 import { DocsComponent } from './docs.component'
-import { RenameDocumentDialogComponent } from './docs.component'
+import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  declarations: [DocsComponent, RenameDocumentDialogComponent],
   imports: [
-    CommonModule,
     SharedModule,
-    NavModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [],
-  entryComponents: [RenameDocumentDialogComponent]
+  declarations: [
+    RenameDocDialogComponent,
+    ToolbarComponent,
+    DocsComponent,
+  ],
+  providers: [DocsResolverService],
+  entryComponents: [RenameDocDialogComponent]
 })
 export class DocsModule {}

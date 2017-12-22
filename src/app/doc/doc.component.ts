@@ -1,8 +1,7 @@
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore } from 'mute-core'
-import { map } from 'rxjs/operators'
+import { map, pluck } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
@@ -21,18 +20,13 @@ import { SyncStorageService } from '../doc/sync/sync-storage.service'
 })
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
+  @ViewChild('infoSidenav') infoSidenav
 
-  @ViewChild('sidenavElm') sidenavElm
-  @ViewChild('rightSidenavElm') rightSidenavElm
-  @ViewChild('leftSidenavElm') leftSidenavElm
   public doc: Doc
-  private mediaSubscription: Subscription
-  private networkSubscription: Subscription
-  private activeMediaQuery: string
+  private subs: Subscription[]
   private inited = false
 
   public muteCore: MuteCore
-  public rightSideNavMode = 'side'
 
   constructor (
     private zone: NgZone,
@@ -42,10 +36,9 @@ export class DocComponent implements OnDestroy, OnInit {
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
-    public ui: UiService,
-    public media: ObservableMedia
+    public ui: UiService
   ) {
-    this.doc = new Doc('', '', '')
+    this.subs = []
   }
 
   ngOnInit () {
@@ -55,75 +48,63 @@ export class DocComponent implements OnDestroy, OnInit {
     }
     this.network.init()
 
-    this.mediaSubscription = this.media.asObservable().subscribe((change: MediaChange) => {
-      this.activeMediaQuery = change ? `'${change.mqAlias}' = (${change.mediaQuery})` : ''
-      if ( change.mqAlias === 'xs') {
-        this.rightSideNavMode = 'over'
-      }
-    })
-
-    this.ui.onNavToggle.subscribe(() => {
-      this.leftSidenavElm.opened = !this.leftSidenavElm.opened
-    })
-
-    this.ui.onDocNavToggle.subscribe(() => {
-      this.rightSidenavElm.opened = !this.rightSidenavElm.opened
-    })
-
-    this.route.data.subscribe(({ file }: { file: Doc }) => {
-      this.doc = file
-      this.networkSubscription = this.network.onJoin.subscribe(() => {
-        if (this.doc.botStorages.length !== 0) {
-          this.network.inviteBot(this.doc.botStorages[0].wsURL)
-        } else {
-          this.botStorage.whichExist([this.doc.key])
+    this.subs[this.subs.length] = this.route.data
+      .subscribe(({ doc }: { doc: Doc }) => {
+        this.doc = doc
+        this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
+          if (this.doc.botStorages.length !== 0) {
+            this.network.inviteBot(this.doc.botStorages[0].wsURL)
+          } else {
+            this.botStorage.whichExist([this.doc.key])
             .then((existedKeys) => {
               if (existedKeys.includes(this.doc.key)) {
                 this.network.inviteBot(this.botStorage.bot.wsURL)
               }
             })
-        }
-      })
+          }
+        })
 
       // TODO: Retrieve previous id for this document if existing
-      const ids = new Int32Array(1)
-      global.window.crypto.getRandomValues(ids)
-      const id = ids[0]
+        const ids = new Int32Array(1)
+        window.crypto.getRandomValues(ids)
+        const id = ids[0]
 
-      this.zone.runOutsideAngular(() => {
-        this.muteCore = new MuteCore(id)
-        this.muteCore.messageSource = this.network.onMessage
-        this.network.initSource = this.muteCore.onInit
-        this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
-        this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
-        this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
+        this.zone.runOutsideAngular(() => {
+          this.muteCore = new MuteCore(id)
+          this.muteCore.messageSource = this.network.onMessage
+          this.network.initSource = this.muteCore.onInit
+          this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
+          this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
+          this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
 
-        this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
-        this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
-        this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
-        this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
-        this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-        this.muteCore.collaboratorsService.pseudoSource = this.profileService.onProfile.pipe(map((profile) => profile.displayName))
+          this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
+          this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
+          this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
+          this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
+          this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
+          this.muteCore.collaboratorsService.pseudoSource = this.profileService.onChange.pipe(pluck('displayName'))
 
-        this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-        this.syncStorage.initSource = this.muteCore.onInit.map(() => this.doc)
-        this.syncStorage.stateSource = this.muteCore.syncService.onState
+          this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
+          this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
+          this.syncStorage.stateSource = this.muteCore.syncService.onState
 
-        this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
-          this.ui.digest = digest
-        })
+          this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
+            this.ui.digest = digest
+          })
 
-        this.muteCore.docService.onDocTree.subscribe((tree: string) => {
-          this.ui.tree = tree
+          this.muteCore.docService.onDocTree.subscribe((tree: string) => {
+            this.ui.tree = tree
+          })
+          // FIXME: rid of calling resendNotification method
+          this.profileService.resendNotification()
         })
       })
-    })
   }
 
   ngOnDestroy () {
     this.network.clean()
     this.muteCore.dispose()
-    this.mediaSubscription.unsubscribe()
+    this.subs.forEach((s) => s.unsubscribe())
   }
 
   editorReady (): void {

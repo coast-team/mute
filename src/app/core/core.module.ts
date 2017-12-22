@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
-import { Ng2UiAuthModule } from 'ng2-ui-auth'
+import { CustomConfig, Ng2UiAuthModule } from 'ng2-ui-auth'
 
-import { CustomConfig } from 'ng2-ui-auth'
 import { environment } from '../../environments/environment'
 import { ProfileService } from './profile/profile.service'
 import { BotStorageService } from './storage/bot-storage/bot-storage.service'
@@ -28,14 +27,18 @@ export class AuthConfig extends CustomConfig {
     CommonModule,
     HttpClientModule,
     Ng2UiAuthModule.forRoot(AuthConfig)
+    // Ng2UiAuthModule.forRoot({
+    //   providers: environment.auth.providers
+    // })
   ],
   exports: [],
   declarations: [],
   providers: [
+    ProfileService,
     StorageService,
     BotStorageService,
-    ProfileService,
     UiService
   ]
 })
-export class CoreModule {}
+export class CoreModule {
+}

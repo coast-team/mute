@@ -15,13 +15,7 @@ export class Folder extends File {
   }
 
   get route (): string {
-    if (this.location === undefined) {
-      return this.key
-    } else if (this.location === '/') {
-      return `/${this.key}`
-    } else {
-      return `${this.location}/${this.key}`
-    }
+    return this.location === undefined ? `/${this.key}` : `${this.location}/${this.key}`
   }
 
   get title () {

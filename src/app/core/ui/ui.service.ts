@@ -8,33 +8,16 @@ import { File } from '../File'
 @Injectable()
 export class UiService {
 
-  private activeFileSubject: Subject<File | null>
-
   private docDigestSubject: Subject<number>
   private docTreeSubject: Subject<string>
-
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
-  private toolbarTitleSubject: BehaviorSubject<string>
-
-  public activeFile: File|null
 
   constructor () {
-    this.activeFileSubject = new Subject()
     this.docDigestSubject = new Subject()
     this.docTreeSubject = new Subject()
     this.navToggleSubject = new Subject<void>()
     this.docNavToggleSubject = new Subject<void>()
-    this.toolbarTitleSubject = new BehaviorSubject<string>(this.toolbarTitle)
-  }
-
-  get onActiveFile (): Observable<File> {
-    return this.activeFileSubject.asObservable()
-  }
-
-  setActiveFile (file: File) {
-    this.activeFile = file
-    this.activeFileSubject.next(file)
   }
 
   get onNavToggle (): Observable<void> {
@@ -47,18 +30,6 @@ export class UiService {
 
   get onDocNavToggle (): Observable<void> {
     return this.docNavToggleSubject.asObservable()
-  }
-
-  toggleDocNav (): void {
-    this.docNavToggleSubject.next()
-  }
-
-  get onToolbarTitle (): Observable<string> {
-    return this.toolbarTitleSubject.asObservable()
-  }
-
-  set toolbarTitle (title) {
-    this.toolbarTitleSubject.next(title)
   }
 
   set digest (digest: number) {

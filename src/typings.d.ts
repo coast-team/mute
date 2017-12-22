@@ -21,4 +21,3 @@ interface Window {
 // Other dependencies
 declare var jIO: any
 declare module 'mnemonicjs'
-declare module 'random-material-color'

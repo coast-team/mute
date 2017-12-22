@@ -12,14 +12,8 @@
 html {
   font-size: 10px;
 
-  &, body {
-    height: 100%;
-    width: 100%;
-  }
-
   body {
     font-size: 1.4rem;
-    background-color: $bg-background;
     margin: 0;
   }
 

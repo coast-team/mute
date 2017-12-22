@@ -21,7 +21,10 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule } from '@angular/material'
+import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
+import { NavComponent } from './nav/nav.component'
+import { ProfileComponent } from './profile/profile.component'
 
 @NgModule({
   imports: [
@@ -45,9 +48,10 @@ import 'hammerjs/hammer'
     FlexLayoutModule,
     MatTabsModule,
     MatTableModule,
-    MatDialogModule
+    MatDialogModule,
+    RouterModule
   ],
-  declarations: [ ],
+  declarations: [ ProfileComponent, NavComponent],
   exports: [
     CommonModule,
     MatInputModule,
@@ -69,7 +73,9 @@ import 'hammerjs/hammer'
     FlexLayoutModule,
     MatTabsModule,
     MatTableModule,
-    MatDialogModule
+    MatDialogModule,
+    ProfileComponent,
+    NavComponent
   ]
 })
 export class SharedModule {}

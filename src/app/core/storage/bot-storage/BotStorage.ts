@@ -14,7 +14,11 @@ export class BotStorage {
 
   get httpURL () {
     const protocol =  this.secure ? 'https' : 'http'
-    return `${protocol}://${this.host}:${this.port}`
+    if (this.secure && this.port === 443) {
+      return `${protocol}://${this.host}`
+    } else {
+      return `${protocol}://${this.host}:${this.port}`
+    }
   }
 
   get wsURL () {

@@ -1,0 +1,25 @@
+@import 'variables';
+
+:host {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.title {
+  text-align: center;
+
+  mat-form-field {
+    width: 90%;
+
+    &.sm { width: 60%; }
+
+    &.md { width: 50%; }
+
+    &.gt-md { width: 40%; }
+
+    input { text-align: center; }
+  }
+}
