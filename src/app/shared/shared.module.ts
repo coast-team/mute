@@ -24,6 +24,7 @@ import {
 import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
 import { NavComponent } from './nav/nav.component'
+import { SizePipe } from './nav/size-pipe/size-pipe'
 import { ProfileComponent } from './profile/profile.component'
 
 @NgModule({
@@ -51,7 +52,7 @@ import { ProfileComponent } from './profile/profile.component'
     MatDialogModule,
     RouterModule
   ],
-  declarations: [ ProfileComponent, NavComponent],
+  declarations: [ ProfileComponent, NavComponent, SizePipe],
   exports: [
     CommonModule,
     MatInputModule,

@@ -3,7 +3,7 @@
 
   <!-- Left Sidenav-->
   <mat-sidenav #leftSidenav class="leftsidenav" [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
-    <mute-nav (onFolder)="openFolder($event)"></mute-nav>
+    <mute-nav (folderChange)="openFolder($event)"></mute-nav>
   </mat-sidenav>
 
 

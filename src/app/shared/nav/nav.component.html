@@ -14,7 +14,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
       [value]="storage.home"
       [checked]="isHome(rlaHome)"
-      (click)="onFolder.emit(storage.home)"
+      (click)="folderChange.emit(storage.home)"
     >
       <span [ngClass]="{content: true, 'mat-button': true, selected: isHome(rlaHome)}" fxLayout="row" fxLayoutAlign="left center">
         <mat-icon [color]="isHome(rlaHome) ? 'primary' : ''">{{storage.home.icon}}</mat-icon>
@@ -29,7 +29,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
       [value]="storage.trash"
       [checked]="rlaTrash.isActive"
-      (click)="onFolder.emit(storage.trash)"
+      (click)="folderChange.emit(storage.trash)"
     >
       <span [ngClass]="{content: true, 'mat-button': true, selected: rlaTrash.isActive}" fxLayout="row" fxLayoutAlign="left center">
         <mat-icon [color]="rlaTrash.isActive ? 'primary' : ''">{{storage.trash.icon}}</mat-icon>
@@ -37,4 +37,9 @@
       </span>
     </mat-button-toggle>
   </mat-button-toggle-group>
+  <mat-divider></mat-divider>
+  <div *ngIf="isStorageManagerAvailable">
+    <div class="mat-caption storage">Local Storage</div>
+    <div class="mat-caption storage">{{usage | muteSize}} of {{quota | muteSize}} used</div>
+  </div>
 </div>
