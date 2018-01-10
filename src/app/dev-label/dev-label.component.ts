@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core'
+import { MAT_SNACK_BAR_DATA, MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
 import 'rxjs/add/operator/toPromise'
 
 import { hash } from '../../lastcommithash'
+import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({
@@ -49,7 +51,9 @@ export class DevLabelComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private renderer: Renderer2,
     private ui: UiService,
-    private detectRef: ChangeDetectorRef
+    private detectRef: ChangeDetectorRef,
+    private storageService: StorageService,
+    private snackBar: MatSnackBar
   ) {
     this.nbOfDetectChanges = 0
     this.url += hash
@@ -67,26 +71,41 @@ export class DevLabelComponent implements OnInit {
     })
   }
 
-  exportLog (): void {
+  private updateObjectURL (blob: Blob): void {
+    const objectURL = URL.createObjectURL(blob)
+    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
+    this.detectRef.detectChanges()
+  }
+
+  async exportLog (): Promise<void> {
     const urlParts: string[] = window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
-    this.filename = `log-${docID}-${this.digest}.json`
-    const db = jIO.createJIO({ type: 'query',  sub_storage: { type: 'indexeddb', database: 'mute' } })
-    db.getAttachment(docID, 'body').then((body) => {
-      this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(body))
-      this.detectRef.detectChanges()
-      this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new Event('log'))
-    })
+    try {
+      const blob = await this.storageService.getDocBodyAsBlob(docID)
+      this.filename = `log-${docID}-${this.digest}.json`
+      this.updateObjectURL(blob)
+      this.link.nativeElement.click()
+    } catch (error) {
+      const message = `The log could not be retrieved: ${error}.`
+      const action = 'Close'
+      this.snackBar.open(message, action)
+    }
   }
 
   exportTree (): void {
-    const urlParts: string[] = window.location.href.split('/')
-    const docID = urlParts[urlParts.length - 1]
-    this.filename = `tree-${docID}-${this.digest}.json`
-    const blob = new Blob([this.tree], { type : 'text\/json' })
-    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob))
-    this.detectRef.detectChanges()
-    this.renderer.selectRootElement(this.link.nativeElement).dispatchEvent(new Event('tree'))
+    if (this.tree !== undefined) {
+      const urlParts: string[] = window.location.href.split('/')
+      const docID = urlParts[urlParts.length - 1]
+      const blob = new Blob([this.tree], { type : 'text\/json' })
+      this.filename = `tree-${docID}-${this.digest}.json`
+      this.updateObjectURL(blob)
+      this.link.nativeElement.click()
+    } else {
+      const error = new Error('Tree is empty')
+      const message = `The tree could not be retrieved: ${error}.`
+      const action = 'Close'
+      this.snackBar.open(message, action)
+    }
   }
 
   detectChangesRun () {
