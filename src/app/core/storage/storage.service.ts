@@ -122,8 +122,8 @@ export class StorageService {
     return Promise.resolve()
   }
 
-  searchDoc (key: string): Promise<Doc[]> {
-    return new Promise((resolve, reject) => {
+  async searchDoc (key: string): Promise<Doc[]> {
+    return new Promise<Doc[]>((resolve, reject) => {
       this.db.allDocs({
         query: `(type:"doc") AND (key:"${key}") AND NOT (location:"trash")`,
         select_list: selectList
@@ -154,6 +154,17 @@ export class StorageService {
           (err) => reject(err)
         )
     })
+  }
+
+  async getDocBodyAsBlob (key: string): Promise<Blob> {
+    const docs: Doc[] = await this.searchDoc(key)
+    if (docs.length === 0) {
+      throw new Error('Document not found')
+    } else if (docs.length > 1) {
+      throw new Error('Too many documents found')
+    }
+    const doc: Doc = docs[0]
+    return this.db.getAttachment(doc.dbId, 'body')
   }
 
   saveDocBody (doc: Doc, body: State): Promise <any> {
