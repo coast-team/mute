@@ -20,7 +20,7 @@ $mute-theme: mat-light-theme($primary, $accent, $warn);
 // Background color
 $mat-bg: map-get($mute-theme, background);
 $bg-status-bar: map-get($mat-bg, status-card);
-$bg-background: #ECEFF1; //map-get($mat-bg, background);
+$bg-background: map-get($mat-bg, background);
 $bg-hover: map-get($mat-bg, hover);
 $bg-card: map-get($mat-bg, card);
 $bg-dialog: map-get($mat-bg, dialog);
