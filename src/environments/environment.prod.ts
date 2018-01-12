@@ -40,8 +40,8 @@ export const environment = {
   auth: {
     baseUrl: 'https://auth.coedit.re/',
     providers: {
-      github: { clientId: '' }, // Github application clientId
-      google: { clientId: '' }  // Google application clientId
+      github: { clientId: '', scope: [] }, // Github application clientId
+      google: { clientId: '', scope: [] }  // Google application clientId
     }
   }
 }

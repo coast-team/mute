@@ -20,8 +20,11 @@ export const environment = {
   auth: {
     baseUrl: 'http://localhost:4000/',
     providers: {
-      github: { clientId: 'aa9276bbe09317cace57' },
-      google: { clientId: '900988055557-r0u3sq6o1rg2t3tjidh7pq2h0nbjpp3d.apps.googleusercontent.com' }
+      github: { clientId: 'aa9276bbe09317cace57', scope: ['user:email'] },
+      google: {
+        clientId: '900988055557-r0u3sq6o1rg2t3tjidh7pq2h0nbjpp3d.apps.googleusercontent.com',
+        scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
+      }
     }
   }
 }

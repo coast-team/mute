@@ -58,7 +58,7 @@
     "mute-core": "^0.4.0",
     "mute-structs": "^0.4.0",
     "netflux": "^2.1.1",
-    "ng2-ui-auth": "^7.0.2",
+    "ng2-ui-auth": "^8.0.1",
     "normalize.css": "^7.0.0",
     "protobufjs": "^6.8.4",
     "rxjs": "^5.5.6",
