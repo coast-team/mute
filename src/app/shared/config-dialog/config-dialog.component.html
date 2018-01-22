@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Settings</h2>
+<mat-dialog-content>
+  <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
+    <ng-container *ngIf="profile.avatar; else anonymousIconBig">
+      <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
+    </ng-container>
+    <ng-template #anonymousIconBig>
+      <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
+    </ng-template>
+
+    <div fxLayout="column">
+      <mat-form-field>
+        <input matInput placeholder="Nickname" [value]="profile.displayName">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput readonly tabindex="-1" placeholder="Login" [value]="profile.login">
+      </mat-form-field>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close>CANCEL</button>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-button [mat-dialog-close]="true">SAVE</button>
+</mat-dialog-actions>

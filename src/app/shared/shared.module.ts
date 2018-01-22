@@ -23,6 +23,7 @@ import {
   MatTooltipModule } from '@angular/material'
 import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
+import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
 import { NavComponent } from './nav/nav.component'
 import { SizePipe } from './nav/size-pipe/size-pipe'
 import { ProfileComponent } from './profile/profile.component'
@@ -52,7 +53,8 @@ import { ProfileComponent } from './profile/profile.component'
     MatDialogModule,
     RouterModule
   ],
-  declarations: [ ProfileComponent, NavComponent, SizePipe],
+  entryComponents: [ ConfigDialogComponent ],
+  declarations: [ ProfileComponent, NavComponent, SizePipe, ConfigDialogComponent],
   exports: [
     CommonModule,
     MatInputModule,

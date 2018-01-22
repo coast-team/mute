@@ -6,10 +6,11 @@ import {
   trigger
 } from '@angular/animations'
 import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core'
-import { MatButton, MatSnackBar } from '@angular/material'
+import { MatButton, MatDialog, MatSnackBar } from '@angular/material'
 
 import { Profile } from '../../core/profile/Profile'
 import { ProfileService } from '../../core/profile/profile.service'
+import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 
 @Component({
   selector: 'mute-profile',
@@ -36,9 +37,16 @@ export class ProfileComponent {
   constructor (
     private snackBar: MatSnackBar,
     private changeDetectorRef: ChangeDetectorRef,
-    public profileService: ProfileService
+    public profileService: ProfileService,
+    public dialog: MatDialog
   ) {
     this.profile = profileService.profile
+  }
+
+  openConfigDialog () {
+    this.dialog.open(ConfigDialogComponent, {
+      data: { name: 'this.name, animal: this.animal' }
+    })
   }
 
   signout () {

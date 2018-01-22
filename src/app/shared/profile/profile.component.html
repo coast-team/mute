@@ -19,13 +19,13 @@
       <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
     </ng-container>
     <ng-template #anonymousIconBig>
-      <mat-icon class="anonymous-icon-big" aria-label="show profile information">account_circle</mat-icon>
+      <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
     </ng-template>
 
     <div fxLayout="column">
       <span class="mat-body-2 name">{{profile.displayName}}</span>
       <span class="mat-caption secondary-text">{{profile.login}}</span>
-      <button mat-raised-button disabled color="accent" class="my-account">
+      <button mat-raised-button color="accent" class="my-account" (click)="openConfigDialog()">
         My account
       </button>
     </div>
@@ -46,7 +46,7 @@
           <mat-icon aria-label="Sign in with Google" fontSet="icon-google"></mat-icon>
         </button>
       </div>
-      
+
     </ng-template>
   </mat-card-actions>
 </mat-card>
