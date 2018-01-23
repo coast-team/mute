@@ -56,13 +56,13 @@ export class AppModule {
     private sw: SwUpdate
   ) {
     sw.available.subscribe((event) => {
-      this.snackBar.open('New application version is available. Please refresh the page.', 'Close', {
+      const snackBarRef = this.snackBar.open('New version of MUTE is available.', 'Update', {
         duration: 5000
       })
-    })
-    sw.activated.subscribe((event) => {
-      this.snackBar.open('Application has been updated successfully.', 'Close', {
-        duration: 5000
+      snackBarRef.onAction().subscribe(() => {
+        sw.activateUpdate()
+          .then(() => document.location.reload())
+          .catch((err) => log.debug('Error activating SW update: ', err))
       })
     })
   }

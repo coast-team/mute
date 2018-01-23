@@ -3,25 +3,18 @@
   "assetGroups": [{
     "name": "app",
     "installMode": "prefetch",
-    "updateMode": "prefetch",
     "resources": {
       "files": [
-        "/favicon.ico",
-        "/index.html"
+        "/index.html",
+        "/assets/**",
+        "/fonts/**",
+        "!/**/*.scss",
+        "!/**/*.txt"
       ],
       "versionedFiles": [
         "/*.bundle.css",
         "/*.bundle.js",
         "/*.chunk.js"
-      ]
-    }
-  }, {
-    "name": "assets",
-    "installMode": "lazy",
-    "updateMode": "prefetch",
-    "resources": {
-      "files": [
-        "/assets/**"
       ]
     }
   }]

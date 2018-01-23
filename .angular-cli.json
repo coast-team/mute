@@ -19,6 +19,7 @@
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "mute",
+      "serviceWorker": true,
       "styles": [
         "styles.scss"
       ],
@@ -41,8 +42,7 @@
         "ovhprod": "environments/environment.ovhprod.ts",
         "demo": "environments/environment.demo.ts",
         "ghpages": "environments/environment.ghpages.ts"
-      },
-      "serviceWorker": true
+      }
     }
   ],
   "e2e": {
@@ -71,6 +71,7 @@
   },
   "defaults": {
     "styleExt": "css",
-    "component": {}
+    "component": {
+    }
   }
 }
