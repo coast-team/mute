@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, NgZone } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
@@ -49,7 +49,9 @@ export class NetworkService {
   private stateSubject: Subject<WebGroupState>
   private signalingSubject: Subject<SignalingState>
 
-  constructor () {
+  constructor (
+    private zone: NgZone
+  ) {
     this.botUrls = []
     this.key = ''
 
@@ -67,97 +69,99 @@ export class NetworkService {
     this.rejoinSubject = new Subject()
 
     // Configure Netflux logs
-    enableLog(environment.netfluxLog)
+    enableLog(environment.netfluxLog, 'debug')
   }
 
   init (): void {
-    this.wg = new WebGroup({
-      signalingURL: environment.signalingURL,
-      iceServers: environment.iceServers
+    this.zone.runOutsideAngular(() => {
+      this.wg = new WebGroup({
+        signalingURL: environment.signalingURL,
+        iceServers: environment.iceServers
+      })
+      window.wg = this.wg
+
+      // Window event listeners
+      let goneOfflineOnce = !window.navigator.onLine
+      /**
+       * Rejoin web group when some events fired some time later (see throttleTime method).
+       * The rejoin delay is because sometimes may fire Online/Offline events several times
+       * in a relatively short period of time.
+       */
+      this.onlineListener = () => {
+        log.info('network', 'Gone ONLINE')
+        if (goneOfflineOnce) {
+          this.rejoinSubject.next(undefined)
+          this.lineSubject.next(true)
+        }
+      }
+      this.visibilitychangeListener = () => {
+        if (window.document.visibilityState === 'visible') {
+          this.rejoinSubject.next(undefined)
+
+        // Leave when the tab is hidden and there are nobody apart you in the web group
+        } else if (window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
+          this.wg.leave()
+        }
+      }
+      window.addEventListener('online', this.onlineListener)
+      window.document.addEventListener('visibilitychange', this.visibilitychangeListener)
+
+      this.rejoinSubject.pipe(throttleTime(1000)).subscribe(() => this.join(this.key))
+
+      /**
+       * Leave web group in some specific situations
+       */
+      // Leave before closing a tab or the browser
+      this.beforeunloadListener = () => this.wg.leave()
+      window.addEventListener('beforeunload', this.beforeunloadListener)
+
+      // Leave when gone Offline
+      this.offlineListener = () => {
+        log.info('network', 'Gone OFFLINE')
+        goneOfflineOnce = true
+        this.wg.leave()
+        this.lineSubject.next(false)
+      }
+      window.addEventListener('offline', this.offlineListener)
+
+      // Handle network events
+      this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
+      this.wg.onMemberLeave = (id) => {
+        this.peerLeaveSubject.next(id)
+        // Leave web group when no other members in the group and the tab is not visible
+        if (this.wg.members.length === 1 && document.visibilityState === 'hidden') {
+          this.wg.leave()
+        }
+      }
+      this.wg.onSignalingStateChange = (state: SignalingState) => {
+        this.signalingSubject.next(state)
+      }
+      this.wg.onStateChange = (state: WebGroupState) => {
+        if (state === WebGroupState.JOINED) {
+          const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 1)
+          this.joinSubject.next(joinEvt)
+        }
+        this.stateSubject.next(state)
+      }
+      this.wg.onMessage = (id, bytes: Uint8Array, isBroadcast) => {
+        const msg = Message.decode(bytes)
+        const serviceName = msg.service
+        if (serviceName === 'botprotocol') {
+          const content = BotProtocol.create({key: this.key})
+          const msg = Message.create({
+            service: 'botprotocol',
+            content: BotProtocol.encode(content).finish()
+          })
+          this.wg.sendTo(id, Message.encode(msg).finish())
+        } else if (serviceName === 'botresponse') {
+          const url = BotResponse.decode(msg.content).url
+          this.botUrls.push(url)
+        } else {
+          const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
+          this.messageSubject.next(networkMessage)
+        }
+      }
     })
-    window.wg = this.wg
-
-    // Window event listeners
-    let goneOfflineOnce = !window.navigator.onLine
-    /**
-     * Rejoin web group when some events fired some time later (see throttleTime method).
-     * The rejoin delay is because sometimes may fire Online/Offline events several times
-     * in a relatively short period of time.
-     */
-    this.onlineListener = () => {
-      log.info('network', 'Gone ONLINE')
-      if (goneOfflineOnce) {
-        this.rejoinSubject.next(undefined)
-        this.lineSubject.next(true)
-      }
-    }
-    this.visibilitychangeListener = () => {
-      if (window.document.visibilityState === 'visible') {
-        this.rejoinSubject.next(undefined)
-
-      // Leave when the tab is hidden and there are nobody apart you in the web group
-      } else if (window.document.visibilityState === 'hidden' && this.wg.members.length === 1) {
-        this.wg.leave()
-      }
-    }
-    window.addEventListener('online', this.onlineListener)
-    window.document.addEventListener('visibilitychange', this.visibilitychangeListener)
-
-    this.rejoinSubject.pipe(throttleTime(1000)).subscribe(() => this.join(this.key))
-
-    /**
-     * Leave web group in some specific situations
-     */
-    // Leave before closing a tab or the browser
-    this.beforeunloadListener = () => this.wg.leave()
-    window.addEventListener('beforeunload', this.beforeunloadListener)
-
-    // Leave when gone Offline
-    this.offlineListener = () => {
-      log.info('network', 'Gone OFFLINE')
-      goneOfflineOnce = true
-      this.wg.leave()
-      this.lineSubject.next(false)
-    }
-    window.addEventListener('offline', this.offlineListener)
-
-    // Handle network events
-    this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
-    this.wg.onMemberLeave = (id) => {
-      this.peerLeaveSubject.next(id)
-      // Leave web group when no other members in the group and the tab is not visible
-      if (this.wg.members.length === 1 && document.visibilityState === 'hidden') {
-        this.wg.leave()
-      }
-    }
-    this.wg.onSignalingStateChange = (state: SignalingState) => {
-      this.signalingSubject.next(state)
-    }
-    this.wg.onStateChange = (state: WebGroupState) => {
-      if (state === WebGroupState.JOINED) {
-        const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 1)
-        this.joinSubject.next(joinEvt)
-      }
-      this.stateSubject.next(state)
-    }
-    this.wg.onMessage = (id, bytes: Uint8Array, isBroadcast) => {
-      const msg = Message.decode(bytes)
-      const serviceName = msg.service
-      if (serviceName === 'botprotocol') {
-        const content = BotProtocol.create({key: this.key})
-        const msg = Message.create({
-          service: 'botprotocol',
-          content: BotProtocol.encode(content).finish()
-        })
-        this.wg.sendTo(id, Message.encode(msg).finish())
-      } else if (serviceName === 'botresponse') {
-        const url = BotResponse.decode(msg.content).url
-        this.botUrls.push(url)
-      } else {
-        const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
-        this.messageSubject.next(networkMessage)
-      }
-    }
   }
 
   leave () {
@@ -250,7 +254,7 @@ export class NetworkService {
     }
   }
 
-  send (service: string, content:  Uint8Array, id?: number|undefined): void {
+  send (service: string, content: Uint8Array, id?: number|undefined): void {
     const msg = Message.create({ service, content})
     if (id === undefined) {
       this.wg.send(Message.encode(msg).finish())
