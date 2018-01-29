@@ -656,8 +656,7 @@ $root.sync = (function() {
          * Properties of an IdentifierMsg.
          * @memberof sync
          * @interface IIdentifierMsg
-         * @property {Array.<number>} [base] IdentifierMsg base
-         * @property {number} [last] IdentifierMsg last
+         * @property {Array.<sync.IIdentifierTupleMsg>} [tuples] IdentifierMsg tuples
          */
 
         /**
@@ -668,7 +667,7 @@ $root.sync = (function() {
          * @param {sync.IIdentifierMsg=} [properties] Properties to set
          */
         function IdentifierMsg(properties) {
-            this.base = [];
+            this.tuples = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -676,20 +675,12 @@ $root.sync = (function() {
         }
 
         /**
-         * IdentifierMsg base.
-         * @member {Array.<number>}base
+         * IdentifierMsg tuples.
+         * @member {Array.<sync.IIdentifierTupleMsg>}tuples
          * @memberof sync.IdentifierMsg
          * @instance
          */
-        IdentifierMsg.prototype.base = $util.emptyArray;
-
-        /**
-         * IdentifierMsg last.
-         * @member {number}last
-         * @memberof sync.IdentifierMsg
-         * @instance
-         */
-        IdentifierMsg.prototype.last = 0;
+        IdentifierMsg.prototype.tuples = $util.emptyArray;
 
         /**
          * Creates a new IdentifierMsg instance using the specified properties.
@@ -715,14 +706,9 @@ $root.sync = (function() {
         IdentifierMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.base != null && message.base.length) {
-                writer.uint32(/* id 1, wireType 2 =*/10).fork();
-                for (var i = 0; i < message.base.length; ++i)
-                    writer.int32(message.base[i]);
-                writer.ldelim();
-            }
-            if (message.last != null && message.hasOwnProperty("last"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.last);
+            if (message.tuples != null && message.tuples.length)
+                for (var i = 0; i < message.tuples.length; ++i)
+                    $root.sync.IdentifierTupleMsg.encode(message.tuples[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             return writer;
         };
 
@@ -745,17 +731,9 @@ $root.sync = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    if (!(message.base && message.base.length))
-                        message.base = [];
-                    if ((tag & 7) === 2) {
-                        var end2 = reader.uint32() + reader.pos;
-                        while (reader.pos < end2)
-                            message.base.push(reader.int32());
-                    } else
-                        message.base.push(reader.int32());
-                    break;
-                case 2:
-                    message.last = reader.int32();
+                    if (!(message.tuples && message.tuples.length))
+                        message.tuples = [];
+                    message.tuples.push($root.sync.IdentifierTupleMsg.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -766,6 +744,140 @@ $root.sync = (function() {
         };
 
         return IdentifierMsg;
+    })();
+
+    sync.IdentifierTupleMsg = (function() {
+
+        /**
+         * Properties of an IdentifierTupleMsg.
+         * @memberof sync
+         * @interface IIdentifierTupleMsg
+         * @property {number} [random] IdentifierTupleMsg random
+         * @property {number} [replicaNumber] IdentifierTupleMsg replicaNumber
+         * @property {number} [clock] IdentifierTupleMsg clock
+         * @property {number} [offset] IdentifierTupleMsg offset
+         */
+
+        /**
+         * Constructs a new IdentifierTupleMsg.
+         * @memberof sync
+         * @classdesc Represents an IdentifierTupleMsg.
+         * @constructor
+         * @param {sync.IIdentifierTupleMsg=} [properties] Properties to set
+         */
+        function IdentifierTupleMsg(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * IdentifierTupleMsg random.
+         * @member {number}random
+         * @memberof sync.IdentifierTupleMsg
+         * @instance
+         */
+        IdentifierTupleMsg.prototype.random = 0;
+
+        /**
+         * IdentifierTupleMsg replicaNumber.
+         * @member {number}replicaNumber
+         * @memberof sync.IdentifierTupleMsg
+         * @instance
+         */
+        IdentifierTupleMsg.prototype.replicaNumber = 0;
+
+        /**
+         * IdentifierTupleMsg clock.
+         * @member {number}clock
+         * @memberof sync.IdentifierTupleMsg
+         * @instance
+         */
+        IdentifierTupleMsg.prototype.clock = 0;
+
+        /**
+         * IdentifierTupleMsg offset.
+         * @member {number}offset
+         * @memberof sync.IdentifierTupleMsg
+         * @instance
+         */
+        IdentifierTupleMsg.prototype.offset = 0;
+
+        /**
+         * Creates a new IdentifierTupleMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.IdentifierTupleMsg
+         * @static
+         * @param {sync.IIdentifierTupleMsg=} [properties] Properties to set
+         * @returns {sync.IdentifierTupleMsg} IdentifierTupleMsg instance
+         */
+        IdentifierTupleMsg.create = function create(properties) {
+            return new IdentifierTupleMsg(properties);
+        };
+
+        /**
+         * Encodes the specified IdentifierTupleMsg message. Does not implicitly {@link sync.IdentifierTupleMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.IdentifierTupleMsg
+         * @static
+         * @param {sync.IIdentifierTupleMsg} message IdentifierTupleMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        IdentifierTupleMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.random != null && message.hasOwnProperty("random"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.random);
+            if (message.replicaNumber != null && message.hasOwnProperty("replicaNumber"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.replicaNumber);
+            if (message.clock != null && message.hasOwnProperty("clock"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.clock);
+            if (message.offset != null && message.hasOwnProperty("offset"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.offset);
+            return writer;
+        };
+
+        /**
+         * Decodes an IdentifierTupleMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.IdentifierTupleMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.IdentifierTupleMsg} IdentifierTupleMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        IdentifierTupleMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.IdentifierTupleMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.random = reader.int32();
+                    break;
+                case 2:
+                    message.replicaNumber = reader.int32();
+                    break;
+                case 3:
+                    message.clock = reader.int32();
+                    break;
+                case 4:
+                    message.offset = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return IdentifierTupleMsg;
     })();
 
     sync.LogootSDelMsg = (function() {
@@ -870,8 +982,7 @@ $root.sync = (function() {
          * Properties of an IdentifierIntervalMsg.
          * @memberof sync
          * @interface IIdentifierIntervalMsg
-         * @property {Array.<number>} [base] IdentifierIntervalMsg base
-         * @property {number} [begin] IdentifierIntervalMsg begin
+         * @property {sync.IIdentifierMsg} [idBegin] IdentifierIntervalMsg idBegin
          * @property {number} [end] IdentifierIntervalMsg end
          */
 
@@ -883,7 +994,6 @@ $root.sync = (function() {
          * @param {sync.IIdentifierIntervalMsg=} [properties] Properties to set
          */
         function IdentifierIntervalMsg(properties) {
-            this.base = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -891,20 +1001,12 @@ $root.sync = (function() {
         }
 
         /**
-         * IdentifierIntervalMsg base.
-         * @member {Array.<number>}base
+         * IdentifierIntervalMsg idBegin.
+         * @member {(sync.IIdentifierMsg|null|undefined)}idBegin
          * @memberof sync.IdentifierIntervalMsg
          * @instance
          */
-        IdentifierIntervalMsg.prototype.base = $util.emptyArray;
-
-        /**
-         * IdentifierIntervalMsg begin.
-         * @member {number}begin
-         * @memberof sync.IdentifierIntervalMsg
-         * @instance
-         */
-        IdentifierIntervalMsg.prototype.begin = 0;
+        IdentifierIntervalMsg.prototype.idBegin = null;
 
         /**
          * IdentifierIntervalMsg end.
@@ -938,16 +1040,10 @@ $root.sync = (function() {
         IdentifierIntervalMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.base != null && message.base.length) {
-                writer.uint32(/* id 1, wireType 2 =*/10).fork();
-                for (var i = 0; i < message.base.length; ++i)
-                    writer.int32(message.base[i]);
-                writer.ldelim();
-            }
-            if (message.begin != null && message.hasOwnProperty("begin"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.begin);
+            if (message.idBegin != null && message.hasOwnProperty("idBegin"))
+                $root.sync.IdentifierMsg.encode(message.idBegin, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.end != null && message.hasOwnProperty("end"))
-                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.end);
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.end);
             return writer;
         };
 
@@ -970,19 +1066,9 @@ $root.sync = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    if (!(message.base && message.base.length))
-                        message.base = [];
-                    if ((tag & 7) === 2) {
-                        var end2 = reader.uint32() + reader.pos;
-                        while (reader.pos < end2)
-                            message.base.push(reader.int32());
-                    } else
-                        message.base.push(reader.int32());
+                    message.idBegin = $root.sync.IdentifierMsg.decode(reader, reader.uint32());
                     break;
                 case 2:
-                    message.begin = reader.int32();
-                    break;
-                case 3:
                     message.end = reader.int32();
                     break;
                 default:
