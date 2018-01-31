@@ -250,7 +250,7 @@ export class NetworkService {
   inviteBot (url: string): void {
     if (!this.botUrls.includes(url)) {
       const fullUrl = url.startsWith('ws') ? url : `ws://${url}`
-      this.wg.invite(fullUrl)
+      this.zone.runOutsideAngular(() => this.wg.invite(fullUrl))
     }
   }
 
