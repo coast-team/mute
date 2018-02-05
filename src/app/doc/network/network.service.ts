@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
-import { enableLog, SignalingState, WebGroup, WebGroupState } from 'netflux'
+import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { takeUntil, throttleTime } from 'rxjs/operators'
@@ -69,14 +69,14 @@ export class NetworkService {
     this.rejoinSubject = new Subject()
 
     // Configure Netflux logs
-    enableLog(environment.netfluxLog, 'debug')
+    setLogLevel(LogLevel.DEBUG)
   }
 
   init (): void {
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
-        signalingURL: environment.signalingURL,
-        iceServers: environment.iceServers
+        signalingServer: environment.signalingServer,
+        rtcConfiguration: environment.rtcConfiguration
       })
       window.wg = this.wg
 
@@ -143,7 +143,7 @@ export class NetworkService {
         }
         this.stateSubject.next(state)
       }
-      this.wg.onMessage = (id, bytes: Uint8Array, isBroadcast) => {
+      this.wg.onMessage = (id, bytes: Uint8Array) => {
         const msg = Message.decode(bytes)
         const serviceName = msg.service
         if (serviceName === 'botprotocol') {
@@ -157,7 +157,9 @@ export class NetworkService {
           const url = BotResponse.decode(msg.content).url
           this.botUrls.push(url)
         } else {
-          const networkMessage = new NetworkMessage(serviceName, id, isBroadcast, msg.content)
+          // FIXME: As Netflux spec changed and in order to not change mute-core, the isBroadcast parameter
+          // (the third parameter in NetworkMessage constructor) is set to true.
+          const networkMessage = new NetworkMessage(serviceName, id, true, msg.content)
           this.messageSubject.next(networkMessage)
         }
       }

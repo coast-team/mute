@@ -7,8 +7,8 @@ export const environment = {
   production: false,
   devLabel: true,
   netfluxLog: true,
-  iceServers: [],
-  signalingURL: 'ws://localhost:8010',
+  rtcConfiguration: { iceServers: [] },
+  signalingServer: 'ws://localhost:8010',
   serviceWorker: false,
   storages: [
     {

@@ -54,11 +54,11 @@ export class SyncComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit () {
-    this.subs[this.subs.length] = this.networkService.onStateChange.subscribe((state: WebGroupState) => {
-      this.groupState = state
+    this.subs[this.subs.length] = this.networkService.onStateChange.subscribe((groupState: WebGroupState) => {
+      this.groupState = groupState
       this.setGroupDetails()
       if (window.navigator.onLine) {
-        if (state === WebGroupState.JOINED) {
+        if (groupState === WebGroupState.JOINED) {
           this.syncState = this.SYNC
         } else {
           this.syncState = undefined
@@ -68,10 +68,10 @@ export class SyncComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.subs[this.subs.length] = this.networkService.onSignalingStateChange.subscribe((state: SignalingState) => {
-      this.signalingState = state
+    this.subs[this.subs.length] = this.networkService.onSignalingStateChange.subscribe((signalingState: SignalingState) => {
+      this.signalingState = signalingState
       this.setSignalingDetails()
-      if (window.navigator.onLine && this.syncState !== undefined && state !== SignalingState.READY_TO_JOIN_OTHERS) {
+      if (window.navigator.onLine && this.syncState !== undefined && signalingState !== SignalingState.STABLE) {
         this.syncState = undefined
         this.setSyncDetails()
         this.changeDetectorRef.detectChanges()
@@ -136,14 +136,11 @@ export class SyncComponent implements OnInit, OnDestroy {
     case SignalingState.CONNECTING:
       this.signalingDetails = 'connecting...'
       break
-    case SignalingState.OPEN:
-      this.signalingDetails = 'connected'
+    case SignalingState.CONNECTED:
+      this.signalingDetails = 'connected to one member'
       break
-    case SignalingState.CONNECTED_WITH_FIRST_MEMBER:
-      this.signalingDetails = 'connected & start joining...'
-      break
-    case SignalingState.READY_TO_JOIN_OTHERS:
-      this.signalingDetails = 'connected & ready'
+    case SignalingState.STABLE:
+      this.signalingDetails = 'ready to join others'
       break
     case SignalingState.CLOSED:
       this.signalingDetails = 'closed'

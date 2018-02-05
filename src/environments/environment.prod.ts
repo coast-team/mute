@@ -9,18 +9,19 @@ export const environment = {
   // Enable/Disable Netflux console logs
   netfluxLog: true,
 
-  // STUN/TURN servers for WebRTC
-  // Can be an empty array: []
-  // See https://developer.mozilla.org/en/docs/Web/API/RTCIceServer/urls
-  iceServers: [
-    {
-      urls: 'stun:stun.l.google.com:19302'
-    }
-  ],
+  // Configuration for WebRTC (e.g. STUN/TURN servers)
+  // See https://developer.mozilla.org/en/docs/Web/API/RTCConfiguration
+  rtcConfiguration: {
+    iceServers: [
+      {
+        urls: 'stun:stun.l.google.com:19302'
+      }
+    ]
+  },
 
   // Signaling server URL
   // See https://github.com/coast-team/sigver
-  signalingURL: 'wss://signaling.coedit.re',
+  signalingServer: 'wss://signaling.coedit.re',
 
   // Enable/Disable service worker
   serviceWorker: true,
