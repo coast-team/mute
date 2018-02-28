@@ -6,7 +6,6 @@
 >
   <mat-icon *ngSwitchCase="SYNC">sync</mat-icon>
   <mat-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</mat-icon>
-  <mat-icon *ngSwitchCase="SYNC_PROBLEM">sync_problem</mat-icon>
   <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
 </span>
 
@@ -15,15 +14,8 @@
   [@cardState]='cardState'
 >
   <span class="arrow"></span>
-  <div class="header mat-subheading-2">{{syncDetails}}</div>
+  <div class="header mat-subheading-2">{{groupDetails}}</div>
   <mat-card-content>
-    <p class="mat-body-1">
-      <span class="mat-body-2 secondary-text">Signaling: </span>
-      {{signalingDetails}}
-    </p>
-    <p class="mat-body-1">
-      <span class="mat-body-2 secondary-text">Group: </span>
-      {{groupDetails}}
-    </p>
+    <p class="mat-body-1 secondary-text">{{signalingDetails}}</p>
   </mat-card-content>
 </mat-card>

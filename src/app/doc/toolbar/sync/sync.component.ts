@@ -31,14 +31,10 @@ export class SyncComponent implements OnInit, OnDestroy {
 
   public SYNC = 1
   public SYNC_DISABLED = 2
-  public SYNC_PROBLEM = 3
 
-  public cardState: string
-  public syncDetails: string
   public syncState: number
-  public signalingState: SignalingState
+  public cardState: string
   public signalingDetails: string
-  public groupState: WebGroupState
   public groupDetails: string
 
   constructor (
@@ -46,33 +42,60 @@ export class SyncComponent implements OnInit, OnDestroy {
     private networkService: NetworkService
   ) {
     this.subs = []
-    this.signalingState = undefined
-    this.groupState = undefined
-    this.setSyncDetails()
-    this.setSignalingDetails()
-    this.setGroupDetails()
+    this.groupDetails = ''
+    this.signalingDetails = ''
   }
 
   ngOnInit () {
-    this.subs[this.subs.length] = this.networkService.onStateChange.subscribe((groupState: WebGroupState) => {
-      this.groupState = groupState
-      this.setGroupDetails()
-      switch (groupState) {
-      case WebGroupState.JOINING:
-        this.syncState = undefined
-        break
-      case WebGroupState.JOINED:
-        this.syncState = this.SYNC
-        break
-      case WebGroupState.LEFT:
-        this.syncState = this.SYNC_DISABLED
-        break
-      default:
-        this.syncState = undefined
-      }
-      this.setSyncDetails()
-      this.changeDetectorRef.detectChanges()
-    })
+    this.subs[this.subs.length] = this.networkService.onStateChange
+      .subscribe((s: WebGroupState) => {
+        switch (s) {
+        case WebGroupState.JOINING:
+          this.groupDetails = 'Joining the group...'
+          this.syncState = undefined
+          break
+        case WebGroupState.JOINED:
+          this.groupDetails = 'Successfully joined the group.'
+          this.syncState = this.SYNC
+          break
+        case WebGroupState.LEAVING:
+          this.groupDetails = 'Leaving the group...'
+          this.syncState = this.SYNC_DISABLED
+          break
+        case WebGroupState.LEFT:
+          this.groupDetails = 'Left the group.'
+          this.syncState = this.SYNC_DISABLED
+          break
+        default:
+          this.groupDetails = 'undefined'
+          this.syncState = undefined
+        }
+        this.changeDetectorRef.detectChanges()
+      })
+
+    this.subs[this.subs.length] = this.networkService.onSignalingStateChange
+      .subscribe((s: SignalingState) => {
+        switch (s) {
+        case SignalingState.CONNECTING:
+          this.signalingDetails = 'Connecting to the signaling server...'
+          break
+        case SignalingState.CONNECTED:
+          this.signalingDetails = 'Successfully connected to one group member.'
+          break
+        case SignalingState.STABLE:
+          this.signalingDetails = 'Connection with signaling server is stable.'
+          break
+        case SignalingState.CLOSING:
+          this.signalingDetails = 'Closing connection with the signaling server.'
+          break
+        case SignalingState.CLOSED:
+          this.signalingDetails = 'No longer connected to the signaling server.'
+          break
+        default:
+          this.signalingDetails = 'undefined'
+        }
+        this.changeDetectorRef.detectChanges()
+      })
   }
 
   ngOnDestroy () {
@@ -85,57 +108,6 @@ export class SyncComponent implements OnInit, OnDestroy {
 
   hideCard () {
     this.cardState = 'void'
-  }
-
-  private setSyncDetails () {
-    switch (this.syncState) {
-    case this.SYNC:
-      this.syncDetails = 'Synchronized'
-      break
-    case this.SYNC_DISABLED:
-      this.syncDetails = 'Synchronization disabled'
-      break
-    case this.SYNC_PROBLEM:
-      this.syncDetails = 'No network connectivity!'
-      break
-    default:
-      this.syncDetails = 'Synchronizing...'
-    }
-  }
-
-  private setGroupDetails () {
-    switch (this.groupState) {
-    case WebGroupState.JOINING:
-      this.groupDetails = 'joining...'
-      break
-    case WebGroupState.JOINED:
-      this.groupDetails = 'joined'
-      break
-    case WebGroupState.LEFT:
-      this.groupDetails = 'alone'
-      break
-    default:
-      this.groupDetails = 'undefined'
-    }
-  }
-
-  private setSignalingDetails () {
-    switch (this.signalingState) {
-    case SignalingState.CONNECTING:
-      this.signalingDetails = 'connecting...'
-      break
-    case SignalingState.CONNECTED:
-      this.signalingDetails = 'connected to one member'
-      break
-    case SignalingState.STABLE:
-      this.signalingDetails = 'ready to join others'
-      break
-    case SignalingState.CLOSED:
-      this.signalingDetails = 'closed'
-      break
-    default:
-      this.signalingDetails = 'undefined'
-    }
   }
 
 }
