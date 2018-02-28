@@ -20,7 +20,7 @@ import { HistoryModule } from './history/history.module'
 @NgModule({
   imports: [
     BrowserModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.serviceWorker }),
     BrowserAnimationsModule,
     CoreModule,
     AppRoutingModule,

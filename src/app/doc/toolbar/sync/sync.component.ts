@@ -57,33 +57,21 @@ export class SyncComponent implements OnInit, OnDestroy {
     this.subs[this.subs.length] = this.networkService.onStateChange.subscribe((groupState: WebGroupState) => {
       this.groupState = groupState
       this.setGroupDetails()
-      if (window.navigator.onLine) {
-        if (groupState === WebGroupState.JOINED) {
-          this.syncState = this.SYNC
-        } else {
-          this.syncState = undefined
-        }
-        this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
-      }
-    })
-
-    this.subs[this.subs.length] = this.networkService.onSignalingStateChange.subscribe((signalingState: SignalingState) => {
-      this.signalingState = signalingState
-      this.setSignalingDetails()
-      if (window.navigator.onLine && this.syncState !== undefined && signalingState !== SignalingState.STABLE) {
+      switch (groupState) {
+      case WebGroupState.JOINING:
         this.syncState = undefined
-        this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
+        break
+      case WebGroupState.JOINED:
+        this.syncState = this.SYNC
+        break
+      case WebGroupState.LEFT:
+        this.syncState = this.SYNC_DISABLED
+        break
+      default:
+        this.syncState = undefined
       }
-    })
-
-    this.subs[this.subs.length] = this.networkService.onLine.subscribe((online: boolean) => {
-      if (!online) {
-        this.syncState = this.SYNC_PROBLEM
-        this.setSyncDetails()
-        this.changeDetectorRef.detectChanges()
-      }
+      this.setSyncDetails()
+      this.changeDetectorRef.detectChanges()
     })
   }
 

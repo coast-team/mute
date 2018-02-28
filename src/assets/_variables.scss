@@ -47,6 +47,15 @@
   src: url('/assets/fonts/fontello.woff2') format('woff2');
 }
 
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url('/assets/fonts/MaterialIcons-Regular.woff2') format('woff2');
+}
+
 
 // Document body
 $font: 'Droid Sans', sans-serif;
