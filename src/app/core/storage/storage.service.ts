@@ -206,7 +206,7 @@ export class StorageService {
         type: 'uuid',
         sub_storage: {
           type: 'indexeddb',
-          database: `documents-${login}`
+          database: `documents_v0.4.0-${login}`
         }
       }
     })
