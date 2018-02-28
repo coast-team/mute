@@ -16,7 +16,6 @@ export class DocsResolverService implements Resolve<Folder> {
 
   async resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Folder> {
     const path = state.url.substr(5)
-    log.debug('path: ', path)
     try {
       if (path === '' || path === '/home') {
         return this.storage.home

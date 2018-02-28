@@ -60,7 +60,7 @@ export class NetworkService {
     this.leaveSubject = new Subject()
 
     // Configure Netflux logs
-    setLogLevel(LogLevel.WEB_GROUP, LogLevel.TOPOLOGY, LogLevel.CHANNEL_BUILDER)
+    setLogLevel(LogLevel.WEB_GROUP)
   }
 
   init (): void {
@@ -89,11 +89,10 @@ export class NetworkService {
         const serviceName = msg.service
         if (serviceName === 'botprotocol') {
           const content = BotProtocol.create({key: this.key})
-          const msg = Message.create({
+          this.wg.sendTo(id, Message.encode(Message.create({
             service: 'botprotocol',
             content: BotProtocol.encode(content).finish()
-          })
-          this.wg.sendTo(id, Message.encode(msg).finish())
+          })).finish())
         } else if (serviceName === 'botresponse') {
           const url = BotResponse.decode(msg.content).url
           this.botUrls.push(url)
@@ -127,7 +126,7 @@ export class NetworkService {
 
   set messageToSendRandomlySource (source: Observable<SendRandomlyMessage>) {
     this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
-      const otherMembers: number[] = this.members.filter((id: number) => id !== this.wg.myId)
+      const otherMembers: number[] = this.members.filter((i) => i !== this.wg.myId)
       const index: number = Math.ceil(Math.random() * otherMembers.length) - 1
       const id: number = otherMembers[index]
       this.send(sendRandomlyMessage.service, sendRandomlyMessage.content, id)
