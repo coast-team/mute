@@ -1,5 +1,7 @@
 import { Component, Inject } from '@angular/core'
+import { FormControl, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material'
+import { ErrorStateMatcher } from '@angular/material/core'
 
 import { Profile } from '../../core/profile/Profile'
 import { ProfileService } from '../../core/profile/profile.service'
@@ -13,13 +15,21 @@ export class ConfigDialogComponent {
 
   public profile: Profile
 
+  public displayNameFormControl: FormControl
+
   constructor (
     public dialogRef: MatDialogRef<ConfigDialogComponent>,
     public profileService: ProfileService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.profile = profileService.profile
-    log.debug('Dialog opened: ', data)
+    this.displayNameFormControl = new FormControl('', [
+      Validators.maxLength(27),
+    ])
+  }
+
+  save (nickname: string) {
+    this.profile.displayName = nickname
   }
 
 }

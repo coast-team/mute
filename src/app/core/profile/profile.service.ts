@@ -26,7 +26,7 @@ export class ProfileService {
     this.profileSubject = new Subject()
   }
 
-  init (): Promise<void> {
+  async init (): Promise<void> {
      // Create profiles database if doesn't exist already
     this.db = jIO.createJIO({
       type: 'query',
@@ -40,10 +40,10 @@ export class ProfileService {
     })
 
     // Get authenticated or anonymous account(s)
-    const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.getAnonymousAccount()]
+    const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.anonymous]
 
     // Retrieve profile from database (with associated account and settings)
-    return this.getProfile(accounts).then((profile) => this.setProfile(profile))
+    return this.setProfile(await this.findProfile(accounts))
   }
 
   get profile (): Profile { return this._profile }
@@ -53,33 +53,33 @@ export class ProfileService {
   }
 
   async updateProfile (): Promise<void> {
-    return await this.db.put(this._profile.dbId, this._profile.serialize())
+    await this.db.put(this._profile.dbId, this._profile.serialize())
+    this.profileSubject.next(this._profile)
+    return
   }
 
   isAuthenticated () {
     return this.auth.isAuthenticated()
   }
 
-  signout (): Promise<void> {
-    return this.auth.logout().toPromise()
-      .then(() => this.getProfile([this.getAnonymousAccount()]))
-      .then((profile: Profile) => this.setProfile(profile))
+  async signout (): Promise<void> {
+    await this.auth.logout().toPromise()
+    return this.setProfile(await this.findProfile([this.anonymous]))
   }
 
-  signin (provider: string): Promise<Profile> {
-    return this.auth.authenticate(provider).toPromise()
-      .then(() => this.getProfile([this.auth.getPayload()]))
-      .then((profile: Profile) => {
-        this.setProfile(profile)
-        return profile
-      })
+  async signin (provider: string): Promise<Profile> {
+    await this.auth.authenticate(provider).toPromise()
+    const profile = await this.findProfile([this.auth.getPayload()])
+    this.setProfile(profile)
+    return profile
   }
 
   resendNotification () {
+    // FIXME: rid of this method
     this.profileSubject.next(this.profile)
   }
 
-  private async getProfile (accounts: IAccount[]): Promise<Profile> {
+  private async findProfile (accounts: IAccount[]): Promise<Profile> {
     const logins = accounts.map((a) => a.login)
     const rows = (await this.db.allDocs({
       query: {
@@ -102,17 +102,17 @@ export class ProfileService {
 
     // Profile found
     if (rows.length !== 0) {
-      return Profile.deserialize(rows[0].id, rows[0].value, accounts)
+      return Profile.deserialize(rows[0].id, rows[0].value, accounts, this)
 
     // Profile not found: create a new one
     } else {
-      const profile = new Profile (accounts)
+      const profile = new Profile (accounts, this)
       profile.dbId = await this.db.post(profile.serialize())
       return profile
     }
   }
 
-  private getAnonymousAccount () {
+  private get anonymous () {
     return {
       provider: window.location.hostname,
       login: `anonymous`,

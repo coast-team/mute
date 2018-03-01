@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FlexLayoutModule } from '@angular/flex-layout'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import {
   MatButtonModule,
   MatButtonToggleModule,
@@ -51,7 +52,9 @@ import { ProfileComponent } from './profile/profile.component'
     MatTabsModule,
     MatTableModule,
     MatDialogModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   entryComponents: [ ConfigDialogComponent ],
   declarations: [ ProfileComponent, NavComponent, SizePipe, ConfigDialogComponent],
@@ -78,7 +81,9 @@ import { ProfileComponent } from './profile/profile.component'
     MatTableModule,
     MatDialogModule,
     ProfileComponent,
-    NavComponent
+    NavComponent,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class SharedModule {}
