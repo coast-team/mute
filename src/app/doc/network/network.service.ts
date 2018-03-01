@@ -23,7 +23,6 @@ export class NetworkService {
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
   private leaveSubject: Subject<number>
-  private lineSubject: BehaviorSubject<boolean>
 
   // Network message subject
   private messageSubject: ReplaySubject<NetworkMessage>
@@ -39,8 +38,8 @@ export class NetworkService {
   private messageToSendToSubscription: Subscription
 
   // Connection state subject
-  private stateSubject: Subject<WebGroupState>
-  private signalingSubject: Subject<SignalingState>
+  private stateSubject: BehaviorSubject<WebGroupState>
+  private signalingSubject: BehaviorSubject<SignalingState>
 
   constructor (
     private zone: NgZone
@@ -51,8 +50,8 @@ export class NetworkService {
     // Initialize subjects
     this.peerJoinSubject = new ReplaySubject()
     this.peerLeaveSubject = new ReplaySubject()
-    this.signalingSubject = new Subject()
-    this.stateSubject = new Subject()
+    this.signalingSubject = new BehaviorSubject(SignalingState.CLOSED)
+    this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new ReplaySubject()
 
     this.disposeSubject = new Subject<void>()
@@ -74,9 +73,7 @@ export class NetworkService {
       // Handle network events
       this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
       this.wg.onMemberLeave = (id) => this.peerLeaveSubject.next(id)
-      this.wg.onSignalingStateChange = (state: SignalingState) => {
-        this.signalingSubject.next(state)
-      }
+      this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
       this.wg.onStateChange = (state: WebGroupState) => {
         if (state === WebGroupState.JOINED) {
           const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 1)
