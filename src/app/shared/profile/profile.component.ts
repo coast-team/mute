@@ -5,8 +5,8 @@ import {
   transition,
   trigger
 } from '@angular/animations'
-import { ChangeDetectorRef, Component, Input, ViewChild } from '@angular/core'
-import { MatButton, MatDialog, MatSnackBar } from '@angular/material'
+import { Component, OnDestroy, ViewChild,  } from '@angular/core'
+import { MatButton, MatCard, MatDialog, MatSnackBar } from '@angular/material'
 
 import { Profile } from '../../core/profile/Profile'
 import { ProfileService } from '../../core/profile/profile.service'
@@ -26,26 +26,33 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
     ])
   ]
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnDestroy {
 
   @ViewChild('profileIcon') profileIcon: MatButton
 
   public cardState: string
   public profile: Profile
-  private mouseOver: boolean
 
   constructor (
     private snackBar: MatSnackBar,
-    private changeDetectorRef: ChangeDetectorRef,
     public profileService: ProfileService,
     public dialog: MatDialog
   ) {
     this.profile = profileService.profile
   }
 
+  ngOnDestroy () {
+    global.window.removeEventListener('click', this.hideCard)
+  }
+
+  clickOnCard (event: Event) {
+    event.stopPropagation()
+  }
+
   openConfigDialog () {
-    this.dialog.open(ConfigDialogComponent, {
-      data: { name: 'this.name, animal: this.animal' }
+    const dialog = this.dialog.open(ConfigDialogComponent)
+    dialog.afterClosed().subscribe(() => {
+      this.cardState = 'void'
     })
   }
 
@@ -57,9 +64,7 @@ export class ProfileComponent {
           duration: 3000
         })
         this.profileIcon.focus()
-        snackBarRef.afterDismissed().subscribe(() => {
-          this.cardState = 'void'
-        })
+        snackBarRef.afterDismissed().subscribe(() => this.hideCard())
       })
   }
 
@@ -72,9 +77,7 @@ export class ProfileComponent {
           duration: 5000
         })
         this.profileIcon.focus()
-        snackBarRef.afterDismissed().subscribe(() => {
-          this.cardState = 'void'
-        })
+        snackBarRef.afterDismissed().subscribe(() => this.hideCard())
       })
       .catch((err) => {
         log.error('Failed to signin: ', err)
@@ -85,20 +88,22 @@ export class ProfileComponent {
       })
   }
 
-  toggleCard () {
-    this.cardState = this.cardState === 'visible' ? 'void' : 'visible'
-    this.changeDetectorRef.detectChanges()
-  }
-
-  setMouseOver (value) {
-    this.mouseOver = value
-  }
-
-  hideCard () {
-    if (!this.mouseOver) {
-      this.cardState = 'void'
-      this.changeDetectorRef.detectChanges()
+  toggleCard (event: Event) {
+    event.stopPropagation()
+    if (this.cardState === 'visible') {
+      this.hideCard()
+    } else {
+      this.showCard()
     }
   }
 
+  showCard () {
+    global.window.addEventListener('click', this.hideCard.bind(this))
+    this.cardState = 'visible'
+  }
+
+  hideCard () {
+    global.window.removeEventListener('click', this.hideCard)
+    this.cardState = 'void'
+  }
 }

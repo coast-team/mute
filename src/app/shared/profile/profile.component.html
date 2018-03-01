@@ -1,4 +1,4 @@
-<button #profileIcon mat-icon-button (click)='toggleCard()' (blur)='hideCard()'>
+<button #profileIcon mat-icon-button (click)='toggleCard($event)'>
   <ng-container *ngIf="profile.avatar; else anonymousIcon">
     <img class='avatar-img' src="{{profile.avatar}}" alt="avatar" height="32" width="32" />
   </ng-container>
@@ -8,11 +8,9 @@
 </button>
 
 <mat-card *ngIf="cardState === 'visible'"
-  class="profile-card mat-elevation-z8"
-  [@cardState]='cardState'
-  (mouseenter)='setMouseOver(true)'
-  (mouseleave)='setMouseOver(false)'
->
+          class="profile-card mat-elevation-z8"
+          [@cardState]='cardState'
+          (click)='clickOnCard($event)'>
   <span class="arrow"></span>
   <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
     <ng-container *ngIf="profile.avatar; else anonymousIconBig">
