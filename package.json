@@ -1,6 +1,6 @@
 {
   "name": "mute",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
     "ng": "ng",
