@@ -2,6 +2,12 @@ import { IAccount } from './IAccount'
 import { ProfileService } from './profile.service'
 import { Settings } from './Settings'
 
+interface ISerialize {
+  displayName: string
+  logins: string[]
+  settings: object
+}
+
 export class Profile {
   public dbId: string
   public activeAccount: IAccount
@@ -19,12 +25,12 @@ export class Profile {
     this.profileService = profileService
   }
 
-  static deserialize (dbId: string, serialized: any, accounts: IAccount[], profileService: ProfileService) {
+  static deserialize (accounts: IAccount[], profileService: ProfileService, dbId: string, serialized: ISerialize) {
     const profile = new Profile (accounts, profileService)
-    profile.dbId = dbId
     profile._displayName = serialized.displayName
     profile.activeAccount = accounts[0]
     profile.settings = Settings.deserialize(serialized)
+    profile.dbId = dbId
     return profile
   }
 
@@ -50,7 +56,7 @@ export class Profile {
   get email (): string { return this.activeAccount.email }
   get provider (): string { return this.activeAccount.provider }
 
-  serialize () {
+  serialize (): ISerialize {
     return {
       displayName: this.displayName,
       logins: this.accounts.map((a: IAccount) => a.login),

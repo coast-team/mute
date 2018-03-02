@@ -42,7 +42,7 @@ export class ProfileService {
     // Get authenticated or anonymous account(s)
     const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.anonymous]
 
-    // Retrieve profile from database (with associated account and settings)
+    // Retrieve profile from database (with associated accounts and settings)
     return this.setProfile(await this.findProfile(accounts))
   }
 
@@ -102,7 +102,7 @@ export class ProfileService {
 
     // Profile found
     if (rows.length !== 0) {
-      return Profile.deserialize(rows[0].id, rows[0].value, accounts, this)
+      return Profile.deserialize(accounts, this, rows[0].id, rows[0].value )
 
     // Profile not found: create a new one
     } else {
@@ -112,7 +112,7 @@ export class ProfileService {
     }
   }
 
-  private get anonymous () {
+  private get anonymous (): IAccount {
     return {
       provider: window.location.hostname,
       login: `anonymous`,
