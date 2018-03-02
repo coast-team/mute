@@ -17,9 +17,9 @@ import { Observable } from 'rxjs/Observable'
 import { fromEventPattern } from 'rxjs/observable/fromEventPattern'
 import { filter, map, share } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
-import { EditorService } from './editor.service'
 
 import * as CodeMirror from 'codemirror'
+import * as Editor from 'tui-editor'
 
 @Component({
   selector: 'mute-editor',
@@ -30,17 +30,10 @@ import * as CodeMirror from 'codemirror'
     './editor.component.scss'
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ EditorService ]
 })
 
 @Injectable()
 export class EditorComponent implements OnChanges, OnDestroy, OnInit {
-
-  private isInited = false
-
-  private remoteOperationsSubscription: Subscription
-
-  private textOperationsObservable: Observable<TextOperation[]>
 
   @Input() docService: DocService
   @Output() isReady: EventEmitter<any> = new EventEmitter()
@@ -48,15 +41,84 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   public editor: CodeMirror.Editor
 
+  private isInited: boolean
+  private remoteOperationsSubscription: Subscription
+  private textOperationsObservable: Observable<TextOperation[]>
+
   constructor (
     private zone: NgZone,
-    private editorService: EditorService
-  ) {}
+  ) {
+    this.isInited = false
+  }
 
   ngOnInit () {
     this.zone.runOutsideAngular(() => {
-      this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, this.editorService.editorConfiguration as any)
-      this.editorService.initEditor(this.editor)
+      const tuiEditor = new Editor({
+        el: this.editorElt.nativeElement,
+        initialEditType: 'markdown',
+        previewStyle: 'vertical',
+        height: '300px'
+      })
+      this.editor = tuiEditor.getCodeMirror()
+      this.setupGlobalForTests()
+      // this.editor = CodeMirror.fromTextArea(this.editorElt.nativeElement, this.editorService.editorConfiguration as any)
+
+      // this.editorService.initEditor(this.editor)
+      tuiEditor.on('change', (change) => {
+        log.debug('Change: ', change)
+      })
+      tuiEditor.on('contentChangedFromWysiwyg', (change) => {
+        log.debug('contentChangedFromWysiwyg: ', change)
+      })
+      // tuiEditor.on('changeFromWysiwyg', (change) => {
+      //   log.debug('changeFromWysiwyg: ', change)
+      // })
+      tuiEditor.on('contentChangedFromMarkdown', (change) => {
+        log.debug('contentChangedFromMarkdown: ', change)
+      })
+      tuiEditor.on('wysiwygSetValueBefore', (change) => {
+        log.debug('wysiwygSetValueBefore: ', change)
+      })
+      tuiEditor.on('wysiwygGetValueBefore', (change) => {
+        log.debug('wysiwygGetValueBefore: ', change)
+      })
+      tuiEditor.on('wysiwygKeyEvent', (change) => {
+        log.debug('wysiwygKeyEvent: ', change)
+      })
+      tuiEditor.on('keydown', (change) => {
+        log.debug('keydown: ', change)
+      })
+      tuiEditor.on('changeModeToWysiwyg', (...change) => {
+        log.debug('changeModeToWysiwyg: ', change)
+        this.editor.on('change', (change1) => log.debug('change: ', change1))
+      })
+      // tuiEditor.on('changeFromMarkdown', (change) => {
+      //   log.debug('changeFromMarkdown: ', change)
+      // })
+      // tuiEditor.on('markdownUpdate', (change) => {
+      //   log.debug('markdownUpdate: ', change)
+      // })
+      // tuiEditor.on('convertorAfterHtmlToMarkdownConverted', (change) => {
+      //   log.debug('convertorAfterHtmlToMarkdownConverted: ', change)
+      // })
+      // this.editor.on('change', (change) => log.debug('change: '))
+      // this.editor.on('changes', (change) => log.debug('changes: '))
+      // this.editor.on('beforeChange', (change) => log.debug('beforeChange: '))
+      // this.editor.on('cursorActivity', (change) => log.debug('cursorActivity: '))
+      // this.editor.on('keyHandled', (change) => log.debug('keyHandled: '))
+      // this.editor.on('inputRead', (change) => log.debug('inputRead: '))
+      // this.editor.on('electricInput', (change) => log.debug('electricInput: '))
+      // this.editor.on('beforeSelectionChange', (change) => log.debug('beforeSelectionChange: '))
+      // this.editor.on('viewportChange', (change) => log.debug('viewportChange: '))
+      // this.editor.on('swapDoc', (change) => log.debug('swapDoc: '))
+      // this.editor.on('gutterClick', (change) => log.debug('gutterClick: '))
+      // this.editor.on('gutterContextMenu', (change) => log.debug('gutterContextMenu: '))
+      // this.editor.on('focus', (change) => log.debug('focus: '))
+      // this.editor.on('blur', (change) => log.debug('blur: '))
+      // this.editor.on('scroll', (change) => log.debug('scroll: '))
+      // this.editor.on('refresh', (change) => log.debug('refresh: '))
+      // this.editor.on('optionChange', (change) => log.debug('optionChange: '))
+      // this.editor.on('renderLine', (change) => log.debug('renderLine: '))
 
       const operationStream: Observable<ChangeEvent> = fromEventPattern(
         (h: ChangeEventHandler) => this.editor.on('change', h),
@@ -145,6 +207,25 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   focus () {
     this.editor.focus()
+  }
+
+  private setupGlobalForTests () {
+    const doc = this.editor.getDoc() as any
+    window.muteTest = {
+      insert: (index: number, text: string) => {
+        doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
+      },
+      delete: (index: number, length: number) => {
+        doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
+      },
+      getText: (index?: number, length?: number) => {
+        if (index) {
+          return this.editor.getValue().substr(index, length)
+        } else {
+          return this.editor.getValue()
+        }
+      }
+    }
   }
 
 }
