@@ -15,6 +15,9 @@ export const environment = {
       secure: false,
       host: 'localhost',
       port: 20000
+      // secure: false,
+      // url: 'localhost:20000',
+      // webSocketPath: ''
     }
   ],
   auth: {

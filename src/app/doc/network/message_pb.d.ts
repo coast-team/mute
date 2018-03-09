@@ -4,14 +4,14 @@ import * as $protobuf from "protobufjs";
 export interface IMessage {
 
     /** Message service */
-    service?: string;
+    service?: (string|null);
 
     /** Message content */
-    content?: Uint8Array;
+    content?: (Uint8Array|null);
 }
 
 /** Represents a Message. */
-export class Message {
+export class Message implements IMessage {
 
     /**
      * Constructs a new Message.
@@ -55,11 +55,11 @@ export class Message {
 export interface IBotProtocol {
 
     /** BotProtocol key */
-    key?: string;
+    key?: (string|null);
 }
 
 /** Represents a BotProtocol. */
-export class BotProtocol {
+export class BotProtocol implements IBotProtocol {
 
     /**
      * Constructs a new BotProtocol.
@@ -100,11 +100,11 @@ export class BotProtocol {
 export interface IBotResponse {
 
     /** BotResponse url */
-    url?: string;
+    url?: (string|null);
 }
 
 /** Represents a BotResponse. */
-export class BotResponse {
+export class BotResponse implements IBotResponse {
 
     /**
      * Constructs a new BotResponse.

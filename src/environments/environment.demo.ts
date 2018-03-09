@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  devLabel: true,
-  netfluxLog: true,
+  devLabel: false,
+  netfluxLog: false,
   rtcConfiguration: {
     iceServers: [
       {
@@ -11,13 +11,9 @@ export const environment = {
       }
     ]
   },
-  signalingServer: 'ws://192.168.0.100:10000',
+  signalingServer: 'ws://cpi1.loria.fr:10000',
   serviceWorker: false,
-  storages: [{
-    secure: false,
-    host: '192.168.0.100',
-    port: 11000
-  }],
+  storages: [],
   auth: {
     baseUrl: '',
     providers: {}

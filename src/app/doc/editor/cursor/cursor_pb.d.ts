@@ -1,119 +1,105 @@
 import * as $protobuf from "protobufjs";
 
-/** Properties of a CursorMsg. */
-export interface ICursorMsg {
+/** Properties of a Cursor. */
+export interface ICursor {
 
-    /** CursorMsg from */
-    from?: IPositionMsg;
+    /** Cursor anchor */
+    anchor?: (IPosition|null);
 
-    /** CursorMsg to */
-    to?: IPositionMsg;
-
-    /** CursorMsg state */
-    state?: State;
+    /** Cursor head */
+    head?: (IPosition|null);
 }
 
-/** Represents a CursorMsg. */
-export class CursorMsg {
+/** Represents a Cursor. */
+export class Cursor implements ICursor {
 
     /**
-     * Constructs a new CursorMsg.
+     * Constructs a new Cursor.
      * @param [properties] Properties to set
      */
-    constructor(properties?: ICursorMsg);
+    constructor(properties?: ICursor);
 
-    /** CursorMsg from. */
-    public from?: (IPositionMsg|null);
+    /** Cursor anchor. */
+    public anchor?: (IPosition|null);
 
-    /** CursorMsg to. */
-    public to?: (IPositionMsg|null);
-
-    /** CursorMsg state. */
-    public state: State;
+    /** Cursor head. */
+    public head?: (IPosition|null);
 
     /**
-     * Creates a new CursorMsg instance using the specified properties.
+     * Creates a new Cursor instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns CursorMsg instance
+     * @returns Cursor instance
      */
-    public static create(properties?: ICursorMsg): CursorMsg;
+    public static create(properties?: ICursor): Cursor;
 
     /**
-     * Encodes the specified CursorMsg message. Does not implicitly {@link CursorMsg.verify|verify} messages.
-     * @param message CursorMsg message or plain object to encode
+     * Encodes the specified Cursor message. Does not implicitly {@link Cursor.verify|verify} messages.
+     * @param message Cursor message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: ICursorMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: ICursor, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a CursorMsg message from the specified reader or buffer.
+     * Decodes a Cursor message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns CursorMsg
+     * @returns Cursor
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): CursorMsg;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Cursor;
 }
 
-/** State enum. */
-export enum State {
-    HIDDEN = 0,
-    FROM = 1,
-    SELECTION_FROM = 2,
-    SELECTION_TO = 3
+/** Properties of a Position. */
+export interface IPosition {
+
+    /** Position id */
+    id?: (sync.IIdentifierMsg|null);
+
+    /** Position index */
+    index?: (number|null);
 }
 
-/** Properties of a PositionMsg. */
-export interface IPositionMsg {
-
-    /** PositionMsg id */
-    id?: sync.IIdentifierMsg;
-
-    /** PositionMsg index */
-    index?: number;
-}
-
-/** Represents a PositionMsg. */
-export class PositionMsg {
+/** Represents a Position. */
+export class Position implements IPosition {
 
     /**
-     * Constructs a new PositionMsg.
+     * Constructs a new Position.
      * @param [properties] Properties to set
      */
-    constructor(properties?: IPositionMsg);
+    constructor(properties?: IPosition);
 
-    /** PositionMsg id. */
+    /** Position id. */
     public id?: (sync.IIdentifierMsg|null);
 
-    /** PositionMsg index. */
+    /** Position index. */
     public index: number;
 
     /**
-     * Creates a new PositionMsg instance using the specified properties.
+     * Creates a new Position instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns PositionMsg instance
+     * @returns Position instance
      */
-    public static create(properties?: IPositionMsg): PositionMsg;
+    public static create(properties?: IPosition): Position;
 
     /**
-     * Encodes the specified PositionMsg message. Does not implicitly {@link PositionMsg.verify|verify} messages.
-     * @param message PositionMsg message or plain object to encode
+     * Encodes the specified Position message. Does not implicitly {@link Position.verify|verify} messages.
+     * @param message Position message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    public static encode(message: IPositionMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+    public static encode(message: IPosition, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a PositionMsg message from the specified reader or buffer.
+     * Decodes a Position message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns PositionMsg
+     * @returns Position
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): PositionMsg;
+    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): Position;
 }
 
 /** Namespace sync. */
@@ -123,17 +109,17 @@ export namespace sync {
     interface ISyncMsg {
 
         /** SyncMsg richLogootSOpMsg */
-        richLogootSOpMsg?: sync.IRichLogootSOperationMsg;
+        richLogootSOpMsg?: (sync.IRichLogootSOperationMsg|null);
 
         /** SyncMsg querySync */
-        querySync?: sync.IQuerySyncMsg;
+        querySync?: (sync.IQuerySyncMsg|null);
 
         /** SyncMsg replySync */
-        replySync?: sync.IReplySyncMsg;
+        replySync?: (sync.IReplySyncMsg|null);
     }
 
     /** Represents a SyncMsg. */
-    class SyncMsg {
+    class SyncMsg implements ISyncMsg {
 
         /**
          * Constructs a new SyncMsg.
@@ -151,7 +137,7 @@ export namespace sync {
         public replySync?: (sync.IReplySyncMsg|null);
 
         /** SyncMsg type. */
-        public type?: string;
+        public type?: ("richLogootSOpMsg"|"querySync"|"replySync");
 
         /**
          * Creates a new SyncMsg instance using the specified properties.
@@ -183,20 +169,20 @@ export namespace sync {
     interface IRichLogootSOperationMsg {
 
         /** RichLogootSOperationMsg id */
-        id?: number;
+        id?: (number|null);
 
         /** RichLogootSOperationMsg clock */
-        clock?: number;
+        clock?: (number|null);
 
         /** RichLogootSOperationMsg logootSAddMsg */
-        logootSAddMsg?: sync.ILogootSAddMsg;
+        logootSAddMsg?: (sync.ILogootSAddMsg|null);
 
         /** RichLogootSOperationMsg logootSDelMsg */
-        logootSDelMsg?: sync.ILogootSDelMsg;
+        logootSDelMsg?: (sync.ILogootSDelMsg|null);
     }
 
     /** Represents a RichLogootSOperationMsg. */
-    class RichLogootSOperationMsg {
+    class RichLogootSOperationMsg implements IRichLogootSOperationMsg {
 
         /**
          * Constructs a new RichLogootSOperationMsg.
@@ -217,7 +203,7 @@ export namespace sync {
         public logootSDelMsg?: (sync.ILogootSDelMsg|null);
 
         /** RichLogootSOperationMsg type. */
-        public type?: string;
+        public type?: ("logootSAddMsg"|"logootSDelMsg");
 
         /**
          * Creates a new RichLogootSOperationMsg instance using the specified properties.
@@ -249,14 +235,14 @@ export namespace sync {
     interface ILogootSAddMsg {
 
         /** LogootSAddMsg id */
-        id?: sync.IIdentifierMsg;
+        id?: (sync.IIdentifierMsg|null);
 
         /** LogootSAddMsg content */
-        content?: string;
+        content?: (string|null);
     }
 
     /** Represents a LogootSAddMsg. */
-    class LogootSAddMsg {
+    class LogootSAddMsg implements ILogootSAddMsg {
 
         /**
          * Constructs a new LogootSAddMsg.
@@ -300,11 +286,11 @@ export namespace sync {
     interface IIdentifierMsg {
 
         /** IdentifierMsg tuples */
-        tuples?: sync.IIdentifierTupleMsg[];
+        tuples?: (sync.IIdentifierTupleMsg[]|null);
     }
 
     /** Represents an IdentifierMsg. */
-    class IdentifierMsg {
+    class IdentifierMsg implements IIdentifierMsg {
 
         /**
          * Constructs a new IdentifierMsg.
@@ -345,20 +331,20 @@ export namespace sync {
     interface IIdentifierTupleMsg {
 
         /** IdentifierTupleMsg random */
-        random?: number;
+        random?: (number|null);
 
         /** IdentifierTupleMsg replicaNumber */
-        replicaNumber?: number;
+        replicaNumber?: (number|null);
 
         /** IdentifierTupleMsg clock */
-        clock?: number;
+        clock?: (number|null);
 
         /** IdentifierTupleMsg offset */
-        offset?: number;
+        offset?: (number|null);
     }
 
     /** Represents an IdentifierTupleMsg. */
-    class IdentifierTupleMsg {
+    class IdentifierTupleMsg implements IIdentifierTupleMsg {
 
         /**
          * Constructs a new IdentifierTupleMsg.
@@ -408,11 +394,11 @@ export namespace sync {
     interface ILogootSDelMsg {
 
         /** LogootSDelMsg lid */
-        lid?: sync.IIdentifierIntervalMsg[];
+        lid?: (sync.IIdentifierIntervalMsg[]|null);
     }
 
     /** Represents a LogootSDelMsg. */
-    class LogootSDelMsg {
+    class LogootSDelMsg implements ILogootSDelMsg {
 
         /**
          * Constructs a new LogootSDelMsg.
@@ -453,14 +439,14 @@ export namespace sync {
     interface IIdentifierIntervalMsg {
 
         /** IdentifierIntervalMsg idBegin */
-        idBegin?: sync.IIdentifierMsg;
+        idBegin?: (sync.IIdentifierMsg|null);
 
         /** IdentifierIntervalMsg end */
-        end?: number;
+        end?: (number|null);
     }
 
     /** Represents an IdentifierIntervalMsg. */
-    class IdentifierIntervalMsg {
+    class IdentifierIntervalMsg implements IIdentifierIntervalMsg {
 
         /**
          * Constructs a new IdentifierIntervalMsg.
@@ -504,11 +490,11 @@ export namespace sync {
     interface IQuerySyncMsg {
 
         /** QuerySyncMsg vector */
-        vector?: { [k: string]: number };
+        vector?: ({ [k: string]: number }|null);
     }
 
     /** Represents a QuerySyncMsg. */
-    class QuerySyncMsg {
+    class QuerySyncMsg implements IQuerySyncMsg {
 
         /**
          * Constructs a new QuerySyncMsg.
@@ -549,14 +535,14 @@ export namespace sync {
     interface IReplySyncMsg {
 
         /** ReplySyncMsg richLogootSOpsMsg */
-        richLogootSOpsMsg?: sync.IRichLogootSOperationMsg[];
+        richLogootSOpsMsg?: (sync.IRichLogootSOperationMsg[]|null);
 
         /** ReplySyncMsg intervals */
-        intervals?: sync.IIntervalMsg[];
+        intervals?: (sync.IIntervalMsg[]|null);
     }
 
     /** Represents a ReplySyncMsg. */
-    class ReplySyncMsg {
+    class ReplySyncMsg implements IReplySyncMsg {
 
         /**
          * Constructs a new ReplySyncMsg.
@@ -600,17 +586,17 @@ export namespace sync {
     interface IIntervalMsg {
 
         /** IntervalMsg id */
-        id?: number;
+        id?: (number|null);
 
         /** IntervalMsg begin */
-        begin?: number;
+        begin?: (number|null);
 
         /** IntervalMsg end */
-        end?: number;
+        end?: (number|null);
     }
 
     /** Represents an IntervalMsg. */
-    class IntervalMsg {
+    class IntervalMsg implements IIntervalMsg {
 
         /**
          * Constructs a new IntervalMsg.

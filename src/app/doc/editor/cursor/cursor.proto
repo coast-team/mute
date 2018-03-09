@@ -1,20 +1,12 @@
 syntax = "proto3";
-import "../../../../../node_modules/mute-core/proto/sync.proto";
+import "../../../../../node_modules/mute-core/dist/proto/sync.proto";
 
-message CursorMsg {
-  PositionMsg from = 1;
-  PositionMsg to = 2;
-  State state = 3;
+message Cursor {
+  Position anchor = 1;
+  Position head = 2;
 }
 
-enum State {
-  HIDDEN = 0;
-  FROM = 1;
-  SELECTION_FROM = 2;
-  SELECTION_TO = 3;
-}
-
-message PositionMsg {
+message Position {
   sync.IdentifierMsg id = 1;
   int32 index = 2;
 }

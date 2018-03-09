@@ -3,7 +3,6 @@
 @import '~codemirror/lib/codemirror.css';
 @import '~tui-editor/dist/tui-editor.css';
 @import '~tui-editor/dist/tui-editor-contents.css';
-@import '~highlight.js/styles/github.css';
 
 @import 'theme';
 @import 'mute-codemirror';
@@ -34,6 +33,10 @@
 
   /* Support for IE. */
   font-feature-settings: 'liga';
+}
+
+.te-mode-switch-section {
+  display: none;
 }
 
 html {

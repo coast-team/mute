@@ -1,7 +1,16 @@
 @import 'theme';
 @import 'variables';
 
+:host {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 10px 0;
+  display: block;
+}
+
 mat-card {
+  height: 100%;
+  padding: 0;
   overflow: hidden;
   box-sizing: border-box;
 
@@ -14,16 +23,16 @@ mat-card {
     margin: 0 16px;
   }
   &.card-lg {
-    margin-left: calc(50% - (400px));
-    flex-basis: 800px;
-    min-width: 800px;
-    max-width: 800px;
+    margin-left: calc(50% - (575px));
+    flex-basis: 1150px;
+    min-width: 1150px;
+    max-width: 1150px;
   }
   &.card-gt-lg {
-    margin-left: calc(62.5% - (425px));
-    flex-basis: 850px;
-    min-width: 850px;
-    max-width: 850px;
+    margin-left: calc(62.5% - (575px));
+    flex-basis: 1150px;
+    min-width: 1150px;
+    max-width: 1150px;
   }
 }
 

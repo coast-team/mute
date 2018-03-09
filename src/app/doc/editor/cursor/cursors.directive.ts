@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription'
 import { NetworkService } from '../../network/'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { CollaboratorCursor } from './CollaboratorCursor'
-import { CursorMsg, PositionMsg, State } from './cursor_pb'
+import * as proto from './cursor_pb'
 
 @Directive({
   selector: '[muteCursors]'
@@ -20,15 +20,16 @@ export class CursorsDirective implements OnInit, OnDestroy {
   @Input() cm: CodeMirror.Editor
   @Input() mcDocService: DocService
 
-  private networkMsgSubs: Subscription
+  private subs: Subscription[]
+  private cursorPosAfterBlur: CodeMirror.Position
 
   private cmDoc: CodeMirror.Doc
   private cursors: Map<number, CollaboratorCursor> // CodeMirror cursors of other peers
 
   // Preconstructed Protocol Buffer objects for sending the position of my cursor
-  private pbCursor: CursorMsg
-  private pbFrom: PositionMsg
-  private pbTo: PositionMsg
+  private protoCursor: proto.Cursor
+  private protoAnchor: proto.Position
+  private protoHead: proto.Position
 
   protected id: string
 
@@ -37,17 +38,18 @@ export class CursorsDirective implements OnInit, OnDestroy {
     private network: NetworkService
   ) {
     this.id = 'Cursor'
-    this.pbCursor = CursorMsg.create()
-    this.pbFrom = PositionMsg.create()
-    this.pbTo = PositionMsg.create()
+    this.protoCursor = proto.Cursor.create()
+    this.protoAnchor = proto.Position.create()
+    this.protoHead = proto.Position.create()
     this.cursors = new Map()
+    this.subs = []
   }
 
   ngOnInit () {
     this.cmDoc = this.cm.getDoc()
 
     // When a new peer joins
-    this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
+    this.subs[this.subs.length] = this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
       this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
       if (this.cm.hasFocus()) {
         this.sendMyCursorPos()
@@ -55,186 +57,137 @@ export class CursorsDirective implements OnInit, OnDestroy {
     })
 
     // When the peer leaves
-    this.collabService.onLeave.subscribe((id: number) => {
+    this.subs[this.subs.length] = this.collabService.onLeave.subscribe((id: number) => {
       const cursor = this.cursors.get(id)
       if (cursor !== undefined) {
-        cursor.clearAll()
+        cursor.clean()
         this.cursors.delete(id)
       }
     })
 
     // When the peer changes his pseudo
-    this.collabService.onChange.subscribe(({collab}: {collab: RichCollaborator}) => {
+    this.subs[this.subs.length] = this.collabService.onChange.subscribe(({collab}: {collab: RichCollaborator}) => {
       const cursor = this.cursors.get(collab.id)
       if (cursor !== undefined) {
         cursor.updateDisplayName(collab.pseudo)
       }
     })
 
-    // When the editor looses the focus (my cursor disappeared)
     CodeMirror.on(this.cm, 'blur', () => {
-      this.pbCursor.from = undefined
-      this.pbCursor.to = undefined
-      this.pbCursor.state = State.HIDDEN
-      this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
+      this.protoCursor.anchor = undefined
+      this.protoCursor.head = undefined
+      this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
+      this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
     })
 
     CodeMirror.on(this.cm, 'focus', () => {
-      this.sendMyCursorPos()
+      const head = this.cmDoc.getCursor('head')
+      if (this.cursorPosAfterBlur && this.cursorPosAfterBlur.line === head.line && this.cursorPosAfterBlur.ch === head.ch) {
+        this.sendMyCursorPos()
+      }
     })
-
     // Send my cursor position to the network on certain events
     this.listenEventsForCursorChange()
 
     // On message from the network
-    this.networkMsgSubs = this.network.onMessage
+    this.subs[this.subs.length] = this.network.onMessage
       .pipe(filter((msg: NetworkMessage) => msg.service === this.id))
       .subscribe((msg: NetworkMessage) => {
-        const pbMsg = CursorMsg.decode(msg.content)
+        const protoCursor = proto.Cursor.decode(msg.content)
         const cursor = this.cursors.get(msg.id)
-        if (cursor !== undefined) {
-          if (pbMsg.state === State.HIDDEN) {
-            // When cursor should be hidden
-            cursor.hideCursor()
-
-          } else if (pbMsg.state === State.FROM) {
-            // When cursor update only
-            cursor.clearSelection()
-            cursor.showCursor()
-            let newPos: CodeMirror.Position
-            if (pbMsg.from) {
-              const pbFrom = pbMsg.from
-              const id = Identifier.fromPlain(pbFrom.id)
-              newPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbFrom.index)
+        if (cursor) {
+          if (protoCursor.head) {
+            const headPos = this.protoPos2codemirrorPos(protoCursor.head)
+            if (protoCursor.anchor) {
+              const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
+              cursor.updateSelection(anchorPos, headPos)
             } else {
-              const lastLine = this.cmDoc.lastLine()
-              newPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
+              cursor.removeSelection()
+              cursor.updateCursor(headPos)
             }
-            cursor.translateCursorOnRemoteChange(newPos)
-
           } else {
-            // When cursor & selection update
-            let fromPos: CodeMirror.Position
-            let toPos: CodeMirror.Position
-            if (pbMsg.from) {
-              const pbFrom = pbMsg.from
-              const id = Identifier.fromPlain(pbFrom.id)
-              fromPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbFrom.index)
-            } else {
-              const lastLine = this.cmDoc.lastLine()
-              fromPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
-            }
-            if (pbMsg.to) {
-              const pbTo = pbMsg.to
-              const id = Identifier.fromPlain(pbTo.id)
-              toPos = this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pbTo.index)
-            } else {
-              const lastLine = this.cmDoc.lastLine()
-              toPos = { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
-            }
-            cursor.translateCursorOnRemoteChange(pbMsg.state === State.SELECTION_FROM ? fromPos : toPos, false)
-            cursor.updateSelection(fromPos, toPos)
+            cursor.removeCursor()
           }
         }
       })
   }
 
   ngOnDestroy () {
-    this.networkMsgSubs.unsubscribe()
+    this.subs.forEach((sub) => sub.unsubscribe())
   }
 
-  isMovementKey (keyCode) {
-    return 33 <= keyCode && keyCode <= 40
-  }
-
-  sendMyCursorPos (isSelection = false) {
-    const cursorPos = this.cmDoc.getCursor()
-    if (isSelection) {
-
-      // Prepare messag for cursor and selection update
-      const fromPos = this.cmDoc.getCursor('from')
-      const toPos = this.cmDoc.getCursor('to')
-      const state = fromPos === cursorPos ? State.SELECTION_FROM : State.SELECTION_TO
-
-      this.pbCursor.state = state
-
-      // Retreive mute-core identifiers from codemirror positions
-      const mcFromPos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(fromPos))
-      const mcToPos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(toPos))
-
-      // Started position for selection
-      if (mcFromPos !== null) {
-        this.pbFrom.id = mcFromPos.id
-        this.pbFrom.index = mcFromPos.index
-        this.pbCursor.from = this.pbFrom
-      } else {
-        this.pbCursor.from = undefined
-      }
-
-      // Ended position for selection
-      if (mcToPos !== null) {
-        this.pbTo.id = mcToPos.id
-        this.pbTo.index = mcToPos.index
-        this.pbCursor.to = this.pbTo
-      } else {
-        this.pbCursor.to = undefined
-      }
+  private protoPos2codemirrorPos (pos: proto.IPosition): CodeMirror.Position {
+    if (pos.id) {
+      const id = Identifier.fromPlain(pos.id)
+      return this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pos.index)
     } else {
+      const lastLine = this.cmDoc.lastLine()
+      return { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
+    }
+  }
 
-      // Prepare message for cursor only update
-      this.pbCursor.state = State.FROM
-      const pos: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(cursorPos))
-      if (pos !== null) {
-        this.pbFrom.id = pos.id
-        this.pbFrom.index = pos.index
-        this.pbCursor.from = this.pbFrom
+  private sendMyCursorPos () {
+    const anchor = this.cmDoc.getCursor('anchor')
+    const head = this.cmDoc.getCursor('head')
+
+    if (head.line !== anchor.line || head.ch !== anchor.ch) {
+      // Update anchor position of the selection
+      const muteCoreAnchor: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(anchor))
+      if (muteCoreAnchor) {
+        this.protoAnchor.id = muteCoreAnchor.id
+        this.protoAnchor.index = muteCoreAnchor.index
       } else {
-        this.pbCursor.from = undefined
+        // End of the document
+        this.protoAnchor.id = undefined
+        this.protoAnchor.index = undefined
       }
+      this.protoCursor.anchor = this.protoAnchor
+    } else {
+      // There is no selection, cursor update only
+      this.protoCursor.anchor = undefined
     }
 
-    this.network.send(this.id, CursorMsg.encode(this.pbCursor).finish())
+    // Update cursor position
+    const muteCoreHead: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(head))
+    if (muteCoreHead) {
+      this.protoHead.id = muteCoreHead.id
+      this.protoHead.index = muteCoreHead.index
+      this.protoCursor.head = this.protoHead
+    } else {
+        // End of the document
+      this.protoHead.id = undefined
+      this.protoHead.index = undefined
+    }
+    this.protoCursor.head = this.protoHead
+
+    // Broadcast my cursor/selection position
+    this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
   }
 
-  listenEventsForCursorChange () {
-    let movedByMouse = false
-
-    CodeMirror.on(this.cm, 'keyup', (instance: CodeMirror.Editor, event: KeyboardEvent) => {
-      if (this.isMovementKey(event.keyCode)) {
-        this.sendMyCursorPos(this.cmDoc.getSelection() !== '')
-      }
-    })
-
-    CodeMirror.on(this.cm, 'mousedown', () => { movedByMouse = true })
+  private listenEventsForCursorChange () {
+    let cursorShouldBeSent = false
 
     CodeMirror.on(this.cm, 'cursorActivity', (instance: CodeMirror.Editor) => {
-      const selection = this.cmDoc.getSelection()
-      if (movedByMouse) {
-        movedByMouse = false
-        if (!selection) {
-          this.sendMyCursorPos()
-        }
+      if (cursorShouldBeSent) {
+        this.sendMyCursorPos()
       }
-      if (selection) {
-        this.sendMyCursorPos(true)
-      }
-    })
-
-    // Fixme: bind this event after first sync, otherwise its called many unnecessary times
-    CodeMirror.on(this.cm, 'change', (instance: CodeMirror.Editor, changeObj: any) => {
-      this.cursors.forEach((cursor) => {
-        cursor.translateCursorOnLocalChange(changeObj.text.length, changeObj.text[0].length)
-      })
     })
 
     CodeMirror.on(this.cm, 'keydown', (instance, event: KeyboardEvent) => {
-      if (this.isMovementKey(event.keyCode)) {
-        movedByMouse = false
+      // Cursor should be sent if the key is one that moves the cursor (arrow keys for example)
+      cursorShouldBeSent = 33 <= event.keyCode && event.keyCode <= 40
+    })
+    CodeMirror.on(this.cm, 'mousedown', () => cursorShouldBeSent = true)
+
+    CodeMirror.on(this.cm, 'touchstart', () => { cursorShouldBeSent = true })
+
+    CodeMirror.on(this.cm, 'keyHandled', (instance: CodeMirror.Editor, name: string, event: Event) => {
+      // check whether all text were selected
+      const anchor = this.cmDoc.getCursor('anchor')
+      const head = this.cmDoc.getCursor('head')
+      if (anchor.line !== head.line || anchor.ch !== head.ch) {
+        this.sendMyCursorPos()
       }
     })
-
-    CodeMirror.on(this.cm, 'beforeChange', () => { movedByMouse = false })
-
-    CodeMirror.on(this.cm, 'touchstart', () => { movedByMouse = true })
   }
 }

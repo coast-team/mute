@@ -2,137 +2,241 @@ import * as CodeMirror from 'codemirror'
 
 import { RichCollaborator } from '../../rich-collaborators/'
 
-const DEFAULT_BOOKMARK_POSITION = {line: 0, ch: 0}
+let lineHeight: number
+let windowTop: number
+let windowLeft: number
 
 export class CollaboratorCursor {
 
   private selectionCSS: string
-
+  private color: string
   private cm: CodeMirror.Editor
-  private isHidden = true
-  private previousBookmarkPos
-  private selection: CodeMirror.TextMarker
-  private pseudoElmWidth: string
-  private pseudoTimeout: any
 
-  // DOM html element for cursor and pseudo visualisation
-  private cursorElm: HTMLElement
-  private pseudoElm: HTMLElement
+  // Attributes for cursor and selection
+  private bookmark: { find: () => CodeMirror.Position, clear: () => void } | undefined
+  private selection: CodeMirror.TextMarker | undefined
+  private cursorBookmark: HTMLElement
+  private cursorTransition: HTMLElement
+  private transitionPos: { line: number, ch: number } | undefined
+  private nextPos: { line: number, ch: number } | undefined
+  private cursorHeight: string | undefined
+  private cursorMarginTop: string | undefined
 
-  // CodeMirror TextMakrer bookmark object. Cursor indicator for Codemirror
-  private bookmark: any
+  // Attributes for display name
+  private displayName: HTMLElement
+  private displayNameWidth: string
+  private displayNameTimeout: any
 
   constructor (cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
+    this.color = collab.color
     this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
 
-    // Initialize bookmark
-    this.previousBookmarkPos = DEFAULT_BOOKMARK_POSITION
-    this.bookmark = this.cm.getDoc()
-      .setBookmark(DEFAULT_BOOKMARK_POSITION, {insertLeft: true})
+    // Bookmark cursor widget
+    this.cursorBookmark = document.createElement('span')
+    this.cursorBookmark.className = 'collaborator-cursor'
+    this.cursorBookmark.style.borderLeftColor = collab.color
+    this.cursorBookmark.onmouseenter = this.resetDisplayNameTimeout.bind(this)
 
-    // HTML element for cursor
-    this.cursorElm = document.createElement('span')
-    this.cursorElm.className = 'collaborator-cursor'
-    this.cursorElm.style.borderLeftColor = collab.color
-    this.cursorElm.style.display = 'none'
-    this.cursorElm.onmouseenter = this.resetPseudoTimeout.bind(this)
+    // Cursor during transition phase widget
+    this.cursorTransition = document.createElement('span')
+    this.cursorTransition.className = 'collaborator-cursor collaborator-cursor-transition'
+    this.cursorTransition.style.position = 'absolute'
+    this.cursorTransition.style.borderLeftColor = this.color
+    this.cursorTransition.style.display = 'none'
+    this.cursorTransition.addEventListener('transitionend', (event: TransitionEvent) => {
+      if (event.propertyName === 'transform' && this.bookmark) {
+        if (this.nextPos) {
+          this.translate(this.transitionPos, this.nextPos)
+        } else {
+          this.cursorTransition.style.display = 'none'
+          this.setBookmarkCursorProperties()
+          this.transitionPos = undefined
+        }
+      }
+    })
+    this.cm.getWrapperElement().appendChild(this.cursorTransition)
+    if (!lineHeight) {
+      const lineHeightPx = global.window.getComputedStyle(this.cm.getWrapperElement(), null).getPropertyValue('line-height')
+      lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2))
+    }
 
-    // HTML element for pseudo
-    this.pseudoElm = document.createElement('span')
-    this.pseudoElm.className = 'collaborator-pseudo'
-    this.pseudoElm.style.backgroundColor = collab.color
-    this.pseudoElm.style.width = '0'
+    // HTML element for display name
+    this.displayName = document.createElement('span')
+    this.displayName.className = 'collaborator-display-name'
+    this.displayName.style.backgroundColor = collab.color
+    this.displayName.style.width = '0'
     this.updateDisplayName(collab.pseudo)
 
     // Append elements to DOM
-    this.cursorElm.appendChild(this.pseudoElm)
-    this.cm.getWrapperElement().appendChild(this.cursorElm)
+    this.cursorBookmark.appendChild(this.displayName)
+    const {top, left} = this.cm.cursorCoords({line: 0, ch: 0}, 'window')
+    windowTop = top
+    windowLeft = left
   }
 
-  resetPseudoTimeout () {
-    this.pseudoElm.style.width = this.pseudoElmWidth
-    clearTimeout(this.pseudoTimeout)
-    this.pseudoTimeout = setTimeout(() => {
-      this.pseudoElm.style.width = '0'
-    }, 1500)
+  resetDisplayNameTimeout () {
+    if (this.displayName.style.width !== this.displayNameWidth) {
+      this.displayName.style.width = this.displayNameWidth
+    }
+    clearTimeout(this.displayNameTimeout)
+    this.displayNameTimeout = setTimeout(() => this.displayName.style.width = '0', 1500)
   }
 
   updateDisplayName (pseudo: string) {
-    this.pseudoElm.innerHTML = `&nbsp;${pseudo}`
-    this.pseudoElmWidth = `${15 + pseudo.length * 5}px`
+    this.displayName.innerHTML = `&nbsp;${pseudo}`
+    this.displayNameWidth = `${15 + pseudo.length * 5}px`
   }
 
-  translateCursorOnRemoteChange (pos: CodeMirror.Position, isAnimated = true) {
-    this.previousBookmarkPos = pos
-    const newCoords = this.cm.cursorCoords(pos, 'local')
-    this.bookmark.clear()
-    this.bookmark = this.cm.getDoc().setBookmark(pos, {insertLeft: true})
-    if (isAnimated) {
-      this.cursorElm.style.transitionDuration = '.12s'
-    } else {
-      this.cursorElm.style.transitionDuration = '0.03s'
-    }
-    this.showCursor()
-    this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
-    this.resetPseudoTimeout()
-  }
-
-  translateCursorOnLocalChange (linesNb: number, firstLineLength: number) {
-    let currentBookmarkPos = this.bookmark.find()
-    if (currentBookmarkPos === undefined) {
-      this.bookmark = this.cm.getDoc()
-        .setBookmark(DEFAULT_BOOKMARK_POSITION, {insertLeft: true})
-      currentBookmarkPos = this.bookmark.find()
-    }
-    if (this.previousBookmarkPos.line !== currentBookmarkPos.line ||
-        this.previousBookmarkPos.ch !== currentBookmarkPos.ch) {
-      const newCoords = this.cm.cursorCoords(currentBookmarkPos, 'local')
-      if (linesNb === 1 && firstLineLength < 6) {
-        this.cursorElm.style.transitionDuration = '0.03s'
+  updateCursor (nextPos: CodeMirror.Position, animated = true) {
+    if (this.bookmark) {
+      if (this.transitionPos) {
+        this.nextPos = nextPos
+      } else {
+        this.cursorBookmark.style.visibility = 'hidden'
+        const from = this.bookmark.find()
+        const { height, marginTop } = this.calculateCursorProperties()
+        this.cursorHeight = height
+        this.cursorMarginTop = marginTop
+        this.translate(from, nextPos, animated)
       }
-      this.cursorElm.style.transform = `translate(${newCoords.left}px, ${newCoords.top}px)`
-      this.resetPseudoTimeout()
+      this.bookmark.clear()
+      // FIXME: find a better way. Currently setting line-height to its original height
+      // fixes a bug on Firefox when a remote cursor is on an empty line.
+      let modify = false
+      if (this.cm.getDoc().getLine(nextPos.line) === '') {
+        modify = true
+      }
+      this.bookmark = this.cm.getDoc().setBookmark(
+        nextPos,
+        { widget: this.cursorBookmark, insertLeft: true }
+      ) as any
+      if (modify) {
+        this.cursorBookmark.parentElement.parentElement.parentElement.style.height = `${lineHeight}px`
+      }
+    } else {
+      this.removeSelection()
+      this.bookmark = this.cm.getDoc().setBookmark(
+        nextPos,
+        { widget: this.cursorBookmark, insertLeft: true }
+      ) as any
+      this.setBookmarkCursorProperties()
+      this.resetDisplayNameTimeout()
     }
   }
 
-  updateSelection (from: CodeMirror.Position, to: CodeMirror.Position) {
-    if (this.selection !== undefined) {
-      this.selection.clear()
-    }
-    this.selection = this.cm.getDoc().markText(from, to, {
-      css: this.selectionCSS
-    })
-  }
-
-  hideCursor (): void {
-    if (!this.isHidden) {
-      this.cursorElm.style.display = 'none'
-      this.clearSelection()
-      this.isHidden = true
-    }
-  }
-
-  showCursor (): void {
-    if (this.isHidden) {
-      this.cursorElm.style.display = 'inline-block'
-      this.isHidden = false
-    }
-  }
-
-  clearAll () {
-    if (this.bookmark !== undefined) {
+  removeCursor (): void {
+    if (this.bookmark) {
       this.bookmark.clear()
       this.bookmark = undefined
+      this.transitionPos = undefined
+      this.nextPos = undefined
+      this.cursorTransition.style.display = 'none'
+      this.cursorBookmark.style.visibility = 'visible'
+      this.removeSelection()
     }
-    this.clearSelection()
-    this.cm.getWrapperElement().removeChild(this.cursorElm)
   }
 
-  clearSelection () {
-    if (this.selection !== undefined) {
+  updateSelection (anchor: CodeMirror.Position, head: CodeMirror.Position) {
+    if (this.selection) {
+      this.selection.clear()
+    }
+    let from
+    let to
+    if (anchor.line < head.line) {
+      from = anchor
+      to = head
+    } else if (anchor.line === head.line) {
+      if (anchor.ch < head.ch) {
+        from = anchor
+        to = head
+      } else {
+        from = head
+        to = anchor
+      }
+    } else {
+      from = head
+      to = anchor
+    }
+    this.selection = this.cm.getDoc().markText(from, to, { css: this.selectionCSS })
+    this.updateCursor(head, false)
+  }
+
+  removeSelection () {
+    if (this.selection) {
       this.selection.clear()
       this.selection = undefined
+    }
+  }
+
+  clean () {
+    this.removeCursor()
+    this.cm.getWrapperElement().removeChild(this.cursorTransition)
+  }
+
+  private translate (from: CodeMirror.Position, to: CodeMirror.Position, animated = true) {
+    this.transitionPos = to
+    this.nextPos = undefined
+    const { left, top } = this.cm.cursorCoords(from, 'local')
+    if (this.displayName.style.width !== '0') {
+      this.displayName.style.width = '0'
+    }
+    const { top: scrollTop } = this.cm.getScrollInfo()
+    const adjustedTop = top - scrollTop
+    this.cursorTransition.style.transition = 'none'
+    this.cursorTransition.style.transform = 'none'
+    this.cursorTransition.style.height = this.cursorHeight
+    this.cursorTransition.style.marginTop = this.cursorMarginTop
+    this.cursorTransition.style.left = `${left}px`
+    this.cursorTransition.style.top = `${adjustedTop + 6}px`
+    this.cursorTransition.style.display = 'inline-block'
+    const { left: newLeft, top: newTop } = this.cm.cursorCoords(to, 'local')
+    const adjustedNewTop = newTop - scrollTop
+    const local = this.cm.cursorCoords(to, 'local')
+    const page = this.cm.cursorCoords(to, 'page')
+    const window = this.cm.cursorCoords(to, 'window')
+    setTimeout(() => {
+      if (animated) {
+        this.cursorTransition.style.transition = 'transform 0.07s linear'
+      } else {
+        this.cursorTransition.style.transition = 'transform 0.01s linear'
+      }
+
+      this.cursorTransition.style.transform = `translate(${newLeft - left}px, ${adjustedNewTop - adjustedTop}px)`
+    }, 0)
+  }
+
+  private calculateCursorProperties (): {height: string, marginTop: string} {
+    if (this.bookmark) {
+      let fontSize: string
+      const previousSibling: any = this.cursorBookmark.parentElement.previousElementSibling
+      if (previousSibling) {
+        fontSize = global.window.getComputedStyle(previousSibling, null).getPropertyValue('font-size')
+      } else {
+        const line = this.cursorBookmark.parentElement.parentElement.parentElement
+        fontSize = global.window.getComputedStyle(line, null).getPropertyValue('font-size')
+      }
+      const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2))
+      const cursorHeight = fontSizeNumber + 5
+      return {
+        height: `${cursorHeight}px`,
+        marginTop: `${(lineHeight - cursorHeight) / 2}px`
+      }
+    }
+  }
+
+  private setBookmarkCursorProperties () {
+    if (this.bookmark) {
+      const { height, marginTop } = this.calculateCursorProperties()
+      if (this.cursorBookmark.style.height !== height) {
+        this.cursorBookmark.style.height = height
+      }
+      if (this.cursorBookmark.style.marginTop !== marginTop) {
+        this.cursorBookmark.style.marginTop = marginTop
+      }
+      if (this.cursorBookmark.style.display !== 'inline-block') {
+        this.cursorBookmark.style.visibility = 'visible'
+      }
     }
   }
 }
