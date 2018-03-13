@@ -8,8 +8,8 @@ import {
 import { Component, OnDestroy, ViewChild,  } from '@angular/core'
 import { MatButton, MatCard, MatDialog, MatSnackBar } from '@angular/material'
 
-import { Profile } from '../../core/profile/Profile'
-import { ProfileService } from '../../core/profile/profile.service'
+import { Profile } from '../../core/settings/Profile'
+import { SettingsService } from '../../core/settings/settings.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 
 @Component({
@@ -35,10 +35,10 @@ export class ProfileComponent implements OnDestroy {
 
   constructor (
     private snackBar: MatSnackBar,
-    public profileService: ProfileService,
+    public settings: SettingsService,
     public dialog: MatDialog
   ) {
-    this.profile = profileService.profile
+    this.profile = settings.profile
   }
 
   ngOnDestroy () {
@@ -57,9 +57,9 @@ export class ProfileComponent implements OnDestroy {
   }
 
   signout () {
-    this.profileService.signout()
+    this.settings.signout()
       .then(() => {
-        this.profile = this.profileService.profile
+        this.profile = this.settings.profile
         const snackBarRef = this.snackBar.open('Signed out', 'close', {
           duration: 3000
         })
@@ -69,9 +69,9 @@ export class ProfileComponent implements OnDestroy {
   }
 
   signinWith (provider: string) {
-    this.profileService.signin(provider)
+    this.settings.signin(provider)
       .then(() => {
-        this.profile = this.profileService.profile
+        this.profile = this.settings.profile
         provider = provider[0].toUpperCase() + provider.substr(1)
         const snackBarRef = this.snackBar.open(`Signed in with ${provider}`, 'close', {
           duration: 5000

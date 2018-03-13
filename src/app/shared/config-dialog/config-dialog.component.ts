@@ -3,8 +3,8 @@ import { FormControl, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material'
 import { ErrorStateMatcher } from '@angular/material/core'
 
-import { Profile } from '../../core/profile/Profile'
-import { ProfileService } from '../../core/profile/profile.service'
+import { Profile } from '../../core/settings/Profile'
+import { SettingsService } from '../../core/settings/settings.service'
 
 @Component({
   selector: 'mute-config-dialog',
@@ -14,15 +14,17 @@ import { ProfileService } from '../../core/profile/profile.service'
 export class ConfigDialogComponent {
 
   public profile: Profile
+  public theme: string
 
   public displayNameFormControl: FormControl
 
   constructor (
     public dialogRef: MatDialogRef<ConfigDialogComponent>,
-    public profileService: ProfileService,
+    public settings: SettingsService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.profile = profileService.profile
+    this.profile = settings.profile
+    this.theme = this.settings.theme
     this.displayNameFormControl = new FormControl('', [
       Validators.maxLength(27),
     ])
@@ -30,6 +32,10 @@ export class ConfigDialogComponent {
 
   save (nickname: string) {
     this.profile.displayName = nickname
+  }
+
+  applyTheme ({ value }: { value: string }) {
+    this.settings.updateTheme(value)
   }
 
 }

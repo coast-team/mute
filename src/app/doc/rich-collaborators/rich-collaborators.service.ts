@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
 
 import { Collaborator } from 'mute-core'
-import { ProfileService } from '../../core/profile/profile.service'
+import { SettingsService } from '../../core/settings/settings.service'
 import { COLORS } from './colors'
 import { RichCollaborator } from './RichCollaborator'
 
@@ -21,7 +21,7 @@ export class RichCollaboratorsService {
   public collaborators: RichCollaborator[]
 
   constructor (
-    public profileService: ProfileService
+    public settings: SettingsService
   ) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
@@ -29,10 +29,10 @@ export class RichCollaboratorsService {
     this.collaboratorsSubject = new BehaviorSubject([])
 
     this.availableColors = COLORS.slice()
-    const me = new RichCollaborator(-1, profileService.profile.displayName, this.pickColor())
+    const me = new RichCollaborator(-1, settings.profile.displayName, this.pickColor())
     this.collaborators = [me]
     this.collaboratorsSubject.next(this.collaborators)
-    profileService.onChange.subscribe(
+    settings.onChange.subscribe(
       (profile) => {
         me.pseudo = profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})

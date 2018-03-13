@@ -1,5 +1,8 @@
 <h2 mat-dialog-title>Settings</h2>
+
 <mat-dialog-content>
+
+  <h3>Profile</h3>
   <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
     <ng-container *ngIf="profile.avatar; else anonymousIconBig">
       <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
@@ -19,7 +22,23 @@
       </mat-form-field>
     </div>
   </div>
+
+  <mat-divider></mat-divider>
+
+  <h3>Theme</h3>
+  <mat-button-toggle-group class="theme" [value]="theme" (change)="applyTheme($event)">
+    <mat-button-toggle class="default" value="default">
+      <span class="circle"></span>
+    </mat-button-toggle>
+    <mat-button-toggle class='dark' value="dark">
+      <span class="circle"></span>
+    </mat-button-toggle>
+    <mat-button-toggle class="indigo" value="indigo">
+      <span class="circle"></span>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
 </mat-dialog-content>
+
 <mat-dialog-actions fxLayoutAlign="end center">
   <button mat-button mat-dialog-close>CANCEL</button>
   <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->

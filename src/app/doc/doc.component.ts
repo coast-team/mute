@@ -5,7 +5,7 @@ import { map, pluck } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
-import { ProfileService } from '../core/profile/profile.service'
+import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network'
@@ -32,7 +32,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private zone: NgZone,
     private route: ActivatedRoute,
     private richCollaboratorsService: RichCollaboratorsService,
-    private profileService: ProfileService,
+    private settings: SettingsService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
@@ -82,7 +82,7 @@ export class DocComponent implements OnDestroy, OnInit {
           this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
           this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
           this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-          this.muteCore.collaboratorsService.pseudoSource = this.profileService.onChange.pipe(pluck('displayName'))
+          this.muteCore.collaboratorsService.pseudoSource = this.settings.onChange.pipe(pluck('displayName'))
 
           this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
           this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
@@ -96,7 +96,7 @@ export class DocComponent implements OnDestroy, OnInit {
             this.ui.tree = tree
           })
           // FIXME: rid of calling resendNotification method
-          this.profileService.resendNotification()
+          this.settings.resendNotification()
         })
       })
   }

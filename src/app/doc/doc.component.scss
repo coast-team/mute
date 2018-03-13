@@ -1,12 +1,8 @@
-@import 'theme';
 @import 'variables';
 
 :host {
   flex: 1;
   overflow: auto;
-}
-mat-sidenav-container {
-  // padding-top: 10px;
 }
 
 .editor {
@@ -35,7 +31,6 @@ mat-sidenav-container {
 }
 
 mat-sidenav-container {
-  background-color: $bg-background !important;
   height: 100%;
 }
 
@@ -44,7 +39,6 @@ mat-sidenav-container {
 }
 
 .info-sidenav {
-  background-color: $bg-background !important;
   width: 400px;
 
   &.info-sidenav-lt-sm {

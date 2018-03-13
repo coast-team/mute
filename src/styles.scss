@@ -4,7 +4,7 @@
 @import '~tui-editor/dist/tui-editor.css';
 @import '~tui-editor/dist/tui-editor-contents.css';
 
-@import 'theme';
+@import 'mute-theme';
 @import 'mute-codemirror';
 @import 'variables';
 @import 'spinner';
@@ -55,7 +55,7 @@ html {
   .contenteditable:active,
   .contenteditable:focus{
     outline-width: 1px;
-    outline-color: mat-color($accent, A400);
+    outline-color: var(--theme-accent);
   }
 
   [class^="icon-"]:before, [class*=" icon-"]:before {

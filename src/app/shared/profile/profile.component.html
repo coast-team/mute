@@ -30,7 +30,7 @@
   </div>
 
   <mat-card-actions>
-    <div fxLayoutAlign="end center" *ngIf="profileService.isAuthenticated(); else signin">
+    <div fxLayoutAlign="end center" *ngIf="settings.isAuthenticated(); else signin">
       <!-- <button mat-button disabled>Add account</button> -->
       <button mat-button (click)="signout()">Sign Out</button>
     </div>

@@ -1,35 +1,30 @@
 import { IAccount } from './IAccount'
-import { ProfileService } from './profile.service'
-import { Settings } from './Settings'
+import { SettingsService } from './settings.service'
 
-interface ISerialize {
+export interface ISerialize {
   displayName: string
   logins: string[]
-  settings: object
 }
 
 export class Profile {
   public dbId: string
   public activeAccount: IAccount
   public accounts: IAccount[]
-  public settings: Settings
 
   private _displayName: string
-  private profileService: ProfileService
+  private profileService: SettingsService
 
-  constructor (accounts: IAccount[], profileService: ProfileService) {
+  constructor (accounts: IAccount[], profileService: SettingsService) {
     this._displayName = accounts[0].name
     this.activeAccount = accounts[0]
     this.accounts = accounts
-    this.settings = new Settings()
     this.profileService = profileService
   }
 
-  static deserialize (accounts: IAccount[], profileService: ProfileService, dbId: string, serialized: ISerialize) {
+  static deserialize (accounts: IAccount[], profileService: SettingsService, dbId: string, serialized: ISerialize) {
     const profile = new Profile (accounts, profileService)
     profile._displayName = serialized.displayName
     profile.activeAccount = accounts[0]
-    profile.settings = Settings.deserialize(serialized)
     profile.dbId = dbId
     return profile
   }
@@ -59,8 +54,7 @@ export class Profile {
   serialize (): ISerialize {
     return {
       displayName: this.displayName,
-      logins: this.accounts.map((a: IAccount) => a.login),
-      settings: this.settings.serialize()
+      logins: this.accounts.map((a: IAccount) => a.login)
     }
   }
 }

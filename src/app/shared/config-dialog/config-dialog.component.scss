@@ -1,33 +1,9 @@
-@import 'theme';
-
-.avatar-img {
-  border-radius: 50% 50%;
-}
+@import 'variables';
 
 .anonymous-icon-big {
   font-size: 100px;
   height: 100px;
   width: 100px;
-}
-
-.profile-card {
-  position: fixed;
-  top: 66px;
-  right: 20px;
-  z-index: 1000;
-  opacity: 0;
-}
-
-.secondary-text {
-  color: $fg-secondary-text;
-}
-
-.name {
-  font-weight: 700;
-}
-
-.my-account {
-  margin-top: 10px;
 }
 
 .content {
@@ -38,13 +14,36 @@
   content: "\f092";
 }
 
-.arrow {
-  border-color: transparent;
-  border-bottom-color: #fff;
-  border-style: dashed dashed solid;
-  border-width: 0 8.5px 8.5px;
-  position: fixed;
-  right: 28px;
-  top: 58px;
-  z-index: 1000;
+.theme {
+
+  .circle {
+    border-radius: 50% 50%;
+    display: inline-block;
+    height: 32px;
+    width: 32px;
+    margin: 5px 0;
+  }
+  .default {
+    background-color: var(--default-bg-card);
+
+    span {
+      background-color: var(--default-primary) !important;
+    }
+  }
+
+  .dark {
+    background-color: var(--dark-bg-card);
+
+    span {
+      background-color: var(--dark-primary) !important;
+    }
+  }
+
+  .indigo {
+    background-color: var(--indigo-bg-card);
+
+    span {
+      background-color: var(--indigo-primary) !important;
+    }
+  }
 }

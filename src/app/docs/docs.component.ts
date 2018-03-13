@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/Subscription'
 import { Doc } from '../core/Doc'
 import { File } from '../core/File'
 import { Folder } from '../core/Folder'
-import { ProfileService } from '../core/profile/profile.service'
+import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
@@ -46,7 +46,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private botStorage: BotStorageService,
-    private profileService: ProfileService,
+    private settings: SettingsService,
     public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
@@ -62,7 +62,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.route.data
       .subscribe(({ folder }) => this.openFolder(folder))
 
-    this.subs[this.subs.length] = this.profileService.onChange
+    this.subs[this.subs.length] = this.settings.onChange
       .subscribe(() => this.openFolder(this.storage.home))
 
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {

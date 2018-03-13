@@ -1,4 +1,4 @@
-@import 'theme';
+@import 'variables';
 
 .avatar-img {
   border-radius: 50% 50%;
@@ -16,10 +16,6 @@
   right: 20px;
   z-index: 1000;
   opacity: 0;
-}
-
-.secondary-text {
-  color: $fg-secondary-text;
 }
 
 .name {

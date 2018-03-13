@@ -1,4 +1,4 @@
-@import 'theme';
+@import 'variables';
 
 .sync-icon {
   margin-right: 16px;
@@ -37,10 +37,6 @@
 
   .header {
     text-align: center
-  }
-
-  .secondary-text {
-    color: $fg-secondary-text;
   }
 
   .arrow {

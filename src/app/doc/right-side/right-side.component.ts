@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core'
 
 import { Doc } from '../../core/Doc'
-import { ProfileService } from '../../core/profile/profile.service'
+import { SettingsService } from '../../core/settings/settings.service'
 import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 
 @Component({
@@ -41,7 +41,7 @@ export class RightSideComponent implements OnInit {
 
   constructor (
     private collabService: RichCollaboratorsService,
-    public profile: ProfileService
+    public settings: SettingsService
   ) {
     this.collaborators = this.collabService.onCollaborators
   }
@@ -53,7 +53,7 @@ export class RightSideComponent implements OnInit {
   }
 
   updateDisplayName (pseudo: string) {
-    this.profile.profile.displayName = pseudo
-    this.profile.updateProfile()
+    this.settings.profile.displayName = pseudo
+    this.settings.updateProfile()
   }
 }

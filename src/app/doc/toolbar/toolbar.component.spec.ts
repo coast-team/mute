@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 import { MatSnackBar } from '@angular/material'
 import { RouterTestingModule } from '@angular/router/testing'
-import { ProfileService } from '../core/profile/profile.service'
+import { SettingsService } from '../core/settings/settings.service'
 import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network/network.service'
 import { ToolbarComponent } from './toolbar.component'
@@ -12,7 +12,7 @@ let fixture: ComponentFixture<ToolbarComponent>
 
 const uiServiceStub = undefined
 const networkServiceStub = undefined
-const profileServiceStub = undefined
+const settingsServiceStub = undefined
 const mdSnackBarStub = undefined
 
 describe('ToolbarComponent', () => {
@@ -30,7 +30,7 @@ describe('ToolbarComponent', () => {
       providers: [
         { provide: UiService, useValue: uiServiceStub },
         { provide: NetworkService, useValue: networkServiceStub },
-        { provide: ProfileService, useValue: profileServiceStub },
+        { provide: SettingsService, useValue: settingsServiceStub },
         { provide: MatSnackBar, useValue: mdSnackBarStub }
       ]
     })

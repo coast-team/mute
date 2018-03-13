@@ -2,7 +2,7 @@
 <mat-sidenav-container>
 
   <!-- Left Sidenav-->
-  <mat-sidenav #leftSidenav class="leftsidenav" [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
+  <mat-sidenav #leftSidenav [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
     <mute-nav (folderChange)="openFolder($event)"></mute-nav>
   </mat-sidenav>
 
@@ -86,17 +86,17 @@
 
           <ng-container matColumnDef="key">
             <mat-header-cell class="table-header" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell class="secondary-text" *matCellDef="let doc">{{doc.key}}</mat-cell>
+            <mat-cell *matCellDef="let doc">{{doc.key}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
             <mat-header-cell class="table-header" *matHeaderCellDef>Created</mat-header-cell>
-            <mat-cell class="secondary-text" *matCellDef="let doc"> {{doc.created | date:'longDate'}} </mat-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.created | date:'longDate'}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="storage">
             <mat-header-cell class="table-header" *matHeaderCellDef>Storages</mat-header-cell>
-            <mat-cell class="secondary-text" *matCellDef="let doc">
+            <mat-cell *matCellDef="let doc">
               <ng-container *ngIf="doc.onBotStorages | async as bots; else fetchingBots">
                 <span *ngFor="let bot of bots">
                   <mat-icon matTooltip="{{bot.id}}" aria-label="stored in bot storage">cloud</mat-icon>

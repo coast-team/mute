@@ -1,5 +1,5 @@
 @import 'variables';
-@import 'theme';
+
 
 :host {
   min-height: 400px;
@@ -35,5 +35,4 @@ ul {
 .meta-title {
   text-align: left;
   margin-right: 15px;
-  color: $fg-secondary-text;
 }

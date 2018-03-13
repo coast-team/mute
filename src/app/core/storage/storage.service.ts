@@ -4,7 +4,7 @@ import { State } from 'mute-core'
 import { Doc } from '../Doc'
 import { File } from '../File'
 import { Folder } from '../Folder'
-import { ProfileService } from '../profile/profile.service'
+import { SettingsService } from '../settings/settings.service'
 
 const selectList = [
   'type',
@@ -30,9 +30,9 @@ export class StorageService {
     this.trash = new Folder('trash', 'Trash', 'delete')
   }
 
-  async init (profileService: ProfileService): Promise<void> {
-    this.setDb(profileService.profile.login)
-    profileService.onChange.subscribe((profile) => this.setDb(profile.login))
+  async init (settings: SettingsService): Promise<void> {
+    this.setDb(settings.profile.login)
+    settings.onChange.subscribe((profile) => this.setDb(profile.login))
     await this.searchFolder(this.home.route)
       .then((folder: Folder) => this.home.dbId = folder.dbId)
       .catch(() => this.createFile(this.home)),

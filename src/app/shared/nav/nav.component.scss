@@ -1,4 +1,3 @@
-@import 'theme';
 @import 'variables';
 
 :host {
@@ -14,7 +13,6 @@
   height: 1px;
   width: 100%;
   margin: 1rem 0 2rem 0;
-  background-color: $fg-divider;
 }
 
 .profile {
@@ -54,11 +52,6 @@ mat-button-toggle-group {
     display: inline-block;
     width: 100%;
     height: 5rem;
-    color: $fg-secondary-text;
-  }
-
-  .selected {
-    color: $fg-text;
   }
 
   mat-icon {
