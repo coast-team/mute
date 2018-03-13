@@ -152,6 +152,7 @@ export class SettingsService {
     window.document.documentElement.style.setProperty('--theme-accent', accent)
     window.document.documentElement.style.setProperty('--theme-bg-card', bgCard)
     window.document.documentElement.style.setProperty('--theme-fg-text', fgText)
+    window.document.querySelector('meta[name=theme-color]').setAttribute('content', primary)
   }
 
   private get anonymous (): IAccount {
