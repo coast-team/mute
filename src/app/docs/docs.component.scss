@@ -4,6 +4,10 @@
   flex: 1;
 }
 
+.nav {
+  border-right: 1px solid var(--theme-fg-divider);
+}
+
 .contenteditable {
   padding: 7px 10px;
 }
@@ -18,13 +22,16 @@
 
 .table-container {
   height: 100%;
-  padding: 30px 20px;
 }
 
 .mat-cell {
   text-overflow: ellipsis;
   overflow: hidden;
   padding-right: 10px;
+}
+
+.col-key {
+  word-wrap: inherit;
 }
 
 .info-values {

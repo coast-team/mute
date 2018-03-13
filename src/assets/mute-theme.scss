@@ -13,6 +13,7 @@
     --#{$prefix}-bg-card: map-get($bg, card);
     --#{$prefix}-bg-background: map-get($bg, background);
     --#{$prefix}-fg-text: map-get($fg, text);
+    --#{$prefix}-fg-divider: map-get($fg, divider);
   }
 }
 
@@ -68,6 +69,7 @@ $prefix: 'indigo';
     --theme-bg-card: var(--#{$prefix}-bg-card);
     --theme-bg-background: var(--#{$prefix}-bg-background);
     --theme-fg-text: var(--#{$prefix}-fg-text);
+    --theme-fg-divider: var(--#{$prefix}-fg-divider);
   }
 }
 @include define-global-css-variables('default');

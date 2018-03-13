@@ -140,18 +140,20 @@ export class SettingsService {
 
   private setupTheme (theme: string) {
     // Read theme global CSS variables
-    log.debug('setup theme: ', theme)
     const primary = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-primary`)
     const accent = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-accent`)
     const bgCard = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-bg-card`)
+    const bgBackground = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-bg-background`)
     const fgText = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-fg-text`)
-    log.debug('bgColor: ', bgCard)
+    const fgDivider = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-fg-divider`)
 
     // Apply them
     window.document.documentElement.style.setProperty('--theme-primary', primary)
     window.document.documentElement.style.setProperty('--theme-accent', accent)
     window.document.documentElement.style.setProperty('--theme-bg-card', bgCard)
+    window.document.documentElement.style.setProperty('--theme-bg-background', bgBackground)
     window.document.documentElement.style.setProperty('--theme-fg-text', fgText)
+    window.document.documentElement.style.setProperty('--theme-fg-divider', fgDivider)
     window.document.querySelector('meta[name=theme-color]').setAttribute('content', primary)
   }
 
@@ -164,7 +166,6 @@ export class SettingsService {
   }
 
   private setProfile (profile: Profile) {
-    log.debug('profile: ', profile)
     this._profile = profile
     this.profileSubject.next(profile)
   }

@@ -2,7 +2,7 @@
 <mat-sidenav-container>
 
   <!-- Left Sidenav-->
-  <mat-sidenav #leftSidenav [mode]="sideNavMode" [opened]="!this.media.isActive('xs')">
+  <mat-sidenav #leftSidenav [mode]="sideNavMode" class="nav" [opened]="!this.media.isActive('xs')">
     <mute-nav (folderChange)="openFolder($event)"></mute-nav>
   </mat-sidenav>
 
@@ -86,7 +86,7 @@
 
           <ng-container matColumnDef="key">
             <mat-header-cell class="table-header" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell *matCellDef="let doc">{{doc.key}}</mat-cell>
+            <mat-cell *matCellDef="let doc" class="col-key">{{doc.key}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
