@@ -3,7 +3,6 @@ import { RouterModule } from '@angular/router'
 
 import { SharedModule } from '../../shared/shared.module'
 import { MarkdownCheatsheetComponent } from './cheatsheets/markdown-cheatsheet/markdown-cheatsheet.component'
-import { MathJaxCheatsheetComponent } from './cheatsheets/mathjax-cheatsheet/mathjax-cheatsheet.component'
 import { DetailsComponent } from './details/details.component'
 import { InviteBotComponent } from './invite-bot/invite-bot.component'
 import { RightSideComponent } from './right-side.component'
@@ -13,7 +12,6 @@ import { RightSideComponent } from './right-side.component'
     RightSideComponent,
     InviteBotComponent,
     MarkdownCheatsheetComponent,
-    MathJaxCheatsheetComponent,
     DetailsComponent
   ],
   imports: [
