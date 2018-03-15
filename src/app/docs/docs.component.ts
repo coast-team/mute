@@ -14,7 +14,7 @@ import { File } from '../core/File'
 import { Folder } from '../core/Folder'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
-import { StorageService } from '../core/storage/storage.service'
+import { LocalStorageService } from '../core/storage/local-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
 
@@ -47,7 +47,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private botStorage: BotStorageService,
     private settings: SettingsService,
-    public storage: StorageService,
+    public storage: LocalStorageService,
     public ui: UiService,
     public media: ObservableMedia,
     public dialog: MatDialog
@@ -62,8 +62,8 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.route.data
       .subscribe(({ folder }) => this.openFolder(folder))
 
-    this.subs[this.subs.length] = this.settings.onChange
-      .subscribe(() => this.openFolder(this.storage.home))
+    this.subs[this.subs.length] = this.settings.onProfileChange
+      .subscribe(() => this.openFolder(this.storage.local))
 
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {

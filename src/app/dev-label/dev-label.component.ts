@@ -5,7 +5,7 @@ import * as mnemonic from '@coast-team/mnemonicjs'
 import 'rxjs/add/operator/toPromise'
 
 import { hash } from '../../lastcommithash'
-import { StorageService } from '../core/storage/storage.service'
+import { LocalStorageService } from '../core/storage/local-storage.service'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({
@@ -52,7 +52,7 @@ export class DevLabelComponent implements OnInit {
     private renderer: Renderer2,
     private ui: UiService,
     private detectRef: ChangeDetectorRef,
-    private storageService: StorageService,
+    private storageService: LocalStorageService,
     private snackBar: MatSnackBar
   ) {
     this.nbOfDetectChanges = 0

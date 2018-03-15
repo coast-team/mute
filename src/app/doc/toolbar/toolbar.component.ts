@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { ObservableMedia } from '@angular/flex-layout'
 
 import { Doc } from '../../core/Doc'
-import { StorageService } from '../../core/storage/storage.service'
+import { LocalStorageService } from '../../core/storage/local-storage.service'
 
 @Component({
   selector: 'mute-toolbar',
@@ -16,7 +16,7 @@ export class ToolbarComponent {
   @ViewChild('input') input: ElementRef
 
   constructor (
-    private storage: StorageService
+    private storage: LocalStorageService
   ) {
     this.menu = new EventEmitter()
     this.info = new EventEmitter()

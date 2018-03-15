@@ -10,21 +10,19 @@ import { HistoryComponent } from './history/history.component'
 
 const routes: Routes = [
   {
-    path: 'docs',
+    path: '',
+    component: DocsComponent,
     resolve: { folder: DocsResolverService },
-    children: [
-      {
-        path: '**', component: DocsComponent
-      }
-    ]
   }, {
-    path: 'history/:key', component: HistoryComponent,
+    path: 'history/:key',
+    component: HistoryComponent,
     resolve: { doc: HistoryResolverService },
   }, {
-    path: ':key', component: DocComponent,
+    path: ':key',
+    component: DocComponent,
     resolve: { doc: DocResolverService },
   }, {
-    path: '**', redirectTo: '/docs'
+    path: '**', redirectTo: ''
   }
 ]
 

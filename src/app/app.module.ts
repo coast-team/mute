@@ -11,7 +11,7 @@ import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
 import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot-storage/bot-storage.service'
-import { StorageService } from './core/storage/storage.service'
+import { LocalStorageService } from './core/storage/local-storage.service'
 import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
@@ -35,16 +35,11 @@ import { HistoryModule } from './history/history.module'
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (settings: SettingsService, storage: StorageService) => {
-        return () => settings.init().then(() => storage.init(settings))
-      },
-      deps: [SettingsService, StorageService],
-      multi: true
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (botStorage: BotStorageService) => () => botStorage.init(),
-      deps: [BotStorageService],
+      useFactory: (settings: SettingsService, localStorage: LocalStorageService) => {
+        return () => settings.init().then(() => localStorage.init(settings))
+      }
+      ,
+      deps: [SettingsService, LocalStorageService, BotStorageService],
       multi: true
     }
   ],

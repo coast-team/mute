@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router'
 
 import { Doc } from '../core/Doc'
-import { StorageService } from '../core/storage/storage.service'
+import { LocalStorageService } from '../core/storage/local-storage.service'
 
 @Injectable()
 export class DocResolverService implements Resolve<Doc> {
@@ -11,7 +11,7 @@ export class DocResolverService implements Resolve<Doc> {
   constructor (
     private router: Router,
     private snackBar: MatSnackBar,
-    private storage: StorageService
+    private storage: LocalStorageService
   ) {}
 
   async resolve (route: ActivatedRouteSnapshot): Promise<Doc> {

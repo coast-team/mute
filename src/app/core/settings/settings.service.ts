@@ -13,13 +13,15 @@ const selectList = [
 
 interface ISerialize {
   profile: ISerializeProfile,
-  theme: string
+  theme: string,
+  openedFolder: string
 }
 
 @Injectable()
 export class SettingsService {
 
   public theme: string
+  public openedFolder: string
 
   private renderer: Renderer2
   private db: any
@@ -63,7 +65,7 @@ export class SettingsService {
 
   get profile (): Profile { return this._profile }
 
-  get onChange (): Observable<Profile> {
+  get onProfileChange (): Observable<Profile> {
     return this.profileSubject.asObservable()
   }
 
@@ -81,6 +83,13 @@ export class SettingsService {
       }
       this.setupTheme(name)
       this.theme = name
+      await this.serializeAll()
+    }
+  }
+
+  async updateOpenedFolder (key: string): Promise<void> {
+    if (this.openedFolder !== key) {
+      this.openedFolder = key
       await this.serializeAll()
     }
   }
@@ -128,9 +137,9 @@ export class SettingsService {
 
     let profile: Profile
     if (rows.length !== 0) {
-      log.debug('found: ', rows)
       profile = Profile.deserialize(accounts, this, rows[0].id, rows[0].value.profile)
       this.theme = rows[0].value.theme
+      this.openedFolder = rows[0].value.openedFolder
     } else {
       profile = new Profile(accounts, this)
       profile.dbId = await this.db.post(this.createSerializedData(profile))
@@ -139,22 +148,43 @@ export class SettingsService {
   }
 
   private setupTheme (theme: string) {
-    // Read theme global CSS variables
-    const primary = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-primary`)
-    const accent = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-accent`)
-    const bgCard = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-bg-card`)
-    const bgBackground = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-bg-background`)
-    const fgText = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-fg-text`)
-    const fgDivider = window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-fg-divider`)
+    this.updateThemeProperty(theme, 'primary')
+    this.updateThemeProperty(theme, 'accent')
 
-    // Apply them
-    window.document.documentElement.style.setProperty('--theme-primary', primary)
-    window.document.documentElement.style.setProperty('--theme-accent', accent)
-    window.document.documentElement.style.setProperty('--theme-bg-card', bgCard)
-    window.document.documentElement.style.setProperty('--theme-bg-background', bgBackground)
-    window.document.documentElement.style.setProperty('--theme-fg-text', fgText)
-    window.document.documentElement.style.setProperty('--theme-fg-divider', fgDivider)
-    window.document.querySelector('meta[name=theme-color]').setAttribute('content', primary)
+    // Update background colors
+    this.updateThemeProperty(theme, 'bg-status-bar')
+    this.updateThemeProperty(theme, 'bg-app-bar')
+    this.updateThemeProperty(theme, 'bg-background')
+    this.updateThemeProperty(theme, 'bg-hover')
+    this.updateThemeProperty(theme, 'bg-dialog')
+    this.updateThemeProperty(theme, 'bg-disabled-button')
+    this.updateThemeProperty(theme, 'bg-raised-button')
+    this.updateThemeProperty(theme, 'bg-focused-button')
+    this.updateThemeProperty(theme, 'bg-selected-button')
+    this.updateThemeProperty(theme, 'bg-selected-disabled-button')
+    this.updateThemeProperty(theme, 'bg-unselected-chip')
+    this.updateThemeProperty(theme, 'bg-card')
+    this.updateThemeProperty(theme, 'bg-disabled-list-option')
+
+    // Update forground colors
+    this.updateThemeProperty(theme, 'fg-text')
+    this.updateThemeProperty(theme, 'fg-secondary-text')
+    this.updateThemeProperty(theme, 'fg-hint-text')
+    this.updateThemeProperty(theme, 'fg-divider')
+    this.updateThemeProperty(theme, 'fg-dividers')
+    this.updateThemeProperty(theme, 'fg-disabled')
+    this.updateThemeProperty(theme, 'fg-disabled-button')
+    this.updateThemeProperty(theme, 'fg-icon')
+    this.updateThemeProperty(theme, 'fg-icons')
+    this.updateThemeProperty(theme, 'fg-slider-min')
+    this.updateThemeProperty(theme, 'fg-slider-off')
+    this.updateThemeProperty(theme, 'fg-fg-slider-off-active')
+
+    // Update theme primary color for html page
+    window.document.querySelector('meta[name=theme-color]').setAttribute(
+      'content',
+      window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-primary`)
+    )
   }
 
   private get anonymous (): IAccount {
@@ -177,8 +207,17 @@ export class SettingsService {
   private createSerializedData (profile: Profile): ISerialize {
     return {
       profile: profile.serialize(),
-      theme: this.theme
+      theme: this.theme,
+      openedFolder: this.openedFolder
     }
+  }
+
+  private updateThemeProperty (theme, propertyName: string) {
+    window.document.documentElement.style.setProperty(
+      `--theme-${propertyName}`,
+      window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-${propertyName}`)
+    )
+
   }
 
 }

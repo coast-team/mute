@@ -4,7 +4,7 @@ import { Observer } from 'rxjs/Observer'
 import { bufferTime, filter } from 'rxjs/operators'
 
 import { Doc } from '../../core/Doc'
-import { StorageService } from '../../core/storage/storage.service'
+import { LocalStorageService } from '../../core/storage/local-storage.service'
 
 import { RichLogootSOperation, State } from 'mute-core'
 
@@ -16,7 +16,7 @@ export class SyncStorageService {
   private storedStateObservable: Observable<State>
   private storedStateObservers: Array<Observer<State>> = []
 
-  constructor (private storage: StorageService) {
+  constructor (private storage: LocalStorageService) {
     this.storedStateObservable = Observable.create((observer) => {
       this.storedStateObservers.push(observer)
     })

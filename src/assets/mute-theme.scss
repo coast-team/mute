@@ -3,17 +3,68 @@
 
 @mixin define-theme-css-variables($theme, $prefix: 'default') {
   :root {
-    $bg: map-get($theme, background);
-    $fg: map-get($theme, foreground);
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
 
     --#{$prefix}-primary: mat-color($primary);
     --#{$prefix}-accent: mat-color($accent);
-    --#{$prefix}-bg-card: map-get($bg, card);
+
+    // BACKGROUND
+    $bg: map-get($theme, background);
+
+    // bars
+    --#{$prefix}-bg-status-bar: map-get($bg, status-bar);
+    --#{$prefix}-bg-app-bar: map-get($bg, app-bar);
+
+    // background
     --#{$prefix}-bg-background: map-get($bg, background);
+
+    // hover
+    --#{$prefix}-bg-hover: map-get($bg, hover);
+
+    // dialog
+    --#{$prefix}-bg-dialog: map-get($bg, dialog);
+
+    // buttons
+    --#{$prefix}-bg-disabled-button: map-get($bg, disabled-button);
+    --#{$prefix}-bg-raised-button: map-get($bg, raised-button);
+    --#{$prefix}-bg-focused-button: map-get($bg, focused-button);
+    --#{$prefix}-bg-selected-button: map-get($bg, selected-button);
+    --#{$prefix}-bg-selected-disabled-button: map-get($bg, selected-disabled-button);
+
+    // unselected-chip
+    --#{$prefix}-bg-unselected-chip: map-get($bg, unselected-chip);
+
+    // card
+    --#{$prefix}-bg-card: map-get($bg, card);
+
+    // disabled-list-option
+    --#{$prefix}-bg-disabled-list-option: map-get($bg, disabled-list-option);
+
+    // FORGROUND
+    $fg: map-get($theme, foreground);
+
+    // text
     --#{$prefix}-fg-text: map-get($fg, text);
+    --#{$prefix}-fg-secondary-text: map-get($fg, secondary-text);
+    --#{$prefix}-fg-hint-text: map-get($fg, hint-text);
+
+    // divider
     --#{$prefix}-fg-divider: map-get($fg, divider);
+    --#{$prefix}-fg-dividers: map-get($fg, dividers);
+
+    // disabled
+    --#{$prefix}-fg-disabled: map-get($fg, disabled);
+    --#{$prefix}-fg-disabled-button: map-get($fg, disabled-button);
+
+    // icons
+    --#{$prefix}-fg-icon: map-get($fg, hint-icon);
+    --#{$prefix}-fg-icons: map-get($fg, hint-icons);
+
+    // slider
+    --#{$prefix}-fg-slider-min: map-get($fg, hint-slider-min);
+    --#{$prefix}-fg-slider-off: map-get($fg, hint-slider-off);
+    --#{$prefix}-fg-slider-off-active: map-get($fg, hint-slider-off-active);
   }
 }
 
@@ -68,8 +119,59 @@ $prefix: 'indigo';
     --theme-accent: var(--#{$prefix}-accent);
     --theme-bg-card: var(--#{$prefix}-bg-card);
     --theme-bg-background: var(--#{$prefix}-bg-background);
+
+    // BACKGROUND
+    // bars
+    --theme-bg-status-bar: var(--#{$prefix}-bg-status-bar);
+    --theme-bg-app-bar: var(--#{$prefix}-bg-app-bar);
+
+    // background
+    --theme-bg-background: var(--#{$prefix}-bg-background);
+
+    // hover
+    --theme-bg-hover: var(--#{$prefix}-bg-hover);
+
+    // dialog
+    --theme-bg-dialog: var(--#{$prefix}-bg-dialog);
+
+    // buttons
+    --theme-bg-disabled-button: var(--#{$prefix}-bg-disabled-button);
+    --theme-bg-raised-button: var(--#{$prefix}-bg-raised-button);
+    --theme-bg-focused-button: var(--#{$prefix}-bg-focused-button);
+    --theme-bg-selected-button: var(--#{$prefix}-bg-selected-button);
+    --theme-bg-selected-disabled-button: var(--#{$prefix}-bg-selected-disabled-button);
+
+    // unselected-chip
+    --theme-bg-unselected-chip: var(--#{$prefix}-bg-unselected-chip);
+
+    // card
+    --theme-bg-card: var(--#{$prefix}-bg-card);
+
+    // disabled-list-option
+    --theme-bg-disabled-list-option: var(--#{$prefix}-bg-disabled-list-option);
+
+    // FORGROUND
+    // text
     --theme-fg-text: var(--#{$prefix}-fg-text);
+    --theme-fg-secondary-text: var(--#{$prefix}-fg-secondary-text);
+    --theme-fg-hint-text: var(--#{$prefix}-fg-hint-text);
+
+    // divider
     --theme-fg-divider: var(--#{$prefix}-fg-divider);
+    --theme-fg-dividers: var(--#{$prefix}-fg-dividers);
+
+    // disabled
+    --theme-fg-disabled: var(--#{$prefix}-fg-disabled);
+    --theme-fg-disabled-button: var(--#{$prefix}-fg-disabled-button);
+
+    // icons
+    --theme-fg-icon: var(--#{$prefix}-fg-icon);
+    --theme-fg-icons: var(--#{$prefix}-fg-icons);
+
+    // slider
+    --theme-fg-slider-min: var(--#{$prefix}-fg-slider-min);
+    --theme-fg-slider-off: var(--#{$prefix}-fg-slider-off);
+    --theme-fg-fg-slider-off-active: var(--#{$prefix}-fg-fg-slider-off-active);
   }
 }
 @include define-global-css-variables('default');

@@ -10,16 +10,15 @@ export const environment = {
   rtcConfiguration: { iceServers: [] },
   signalingServer: 'ws://localhost:8010',
   serviceWorker: false,
-  storages: [
-    {
-      secure: false,
-      host: 'localhost',
-      port: 20000
-      // secure: false,
-      // url: 'localhost:20000',
-      // webSocketPath: ''
-    }
-  ],
+  botStorage: {
+    secure: false,
+    host: 'localhost',
+    port: 20000,
+    isAnonymousAllowed: true
+    // secure: false,
+    // url: 'localhost:20000',
+    // webSocketPath: ''
+  },
   auth: {
     baseUrl: 'http://localhost:4000/',
     providers: {

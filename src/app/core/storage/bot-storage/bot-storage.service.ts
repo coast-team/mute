@@ -5,41 +5,44 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 
 import { environment } from '../../../../environments/environment'
+import { Folder } from '../../Folder'
+import { SettingsService } from '../../settings/settings.service'
 import { BotStorage } from './BotStorage'
+
+export enum BotStorageStatus {
+  AVAILABLE,
+  NOT_AUTHORIZED,
+  NOT_RESPONDING,
+  NOT_EXISTED,
+}
 
 @Injectable()
 export class BotStorageService {
-  private botsSubject: BehaviorSubject<BotStorage[]>
+  private statusSubject: BehaviorSubject<BotStorageStatus | undefined>
 
   public bot: BotStorage
+  public remote: Folder
+  public status: BotStorageStatus
 
   constructor (
-    private http: HttpClient
+    private http: HttpClient,
+    private settings: SettingsService
   ) {
-    this.botsSubject = new BehaviorSubject([])
-  }
-
-  async init () {
-    if (environment.storages.length !== 0) {
-      const storage = environment.storages[0]
-      const url = `${storage.secure ? 'https' : 'http'}://${storage.host}:${storage.port}/name`
-      return await this.http.get(url, { responseType: 'text' })
-        .subscribe(
-          (data: string) => {
-            this.bot = new BotStorage('', storage.secure, storage.host, storage.port)
-            this.bot.name = data
-            this.botsSubject.next([this.bot])
-          },
-          (err) => {
-            log.warn(`Bot storage "${storage.host}" is unavailable: ${err.message}`)
-          }
-        )
+    this.statusSubject = new BehaviorSubject(undefined)
+    this.remote = new Folder('', 'Remote storage', 'cloud')
+    if (environment.botStorage && environment.botStorage.host) {
+      const { secure, host, port } = environment.botStorage
+      this.bot = new BotStorage('', secure, host, port)
+      this.remote = new Folder(this.bot.id, 'Remote storage', 'cloud')
+    } else {
+      this.setStatus(BotStorageStatus.NOT_EXISTED)
     }
-    return Promise.resolve()
+
+    settings.onProfileChange.subscribe(() => this.updateStatus())
   }
 
-  get onBots (): Observable<BotStorage[]> {
-    return this.botsSubject.asObservable()
+  get onStatusChange (): Observable<BotStorageStatus | undefined> {
+    return this.statusSubject.asObservable()
   }
 
   async whichExist (keys: string[]): Promise<string[]> {
@@ -55,6 +58,50 @@ export class BotStorageService {
       })
     }
     return []
+  }
+
+  private updateStatus (): Promise<void> {
+    if (this.bot) {
+      if (!this.settings.isAuthenticated() && !environment.botStorage.isAnonymousAllowed) {
+        this.setStatus(BotStorageStatus.NOT_AUTHORIZED)
+      } else {
+        const { secure, host, port } = environment.botStorage
+        const url = `${secure ? 'https' : 'http'}://${host}:${port}/name`
+        return new Promise((resolve) => {
+          this.http.get(url, { responseType: 'text' })
+            .subscribe(
+              (name: string) => {
+                this.bot.name = name
+                this.setStatus(BotStorageStatus.AVAILABLE)
+                resolve()
+              },
+              (err) => {
+                this.setStatus(BotStorageStatus.NOT_RESPONDING)
+                resolve()
+              }
+            )
+        })
+      }
+    }
+    return Promise.resolve()
+  }
+
+  private checkName (): Promise<string | undefined> {
+    const { secure, host, port } = environment.botStorage
+    const url = `${secure ? 'https' : 'http'}://${host}:${port}/name`
+    return new Promise((resolve) => {
+      this.http.get(url, { responseType: 'text' })
+        .subscribe(
+          (name: string) => resolve(name),
+          (err) => resolve()
+        )
+    })
+  }
+
+  private setStatus (status: BotStorageStatus) {
+    if (this.status !== status) {
+      this.statusSubject.next(status)
+    }
   }
 
 }

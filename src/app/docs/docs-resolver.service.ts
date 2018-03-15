@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router'
 
 import { Folder } from '../core/Folder'
-import { StorageService } from '../core/storage/storage.service'
+import { LocalStorageService } from '../core/storage/local-storage.service'
 
 @Injectable()
 export class DocsResolverService implements Resolve<Folder> {
@@ -11,14 +11,14 @@ export class DocsResolverService implements Resolve<Folder> {
   constructor (
     private router: Router,
     private snackBar: MatSnackBar,
-    private storage: StorageService
+    private storage: LocalStorageService
   ) {}
 
   async resolve (route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<Folder> {
     const path = state.url.substr(5)
     try {
-      if (path === '' || path === '/home') {
-        return this.storage.home
+      if (path === '' || path === '/local') {
+        return this.storage.local
       } else if (path === '/trash') {
         return this.storage.trash
       } else {
@@ -26,7 +26,7 @@ export class DocsResolverService implements Resolve<Folder> {
       }
     } catch (err) {
       log.warn(`Failed to locate "${path}" folder.`, err.message)
-      this.snackBar.open(`Couldn't resolve the URL. Redirect to home.`, 'close', {duration: 4000})
+      this.snackBar.open(`Couldn't resolve the URL. Redirect to local.`, 'close', {duration: 4000})
       this.router.navigateByUrl('/docs', {skipLocationChange: false})
       return undefined
     }

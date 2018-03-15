@@ -32,7 +32,7 @@ export class RichCollaboratorsService {
     const me = new RichCollaborator(-1, settings.profile.displayName, this.pickColor())
     this.collaborators = [me]
     this.collaboratorsSubject.next(this.collaborators)
-    settings.onChange.subscribe(
+    settings.onProfileChange.subscribe(
       (profile) => {
         me.pseudo = profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})

@@ -8,11 +8,12 @@
   margin: 0;
 }
 
-.divider {
-  border: 0;
-  height: 1px;
-  width: 100%;
-  margin: 1rem 0 2rem 0;
+mat-button-toggle-group {
+  cursor: auto;
+
+  .mat-divider {
+    margin: 10px 0;
+  }
 }
 
 .profile {
@@ -45,20 +46,30 @@ h1 {
   }
 }
 
-mat-button-toggle-group {
-  box-shadow: none;
+.buttons {
 
-  .content {
-    display: inline-block;
-    width: 100%;
-    height: 5rem;
+  .active {
+    background-color: var(--theme-bg-focused-button);
+    color: var(--theme-primary);
   }
 
-  mat-icon {
-    margin-right: 1rem;
+  .mat-divider {
+    margin: 7px 0;
+  }
+
+  .mat-button {
+    height: 48px;
+    text-align: left;
+
+    mat-icon {
+      margin-right: 1.3rem;
+    }
+  }
+
+  .quota {
+    color: var(--theme-fg-hint-text);
+    text-align: center;
+    margin: 5px 0;
   }
 }
 
-.storage {
-  text-align: center;
-}

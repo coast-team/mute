@@ -7,14 +7,14 @@ import { map } from 'rxjs/operators'
 import * as diff from 'diff'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
-import { StorageService } from '../core/storage/storage.service'
+import { LocalStorageService } from '../core/storage/local-storage.service'
 import { AUTHORS } from './mock-authors'
 
 @Injectable()
 export class HistoryService {
 
   constructor (
-    private storage: StorageService
+    private storage: LocalStorageService
   ) {}
 
   getDiff (strA: string, strB: string): any {

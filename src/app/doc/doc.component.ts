@@ -82,7 +82,7 @@ export class DocComponent implements OnDestroy, OnInit {
           this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
           this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
           this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-          this.muteCore.collaboratorsService.pseudoSource = this.settings.onChange.pipe(pluck('displayName'))
+          this.muteCore.collaboratorsService.pseudoSource = this.settings.onProfileChange.pipe(pluck('displayName'))
 
           this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
           this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))

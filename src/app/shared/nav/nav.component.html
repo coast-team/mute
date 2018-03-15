@@ -1,45 +1,57 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
-  <h1><a routerLink="/">MUTE</a></h1>
+  <h1>
+    <a routerLink="/">MUTE</a>
+  </h1>
   <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="createDoc()">
     New Document
   </button>
 
-  <mat-button-toggle-group fxLayout="column" fxLayoutAlign="start stretch"
-    vertical="true"
-  >
-    <!-- All Documents -->
-    <mat-button-toggle
-      routerLink="/docs"
-      routerLinkActive #rlaHome="routerLinkActive"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [value]="storage.home"
-      [checked]="isHome(rlaHome)"
-      (click)="folderChange.emit(storage.home)"
-    >
-      <span [ngClass]="{content: true, 'mat-button': true, selected: isHome(rlaHome)}" fxLayout="row" fxLayoutAlign="left center">
-        <mat-icon [color]="isHome(rlaHome) ? 'primary' : ''">{{storage.home.icon}}</mat-icon>
-        {{storage.home.title}}
-      </span>
-    </mat-button-toggle>
+  <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
+
+    <ng-container *ngIf="isRemoteExist">
+      <!-- All Documents -->
+      <button mat-button [ngClass]="{'active': selected === all.key}" (click)="openFolder(all)">
+        <mat-icon [color]="selected === all.key ? 'primary' : ''">{{all.icon}}</mat-icon>{{all.title}}
+      </button>
+
+      <mat-divider></mat-divider>
+    </ng-container>
+
+    <!-- Local storage -->
+    <button mat-button [ngClass]="{'active': selected === local.key}" (click)="openFolder(local)">
+      <mat-icon [color]="selected === local.key ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
+    </button>
 
     <!-- Trash -->
-    <mat-button-toggle
-      routerLink="/docs/trash"
-      routerLinkActive #rlaTrash="routerLinkActive"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [value]="storage.trash"
-      [checked]="rlaTrash.isActive"
-      (click)="folderChange.emit(storage.trash)"
-    >
-      <span [ngClass]="{content: true, 'mat-button': true, selected: rlaTrash.isActive}" fxLayout="row" fxLayoutAlign="left center">
-        <mat-icon [color]="rlaTrash.isActive ? 'primary' : ''">{{storage.trash.icon}}</mat-icon>
-        {{storage.trash.title}}
-      </span>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
-  <mat-divider></mat-divider>
-  <div *ngIf="isStorageManagerAvailable">
-    <div class="mat-caption storage">Local Storage</div>
-    <div class="mat-caption storage">{{usage | muteSize}} of {{quota | muteSize}} used</div>
+    <button mat-button [ngClass]="{'active': selected === trash.key}" (click)="openFolder(trash)">
+      <mat-icon [color]="selected === trash.key ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
+    </button>
+
+    <!-- Local storage quota -->
+    <div *ngIf="isStorageManagerAvailable">
+      <div class="mat-caption quota">{{usage | muteSize}} of {{quota | muteSize}} used</div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+
+    <ng-container *ngIf="isRemoteExist">
+      <!-- Remote storage -->
+      <button mat-button [ngClass]="{'active': selected === remote.key}"
+        [disabled]="remoteErrorMessage"
+        [matTooltip]="remoteErrorMessage" matTooltipPosition="right"
+        (click)="openFolder(remote)">
+        <mat-icon [color]="selected === remote.key ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
+      </button>
+
+      <mat-divider></mat-divider>
+    </ng-container>
+
+    <!-- Settings -->
+    <button mat-button>
+      <mat-icon>settings</mat-icon>Settings
+    </button>
+
   </div>
+
 </div>
