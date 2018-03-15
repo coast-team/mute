@@ -65,7 +65,7 @@ export class NavComponent implements OnDestroy {
         this.isRemoteExist = true
         break
       case BotStorageStatus.AVAILABLE:
-      log.debug('available')
+        log.debug('available')
         this.remoteErrorMessage = undefined
         this.isRemoteExist = true
         break

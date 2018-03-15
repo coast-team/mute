@@ -4,33 +4,7 @@
   min-width: 30rem;
 }
 
-.btn {
-  margin: 0;
-}
-
-mat-button-toggle-group {
-  cursor: auto;
-
-  .mat-divider {
-    margin: 10px 0;
-  }
-}
-
-.profile {
-  width: 170px;
-
-  input {
-    position: relative;
-  }
-  input {
-    bottom: 2px;
-  }
-  mat-icon {
-    margin-right: 5px;
-  }
-}
-
-h1 {
+.logo {
   width: 100%;
   font-family: $font-logo;
   font-weight: initial;
@@ -44,6 +18,10 @@ h1 {
     text-decoration: inherit;
     outline: none;
   }
+}
+
+.new-doc-hint-text {
+  text-align: center;
 }
 
 .buttons {

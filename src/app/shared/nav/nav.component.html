@@ -1,10 +1,25 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="2rem">
-  <h1>
-    <a routerLink="/">MUTE</a>
-  </h1>
-  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="createDoc()">
+  <h1 class="logo"><a routerLink="/">MUTE</a></h1>
+  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent"
+    [matMenuTriggerFor]="newDocMenu">
     New Document
   </button>
+
+  <mat-menu #newDocMenu="matMenu">
+    <h2 class="mat-caption new-doc-hint-text">Create a new document:</h2>
+    <button mat-menu-item>
+      <mat-icon>computer</mat-icon>
+      <span>On current device only</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>cloud</mat-icon>
+      <span>With remote storage</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>group_work</mat-icon>
+      <span>Join session with a key</span>
+    </button>
+  </mat-menu>
 
   <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
 
