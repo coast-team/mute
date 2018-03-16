@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core'
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core'
 import { MAT_SNACK_BAR_DATA, MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
@@ -11,26 +11,28 @@ import { UiService } from '../core/ui/ui.service'
 @Component({
   selector: 'mute-dev-label',
   template: `
-    Preview version: <a [href]='url' target="_blank" rel="noopener">{{shortID}}</a>
-    <br />
-    Digest: {{digest}}
-    <br />
-    Changes: <span #detectChanges>0</span>
-    <br />
-    Exports: <button (click)="exportLog()">Log</button> <button (click)="exportTree()">Tree</button>
-    <a #link [href]="objectURL" [download]="filename">
-    <br *ngIf="detectChangesRun()" />
-    `,
+    <div class="mat-caption">
+      Preview version:
+      <a [href]='url' target="_blank" rel="noopener">{{shortID}}</a>
+      <br /> Digest: {{digest}}
+      <br /> Changes:
+      <span #detectChanges>0</span>
+      <br /> Exports:
+      <button (click)="exportLog()">Log</button>
+      <button (click)="exportTree()">Tree</button>
+      <a #link [href]="objectURL" [download]="filename"></a>
+    </div>
+  `,
   styles: [`
     :host {
       position: fixed;
-      font-size: 1.1rem;
-      bottom: 20px;
-      right: 20px;
+      bottom: 10px;
+      right: 10px;
       z-index: 100;
+      color: var(--theme-fg-hint-text);
     }
     button {
-      padding: 0;
+      padding: 2px 3px;
     }
   `]
 })
@@ -49,7 +51,6 @@ export class DevLabelComponent implements OnInit {
 
   constructor (
     private sanitizer: DomSanitizer,
-    private renderer: Renderer2,
     private ui: UiService,
     private detectRef: ChangeDetectorRef,
     private storageService: LocalStorageService,
