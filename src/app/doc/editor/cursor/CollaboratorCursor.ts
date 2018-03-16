@@ -3,8 +3,6 @@ import * as CodeMirror from 'codemirror'
 import { RichCollaborator } from '../../rich-collaborators/'
 
 let lineHeight: number
-let windowTop: number
-let windowLeft: number
 
 export class CollaboratorCursor {
 
@@ -15,6 +13,7 @@ export class CollaboratorCursor {
   // Attributes for cursor and selection
   private bookmark: { find: () => CodeMirror.Position, clear: () => void } | undefined
   private selection: CodeMirror.TextMarker | undefined
+  private cursor: HTMLElement
   private cursorBookmark: HTMLElement
   private cursorTransition: HTMLElement
   private transitionPos: { line: number, ch: number } | undefined
@@ -32,15 +31,28 @@ export class CollaboratorCursor {
     this.color = collab.color
     this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
 
+    // HTML element for display name
+    this.displayName = document.createElement('span')
+    this.displayName.className = 'collaborator-display-name mat-elevation-z2'
+    this.displayName.style.backgroundColor = collab.color
+    this.displayName.style.width = '0'
+    this.updateDisplayName(collab.pseudo)
+
+    // HTML element for cursor
+    this.cursor = document.createElement('span')
+    this.cursor.className = 'collaborator-cursor mat-elevation-z2'
+    this.cursor.style.borderLeftColor = collab.color
+    this.cursor.onmouseenter = this.resetDisplayNameTimeout.bind(this)
+    this.cursor.appendChild(this.displayName)
+
     // Bookmark cursor widget
     this.cursorBookmark = document.createElement('span')
-    this.cursorBookmark.className = 'collaborator-cursor'
-    this.cursorBookmark.style.borderLeftColor = collab.color
-    this.cursorBookmark.onmouseenter = this.resetDisplayNameTimeout.bind(this)
+    this.cursorBookmark.className = 'collaborator-cursor-bookmark'
+    this.cursorBookmark.appendChild(this.cursor)
 
     // Cursor during transition phase widget
     this.cursorTransition = document.createElement('span')
-    this.cursorTransition.className = 'collaborator-cursor collaborator-cursor-transition'
+    this.cursorTransition.className = 'collaborator-cursor-transition mat-elevation-z2'
     this.cursorTransition.style.position = 'absolute'
     this.cursorTransition.style.borderLeftColor = this.color
     this.cursorTransition.style.display = 'none'
@@ -61,18 +73,8 @@ export class CollaboratorCursor {
       lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2))
     }
 
-    // HTML element for display name
-    this.displayName = document.createElement('span')
-    this.displayName.className = 'collaborator-display-name'
-    this.displayName.style.backgroundColor = collab.color
-    this.displayName.style.width = '0'
-    this.updateDisplayName(collab.pseudo)
-
     // Append elements to DOM
-    this.cursorBookmark.appendChild(this.displayName)
     const {top, left} = this.cm.cursorCoords({line: 0, ch: 0}, 'window')
-    windowTop = top
-    windowLeft = left
   }
 
   resetDisplayNameTimeout () {
@@ -101,19 +103,10 @@ export class CollaboratorCursor {
         this.translate(from, nextPos, animated)
       }
       this.bookmark.clear()
-      // FIXME: find a better way. Currently setting line-height to its original height
-      // fixes a bug on Firefox when a remote cursor is on an empty line.
-      let modify = false
-      if (this.cm.getDoc().getLine(nextPos.line) === '') {
-        modify = true
-      }
       this.bookmark = this.cm.getDoc().setBookmark(
         nextPos,
         { widget: this.cursorBookmark, insertLeft: true }
       ) as any
-      if (modify) {
-        this.cursorBookmark.parentElement.parentElement.parentElement.style.height = `${lineHeight}px`
-      }
     } else {
       this.removeSelection()
       this.bookmark = this.cm.getDoc().setBookmark(
@@ -228,13 +221,13 @@ export class CollaboratorCursor {
   private setBookmarkCursorProperties () {
     if (this.bookmark) {
       const { height, marginTop } = this.calculateCursorProperties()
-      if (this.cursorBookmark.style.height !== height) {
-        this.cursorBookmark.style.height = height
+      if (this.cursor.style.height !== height) {
+        this.cursor.style.height = height
       }
-      if (this.cursorBookmark.style.marginTop !== marginTop) {
-        this.cursorBookmark.style.marginTop = marginTop
+      if (this.cursor.style.marginTop !== marginTop) {
+        this.cursor.style.marginTop = marginTop
       }
-      if (this.cursorBookmark.style.display !== 'inline-block') {
+      if (this.cursorBookmark.style.visibility === 'hidden') {
         this.cursorBookmark.style.visibility = 'visible'
       }
     }

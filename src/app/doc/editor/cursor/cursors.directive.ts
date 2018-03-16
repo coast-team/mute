@@ -74,10 +74,10 @@ export class CursorsDirective implements OnInit, OnDestroy {
     })
 
     CodeMirror.on(this.cm, 'blur', () => {
-      this.protoCursor.anchor = undefined
-      this.protoCursor.head = undefined
-      this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
-      this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
+      // this.protoCursor.anchor = undefined
+      // this.protoCursor.head = undefined
+      // this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
+      // this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
     })
 
     CodeMirror.on(this.cm, 'focus', () => {
