@@ -4,6 +4,7 @@ import { Doc } from '../Doc'
 import { Folder } from '../Folder'
 
 export interface IStorage {
-  isAvailable: Observable<boolean>
-  getDocs: (folder: Folder) => Doc[]
+  status: any
+  onStatusChange: Observable<any>
+  getDocs: (folder: Folder) => Promise<Doc[]>
 }

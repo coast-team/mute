@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core'
+import { Collaborator } from 'mute-core'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
+import { filter } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 
-import { Collaborator } from 'mute-core'
+import { EProperties } from '../../core/settings/EProperties'
 import { SettingsService } from '../../core/settings/settings.service'
 import { COLORS } from './colors'
 import { RichCollaborator } from './RichCollaborator'
@@ -32,9 +34,11 @@ export class RichCollaboratorsService {
     const me = new RichCollaborator(-1, settings.profile.displayName, this.pickColor())
     this.collaborators = [me]
     this.collaboratorsSubject.next(this.collaborators)
-    settings.onProfileChange.subscribe(
+    this.settings.onChange.pipe(
+      filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
+    ).subscribe(
       (profile) => {
-        me.pseudo = profile.displayName
+        me.pseudo = this.settings.profile.displayName
         this.changeSubject.next({collab: me, prop: 'pseudo'})
         this.collaboratorsSubject.next(this.collaborators)
       }

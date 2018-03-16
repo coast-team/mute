@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
+import { AsyncSubject } from 'rxjs/AsyncSubject'
+import { Observable } from 'rxjs/Observable'
+import { filter } from 'rxjs/operators'
 
-import { Doc } from '../Doc'
-import { File } from '../File'
-import { Folder } from '../Folder'
-import { SettingsService } from '../settings/settings.service'
+import { Doc } from '../../Doc'
+import { File } from '../../File'
+import { Folder } from '../../Folder'
+import { EProperties } from '../../settings/EProperties'
+import { SettingsService } from '../../settings/settings.service'
+import { IStorage } from '../IStorage'
 
 const selectList = [
   'type',
@@ -18,27 +23,51 @@ const selectList = [
   'synchronized',
 ]
 
+export enum LocalStorageStatus {
+  AVAILABLE
+}
+
 @Injectable()
-export class LocalStorageService {
-  private db: any
+export class LocalStorageService implements IStorage {
 
   public local: Folder
   public trash: Folder
+  public status: LocalStorageStatus.AVAILABLE
 
-  constructor () {
+  private db: any
+  private dbLogin: string
+  private statusSubject: AsyncSubject<LocalStorageStatus>
+
+  constructor (settings: SettingsService) {
     this.local = new Folder('local', 'Local storage', 'computer')
     this.trash = new Folder('trash', 'Trash', 'delete')
+    this.statusSubject = new AsyncSubject()
+    this.statusSubject.next(LocalStorageStatus.AVAILABLE)
+    this.dbLogin = settings.anonymous.login
+    this.openDB(this.dbLogin)
+    settings.onChange.pipe(
+      filter((properties) => properties.includes(EProperties.profile))
+    ).subscribe(() => {
+      const login = settings.profile.login
+      if (login && this.dbLogin !== login) {
+        this.dbLogin = login
+        this.openDB(login)
+        this.searchFolder(this.local.route)
+          .then((folder: Folder) => this.local.dbId = folder.dbId)
+          .catch(() => this.createFile(this.local)),
+        this.searchFolder(this.trash.route)
+          .then((folder: Folder) => this.trash.dbId = folder.dbId)
+          .catch(() => this.createFile(this.trash))
+      }
+    })
   }
 
-  async init (settings: SettingsService): Promise<void> {
-    this.setDb(settings.profile.login)
-    settings.onProfileChange.subscribe((profile) => this.setDb(profile.login))
-    await this.searchFolder(this.local.route)
-      .then((folder: Folder) => this.local.dbId = folder.dbId)
-      .catch(() => this.createFile(this.local)),
-    await this.searchFolder(this.trash.route)
-      .then((folder: Folder) => this.trash.dbId = folder.dbId)
-      .catch(() => this.createFile(this.trash))
+  get onStatusChange (): Observable<LocalStorageStatus> {
+    return this.statusSubject.asObservable()
+  }
+
+  getDocs (folder: Folder): Promise<Doc[]> {
+    return this.getFiles(folder) as Promise<Doc[]>
   }
 
   getFiles (folder: Folder): Promise<File[]> {
@@ -195,17 +224,21 @@ export class LocalStorageService {
     return result
   }
 
-  private setDb (login: string) {
-    this.db = jIO.createJIO({
-      type: 'query',
-      sub_storage: {
-        type: 'uuid',
+  private openDB (login) {
+    try {
+      this.db = jIO.createJIO({
+        type: 'query',
         sub_storage: {
-          type: 'indexeddb',
-          database: `documents_v0.4.0-${login}`
+          type: 'uuid',
+          sub_storage: {
+            type: 'indexeddb',
+            database: `documents_v0.4.0-${login}`
+          }
         }
-      }
-    })
+      })
+    } catch (err) {
+      log.debug('Indexed DB error: ', err)
+    }
   }
 
 }

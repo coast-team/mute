@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators'
 import * as diff from 'diff'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
-import { LocalStorageService } from '../core/storage/local-storage.service'
+import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { AUTHORS } from './mock-authors'
 
 @Injectable()

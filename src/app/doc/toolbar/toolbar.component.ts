@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import { ObservableMedia } from '@angular/flex-layout'
 
 import { Doc } from '../../core/Doc'
-import { LocalStorageService } from '../../core/storage/local-storage.service'
+import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 
 @Component({
   selector: 'mute-toolbar',

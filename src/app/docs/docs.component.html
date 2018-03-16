@@ -3,7 +3,7 @@
 
   <!-- Left Sidenav-->
   <mat-sidenav #leftSidenav [mode]="sideNavMode" class="nav" [opened]="!this.media.isActive('xs')">
-    <mute-nav (folderChange)="openFolder($event)"></mute-nav>
+    <mute-nav [selected]="folder" (change)="openFolder($event)"></mute-nav>
   </mat-sidenav>
 
 
@@ -51,7 +51,7 @@
               </ng-template>
               <div fxFlex fxLayoutAlign="end center">
                 <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="isActionsVisible(doc)" fxLayoutGap="10px">
-                  <ng-container *ngIf="folder.key !== storage.trash.key; then docActions; else trashActions"></ng-container>
+                  <ng-container *ngIf="folder.key !== localStorage.trash.key; then docActions; else trashActions"></ng-container>
                 </div>
 
                 <ng-template #mobileActions>

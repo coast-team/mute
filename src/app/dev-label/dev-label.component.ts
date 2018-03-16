@@ -5,7 +5,7 @@ import * as mnemonic from '@coast-team/mnemonicjs'
 import 'rxjs/add/operator/toPromise'
 
 import { hash } from '../../lastcommithash'
-import { LocalStorageService } from '../core/storage/local-storage.service'
+import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { UiService } from '../core/ui/ui.service'
 
 @Component({

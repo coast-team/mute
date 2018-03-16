@@ -1,10 +1,11 @@
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore } from 'mute-core'
-import { map, pluck } from 'rxjs/operators'
+import { filter, map } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
+import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
@@ -82,7 +83,10 @@ export class DocComponent implements OnDestroy, OnInit {
           this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
           this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
           this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-          this.muteCore.collaboratorsService.pseudoSource = this.settings.onProfileChange.pipe(pluck('displayName'))
+          this.muteCore.collaboratorsService.pseudoSource = this.settings.onChange.pipe(
+            filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
+            map(() => this.settings.profile.displayName)
+          )
 
           this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
           this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))

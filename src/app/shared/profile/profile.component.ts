@@ -36,7 +36,7 @@ export class ProfileComponent implements OnDestroy {
   constructor (
     private snackBar: MatSnackBar,
     public settings: SettingsService,
-    public dialog: MatDialog
+    private dialog: MatDialog
   ) {
     this.profile = settings.profile
   }
@@ -49,7 +49,7 @@ export class ProfileComponent implements OnDestroy {
     event.stopPropagation()
   }
 
-  openConfigDialog () {
+  openSettingsDialog () {
     const dialog = this.dialog.open(ConfigDialogComponent)
     dialog.afterClosed().subscribe(() => {
       this.cardState = 'void'

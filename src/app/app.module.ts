@@ -9,9 +9,11 @@ import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
+import { Profile } from './core/settings/Profile'
 import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot-storage/bot-storage.service'
-import { LocalStorageService } from './core/storage/local-storage.service'
+import { LocalStorageService } from './core/storage/local/local-storage.service'
+import { StorageService } from './core/storage/storage.service'
 import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
@@ -35,11 +37,19 @@ import { HistoryModule } from './history/history.module'
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (settings: SettingsService, localStorage: LocalStorageService) => {
-        return () => settings.init().then(() => localStorage.init(settings))
+      useFactory: (
+        storage: StorageService,
+        settings: SettingsService,
+        localStorage: LocalStorageService,
+        botStorage: BotStorageService
+      ) => {
+        return () => {
+          storage.init(localStorage, botStorage)
+          return settings.init()
+        }
       }
       ,
-      deps: [SettingsService, LocalStorageService, BotStorageService],
+      deps: [StorageService, SettingsService, LocalStorageService, BotStorageService],
       multi: true
     }
   ],

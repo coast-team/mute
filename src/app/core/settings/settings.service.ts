@@ -1,14 +1,19 @@
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
-import { Observable } from 'rxjs/Observable'
+import { Observable, Subscribable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
+import { Subscription } from 'rxjs/Subscription'
 
+import { Folder } from '../Folder'
+import { StorageService } from '../storage/storage.service'
+import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
 import { ISerialize as ISerializeProfile, Profile } from './Profile'
 
 const selectList = [
   'profile',
-  'theme'
+  'theme',
+  'openedFolder'
 ]
 
 interface ISerialize {
@@ -21,20 +26,23 @@ interface ISerialize {
 export class SettingsService {
 
   public theme: string
-  public openedFolder: string
+  public openedFolder: Folder
+  public changeSubject: Subject<EProperties[]>
 
   private renderer: Renderer2
   private db: any
-  private profileSubject: Subject<Profile>
   private _profile: Profile
+  private profileChangeSub: Subscription
 
   constructor (
     private rendererFactory: RendererFactory2,
-    private auth: AuthService
+    private auth: AuthService,
+    private storage: StorageService,
   ) {
     this.renderer = rendererFactory.createRenderer(null, null)
-    this.profileSubject = new Subject()
+    this.changeSubject = new Subject()
     this.theme = 'default'
+    this.openedFolder = storage.all
   }
 
   async init (): Promise<void> {
@@ -52,44 +60,27 @@ export class SettingsService {
 
     // Get authenticated or anonymous account(s)
     const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.anonymous]
-
     // Retrieve profile from database
-    await this.setupProfile(accounts)
-
-    // Setup theme
-    if (this.theme !== 'default') {
-      this.renderer.addClass(window.document.body, `${this.theme}-theme`)
-      this.setupTheme(this.theme)
-    }
+    await this.setProfile(accounts)
   }
 
   get profile (): Profile { return this._profile }
 
-  get onProfileChange (): Observable<Profile> {
-    return this.profileSubject.asObservable()
-  }
-
-  async updateProfile (): Promise<void> {
-    await this.serializeAll()
-    this.profileSubject.next(this._profile)
+  get onChange (): Observable<EProperties[]> {
+    return this.changeSubject.asObservable()
   }
 
   async updateTheme (name: string): Promise<void> {
-    if (this.theme !== name) {
-      this.renderer.removeClass(window.document.body, 'dark-theme')
-      this.renderer.removeClass(window.document.body, 'indigo-theme')
-      if (name !== 'default') {
-        this.renderer.addClass(window.document.body, `${name}-theme`)
-      }
-      this.setupTheme(name)
-      this.theme = name
+    if (this.setTheme(name)) {
+      this.changeSubject.next([EProperties.theme])
       await this.serializeAll()
     }
   }
 
-  async updateOpenedFolder (key: string): Promise<void> {
-    if (this.openedFolder !== key) {
-      this.openedFolder = key
+  async updateOpenedFolder (folder: Folder): Promise<void> {
+    if (this.setOpenedFolder(folder)) {
+      this.openedFolder = folder
+      this.changeSubject.next([EProperties.openedFolder])
       await this.serializeAll()
     }
   }
@@ -100,28 +91,35 @@ export class SettingsService {
 
   async signout (): Promise<void> {
     await this.auth.logout().toPromise()
-    await this.setupProfile([this.anonymous])
+    await this.setProfile([this.anonymous])
   }
 
-  async signin (provider: string): Promise<Profile> {
+  async signin (provider: string): Promise<void> {
     await this.auth.authenticate(provider).toPromise()
-    await this.setupProfile([this.auth.getPayload()])
-    return this._profile
+    await this.setProfile([this.auth.getPayload()])
   }
 
   resendNotification () {
     // FIXME: rid of this method
-    this.profileSubject.next(this.profile)
+    this.changeSubject.next([EProperties.profile])
   }
 
-  private async setupProfile (accounts: IAccount[]): Promise<void> {
+  get anonymous (): IAccount {
+    return {
+      provider: window.location.hostname,
+      login: `anonymous`,
+      name: 'Anonymous'
+    }
+  }
+
+  private async setProfile (accounts: IAccount[]): Promise<void> {
     const lookingLogins = accounts.map((a) => a.login)
     const rows = (await this.db.allDocs({
       query: {
         type: 'simple',
         key: {
           read_from: 'profile',
-          equal_match: ({ logins }: {logins: string[]}) => {
+          equal_match: ({ logins }: { logins: string[] }) => {
             for (const l of lookingLogins) {
               if (logins.includes(l)) {
                 return true
@@ -135,69 +133,86 @@ export class SettingsService {
       select_list: selectList
     })).data.rows
 
-    let profile: Profile
+    const changedProperties = [EProperties.profile]
+    if (this.profileChangeSub) {
+      this.profileChangeSub.unsubscribe()
+    }
     if (rows.length !== 0) {
-      profile = Profile.deserialize(accounts, this, rows[0].id, rows[0].value.profile)
-      this.theme = rows[0].value.theme
-      this.openedFolder = rows[0].value.openedFolder
+      this._profile = Profile.deserialize(accounts, rows[0].id, rows[0].value.profile)
+      if (this.setTheme(rows[0].value.theme)) {
+        changedProperties.push(EProperties.theme)
+      }
+
+      const folder = this.storage.findFolder(rows[0].value.openedFolder)
+      if (this.setOpenedFolder(folder)) {
+        changedProperties.push(EProperties.openedFolder)
+      }
     } else {
-      profile = new Profile(accounts, this)
-      profile.dbId = await this.db.post(this.createSerializedData(profile))
+      this._profile = new Profile(accounts)
+      this._profile.dbId = await this.db.post(this.createSerializedData(this._profile))
     }
-    this.setProfile(profile)
+    this.profileChangeSub = this._profile.onChange.subscribe((props) => {
+      this.changeSubject.next(props)
+    })
+    this.changeSubject.next(changedProperties)
   }
 
-  private setupTheme (theme: string) {
-    this.updateThemeProperty(theme, 'primary')
-    this.updateThemeProperty(theme, 'accent')
+  private setTheme (name: string): boolean {
+    if (this.theme !== name) {
+      this.renderer.removeClass(window.document.body, 'dark-theme')
+      this.renderer.removeClass(window.document.body, 'indigo-theme')
+      if (name !== 'default') {
+        this.renderer.addClass(window.document.body, `${name}-theme`)
+      }
+      this.updateThemeProperty(name, 'primary')
+      this.updateThemeProperty(name, 'accent')
 
-    // Update background colors
-    this.updateThemeProperty(theme, 'bg-status-bar')
-    this.updateThemeProperty(theme, 'bg-app-bar')
-    this.updateThemeProperty(theme, 'bg-background')
-    this.updateThemeProperty(theme, 'bg-hover')
-    this.updateThemeProperty(theme, 'bg-dialog')
-    this.updateThemeProperty(theme, 'bg-disabled-button')
-    this.updateThemeProperty(theme, 'bg-raised-button')
-    this.updateThemeProperty(theme, 'bg-focused-button')
-    this.updateThemeProperty(theme, 'bg-selected-button')
-    this.updateThemeProperty(theme, 'bg-selected-disabled-button')
-    this.updateThemeProperty(theme, 'bg-unselected-chip')
-    this.updateThemeProperty(theme, 'bg-card')
-    this.updateThemeProperty(theme, 'bg-disabled-list-option')
+      // Update background colors
+      this.updateThemeProperty(name, 'bg-status-bar')
+      this.updateThemeProperty(name, 'bg-app-bar')
+      this.updateThemeProperty(name, 'bg-background')
+      this.updateThemeProperty(name, 'bg-hover')
+      this.updateThemeProperty(name, 'bg-dialog')
+      this.updateThemeProperty(name, 'bg-disabled-button')
+      this.updateThemeProperty(name, 'bg-raised-button')
+      this.updateThemeProperty(name, 'bg-focused-button')
+      this.updateThemeProperty(name, 'bg-selected-button')
+      this.updateThemeProperty(name, 'bg-selected-disabled-button')
+      this.updateThemeProperty(name, 'bg-unselected-chip')
+      this.updateThemeProperty(name, 'bg-card')
+      this.updateThemeProperty(name, 'bg-disabled-list-option')
 
-    // Update forground colors
-    this.updateThemeProperty(theme, 'fg-text')
-    this.updateThemeProperty(theme, 'fg-secondary-text')
-    this.updateThemeProperty(theme, 'fg-hint-text')
-    this.updateThemeProperty(theme, 'fg-divider')
-    this.updateThemeProperty(theme, 'fg-dividers')
-    this.updateThemeProperty(theme, 'fg-disabled')
-    this.updateThemeProperty(theme, 'fg-disabled-button')
-    this.updateThemeProperty(theme, 'fg-icon')
-    this.updateThemeProperty(theme, 'fg-icons')
-    this.updateThemeProperty(theme, 'fg-slider-min')
-    this.updateThemeProperty(theme, 'fg-slider-off')
-    this.updateThemeProperty(theme, 'fg-fg-slider-off-active')
+      // Update forground colors
+      this.updateThemeProperty(name, 'fg-text')
+      this.updateThemeProperty(name, 'fg-secondary-text')
+      this.updateThemeProperty(name, 'fg-hint-text')
+      this.updateThemeProperty(name, 'fg-divider')
+      this.updateThemeProperty(name, 'fg-dividers')
+      this.updateThemeProperty(name, 'fg-disabled')
+      this.updateThemeProperty(name, 'fg-disabled-button')
+      this.updateThemeProperty(name, 'fg-icon')
+      this.updateThemeProperty(name, 'fg-icons')
+      this.updateThemeProperty(name, 'fg-slider-min')
+      this.updateThemeProperty(name, 'fg-slider-off')
+      this.updateThemeProperty(name, 'fg-fg-slider-off-active')
 
-    // Update theme primary color for html page
-    window.document.querySelector('meta[name=theme-color]').setAttribute(
-      'content',
-      window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-primary`)
-    )
-  }
-
-  private get anonymous (): IAccount {
-    return {
-      provider: window.location.hostname,
-      login: `anonymous`,
-      name: 'Anonymous'
+      // Update theme primary color for html page
+      window.document.querySelector('meta[name=theme-color]').setAttribute(
+        'content',
+        window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${name}-primary`)
+      )
+      this.theme = name
+      return true
     }
+    return false
   }
 
-  private setProfile (profile: Profile) {
-    this._profile = profile
-    this.profileSubject.next(profile)
+  private setOpenedFolder (folder: Folder) {
+    if (folder && this.openedFolder !== folder) {
+      this.openedFolder = folder
+      return true
+    }
+    return false
   }
 
   private async serializeAll (): Promise<void> {
@@ -208,7 +223,7 @@ export class SettingsService {
     return {
       profile: profile.serialize(),
       theme: this.theme,
-      openedFolder: this.openedFolder
+      openedFolder: this.openedFolder.key
     }
   }
 

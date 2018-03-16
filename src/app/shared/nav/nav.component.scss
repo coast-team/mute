@@ -24,6 +24,17 @@
   text-align: center;
 }
 
+.local-and-remote {
+  margin-right: 0;
+
+  &::after {
+    content: "+";
+    color: var(--theme-fg-icon);
+    position: relative;
+    bottom: 4px;
+  }
+}
+
 .buttons {
 
   .active {

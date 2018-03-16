@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core'
+import { MatDialog } from '@angular/material'
 import { Router, RouterLinkActive } from '@angular/router'
 import { Subscription } from 'rxjs/Subscription'
 
 import { environment } from '../../../environments/environment'
 import { Folder } from '../../core/Folder'
-import { SettingsService } from '../../core/settings/settings.service'
 import { BotStorageService, BotStorageStatus } from '../../core/storage/bot-storage/bot-storage.service'
-import { LocalStorageService } from '../../core/storage/local-storage.service'
+import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { StorageService } from '../../core/storage/storage.service'
+import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 
 @Component({
   selector: 'mute-nav',
@@ -16,9 +17,8 @@ import { StorageService } from '../../core/storage/storage.service'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavComponent implements OnDestroy {
-  @Input() selected: string
+  @Input() selected: Folder
   @Output() change: EventEmitter<Folder>
-  @Output() folderChange: EventEmitter<Folder>
 
   public quota: number
   public usage: number
@@ -37,24 +37,28 @@ export class NavComponent implements OnDestroy {
   constructor (
     private router: Router,
     private cd: ChangeDetectorRef,
-    private settings: SettingsService,
     private storage: StorageService,
     private localStorage: LocalStorageService,
-    private botStorage: BotStorageService
+    private botStorage: BotStorageService,
+    private dialog: MatDialog
   ) {
     this.local = localStorage.local
     this.trash = localStorage.trash
     this.all = storage.all
     this.remote = botStorage.remote
     this.change = new EventEmitter()
-    this.folderChange = new EventEmitter()
     this.subs = []
+    this.remoteErrorMessage = ''
     this.subs[this.subs.length] = this.botStorage.onStatusChange.subscribe((status) => {
       this.remoteStatus = status
       switch (status) {
-      case BotStorageStatus.NOT_EXISTED:
+      case BotStorageStatus.NOT_EXIST:
         this.remoteErrorMessage = ''
         this.isRemoteExist = false
+        break
+      case BotStorageStatus.EXIST:
+        this.remoteErrorMessage = 'Checking...'
+        this.isRemoteExist = true
         break
       case BotStorageStatus.NOT_RESPONDING:
         this.remoteErrorMessage = 'Remote server is not responding'
@@ -65,11 +69,11 @@ export class NavComponent implements OnDestroy {
         this.isRemoteExist = true
         break
       case BotStorageStatus.AVAILABLE:
-        log.debug('available')
         this.remoteErrorMessage = undefined
         this.isRemoteExist = true
         break
       }
+      this.cd.markForCheck()
     })
     const nav: any = navigator
     if (nav.storage && nav.storage.estimate) {
@@ -94,8 +98,11 @@ export class NavComponent implements OnDestroy {
   }
 
   openFolder (folder: Folder) {
-    this.selected = folder.key
-    this.settings.updateOpenedFolder(folder.key)
+    this.selected = folder
     this.change.emit(folder)
+  }
+
+  openSettingsDialog () {
+    this.dialog.open(ConfigDialogComponent)
   }
 }

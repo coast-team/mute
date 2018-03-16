@@ -54,6 +54,5 @@ export class RightSideComponent implements OnInit {
 
   updateDisplayName (pseudo: string) {
     this.settings.profile.displayName = pseudo
-    this.settings.updateProfile()
   }
 }

@@ -5,16 +5,18 @@ import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material'
 import { ActivatedRoute, Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
-import { throttleTime } from 'rxjs/operators'
+import { filter } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
 import { File } from '../core/File'
 import { Folder } from '../core/Folder'
+import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot-storage/bot-storage.service'
-import { LocalStorageService } from '../core/storage/local-storage.service'
+import { LocalStorageService } from '../core/storage/local/local-storage.service'
+import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
 
@@ -47,7 +49,8 @@ export class DocsComponent implements OnDestroy, OnInit {
     private route: ActivatedRoute,
     private botStorage: BotStorageService,
     private settings: SettingsService,
-    public storage: LocalStorageService,
+    public localStorage: LocalStorageService,
+    public storage: StorageService,
     public ui: UiService,
     public media: ObservableMedia,
     public dialog: MatDialog
@@ -56,14 +59,15 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.docsSource = new DocsSource(this.docsSubject)
     this.title = ''
     this.subs = []
+    this.openFolder(this.settings.openedFolder)
   }
 
   ngOnInit () {
-    this.subs[this.subs.length] = this.route.data
-      .subscribe(({ folder }) => this.openFolder(folder))
-
-    this.subs[this.subs.length] = this.settings.onProfileChange
-      .subscribe(() => this.openFolder(this.storage.local))
+    this.subs[this.subs.length] = this.settings.onChange.pipe(
+      filter((props) => props.includes(EProperties.openedFolder) && this.folder !== this.settings.openedFolder),
+    ).subscribe(() => {
+      this.openFolder(this.settings.openedFolder)
+    })
 
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {
@@ -84,12 +88,12 @@ export class DocsComponent implements OnDestroy, OnInit {
   moveToTrash (doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
     this.docsSubject.next(this.docs)
-    this.storage.moveDoc(doc, this.storage.trash.route)
+    this.localStorage.moveDoc(doc, this.localStorage.trash.route)
       .then(() => {
         this.snackBar.open(`"${doc.title}" moved to trash.`, 'Undo', {
           duration: 5000
         }).onAction().subscribe(() => {
-          this.storage.moveDoc(doc, doc.previousLocation)
+          this.localStorage.moveDoc(doc, doc.previousLocation)
             .then(() => {
               this.docs[this.docs.length] = doc
               this.docsSubject.next(this.docs)
@@ -103,7 +107,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   restore (doc: Doc): Promise<void> {
-    return this.storage.moveDoc(doc, doc.previousLocation)
+    return this.localStorage.moveDoc(doc, doc.previousLocation)
       .then(() => {
         this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
         this.docsSubject.next(this.docs)
@@ -117,7 +121,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   delete (doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
     this.docsSubject.next(this.docs)
-    this.storage.deleteDoc(doc)
+    this.localStorage.deleteDoc(doc)
       .then(() => {
         this.snackBar.open(`"${doc.title}" has been deleted.`, 'close', {
           duration: 3000
@@ -167,7 +171,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       }
       doc.title = event.target.textContent
       event.target.textContent = doc.title
-      this.storage.updateFile(doc)
+      this.localStorage.updateFile(doc)
     }
   }
 
@@ -178,7 +182,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     dialogRef.afterClosed().subscribe((newTitle: string) => {
       if (newTitle !== undefined) {
         doc.title = newTitle
-        this.storage.updateFile(doc)
+        this.localStorage.updateFile(doc)
       }
     })
   }
@@ -191,23 +195,15 @@ export class DocsComponent implements OnDestroy, OnInit {
     event.stopPropagation()
   }
 
-  openFolder (folder) {
+  openFolder (folder: Folder) {
+    this.settings.updateOpenedFolder(folder)
     this.folder = folder
     this.isFinishOpen = false
-    this.storage.getFiles(folder)
-      .then((files: File[]) => {
-        this.docs = files.filter((file: File) => file.isDoc) as Doc[]
+    this.storage.getDocs(folder)
+      .then((docs) => {
+        this.docs = docs
         this.docsSubject.next(this.docs)
         this.isFinishOpen = true
-        const keys = this.docs.map((doc: Doc) => doc.key)
-        return this.botStorage.whichExist(keys)
-      })
-      .then((existedKeys) => {
-        this.docs.forEach((doc: Doc) => {
-          if (existedKeys.includes(doc.key)) {
-            doc.setBotStorage([this.botStorage.bot])
-          }
-        })
       })
   }
 }

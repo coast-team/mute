@@ -3,21 +3,26 @@ import { Inject, Injectable } from '@angular/core'
 import { AsyncSubject } from 'rxjs/AsyncSubject'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
+import { filter } from 'rxjs/operators'
 
 import { environment } from '../../../../environments/environment'
+import { Doc } from '../../Doc'
 import { Folder } from '../../Folder'
+import { EProperties } from '../../settings/EProperties'
 import { SettingsService } from '../../settings/settings.service'
+import { IStorage } from '../IStorage'
 import { BotStorage } from './BotStorage'
 
 export enum BotStorageStatus {
   AVAILABLE,
   NOT_AUTHORIZED,
   NOT_RESPONDING,
-  NOT_EXISTED,
+  EXIST,
+  NOT_EXIST,
 }
 
 @Injectable()
-export class BotStorageService {
+export class BotStorageService implements IStorage {
   private statusSubject: BehaviorSubject<BotStorageStatus | undefined>
 
   public bot: BotStorage
@@ -34,15 +39,22 @@ export class BotStorageService {
       const { secure, host, port } = environment.botStorage
       this.bot = new BotStorage('', secure, host, port)
       this.remote = new Folder(this.bot.id, 'Remote storage', 'cloud')
+      this.setStatus(BotStorageStatus.EXIST)
     } else {
-      this.setStatus(BotStorageStatus.NOT_EXISTED)
+      this.setStatus(BotStorageStatus.NOT_EXIST)
     }
 
-    settings.onProfileChange.subscribe(() => this.updateStatus())
+    settings.onChange.pipe(
+      filter((properties) => properties.includes(EProperties.profile))
+    ).subscribe(() => this.updateStatus())
   }
 
   get onStatusChange (): Observable<BotStorageStatus | undefined> {
     return this.statusSubject.asObservable()
+  }
+
+  getDocs (folder: Folder): Promise<Doc[]> {
+    return  Promise.resolve([])
   }
 
   async whichExist (keys: string[]): Promise<string[]> {

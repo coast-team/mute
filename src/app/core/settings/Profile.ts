@@ -1,5 +1,8 @@
+import { Subject } from 'rxjs/Subject'
+
+import { Observable } from 'rxjs/Observable'
+import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
-import { SettingsService } from './settings.service'
 
 export interface ISerialize {
   displayName: string
@@ -12,21 +15,25 @@ export class Profile {
   public accounts: IAccount[]
 
   private _displayName: string
-  private profileService: SettingsService
+  private changeSubject: Subject<EProperties[]>
 
-  constructor (accounts: IAccount[], profileService: SettingsService) {
+  constructor (accounts: IAccount[]) {
     this._displayName = accounts[0].name
     this.activeAccount = accounts[0]
     this.accounts = accounts
-    this.profileService = profileService
+    this.changeSubject = new Subject()
   }
 
-  static deserialize (accounts: IAccount[], profileService: SettingsService, dbId: string, serialized: ISerialize) {
-    const profile = new Profile (accounts, profileService)
+  static deserialize (accounts: IAccount[], dbId: string, serialized: ISerialize) {
+    const profile = new Profile (accounts)
     profile._displayName = serialized.displayName
     profile.activeAccount = accounts[0]
     profile.dbId = dbId
     return profile
+  }
+
+  get onChange (): Observable<EProperties[]> {
+    return this.changeSubject.asObservable()
   }
 
   get displayName () { return this._displayName }
@@ -37,7 +44,7 @@ export class Profile {
     } else {
       this._displayName = value
     }
-    this.profileService.updateProfile()
+    this.changeSubject.next([EProperties.profileDisplayName])
   }
 
   get name (): string { return this.activeAccount.name }

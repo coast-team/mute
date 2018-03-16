@@ -4,7 +4,7 @@ import { Observer } from 'rxjs/Observer'
 import { bufferTime, filter } from 'rxjs/operators'
 
 import { Doc } from '../../core/Doc'
-import { LocalStorageService } from '../../core/storage/local-storage.service'
+import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 
 import { RichLogootSOperation, State } from 'mute-core'
 
