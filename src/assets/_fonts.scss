@@ -40,3 +40,29 @@
     local('MaterialIcons-Regular'),
     url('/assets/fonts/MaterialIcons-Regular.woff2') format('woff2');
 }
+
+/* roboto-300 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'),
+       url('/assets/fonts/roboto-v18-latin-300.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
+}
+
+/* roboto-regular - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('/assets/fonts/roboto-v18-latin-regular.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
+}
+/* roboto-500 - latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'),
+       url('/assets/fonts/roboto-v18-latin-500.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
+}

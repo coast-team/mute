@@ -1,14 +1,14 @@
 @import 'variables';
 
 :host {
-  min-width: 30rem;
+  max-width: 300px;
 }
 
 .logo {
   width: 100%;
   font-family: $font-logo;
   font-weight: initial;
-  font-size: 4rem;
+  font-size: 2.7rem;
   margin: 0;
   padding: 2rem 0 0 0;
   text-align: center;

@@ -6,34 +6,34 @@
   line-height: initial;
 
   &.m {
-    top: 3.1px;
-    left: 4.5px;
+    top: 1px;
+    left: 6px;
   }
 
   &.u {
-    top: 3.1px;
-    left: 41.5px;
+    top: 1px;
+    left: 50px;
   }
 
   &.t {
-    top: 38.1px;
-    left: 9px;
+    top: 43px;
+    left: 10.5px;
   }
 
   &.e {
-    top: 38.1px;
-    left: 44px;
+    top: 43px;
+    left: 52.5px;
   }
 }
 
 .sk-folding-cube {
   position: absolute;
-  top: calc(50% - 35px);
+  top: calc(50% - 42px);
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   // -webkit-transform: rotateZ(45deg);
   //         transform: rotateZ(45deg);
 }
