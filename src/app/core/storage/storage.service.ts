@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable'
 
 import { Doc } from '../Doc'
 import { Folder } from '../Folder'
-import { BotStorageService } from './bot-storage/bot-storage.service'
+import { BotStorageService } from './bot/bot-storage.service'
 import { IStorage } from './IStorage'
 import { LocalStorageService } from './local/local-storage.service'
 

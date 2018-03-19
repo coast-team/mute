@@ -46,7 +46,7 @@ export class BotStorageService implements IStorage {
 
     settings.onChange.pipe(
       filter((properties) => properties.includes(EProperties.profile))
-    ).subscribe(() => this.updateStatus())
+    ).subscribe(() => {this.updateStatus()})
   }
 
   get onStatusChange (): Observable<BotStorageStatus | undefined> {
@@ -96,18 +96,6 @@ export class BotStorageService implements IStorage {
       }
     }
     return Promise.resolve()
-  }
-
-  private checkName (): Promise<string | undefined> {
-    const { secure, host, port } = environment.botStorage
-    const url = `${secure ? 'https' : 'http'}://${host}:${port}/name`
-    return new Promise((resolve) => {
-      this.http.get(url, { responseType: 'text' })
-        .subscribe(
-          (name: string) => resolve(name),
-          (err) => resolve()
-        )
-    })
   }
 
   private setStatus (status: BotStorageStatus) {

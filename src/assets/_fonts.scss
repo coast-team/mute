@@ -1,29 +1,110 @@
+/* roboto-300 - latin */
 @font-face {
-  font-family: 'Droid Sans';
-  font-weight: 400;
+  font-family: 'Roboto';
   font-style: normal;
-  src: url('/assets/fonts/Droid-Sans-regular.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Lato';
   font-weight: 300;
-  font-style: normal;
-  src: url('/assets/fonts/Lato-300.woff2') format('woff2');
+  src: local('Roboto Light'), local('Roboto-Light'),
+       url('/assets/fonts/roboto-v18-latin-300.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
 }
 
+/* roboto-regular - latin */
 @font-face {
-  font-family: 'Lato';
+  font-family: 'Roboto';
+  font-style: normal;
   font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'),
+       url('/assets/fonts/roboto-v18-latin-regular.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
+}
+/* roboto-500 - latin */
+@font-face {
+  font-family: 'Roboto';
   font-style: normal;
-  src: url('/assets/fonts/Lato-regular.woff2') format('woff2');
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'),
+       url('/assets/fonts/roboto-v18-latin-500.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
 }
 
+/* montserrat-300 - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
 @font-face {
-  font-family: 'Lato';
-  font-weight: 700;
+  font-family: 'Montserrat';
   font-style: normal;
-  src: url('/assets/fonts/Lato-700.woff2') format('woff2');
+  font-weight: 300;
+  src: local('Montserrat Light'), local('Montserrat-Light'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-300.woff2') format('woff2');
+}
+/* montserrat-300italic - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 300;
+  src: local('Montserrat Light Italic'), local('Montserrat-LightItalic'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-300italic.woff2') format('woff2');
+}
+/* montserrat-regular - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Montserrat Regular'), local('Montserrat-Regular'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-regular.woff2') format('woff2');
+}
+/* montserrat-italic - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Montserrat Italic'), local('Montserrat-Italic'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-italic.woff2') format('woff2');
+}
+/* montserrat-600 - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Montserrat SemiBold'), local('Montserrat-SemiBold'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-600.woff2') format('woff2');
+}
+/* montserrat-600italic - cyrillic-ext_cyrillic_vietnamese_latin_latin-ext */
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 600;
+  src: local('Montserrat SemiBold Italic'), local('Montserrat-SemiBoldItalic'),
+       url('/assets/fonts/montserrat-v12-cyrillic-ext_cyrillic_vietnamese_latin_latin-ext-600italic.woff2') format('woff2');
+}
+
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url('/assets/fonts/MaterialIcons-Regular.woff2') format('woff2');
+}
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
 }
 
 @font-face {
@@ -48,7 +129,6 @@
   font-family: "fontello";
   font-style: normal;
   font-weight: normal;
-  speak: none;
 
   display: inline-block;
   text-decoration: inherit;
@@ -81,38 +161,3 @@
 
 .icon-github-circled:before { content: '\f09b'; } /* '' */
 .icon-google:before { content: '\f1a0'; } /* '' */
-
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Material Icons'),
-    local('MaterialIcons-Regular'),
-    url('/assets/fonts/MaterialIcons-Regular.woff2') format('woff2');
-}
-
-/* roboto-300 - latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Roboto Light'), local('Roboto-Light'),
-       url('/assets/fonts/roboto-v18-latin-300.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
-}
-
-/* roboto-regular - latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Roboto'), local('Roboto-Regular'),
-       url('/assets/fonts/roboto-v18-latin-regular.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
-}
-/* roboto-500 - latin */
-@font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Roboto Medium'), local('Roboto-Medium'),
-       url('/assets/fonts/roboto-v18-latin-500.woff2') format('woff2'); /* Chrome 26+, Opera 23+, Firefox 39+ */
-}

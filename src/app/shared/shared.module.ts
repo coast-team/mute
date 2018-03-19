@@ -14,6 +14,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatProgressSpinnerModule,
+  MatSelectModule,
   MatSidenavModule,
   MatSliderModule,
   MatSlideToggleModule,
@@ -33,6 +34,7 @@ import { ProfileComponent } from './profile/profile.component'
   imports: [
     CommonModule,
     MatInputModule,
+    MatSelectModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -64,6 +66,7 @@ import { ProfileComponent } from './profile/profile.component'
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatSelectModule,
     MatSliderModule,
     MatSidenavModule,
     MatListModule,

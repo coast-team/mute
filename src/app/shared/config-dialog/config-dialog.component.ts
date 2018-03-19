@@ -14,7 +14,9 @@ import { SettingsService } from '../../core/settings/settings.service'
 export class ConfigDialogComponent {
 
   public profile: Profile
+  public initialTheme: string
   public theme: string
+  public displayName: string
 
   public displayNameFormControl: FormControl
 
@@ -24,14 +26,21 @@ export class ConfigDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.profile = settings.profile
+    this.displayName = this.profile.displayName
+    this.initialTheme = this.settings.theme
     this.theme = this.settings.theme
     this.displayNameFormControl = new FormControl('', [
       Validators.maxLength(27),
     ])
   }
 
-  save (nickname: string) {
-    this.profile.displayName = nickname
+  cancel () {
+    this.settings.updateTheme(this.initialTheme)
+  }
+
+  save () {
+    this.profile.displayName = this.displayName
+    this.settings.updateTheme(this.theme)
   }
 
   applyTheme ({ value }: { value: string }) {

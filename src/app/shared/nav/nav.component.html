@@ -53,12 +53,13 @@
 
     <ng-container *ngIf="isRemoteExist">
       <!-- Remote storage -->
-      <button mat-button [ngClass]="{'active': selected === remote}"
-        [disabled]="remoteErrorMessage"
-        [matTooltip]="remoteErrorMessage" matTooltipPosition="right"
-        (click)="openFolder(remote)">
-        <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
-      </button>
+      <span [matTooltip]="remoteErrorMessage" matTooltipPosition="right">
+        <button mat-button [ngClass]="{'active': selected === remote}"
+          [disabled]="remoteErrorMessage"
+          (click)="openFolder(remote)">
+          <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
+        </button>
+      </span>
 
       <mat-divider></mat-divider>
     </ng-container>

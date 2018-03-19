@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>Settings</h2>
+<h1 mat-dialog-title>Settings</h1>
 
-<mat-dialog-content>
+<div mat-dialog-content>
 
-  <h3>Profile</h3>
-  <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
+  <h2 class="mat-subheading-2">Profile</h2>
+  <div fxLayoutAlign="start start" fxLayoutGap="20px">
     <ng-container *ngIf="profile.avatar; else anonymousIconBig">
       <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
     </ng-container>
@@ -13,9 +13,9 @@
 
     <div fxLayout="column">
       <mat-form-field>
-        <input matInput #displayName placeholder="Display name" [value]="profile.displayName" maxlength="27"
+        <input matInput placeholder="Display name" [(ngModel)]="displayName" maxlength="27"
               [formControl]="displayNameFormControl">
-        <mat-hint align="end">{{displayName.value.length}} / 27</mat-hint>
+        <mat-hint align="end">{{displayName.length}} / 27</mat-hint>
       </mat-form-field>
       <mat-form-field>
         <input matInput disabled tabindex="-1" placeholder="Login" [value]="profile.login">
@@ -23,24 +23,27 @@
     </div>
   </div>
 
-  <mat-divider></mat-divider>
 
-  <h3>Theme</h3>
-  <mat-button-toggle-group class="theme" [value]="theme" (change)="applyTheme($event)">
-    <mat-button-toggle class="default" value="default">
-      <span class="circle"><span></span></span>
-    </mat-button-toggle>
-    <mat-button-toggle class='dark' value="dark">
-      <span class="circle"><span></span></span>
-    </mat-button-toggle>
-    <mat-button-toggle class="indigo" value="indigo">
-      <span class="circle"><span></span></span>
-    </mat-button-toggle>
-  </mat-button-toggle-group>
-</mat-dialog-content>
+  <h3 class="mat-subheading-2">Theme</h3>
+    <mat-form-field>
+      <span matPrefix [ngClass]="['circle', theme]"></span>
+      <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
+        <mat-option value="default">
+          <span class="circle default"></span> light
+        </mat-option>
 
-<mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button mat-dialog-close>CANCEL</button>
-  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
-  <button mat-button [mat-dialog-close]="true" (click)="save(displayName.value)">SAVE</button>
-</mat-dialog-actions>
+        <mat-option value="dark">
+          <span class="circle dark"></span> dark
+        </mat-option>
+
+        <mat-option value="indigo">
+          <span class="circle indigo"></span> light
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close (click)="cancel()">CANCEL</button>
+  <button mat-button mat-dialog-close (click)="save()">SAVE</button>
+</div>

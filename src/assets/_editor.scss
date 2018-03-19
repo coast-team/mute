@@ -1,11 +1,22 @@
-@import 'variables';
+@import '~codemirror/lib/codemirror.css';
+@import '~tui-editor/dist/tui-editor.css';
+@import '~tui-editor/dist/tui-editor-contents.css';
+
+// Document body
+$editor-font-family: 'Montserrat', sans-serif;
+
+// Hide bottom Markdown/WYSIWYG switching panel
+.te-mode-switch-section {
+  display: none;
+}
 
 .tui-editor-defaultUI {
   border: none;
 }
 
 .CodeMirror {
-  font-family: $font, serif;
+  font-family: $editor-font-family, sans-serif;
+  font-size: 14px !important;
   color: var(--theme-fg-text);
   background-color: var(--theme-bg-color); // $bg-card;
   line-height: 24px;

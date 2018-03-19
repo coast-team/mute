@@ -152,6 +152,7 @@ export class SettingsService {
       this._profile.dbId = await this.db.post(this.createSerializedData(this._profile))
     }
     this.profileChangeSub = this._profile.onChange.subscribe((props) => {
+      this.serializeAll()
       this.changeSubject.next(props)
     })
     this.changeSubject.next(changedProperties)

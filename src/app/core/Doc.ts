@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 
 import { File } from './File'
-import { BotStorage } from './storage/bot-storage/BotStorage'
+import { BotStorage } from './storage/bot/BotStorage'
 
 export class Doc extends File {
   private botStoragesSubject: BehaviorSubject<BotStorage[]>

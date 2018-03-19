@@ -1,68 +1,31 @@
-@import 'variables';
-
 .anonymous-icon-big {
   font-size: 100px;
   height: 100px;
   width: 100px;
 }
 
-.content {
-  margin-bottom: 10px;
-}
-
 .icon-github:before {
   content: "\f092";
 }
 
-.theme {
-  margin: 5px 0;
 
-  .circle {
-    position: relative;
-    border-radius: 50% 50%;
-    display: inline-block;
-    height: 32px;
-    width: 32px;
-    margin: 5px 0;
+.circle {
+  border-radius: 50% 50%;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  vertical-align: middle;
+  margin-right: 5px;
 
-    span {
-        position: absolute;
-        display: inline-block;
-        height: 10px;
-        width: 10px;
-        top: 11px;
-        left: 11px;
-        border-radius: 50% 50%;
-      }
-  }
-  .default {
-    .circle {
-      background-color: var(--default-primary) !important;
-
-      span {
-        background-color: var(--default-bg-background) !important;
-      }
-    }
+  &.default {
+    background-color: var(--default-primary) !important;
   }
 
-  .dark {
-
-    .circle {
-      background-color: var(--dark-primary) !important;
-
-      span {
-        background-color: var(--dark-bg-background) !important;
-      }
-    }
+  &.dark {
+    background-color: var(--dark-primary) !important;
   }
 
-  .indigo {
-    .circle {
-      background-color: var(--indigo-primary) !important;
-
-      span {
-        background-color: var(--indigo-bg-background) !important;
-      }
-    }
+  &.indigo {
+    background-color: var(--indigo-primary) !important;
   }
 }

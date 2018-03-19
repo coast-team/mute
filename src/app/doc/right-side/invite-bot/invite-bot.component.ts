@@ -11,7 +11,7 @@ import {
   OnInit,
   ViewChild } from '@angular/core'
 
-import { BotStorageService } from '../../../core/storage/bot-storage/bot-storage.service'
+import { BotStorageService } from '../../../core/storage/bot/bot-storage.service'
 import { NetworkService } from '../../../doc/network/network.service'
 
 @Component({

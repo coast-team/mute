@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription'
 
 import { environment } from '../../../environments/environment'
 import { Folder } from '../../core/Folder'
-import { BotStorageService, BotStorageStatus } from '../../core/storage/bot-storage/bot-storage.service'
+import { BotStorageService, BotStorageStatus } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { StorageService } from '../../core/storage/storage.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
