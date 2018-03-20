@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Rename document</h1>
+
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Title"
+    [(ngModel)]="title"
+    maxlength="128"
+    [formControl]="titleFormControl"
+    (focus)="selectAll($event)">
+    <mat-hint align="end">{{title.length}} / 128</mat-hint>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close>CANCEL</button>
+  <button mat-button mat-dialog-close (click)="save()">SAVE</button>
+</div>

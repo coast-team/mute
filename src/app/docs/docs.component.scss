@@ -7,14 +7,13 @@
 }
 
 .contenteditable {
-    padding: 4px;
-  }
+  padding: 4px;
 
-  .contenteditable:active,
-  .contenteditable:focus{
+  &:active, &:focus{
     outline-width: 1px;
     outline-color: var(--theme-accent);
   }
+}
 
 .mat-table {
   overflow: auto;
@@ -22,6 +21,7 @@
 
 .title-icon {
   margin-right: 5px;
+  vertical-align: middle;
 }
 
 .table-container {

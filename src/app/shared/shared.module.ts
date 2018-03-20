@@ -26,6 +26,7 @@ import {
 import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
 import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
+import { DocRenameDialogComponent } from './doc-rename-dialog/doc-rename-dialog.component'
 import { NavComponent } from './nav/nav.component'
 import { SizePipe } from './nav/size-pipe/size-pipe'
 import { ProfileComponent } from './profile/profile.component'
@@ -58,8 +59,8 @@ import { ProfileComponent } from './profile/profile.component'
     FormsModule,
     ReactiveFormsModule
   ],
-  entryComponents: [ ConfigDialogComponent ],
-  declarations: [ ProfileComponent, NavComponent, SizePipe, ConfigDialogComponent],
+  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent ],
+  declarations: [ ProfileComponent, NavComponent, SizePipe, ConfigDialogComponent, DocRenameDialogComponent],
   exports: [
     CommonModule,
     MatInputModule,

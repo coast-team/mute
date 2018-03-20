@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { SharedModule } from '../shared/shared.module'
-import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
 import { DocsComponent } from './docs.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
@@ -13,10 +12,9 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
     ReactiveFormsModule
   ],
   declarations: [
-    RenameDocDialogComponent,
     ToolbarComponent,
     DocsComponent,
   ],
-  entryComponents: [RenameDocDialogComponent]
+  entryComponents: []
 })
 export class DocsModule {}

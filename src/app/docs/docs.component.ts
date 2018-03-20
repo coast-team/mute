@@ -18,7 +18,7 @@ import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { StorageService } from '../core/storage/storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { RenameDocDialogComponent } from './dialogs/rename-doc-dialog.component'
+import { DocRenameDialogComponent } from '../shared/doc-rename-dialog/doc-rename-dialog.component'
 
 @Component({
   selector: 'mute-docs',
@@ -135,6 +135,10 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
+  rename (doc: Doc) {
+    this.dialog.open(DocRenameDialogComponent, { data: doc })
+  }
+
   share (doc: Doc) { // Workaround, but not pretty
     const aux = document.createElement('input')
     aux.setAttribute('value', `${window.location.origin}/${doc.key}`)
@@ -161,38 +165,6 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   isActionsVisible (doc) {
     return doc.actionsVisible
-  }
-
-  updateTitle (event: any, doc: any) {
-    if (event.type === 'blur' || (event.type === 'keydown' && event.code === 'Enter')) {
-      if (event.type === 'keydown') {
-        event.preventDefault()
-        event.target.blur()
-      }
-      doc.title = event.target.textContent
-      event.target.textContent = doc.title
-      this.localStorage.updateFile(doc)
-    }
-  }
-
-  updateTitleDialog (doc: Doc) {
-    const dialogRef = this.dialog.open(RenameDocDialogComponent, {
-      data: { title: doc.title }
-    })
-    dialogRef.afterClosed().subscribe((newTitle: string) => {
-      if (newTitle !== undefined) {
-        doc.title = newTitle
-        this.localStorage.updateFile(doc)
-      }
-    })
-  }
-
-  getTitleEditable (doc: any) {
-    return doc.titleEditable
-  }
-
-  stopPropagation (event: Event) {
-    event.stopPropagation()
   }
 
   openFolder (folder: Folder) {

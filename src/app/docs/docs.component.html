@@ -11,7 +11,7 @@
     <button mat-menu-item (click)="open(menuDoc)">
       <mat-icon aria-label="open document">open_in_browser</mat-icon>Open
     </button>
-    <button mat-menu-item (click)="updateTitleDialog(menuDoc)">
+    <button mat-menu-item (click)="rename(menuDoc)">
       <mat-icon aria-label="rename document">mode_edit</mat-icon>Rename
     </button>
     <button mat-menu-item (click)="share(menuDoc)">
@@ -41,13 +41,13 @@
             >
               <ng-container *ngIf="isMenu; else editableTitle">
                 <span (click)="open(doc)" fxLayoutAlign="start center">
-                  <mat-icon class="title-icon ">note</mat-icon>
+                  <mat-icon class="title-icon ">insert_drive_file</mat-icon>
                   {{doc.title}}
                 </span>
               </ng-container>
               <ng-template #editableTitle>
-                <mat-icon class="title-icon ">note</mat-icon>
-                <span (dblclick)="stopPropagation($event)" matTooltip="rename" class="contenteditable" (blur)="updateTitle($event, doc)" (keydown)="updateTitle($event, doc)" contenteditable>{{doc.title}}</span>
+                <mat-icon class="title-icon ">insert_drive_file</mat-icon>
+                <span>{{doc.title}}</span>
               </ng-template>
               <div fxFlex fxLayoutAlign="end center">
                 <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="isActionsVisible(doc)" fxLayoutGap="10px">
@@ -63,6 +63,9 @@
                 <ng-template #docActions>
                   <button mat-icon-button (click)="open(doc)" matTooltip="open">
                     <mat-icon aria-label="open document">open_in_browser</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
+                    <mat-icon aria-label="rename document">mode_edit</mat-icon>
                   </button>
                   <button mat-icon-button (click)="share(doc)"  matTooltip="share">
                     <mat-icon aria-label="share document">share</mat-icon>
