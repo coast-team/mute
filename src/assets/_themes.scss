@@ -5,9 +5,11 @@
   :root {
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
 
     --#{$prefix}-primary: mat-color($primary);
     --#{$prefix}-accent: mat-color($accent);
+    --#{$prefix}-warn: mat-color($warn);
 
     // BACKGROUND
     $bg: map-get($theme, background);
@@ -117,6 +119,8 @@ $prefix: 'indigo';
   :root {
     --theme-primary: var(--#{$prefix}-primary);
     --theme-accent: var(--#{$prefix}-accent);
+    --theme-warn: var(--#{$prefix}-warn);
+
     --theme-bg-card: var(--#{$prefix}-bg-card);
     --theme-bg-background: var(--#{$prefix}-bg-background);
 

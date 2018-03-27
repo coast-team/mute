@@ -16,7 +16,7 @@ export class ToolbarComponent {
   @ViewChild('input') input: ElementRef
 
   constructor (
-    private storage: LocalStorageService
+    private localStorage: LocalStorageService
   ) {
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
@@ -34,7 +34,7 @@ export class ToolbarComponent {
         } else {
           this.doc.title = newTitle
         }
-        this.storage.updateFile(this.doc)
+        this.localStorage.save(this.doc)
       }
     }
   }

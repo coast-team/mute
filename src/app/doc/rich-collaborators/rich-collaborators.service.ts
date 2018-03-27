@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Collaborator } from 'mute-core'
+import { ICollaborator } from 'mute-core'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject'
 
 import { EProperties } from '../../core/settings/EProperties'
 import { SettingsService } from '../../core/settings/settings.service'
+import { NetworkService } from '../network'
 import { COLORS } from './colors'
 import { RichCollaborator } from './RichCollaborator'
 
@@ -15,38 +16,51 @@ export class RichCollaboratorsService {
 
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
-  private changeSubject: Subject<{collab: RichCollaborator, prop: string}>
-  private collaboratorsSubject: BehaviorSubject<RichCollaborator[]>
+  private updateSubject: Subject<RichCollaborator>
 
   private availableColors: string[]
 
   public collaborators: RichCollaborator[]
 
-  constructor (
-    public settings: SettingsService
-  ) {
+  constructor (settings: SettingsService, network: NetworkService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
-    this.changeSubject = new Subject()
-    this.collaboratorsSubject = new BehaviorSubject([])
+    this.updateSubject = new Subject()
 
     this.availableColors = COLORS.slice()
-    const me = new RichCollaborator(-1, settings.profile.displayName, this.pickColor())
+
+    let me = new RichCollaborator({
+      id: -1,
+      login: settings.profile.login,
+      displayName: settings.profile.displayName,
+      email: settings.profile.email,
+      avatar: settings.profile.avatar
+    }, this.pickColor())
     this.collaborators = [me]
-    this.collaboratorsSubject.next(this.collaborators)
-    this.settings.onChange.pipe(
+    settings.onChange.pipe(
       filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
     ).subscribe(
-      (profile) => {
-        me.pseudo = this.settings.profile.displayName
-        this.changeSubject.next({collab: me, prop: 'pseudo'})
-        this.collaboratorsSubject.next(this.collaborators)
+      (props) => {
+        const index = this.collaborators.indexOf(me)
+        if (props.includes(EProperties.profile)) {
+          me = new RichCollaborator({
+            id: -1,
+            login: settings.profile.login,
+            displayName: settings.profile.displayName,
+            email: settings.profile.email,
+            avatar: settings.profile.avatar
+          }, this.pickColor())
+        } else {
+          me.displayName = settings.profile.displayName
+        }
+        this.collaborators[index] = me
+        this.updateSubject.next(me)
       }
     )
   }
 
-  get onChange (): Observable<{collab: RichCollaborator, prop: string}> {
-    return this.changeSubject.asObservable()
+  get onUpdate (): Observable<RichCollaborator> {
+    return this.updateSubject.asObservable()
   }
 
   get onJoin (): Observable<RichCollaborator> {
@@ -57,58 +71,41 @@ export class RichCollaboratorsService {
     return this.leaveSubject.asObservable()
   }
 
-  get onCollaborators (): Observable<RichCollaborator[]> {
-    return this.collaboratorsSubject.asObservable()
+  set updateSource (source: Observable<ICollaborator>) {
+    source.subscribe((collab: ICollaborator) => this.newOrUpdateCollab(collab))
   }
 
-  set pseudoChangeSource (source: Observable<Collaborator>) {
-    source.subscribe((collab: Collaborator) => {
-      const rc = this.findRichCollaborator(collab.id)
-
-      // In some cases, it is possible to receive a message from a peer
-      // before the corresponding peerJoin event is triggered.
-      // In that case, add the new peer instead of trying to perform an update.
-      if (collab.pseudo !== '') {
-        if (rc instanceof RichCollaborator) {
-          rc.pseudo = collab.pseudo
-          this.changeSubject.next({collab: rc, prop: 'pseudo'})
-          this.collaboratorsSubject.next(this.collaborators)
-        } else {
-          this.handleNewCollaborator(collab)
-        }
-      }
-    })
-  }
-
-  set joinSource (source: Observable<Collaborator>) {
-    // FIXME: simplify join/leave/pseudoUpdate procedure
-    source.subscribe((collab: Collaborator) => {
-      const rc = this.findRichCollaborator(collab.id)
-      // Prevent from overriding the pseudo of the collaborator with
-      // the default one if we already received a message from this peer.
-      if (rc === undefined) {
-        this.handleNewCollaborator(collab)
-      } else {
-        this.collaboratorsSubject.next(this.collaborators)
-      }
-    })
+  set joinSource (source: Observable<number>) {
+    source.subscribe((id: number) => this.newOrUpdateCollab({ id }))
   }
 
   set leaveSource (source: Observable<number>) {
     source.subscribe((id: number) => {
-      for (let i = 0; i < this.collaborators.length; i++) {
-        if (this.collaborators[i].id === id) {
-          this.recycleColor(this.collaborators[i].color)
-          this.collaborators.splice(i, 1)
-          this.leaveSubject.next(id)
-          this.collaboratorsSubject.next(this.collaborators)
-          break
-        }
-      }
+      this.collaborators = this.collaborators.filter((c) => c.id !== id)
     })
   }
 
-  pickColor (): string {
+  private newOrUpdateCollab (collab: ICollaborator): void {
+    let rc
+    for (const c of this.collaborators) {
+      if (collab.id === c.id) {
+        c.update(collab)
+        rc = c
+        break
+      }
+    }
+
+    this.collaborators = this.collaborators.splice(0)
+    if (!rc) {
+      rc = new RichCollaborator(collab, this.pickColor())
+      this.collaborators.push(rc)
+      this.joinSubject.next(rc)
+    } else {
+      this.updateSubject.next(rc)
+    }
+  }
+
+  private pickColor (): string {
     if (this.availableColors.length !== 0) {
       const index = Math.floor(Math.random() * this.availableColors.length)
       for (let i = 0; i < this.availableColors.length; i++) {
@@ -121,19 +118,6 @@ export class RichCollaboratorsService {
     } else {
       return COLORS[Math.floor(Math.random() * COLORS.length)]
     }
-  }
-
-  private findRichCollaborator (id: number): RichCollaborator | undefined {
-    return this.collaborators
-      .find((rc: RichCollaborator): boolean => rc.id === id)
-  }
-
-  private handleNewCollaborator (collab: Collaborator): void {
-    const color = this.pickColor()
-    const newRCollab = new RichCollaborator(collab.id, collab.pseudo, color)
-    this.collaborators.push(newRCollab)
-    this.joinSubject.next(newRCollab)
-    this.collaboratorsSubject.next(this.collaborators)
   }
 
   private recycleColor (color: string) {

@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core'
+import { Observable } from 'rxjs/Observable'
+import { map } from 'rxjs/operators'
 
 import { Doc } from '../../core/Doc'
 import { SettingsService } from '../../core/settings/settings.service'
-import { RichCollaboratorsService } from '../../doc/rich-collaborators'
+import { RichCollaborator, RichCollaboratorsService } from '../../doc/rich-collaborators'
 
 @Component({
   selector: 'mute-right-side',
@@ -12,7 +14,7 @@ import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 export class RightSideComponent implements OnInit {
 
   public storageIcons: string[]
-  public collaborators: any
+  public collaborators: RichCollaborator[]
   @Input() doc: Doc
   public headers: any[] = [
     {md: 'Header', s: '# Header', class: 'header-1 header-1::after'},
@@ -40,19 +42,21 @@ export class RightSideComponent implements OnInit {
   ]
 
   constructor (
+    private cd: ChangeDetectorRef,
     private collabService: RichCollaboratorsService,
     public settings: SettingsService
   ) {
-    this.collaborators = this.collabService.onCollaborators
+    this.collaborators = this.collabService.collaborators
   }
 
   ngOnInit () {
-    // this.collabService.onCollaborators.subscribe((collaborators) => {
-    //   this.collaborators = collaborators
-    // })
+    this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
+      this.collaborators = this.collabService.collaborators
+      this.cd.detectChanges()
+    })
   }
 
-  updateDisplayName (pseudo: string) {
-    this.settings.profile.displayName = pseudo
+  updateDisplayName (displayName: string) {
+    this.settings.profile.displayName = displayName
   }
 }

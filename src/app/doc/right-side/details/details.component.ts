@@ -6,11 +6,8 @@ import {
   trigger
 } from '@angular/animations'
 import {
-  ChangeDetectorRef,
   Component,
-  Input,
-  OnDestroy,
-  OnInit
+  Input
 } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import { Subscription } from 'rxjs/Subscription'
@@ -31,28 +28,13 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
     ])
   ]
 })
-export class DetailsComponent implements OnInit, OnDestroy {
+export class DetailsComponent {
 
-  @Input() collaborators: Observable<RichCollaborator[]>
+  @Input() collaborators: RichCollaborator[]
   @Input() doc: Doc
 
-  private subs: Subscription
-
-  public collabs: RichCollaborator[]
-
   constructor (
-    private changeDetectorRef: ChangeDetectorRef
-  ) {}
-
-  ngOnInit () {
-    this.subs = this.collaborators.subscribe((collabs: RichCollaborator[]) => {
-      this.collabs = collabs
-      this.changeDetectorRef.detectChanges()
-    })
-  }
-
-  ngOnDestroy () {
-    this.subs.unsubscribe()
+  ) {
   }
 
 }

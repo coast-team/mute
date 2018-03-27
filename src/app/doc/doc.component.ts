@@ -53,16 +53,10 @@ export class DocComponent implements OnDestroy, OnInit {
       .subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
         this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
-          if (this.doc.botStorages.length !== 0) {
-            this.network.inviteBot(this.doc.botStorages[0].wsURL)
-          } else {
-            this.botStorage.whichExist([this.doc.key])
-            .then((existedKeys) => {
-              if (existedKeys.includes(this.doc.key)) {
-                this.network.inviteBot(this.botStorage.bot.wsURL)
-              }
-            })
-          }
+          log.debug('Should invite bot: ', doc)
+          // if (this.doc.isRemote) {
+          //   this.network.inviteBot(this.botStorage.bot.wsURL)
+          // }
         })
 
       // TODO: Retrieve previous id for this document if existing
@@ -71,21 +65,40 @@ export class DocComponent implements OnDestroy, OnInit {
         const id = ids[0]
 
         this.zone.runOutsideAngular(() => {
-          this.muteCore = new MuteCore(id)
+          // id is a replicaNumber in mute-core
+          this.muteCore = new MuteCore({
+            id,
+            displayName: this.settings.profile.displayName,
+            login: this.settings.profile.login,
+            email: this.settings.profile.email,
+            avatar: this.settings.profile.avatar
+          })
           this.muteCore.messageSource = this.network.onMessage
           this.network.initSource = this.muteCore.onInit
           this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
           this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
           this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
 
-          this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
-          this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
-          this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onCollaboratorLeave
-          this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
-          this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
-          this.muteCore.collaboratorsService.pseudoSource = this.settings.onChange.pipe(
+          this.richCollaboratorsService.updateSource = this.muteCore.collaboratorsService.onUpdate
+          this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onJoin
+          this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onLeave
+          this.muteCore.collaboratorsService.joinSource = this.network.onPeerJoin
+          this.muteCore.collaboratorsService.leaveSource = this.network.onPeerLeave
+          this.muteCore.collaboratorsService.updateSource = this.settings.onChange.pipe(
             filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
-            map(() => this.settings.profile.displayName)
+            map((props) => {
+              if (props[EProperties.profile]) {
+                return {
+                  id: this.network.myId,
+                  displayName: this.settings.profile.displayName,
+                  login: this.settings.profile.login,
+                  email: this.settings.profile.email,
+                  avatar: this.settings.profile.avatar
+                }
+              } else if (props[EProperties.profileDisplayName]) {
+                return { id: this.network.myId, displayName: this.settings.profile.displayName }
+              }
+            })
           )
 
           this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
@@ -99,8 +112,6 @@ export class DocComponent implements OnDestroy, OnInit {
           this.muteCore.docService.onDocTree.subscribe((tree: string) => {
             this.ui.tree = tree
           })
-          // FIXME: rid of calling resendNotification method
-          this.settings.resendNotification()
         })
       })
   }

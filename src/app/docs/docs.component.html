@@ -33,8 +33,8 @@
 
           <!-- Position Column -->
           <ng-container matColumnDef="title">
-            <mat-header-cell class="table-header" fxFlex="60%" *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell class="name-cell" fxFlex="60%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc"
+            <mat-header-cell class="table-header" fxFlex="40%" *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell class="name-cell" fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc"
               (mouseenter)="showActions(doc)"
               (mouseleave)="hideActions(doc)"
               (dblclick)="open(doc)"
@@ -51,7 +51,7 @@
               </ng-template>
               <div fxFlex fxLayoutAlign="end center">
                 <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="isActionsVisible(doc)" fxLayoutGap="10px">
-                  <ng-container *ngIf="folder.key !== localStorage.trash.key; then docActions; else trashActions"></ng-container>
+                  <ng-container *ngIf="folder.id !== localStorage.trash.id; then docActions; else trashActions"></ng-container>
                 </div>
 
                 <ng-template #mobileActions>
@@ -97,17 +97,21 @@
             <mat-cell *matCellDef="let doc"> {{doc.created | date:'longDate'}} </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="storage">
-            <mat-header-cell class="table-header" *matHeaderCellDef>Storages</mat-header-cell>
-            <mat-cell *matCellDef="let doc">
-              <ng-container *ngIf="doc.onBotStorages | async as bots; else fetchingBots">
-                <span *ngFor="let bot of bots">
-                  <mat-icon matTooltip="{{bot.id}}" aria-label="stored in bot storage">cloud</mat-icon>
-                </span>
-              </ng-container>
+          <ng-container matColumnDef="opened">
+            <mat-header-cell class="table-header" *matHeaderCellDef>Opened by me</mat-header-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.opened | date:'longDate'}} </mat-cell>
+          </ng-container>
 
-              <ng-template #fetchingBots><span class="mat-caption">fetching...</span></ng-template>
-            </mat-cell>
+          <ng-container matColumnDef="modified">
+            <mat-header-cell class="table-header" *matHeaderCellDef>Modified by me</mat-header-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.modified | date:'longDate'}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="synchronized">
+            <mat-header-cell class="table-header" *matHeaderCellDef>
+              <mat-icon aria-label="remote storage" class="synchronized-icon">cloud</mat-icon>Synchronized
+            </mat-header-cell>
+            <mat-cell *matCellDef="let doc"> {{ doc | muteRemote }} </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -117,7 +121,7 @@
     </ng-container>
 
     <ng-template #noDocs>
-      <h3 *ngIf="folder.key === 'trash'; else noDocCreated" class="noDoc mat-title">
+      <h3 *ngIf="folder.id === localStorage.trash.id; else noDocCreated" class="noDoc mat-title">
         The trash is empty.
       </h3>
     </ng-template>

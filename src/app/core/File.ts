@@ -1,43 +1,54 @@
+import { Folder } from './Folder'
+
 export abstract class File {
-  private _location: string
+  private _parentFolderId: string
   protected _title: string
 
-  public dbId: string
-  public key: string
-  public previousLocation: string
+  public id: string
+  public previousParentFolderId: string
+  public created: Date
+  public opened: Date
+  public modified: Date
+  public description: string
 
-  static deserialize (dbId: string, serialized: any, file: File) {
-    file.dbId = dbId
-    file.previousLocation = serialized.previousLocation
+  static deserialize (id: string, serialized: any, file: File) {
+    // title and _parentFolderId have been already deserialized in the file constructor
+    file.id = id
+    file.previousParentFolderId = serialized.previousParentFolderId
+    file.created = serialized.created
+    file.opened = serialized.opened
+    file.modified = serialized.modified
+    file.description = serialized.description
   }
 
-  constructor (key: string, title: string, location: string) {
-    this.key = key
-    this._title = title
-    this._location = location
-  }
-
-  get location (): string {
-    return this._location
-  }
-
-  set location (location: string) {
-    this.previousLocation = this.location
-    this._location = location
+  constructor (title: string, parentFolderId?: string) {
+    this.title = title
+    this.parentFolderId = parentFolderId || ''
+    this.description = ''
   }
 
   abstract get isDoc (): boolean
 
-  abstract get title ();
+  abstract get title ()
 
-  abstract set title (newTitle: string);
+  abstract set title (newTitle: string)
+
+  get parentFolderId () { return this._parentFolderId }
+
+  set parentFolderId (id: string) {
+    this.previousParentFolderId = this._parentFolderId
+    this._parentFolderId = id
+  }
 
   serialize (): object {
     return {
-      key: this.key,
-      title: this.title,
-      location: this.location,
-      previousLocation: this.previousLocation
+      title: this._title,
+      parentFolderId: this.parentFolderId,
+      previousParentFolderId: this.previousParentFolderId,
+      created: this.created,
+      opened: this.opened,
+      modified: this.modified,
+      description: this.description,
     }
   }
 }

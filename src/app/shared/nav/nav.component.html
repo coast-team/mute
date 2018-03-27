@@ -6,60 +6,57 @@
   </button>
 
   <mat-menu #newDocMenu="matMenu">
-    <h2 class="mat-caption new-doc-hint-text">Create a new document:</h2>
-    <button mat-menu-item>
-      <mat-icon>computer</mat-icon>
-      <span>On current device</span>
+    <button mat-menu-item (click)="createDoc()">
+      <span class="new-doc-icons"><mat-icon>computer</mat-icon></span>
+      <span>Locally</span>
     </button>
-    <button *ngIf="!this.remoteErrorMessage" mat-menu-item>
-      <mat-icon class="local-and-remote">computer</mat-icon>
-      <mat-icon>cloud</mat-icon>
-      <span>With remote</span>
+    <button *ngIf="!this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
+      <span class="new-doc-icons">
+        <mat-icon>computer</mat-icon>
+        <mat-icon>cloud</mat-icon>
+      </span>
+      <span>Locally & Remotely</span>
     </button>
     <button mat-menu-item>
-      <mat-icon>group_work</mat-icon>
-      <span>Join existed document</span>
+      <span class="new-doc-icons"><mat-icon>group_work</mat-icon></span>
+      <span>Join by key</span>
     </button>
   </mat-menu>
 
   <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
 
-    <ng-container *ngIf="isRemoteExist">
-      <!-- All Documents -->
-      <button mat-button [ngClass]="{'active': selected === all}" (click)="openFolder(all)">
-        <mat-icon [color]="selected === all ? 'primary' : ''">{{all.icon}}</mat-icon>{{all.title}}
-      </button>
-
-      <mat-divider></mat-divider>
-    </ng-container>
-
     <!-- Local storage -->
-    <button mat-button [ngClass]="{'active': selected === local}" (click)="openFolder(local)">
-      <mat-icon [color]="selected === local ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
+    <button mat-button [disabled]="localErrorMessage"
+      [ngClass]="{'active': selected === local && !localErrorMessage}" (click)="openFolder(local)">
+      <mat-icon [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
     </button>
 
     <!-- Trash -->
-    <button mat-button [ngClass]="{'active': selected === trash}" (click)="openFolder(trash)">
-      <mat-icon [color]="selected === trash ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
+    <button mat-button [disabled]="localErrorMessage"
+      [ngClass]="{'active': selected === trash && !localErrorMessage}" (click)="openFolder(trash)">
+      <mat-icon [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
     </button>
 
     <!-- Local storage quota -->
-    <div *ngIf="isStorageManagerAvailable">
-      <div class="mat-caption quota">{{usage | muteSize}} of {{quota | muteSize}} used</div>
-    </div>
-
+    <ng-container *ngIf="!localErrorMessage else localDisabled">
+      <div *ngIf="isStorageManagerAvailable">
+        <div class="mat-caption hint">{{usage | muteSize}} of {{quota | muteSize}} used</div>
+      </div>
+    </ng-container>
+    <ng-template #localDisabled>
+      <span *ngIf="localErrorMessage" class="mat-caption hint">{{localErrorMessage}}</span>
+    </ng-template>
     <mat-divider></mat-divider>
 
 
     <ng-container *ngIf="isRemoteExist">
       <!-- Remote storage -->
-      <span [matTooltip]="remoteErrorMessage" matTooltipPosition="right">
-        <button mat-button [ngClass]="{'active': selected === remote}"
-          [disabled]="remoteErrorMessage"
-          (click)="openFolder(remote)">
-          <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
-        </button>
-      </span>
+      <button mat-button [ngClass]="{'active': selected === remote}"
+        [disabled]="remoteErrorMessage"
+        (click)="openFolder(remote)">
+        <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
+      </button>
+      <span *ngIf="remoteErrorMessage" class="mat-caption hint">{{remoteErrorMessage}}</span>
 
       <mat-divider></mat-divider>
     </ng-container>

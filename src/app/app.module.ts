@@ -12,8 +12,8 @@ import { CoreModule } from './core/core.module'
 import { Profile } from './core/settings/Profile'
 import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot/bot-storage.service'
+import { getIndexedDBState } from './core/storage/local/indexedDBCheck'
 import { LocalStorageService } from './core/storage/local/local-storage.service'
-import { StorageService } from './core/storage/storage.service'
 import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
@@ -38,18 +38,15 @@ import { HistoryModule } from './history/history.module'
     {
       provide: APP_INITIALIZER,
       useFactory: (
-        storage: StorageService,
         settings: SettingsService,
         localStorage: LocalStorageService,
         botStorage: BotStorageService
-      ) => {
-        return () => {
-          storage.init(localStorage, botStorage)
-          return settings.init()
-        }
-      }
-      ,
-      deps: [StorageService, SettingsService, LocalStorageService, BotStorageService],
+      ) => async () => {
+        await getIndexedDBState()
+        await settings.init()
+        await localStorage.init(settings)
+      },
+      deps: [ SettingsService, LocalStorageService, BotStorageService],
       multi: true
     }
   ],

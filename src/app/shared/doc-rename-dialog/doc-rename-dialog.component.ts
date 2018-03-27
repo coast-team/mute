@@ -37,7 +37,7 @@ export class DocRenameDialogComponent {
   save () {
     if (this.title !== '') {
       this.doc.title = this.title
-      this.localStorage.updateFile(this.doc)
+      this.localStorage.save(this.doc)
     }
   }
 

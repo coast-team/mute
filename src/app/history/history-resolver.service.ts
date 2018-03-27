@@ -18,7 +18,7 @@ export class HistoryResolverService implements Resolve<Doc> {
     try {
       // Looking for a document
       const key = route.params['key']
-      return this.storage.searchDoc(key)
+      return this.storage.lookupDoc(key)
         .then((docs: Doc[]) => {
           // FIXME: it's possible here to fetch a Folder with the provided key and thus need to treat this scenario
           if (docs.length !== 0) {

@@ -1,12 +1,4 @@
-<button mat-raised-button [matMenuTriggerFor]="menu" color="accent">
+<button mat-raised-button color="accent" [disabled]="disabled" (click)="inviteBot()">
   Invite bot
 </button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item *ngFor="let bot of botStorage.onBots | async"
-    (click)="inviteBot(bot.wsURL)"
-  >
-    {{bot.id}}
-  </button>
-  <button mat-menu-item>New Bot</button>
-</mat-menu>
 

@@ -20,18 +20,13 @@
   }
 }
 
-.new-doc-hint-text {
+.new-doc-icons {
+  display: inline-block;
+  width: 60px;
   text-align: center;
-}
 
-.local-and-remote {
-  margin-right: 0;
-
-  &::after {
-    content: "+";
-    color: var(--theme-fg-icon);
-    position: relative;
-    bottom: 4px;
+  .mat-icon {
+    margin: 0;
   }
 }
 
@@ -55,10 +50,14 @@
     }
   }
 
-  .quota {
+  .hint {
     color: var(--theme-fg-hint-text);
     text-align: center;
-    margin: 5px 0;
+    margin: 5px auto;
+    width: 80%;
+    word-wrap: normal;
   }
+
+
 }
 

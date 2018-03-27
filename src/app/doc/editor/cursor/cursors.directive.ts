@@ -65,19 +65,19 @@ export class CursorsDirective implements OnInit, OnDestroy {
       }
     })
 
-    // When the peer changes his pseudo
-    this.subs[this.subs.length] = this.collabService.onChange.subscribe(({collab}: {collab: RichCollaborator}) => {
+    // When the peer changes his display name
+    this.subs[this.subs.length] = this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
       const cursor = this.cursors.get(collab.id)
       if (cursor !== undefined) {
-        cursor.updateDisplayName(collab.pseudo)
+        cursor.updateDisplayName(collab.displayName)
       }
     })
 
     CodeMirror.on(this.cm, 'blur', () => {
-      // this.protoCursor.anchor = undefined
-      // this.protoCursor.head = undefined
-      // this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
-      // this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
+      this.protoCursor.anchor = undefined
+      this.protoCursor.head = undefined
+      this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
+      this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
     })
 
     CodeMirror.on(this.cm, 'focus', () => {

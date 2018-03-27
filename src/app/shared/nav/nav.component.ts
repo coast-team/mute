@@ -5,9 +5,9 @@ import { Subscription } from 'rxjs/Subscription'
 
 import { environment } from '../../../environments/environment'
 import { Folder } from '../../core/Folder'
-import { BotStorageService, BotStorageStatus } from '../../core/storage/bot/bot-storage.service'
+import { SettingsService } from '../../core/settings/settings.service'
+import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
-import { StorageService } from '../../core/storage/storage.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 
 @Component({
@@ -20,61 +20,57 @@ export class NavComponent implements OnDestroy {
   @Input() selected: Folder
   @Output() change: EventEmitter<Folder>
 
-  public quota: number
-  public usage: number
-  public isStorageManagerAvailable: boolean
+  // Folders
   public local: Folder
   public trash: Folder
-  public all: Folder
   public remote: Folder
-  public isRemoteExist: boolean
-  public isRemoteAvailable: boolean
+
+  // Which storage is available
   public remoteErrorMessage: string
-  public remoteStatus: BotStorageStatus
+  public isRemoteExist: boolean
+  public localErrorMessage: string
+
+  // Storage manager
+  public isStorageManagerAvailable: boolean
+  public quota: number
+  public usage: number
 
   private subs: Subscription[]
 
   constructor (
     private router: Router,
     private cd: ChangeDetectorRef,
-    private storage: StorageService,
+    private dialog: MatDialog,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
-    private dialog: MatDialog
+    private settings: SettingsService
   ) {
     this.local = localStorage.local
     this.trash = localStorage.trash
-    this.all = storage.all
     this.remote = botStorage.remote
     this.change = new EventEmitter()
     this.subs = []
-    this.remoteErrorMessage = ''
-    this.subs[this.subs.length] = this.botStorage.onStatusChange.subscribe((status) => {
-      this.remoteStatus = status
-      switch (status) {
-      case BotStorageStatus.NOT_EXIST:
-        this.remoteErrorMessage = ''
-        this.isRemoteExist = false
-        break
-      case BotStorageStatus.EXIST:
-        this.remoteErrorMessage = 'Checking...'
-        this.isRemoteExist = true
-        break
-      case BotStorageStatus.NOT_RESPONDING:
+    this.isRemoteExist = this.botStorage.remote !== undefined
+    this.subs[this.subs.length] = this.botStorage.onStatus.subscribe((code) => {
+      switch (code) {
+      case BotStorageService.NOT_RESPONDING:
         this.remoteErrorMessage = 'Remote server is not responding'
-        this.isRemoteExist = true
         break
-      case BotStorageStatus.NOT_AUTHORIZED:
-        this.remoteErrorMessage = 'Remote server is unavailable for non authenticated users'
-        this.isRemoteExist = true
-        break
-      case BotStorageStatus.AVAILABLE:
-        this.remoteErrorMessage = undefined
-        this.isRemoteExist = true
+      case BotStorageService.NOT_AUTHORIZED:
+        this.remoteErrorMessage = 'Unavailable for non authenticated users'
         break
       }
       this.cd.markForCheck()
     })
+    switch (this.localStorage.status) {
+    case LocalStorageService.NOT_SUPPORTED:
+      this.localErrorMessage = 'Not supported in your browser'
+      break
+    case LocalStorageService.NO_ACCESS:
+      this.localErrorMessage = 'Disabled by your browser'
+      break
+    }
+    // this.cd.markForCheck()
     const nav: any = navigator
     if (nav.storage && nav.storage.estimate) {
       this.isStorageManagerAvailable = true
@@ -93,13 +89,26 @@ export class NavComponent implements OnDestroy {
     this.subs.forEach((sub) => sub.unsubscribe())
   }
 
-  createDoc () {
-    this.router.navigate(['/', this.localStorage.generateKey()])
+  createDoc (remotely = false) {
+    this.localStorage.createDoc()
+      .then((doc) => {
+        this.localStorage.save(doc)
+        if (remotely) {
+          this.router.navigate(['/', doc.key, {remote: true}])
+        } else {
+          this.router.navigate(['/', doc.key])
+        }
+      })
+      .catch((err) => {
+        log.warn('Failed to create a document locally: ', err)
+      })
   }
 
   openFolder (folder: Folder) {
+    this.settings.updateOpenedFolder(folder)
     this.selected = folder
     this.change.emit(folder)
+    this.router.navigate(['/'])
   }
 
   openSettingsDialog () {

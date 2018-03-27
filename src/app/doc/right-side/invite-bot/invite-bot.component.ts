@@ -5,11 +5,7 @@ import {
   transition,
   trigger
 } from '@angular/animations'
-import {
-  Component,
-  Injectable,
-  OnInit,
-  ViewChild } from '@angular/core'
+import { Component, Injectable } from '@angular/core'
 
 import { BotStorageService } from '../../../core/storage/bot/bot-storage.service'
 import { NetworkService } from '../../../doc/network/network.service'
@@ -35,66 +31,20 @@ import { NetworkService } from '../../../doc/network/network.service'
 })
 
 @Injectable()
-export class InviteBotComponent implements OnInit {
+export class InviteBotComponent {
 
-  private regexHostName = '^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])(\:[0-9]{1,5})?$'
-  private regexIP = '^(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])' +
-                    '(?:\\.(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}(\:[0-9]{1,5})?$'
-
-  @ViewChild('ipElm') ipElm
-  public btnActive = true
-  public inputActive = false
-  public error = false
-  public errorMessage = 'Invalid ip address or host name'
+  public disabled: boolean
 
   constructor (
     private network: NetworkService,
     public botStorage: BotStorageService
   ) {
+    this.disabled = true
+    botStorage.onStatus.subscribe((code) => this.disabled = code !== BotStorageService.AVAILABLE)
   }
 
-  ngOnInit () {
-  }
-
-  btnStateDone (event) {
-    if (event.toState === 'void') {
-      this.inputActive = true
-    }
-  }
-
-  inputStateDone (event) {
-    if (event.toState === 'void') {
-      this.btnActive = true
-    } else if (event.toState === 'active') {
-      this.ipElm.nativeElement.focus()
-    }
-  }
-
-  validate () {
-    if (this.ipElm.nativeElement.value.match(`${this.regexIP}|${this.regexHostName}`)) {
-      this.error = false
-    } else {
-      this.error = true
-    }
-  }
-
-  showInput () {
-    this.btnActive = false
-  }
-
-  ok () {
-    if (!this.error) {
-      this.network.inviteBot(this.ipElm.nativeElement.value)
-    }
-    this.inputActive = false
-  }
-
-  cancel () {
-    this.inputActive = false
-  }
-
-  inviteBot (url: string) {
-    this.network.inviteBot(url)
+  inviteBot () {
+    this.network.inviteBot(this.botStorage.wsURL)
   }
 
 }

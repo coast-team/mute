@@ -36,7 +36,7 @@ export class CollaboratorCursor {
     this.displayName.className = 'collaborator-display-name mat-elevation-z2'
     this.displayName.style.backgroundColor = collab.color
     this.displayName.style.width = '0'
-    this.updateDisplayName(collab.pseudo)
+    this.updateDisplayName(collab.displayName)
 
     // HTML element for cursor
     this.cursor = document.createElement('span')
@@ -85,9 +85,9 @@ export class CollaboratorCursor {
     this.displayNameTimeout = setTimeout(() => this.displayName.style.width = '0', 1500)
   }
 
-  updateDisplayName (pseudo: string) {
-    this.displayName.innerHTML = `&nbsp;${pseudo}`
-    this.displayNameWidth = `${15 + pseudo.length * 5}px`
+  updateDisplayName (displayName: string) {
+    this.displayName.innerHTML = `&nbsp;${displayName}`
+    this.displayNameWidth = `${15 + displayName.length * 5}px`
   }
 
   updateCursor (nextPos: CodeMirror.Position, animated = true) {

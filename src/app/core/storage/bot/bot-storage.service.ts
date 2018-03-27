@@ -10,87 +10,90 @@ import { Doc } from '../../Doc'
 import { Folder } from '../../Folder'
 import { EProperties } from '../../settings/EProperties'
 import { SettingsService } from '../../settings/settings.service'
-import { IStorage } from '../IStorage'
-import { BotStorage } from './BotStorage'
-
-export enum BotStorageStatus {
-  AVAILABLE,
-  NOT_AUTHORIZED,
-  NOT_RESPONDING,
-  EXIST,
-  NOT_EXIST,
-}
+import { Storage } from '../Storage'
 
 @Injectable()
-export class BotStorageService implements IStorage {
-  private statusSubject: BehaviorSubject<BotStorageStatus | undefined>
+export class BotStorageService extends Storage {
 
-  public bot: BotStorage
+  public static NOT_AUTHORIZED = 1
+  public static NOT_RESPONDING = 2
+
+  public name: string
   public remote: Folder
-  public status: BotStorageStatus
+
+  private url: string
+  private webSocketPath: string
+  private secure: boolean
 
   constructor (
     private http: HttpClient,
     private settings: SettingsService
   ) {
-    this.statusSubject = new BehaviorSubject(undefined)
-    this.remote = new Folder('', 'Remote storage', 'cloud')
-    if (environment.botStorage && environment.botStorage.host) {
-      const { secure, host, port } = environment.botStorage
-      this.bot = new BotStorage('', secure, host, port)
-      this.remote = new Folder(this.bot.id, 'Remote storage', 'cloud')
-      this.setStatus(BotStorageStatus.EXIST)
-    } else {
-      this.setStatus(BotStorageStatus.NOT_EXIST)
+    super()
+    const { secure, url, webSocketPath } = environment.botStorage
+
+    if (environment.botStorage && environment.botStorage.url) {
+      this.name = ''
+      this.secure = environment.botStorage.secure
+      this.url = environment.botStorage.url
+      this.webSocketPath = environment.botStorage.webSocketPath
+      this.remote = new Folder('Remote storage', 'cloud')
+      this.remote.id = this.id
     }
 
     settings.onChange.pipe(
       filter((properties) => properties.includes(EProperties.profile))
-    ).subscribe(() => {this.updateStatus()})
+    ).subscribe(() => this.updateStatus())
   }
 
-  get onStatusChange (): Observable<BotStorageStatus | undefined> {
-    return this.statusSubject.asObservable()
-  }
-
-  getDocs (folder: Folder): Promise<Doc[]> {
-    return  Promise.resolve([])
-  }
-
-  async whichExist (keys: string[]): Promise<string[]> {
-    if (this.bot) {
-      return await this.http.post<string[]>(
-        `${this.bot.httpURL}/exist`,
-        JSON.stringify(keys), {
-          headers: new HttpHeaders({'Content-Type': 'application/json'})
-        }
-      ).toPromise().catch((err) => {
-        log.warn(`Failed to check documents existence at Bot Storage "${this.bot.httpURL}"`)
-        return []
-      })
+  async fetchDocs (): Promise<string[]> {
+    if (this.url) {
+      return await new Promise((resolve) => {
+        this.http.get(`${this.httpURL}/docs/${this.settings.profile.login}`)
+          .subscribe(
+          (keys: string[]) => resolve(keys),
+          (err) => {
+            log.warn('Could not retreive documents keys from the bot storage')
+            super.setStatus(BotStorageService.NOT_RESPONDING)
+            resolve([])
+          }
+          )
+      }) as string[]
     }
     return []
   }
 
+  get httpURL () {
+    const scheme = this.secure ? 'https' : 'http'
+    return `${scheme}://${this.url}`
+  }
+
+  get wsURL () {
+    const scheme = this.secure ? 'wss' : 'ws'
+    return `${scheme}://${this.url}/${this.webSocketPath}`
+  }
+
+  get id () {
+    return `${this.name}@${this.url}`
+  }
+
   private updateStatus (): Promise<void> {
-    if (this.bot) {
+    if (this.url) {
       if (!this.settings.isAuthenticated() && !environment.botStorage.isAnonymousAllowed) {
-        this.setStatus(BotStorageStatus.NOT_AUTHORIZED)
+        super.setStatus(BotStorageService.NOT_AUTHORIZED)
       } else {
-        const { secure, host, port } = environment.botStorage
-        const url = `${secure ? 'https' : 'http'}://${host}:${port}/name`
         return new Promise((resolve) => {
-          this.http.get(url, { responseType: 'text' })
+          this.http.get(`${this.httpURL}/name`, { responseType: 'text' })
             .subscribe(
               (name: string) => {
-                this.bot.name = name
-                this.setStatus(BotStorageStatus.AVAILABLE)
+                this.name = name
+                super.setStatus(BotStorageService.AVAILABLE)
                 resolve()
               },
-              (err) => {
-                this.setStatus(BotStorageStatus.NOT_RESPONDING)
-                resolve()
-              }
+            (err) => {
+              super.setStatus(BotStorageService.NOT_RESPONDING)
+              resolve()
+            }
             )
         })
       }
@@ -98,10 +101,7 @@ export class BotStorageService implements IStorage {
     return Promise.resolve()
   }
 
-  private setStatus (status: BotStorageStatus) {
-    if (this.status !== status) {
-      this.statusSubject.next(status)
-    }
-  }
+  private getDocByKey (docs, key: string) {
 
+  }
 }

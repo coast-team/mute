@@ -16,10 +16,12 @@ export class DocResolverService implements Resolve<Doc> {
 
   async resolve (route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
+    const remote = route.paramMap.get('remote')
+    log.debug('is remote: ', remote)
 
     try {
       // If user come here directly via URL
-      return this.storage.searchDoc(key)
+      return this.storage.lookupDoc(key)
         .then((docs: Doc[]) => {
           // FIXME: it's possible here to fetch a Folder with provided key and thus need to treat this scenario
           if (docs.length !== 0) {

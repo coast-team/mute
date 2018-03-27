@@ -1,11 +1,11 @@
 import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core'
-import { AuthService } from 'ng2-ui-auth'
+import { AuthService, JwtInterceptor } from 'ng2-ui-auth'
 import { Observable, Subscribable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Folder } from '../Folder'
-import { StorageService } from '../storage/storage.service'
+import { EIndexedDBState, getIndexedDBState } from '../storage/local/indexedDBCheck'
 import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
 import { ISerialize as ISerializeProfile, Profile } from './Profile'
@@ -26,41 +26,46 @@ interface ISerialize {
 export class SettingsService {
 
   public theme: string
-  public openedFolder: Folder
+  public openedFolder: string
   public changeSubject: Subject<EProperties[]>
 
   private renderer: Renderer2
   private db: any
   private _profile: Profile
   private profileChangeSub: Subscription
+  private isDBAvailable: boolean
 
   constructor (
     private rendererFactory: RendererFactory2,
-    private auth: AuthService,
-    private storage: StorageService,
+    private auth: AuthService
   ) {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
-    this.openedFolder = storage.all
+    this.openedFolder = '/local'
   }
 
   async init (): Promise<void> {
-     // Create profiles database if doesn't exist already
-    this.db = jIO.createJIO({
-      type: 'query',
-      sub_storage: {
-        type: 'uuid',
+    this.isDBAvailable = await getIndexedDBState() === EIndexedDBState.OK
+
+    if (this.isDBAvailable) {
+      // Create profiles database if doesn't exist already
+      this.db = jIO.createJIO({
+        type: 'query',
         sub_storage: {
-          type: 'indexeddb',
-          database: 'settings'
+          type: 'uuid',
+          sub_storage: {
+            type: 'indexeddb',
+            database: 'settings'
+          }
         }
-      }
-    })
+      })
+    }
 
     // Get authenticated or anonymous account(s)
     const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.anonymous]
     // Retrieve profile from database
+
     await this.setProfile(accounts)
   }
 
@@ -73,15 +78,14 @@ export class SettingsService {
   async updateTheme (name: string): Promise<void> {
     if (this.setTheme(name)) {
       this.changeSubject.next([EProperties.theme])
-      await this.serializeAll()
+      await this.saveToDB()
     }
   }
 
   async updateOpenedFolder (folder: Folder): Promise<void> {
-    if (this.setOpenedFolder(folder)) {
-      this.openedFolder = folder
+    if (this.setOpenedFolder(folder.id)) {
       this.changeSubject.next([EProperties.openedFolder])
-      await this.serializeAll()
+      await this.saveToDB()
     }
   }
 
@@ -113,46 +117,26 @@ export class SettingsService {
   }
 
   private async setProfile (accounts: IAccount[]): Promise<void> {
-    const lookingLogins = accounts.map((a) => a.login)
-    const rows = (await this.db.allDocs({
-      query: {
-        type: 'simple',
-        key: {
-          read_from: 'profile',
-          equal_match: ({ logins }: { logins: string[] }) => {
-            for (const l of lookingLogins) {
-              if (logins.includes(l)) {
-                return true
-              }
-            }
-            return false
-          }
-        },
-        value: lookingLogins
-      },
-      select_list: selectList
-    })).data.rows
+    const data = await this.readFromDB(accounts.map((a) => a.login))
 
     const changedProperties = [EProperties.profile]
     if (this.profileChangeSub) {
       this.profileChangeSub.unsubscribe()
     }
-    if (rows.length !== 0) {
-      this._profile = Profile.deserialize(accounts, rows[0].id, rows[0].value.profile)
-      if (this.setTheme(rows[0].value.theme)) {
+    if (data) {
+      this._profile = Profile.deserialize(accounts, data.id, data.value.profile)
+      if (this.setTheme(data.value.theme)) {
         changedProperties.push(EProperties.theme)
       }
-
-      const folder = this.storage.findFolder(rows[0].value.openedFolder)
-      if (this.setOpenedFolder(folder)) {
+      if (this.setOpenedFolder(data.value.openedFolder)) {
         changedProperties.push(EProperties.openedFolder)
       }
     } else {
       this._profile = new Profile(accounts)
-      this._profile.dbId = await this.db.post(this.createSerializedData(this._profile))
+      await this.saveToDB(true)
     }
     this.profileChangeSub = this._profile.onChange.subscribe((props) => {
-      this.serializeAll()
+      this.saveToDB()
       this.changeSubject.next(props)
     })
     this.changeSubject.next(changedProperties)
@@ -208,23 +192,58 @@ export class SettingsService {
     return false
   }
 
-  private setOpenedFolder (folder: Folder) {
-    if (folder && this.openedFolder !== folder) {
-      this.openedFolder = folder
+  private setOpenedFolder (id: string) {
+    if (id) {
+      this.openedFolder = id
       return true
     }
     return false
   }
 
-  private async serializeAll (): Promise<void> {
-    await this.db.put(this._profile.dbId, this.createSerializedData(this._profile))
+  private async saveToDB (isNew = false): Promise<void> {
+    if (this.isDBAvailable) {
+      const data = this.serialize()
+      if (isNew) {
+        this._profile.dbId = await this.db.post(data)
+      } else {
+        await this.db.put(this._profile.dbId, data)
+      }
+    }
   }
 
-  private createSerializedData (profile: Profile): ISerialize {
+  private async readFromDB (lookingLogins: string []): Promise<{ id: string, value: ISerialize } | undefined> {
+    if (this.isDBAvailable) {
+      const rows = (await this.db.allDocs({
+        query: {
+          type: 'simple',
+          key: {
+            read_from: 'profile',
+            equal_match: ({ logins }: { logins: string[] }) => {
+              for (const l of lookingLogins) {
+                if (logins.includes(l)) {
+                  return true
+                }
+              }
+              return false
+            }
+          },
+          value: lookingLogins
+        },
+        select_list: selectList
+      })).data.rows
+      if (rows && rows.length === 1) {
+        return rows[0]
+      } else {
+        log.warn('Settings error: failed to retreive profiles (undefined of more than one entry) ', rows)
+      }
+    }
+  }
+
+  private serialize (): ISerialize {
     return {
-      profile: profile.serialize(),
+      profile: this._profile.serialize(),
       theme: this.theme,
-      openedFolder: this.openedFolder.key
+      openedFolder: this.openedFolder
     }
   }
 
@@ -233,7 +252,6 @@ export class SettingsService {
       `--theme-${propertyName}`,
       window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-${propertyName}`)
     )
-
   }
 
 }

@@ -8,7 +8,7 @@ describe('SettingsService', () => {
 
   it('Correct Init', () => expect(settings).toBeTruthy())
 
-  it('Get default pseudo', () => {
+  it('Get default displayName', () => {
     expect(settings.pseudonymDefault === 'Anonymous').toBe(true)
   })
 
