@@ -7,17 +7,17 @@
 
   <mat-menu #newDocMenu="matMenu">
     <button mat-menu-item (click)="createDoc()">
-      <span class="new-doc-icons"><mat-icon>computer</mat-icon></span>
+      <span class="new-doc-icons"><mat-icon>devices</mat-icon></span>
       <span>Locally</span>
     </button>
-    <button *ngIf="!this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
+    <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
       <span class="new-doc-icons">
-        <mat-icon>computer</mat-icon>
+        <mat-icon>devices</mat-icon>
         <mat-icon>cloud</mat-icon>
       </span>
       <span>Locally & Remotely</span>
     </button>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="openJoinDialog()">
       <span class="new-doc-icons"><mat-icon>group_work</mat-icon></span>
       <span>Join by key</span>
     </button>
@@ -28,13 +28,17 @@
     <!-- Local storage -->
     <button mat-button [disabled]="localErrorMessage"
       [ngClass]="{'active': selected === local && !localErrorMessage}" (click)="openFolder(local)">
-      <mat-icon [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
+      <div fxLayoutAlign="start center">
+        <mat-icon [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
+      </div>
     </button>
 
     <!-- Trash -->
     <button mat-button [disabled]="localErrorMessage"
       [ngClass]="{'active': selected === trash && !localErrorMessage}" (click)="openFolder(trash)">
-      <mat-icon [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
+      <div fxLayoutAlign="start center">
+        <mat-icon [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
+      </div>
     </button>
 
     <!-- Local storage quota -->
@@ -54,7 +58,9 @@
       <button mat-button [ngClass]="{'active': selected === remote}"
         [disabled]="remoteErrorMessage"
         (click)="openFolder(remote)">
-        <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
+        <div fxLayoutAlign="start center">
+          <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
+        </div>
       </button>
       <span *ngIf="remoteErrorMessage" class="mat-caption hint">{{remoteErrorMessage}}</span>
 
@@ -63,7 +69,9 @@
 
     <!-- Settings -->
     <button mat-button (click)="openSettingsDialog()">
-      <mat-icon>settings</mat-icon>Settings
+      <div fxLayoutAlign="start center">
+        <mat-icon>settings</mat-icon>Settings
+      </div>
     </button>
 
   </div>

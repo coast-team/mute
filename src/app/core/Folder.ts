@@ -3,16 +3,26 @@ import { File } from './File'
 export class Folder extends File {
 
   public icon: string
+  public isRemote: boolean
 
   static deserialize (id: string, serialized: any): Folder {
-    const folder = new Folder(serialized.title, serialized.icon, serialized.parentFolderId)
-    File.deserialize(id, serialized, folder)
+    const folder = new Folder()
+    folder.icon = serialized.icon
+    folder.isRemote = serialized.isRemote
+    folder.deserialize(id, serialized)
     return folder
   }
 
-  constructor (title: string, icon: string, parentFolderId?: string) {
-    super(title, parentFolderId)
-    this.icon = icon
+  static create (title: string, icon: string, isRemote: boolean, parentFolderId?: string): Folder {
+    const folder = new Folder()
+    folder.init(title, parentFolderId)
+    folder.isRemote = isRemote
+    folder.icon = icon
+    return folder
+  }
+
+  constructor () {
+    super()
   }
 
   get isDoc () { return false }
@@ -26,7 +36,8 @@ export class Folder extends File {
   serialize (): object {
     return Object.assign(super.serialize(), {
       type: 'folder',
-      icon: this.icon
+      icon: this.icon,
+      isRemote: this.isRemote
     })
   }
 }

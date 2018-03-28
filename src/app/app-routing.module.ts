@@ -19,6 +19,7 @@ const routes: Routes = [
     path: ':key',
     component: DocComponent,
     resolve: { doc: DocResolverService },
+    canDeactivate: [DocResolverService]
   }, {
     path: '**', redirectTo: ''
   }

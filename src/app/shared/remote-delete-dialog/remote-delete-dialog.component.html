@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Delete "{{title}}"</h1>
+
+<div mat-dialog-content>
+  <p>This action won't delete the "{{title}}" document from the remote server, but remove your login reference. This way you will no longer list this document in MUTE.</p>
+  <p>Would you like to remove your login reference from the remote server?</p>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close>NO</button>
+  <button mat-button [mat-dialog-close]="true">YES</button>
+</div>

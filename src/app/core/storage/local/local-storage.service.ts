@@ -42,9 +42,9 @@ export class LocalStorageService extends Storage {
     private botStorage: BotStorageService
   ) {
     super()
-    this.local = new Folder('Local storage', 'devices')
+    this.local = Folder.create('Local storage', 'devices', false)
     this.local.id = 'local'
-    this.trash = new Folder('Trash', 'delete')
+    this.trash = Folder.create('Trash', 'delete', false)
     this.trash.id = 'trash'
   }
 
@@ -118,7 +118,7 @@ export class LocalStorageService extends Storage {
         if (folder.id === this.local.id) {
 
           if (!doc && !await this.isInTrash(key)) {
-            doc = new Doc(key, '', this.local.id)
+            doc = Doc.create(key, '', this.local.id)
             docs.push(doc)
           }
           if (doc && doc.addRemote(this.botStorage.remote.id)) {
@@ -147,7 +147,7 @@ export class LocalStorageService extends Storage {
           }
         }
         if (!doc) {
-          doc = new Doc(key, '', this.local.id)
+          doc = Doc.create(key, '', this.local.id)
         }
         if (doc.addRemote(this.botStorage.remote.id)) {
           this.save(doc)
@@ -162,7 +162,7 @@ export class LocalStorageService extends Storage {
     this.check()
     return await new Promise<Doc[]>((resolve, reject) => {
       this.db.allDocs({
-        query: `(type:"doc") AND (key:"${key}") AND NOT (parentFolderId:"${this.trash.id}")`,
+        query: `(type:"doc") AND (key:"${key}")`,
         select_list: selectListForDoc
       })
         .then(({ data }: any) => {
@@ -208,6 +208,7 @@ export class LocalStorageService extends Storage {
   }
 
   async saveDocBody (doc: Doc, body: State): Promise <any> {
+    doc.modified = new Date()
     await this.save(doc)
     return await new Promise((resolve, reject) => {
       this.db.putAttachment(doc.id, 'body', JSON.stringify(body))
@@ -216,7 +217,7 @@ export class LocalStorageService extends Storage {
   }
 
   async createDoc (key = this.generateKey()): Promise<Doc> {
-    const doc = new Doc(key, '', this.local.id)
+    const doc = Doc.create(key, '', this.local.id)
     await this.save(doc)
     return doc
   }
@@ -232,6 +233,18 @@ export class LocalStorageService extends Storage {
     default:
       return undefined
     }
+  }
+
+  generateKey (): string {
+    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const length = 42 // Should be less then MAX_KEY_LENGTH value
+    const values = new Uint32Array(length)
+    window.crypto.getRandomValues(values)
+    let result = ''
+    for (let i = 0; i < length; i++) {
+      result += mask[values[i] % mask.length]
+    }
+    return result
   }
 
   private async isInTrash (key: string): Promise<boolean> {
@@ -271,18 +284,6 @@ export class LocalStorageService extends Storage {
         (err) => reject(err)
         )
     }) as Doc[]
-  }
-
-  private generateKey (): string {
-    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    const length = 42 // Should be less then MAX_KEY_LENGTH value
-    const values = new Uint32Array(length)
-    window.crypto.getRandomValues(values)
-    let result = ''
-    for (let i = 0; i < length; i++) {
-      result += mask[values[i] % mask.length]
-    }
-    return result
   }
 
   private openDB (login) {

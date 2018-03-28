@@ -27,15 +27,12 @@ export class ToolbarComponent {
       this.input.nativeElement.blur()
     } else if (event.type === 'blur') {
       const newTitle = this.input.nativeElement.value
-      if (this.doc.title !== newTitle) {
-        if (newTitle === '') {
-          this.doc.title = 'Untitled document'
-          this.input.nativeElement.value = this.doc.title
-        } else {
-          this.doc.title = newTitle
-        }
-        this.localStorage.save(this.doc)
+      const oldTitle = this.doc.title
+      this.doc.title = newTitle
+      if (newTitle !== this.doc.title) {
+        this.input.nativeElement.value = this.doc.title
       }
+      this.localStorage.save(this.doc)
     }
   }
 

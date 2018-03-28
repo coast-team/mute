@@ -2,6 +2,27 @@
   flex: 1;
 }
 
+.mat-row {
+  padding-left: 5px;
+
+  &:hover {
+    .desktop-actions {
+      visibility: visible;
+    }
+  }
+}
+
+.mobile {
+  .mat-row {
+    padding: 0;
+  }
+}
+
+.desktop-actions {
+  visibility: hidden;
+  margin-right: 16px;
+}
+
 .nav {
   border-right: 1px solid var(--theme-fg-divider);
 }
@@ -36,7 +57,6 @@
 .mat-cell {
   text-overflow: ellipsis;
   overflow: hidden;
-  padding-right: 10px;
 }
 
 .col-key {
@@ -55,13 +75,6 @@
   font-weight: 700;
 }
 
-.name-cell {
-  align-self: stretch;
-}
-
-.actions {
-  margin-right: 30px;
-}
 
 .title-button {
   position: relative;

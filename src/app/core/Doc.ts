@@ -10,18 +10,23 @@ export class Doc extends File {
   }>
 
   static deserialize (id: string, serialized: any): Doc {
-    const doc = new Doc(serialized.key, serialized.title, serialized.parentFolderId)
+    const doc = new Doc()
     doc.remotes = serialized.remotes || []
     doc.key = serialized.key
-    File.deserialize(id, serialized, doc)
+    doc.deserialize(id, serialized)
     return doc
   }
 
-  constructor (key: string, title: string, parentFolderId?: string, remoteLocations?: string[]) {
-    super(title, parentFolderId)
-    this.key = key
-    this.remotes = []
-    this.created = new Date()
+  static create (key: string, title: string, parentFolderId?: string): Doc {
+    const doc = new Doc()
+    doc.key = key
+    doc.remotes = []
+    doc.init(title, parentFolderId)
+    return doc
+  }
+
+  constructor () {
+    super()
   }
 
   get isDoc () { return true }
@@ -29,7 +34,11 @@ export class Doc extends File {
   get title () { return this._title }
 
   set title (newTitle: string) {
-    this._title = newTitle || 'Untitled Document'
+    newTitle = newTitle || 'Untitled Document'
+    if (this._title !== newTitle) {
+      this._title = newTitle
+      this.modified = new Date()
+    }
   }
 
   addRemote (id: string) {

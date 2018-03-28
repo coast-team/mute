@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Join document</h1>
+
+<div mat-dialog-content>
+  <mat-form-field fxFlex>
+    <input matInput placeholder="Key" [(ngModel)]="key" maxlength="512" [formControl]="keyFormControl">
+    <mat-hint align="end">{{key.length}} / 512</mat-hint>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close>CANCEL</button>
+  <button mat-button mat-dialog-close (click)="join()">OK</button>
+</div>

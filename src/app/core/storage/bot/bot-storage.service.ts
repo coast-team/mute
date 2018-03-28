@@ -37,7 +37,7 @@ export class BotStorageService extends Storage {
       this.secure = environment.botStorage.secure
       this.url = environment.botStorage.url
       this.webSocketPath = environment.botStorage.webSocketPath
-      this.remote = new Folder('Remote storage', 'cloud')
+      this.remote = Folder.create('Remote storage', 'cloud', true)
       this.remote.id = this.id
     }
 
@@ -63,6 +63,18 @@ export class BotStorageService extends Storage {
     return []
   }
 
+  async remove (doc: Doc): Promise<void> {
+    return await new Promise ((resolve) => {
+      this.http.post<{key: string, login: string}>(`${this.httpURL}/remove`, {
+        key: doc.key,
+        login: this.settings.profile.login
+      })
+        .subscribe(
+          () => resolve()
+        )
+    }) as Promise<void>
+  }
+
   get httpURL () {
     const scheme = this.secure ? 'https' : 'http'
     return `${scheme}://${this.url}`
@@ -74,7 +86,7 @@ export class BotStorageService extends Storage {
   }
 
   get id () {
-    return `${this.name}@${this.url}`
+    return `${this.url}`
   }
 
   private updateStatus (): Promise<void> {

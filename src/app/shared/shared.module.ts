@@ -13,7 +13,7 @@ import {
   MatInputModule,
   MatListModule,
   MatMenuModule,
-  MatProgressSpinnerModule,
+  MatProgressBarModule,
   MatSelectModule,
   MatSidenavModule,
   MatSliderModule,
@@ -27,9 +27,12 @@ import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
 import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
 import { DocRenameDialogComponent } from './doc-rename-dialog/doc-rename-dialog.component'
+import { JoinDialogComponent } from './nav/join-dialog/join-dialog.component'
 import { NavComponent } from './nav/nav.component'
-import { SizePipe } from './nav/size-pipe/size-pipe'
+import { RemotePipe } from './pipes/remote.pipe'
+import { SizePipe } from './pipes/size-pipe'
 import { ProfileComponent } from './profile/profile.component'
+import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delete-dialog.component'
 
 @NgModule({
   imports: [
@@ -43,7 +46,7 @@ import { ProfileComponent } from './profile/profile.component'
     MatSidenavModule,
     MatListModule,
     MatGridListModule,
-    MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatIconModule,
@@ -59,8 +62,16 @@ import { ProfileComponent } from './profile/profile.component'
     FormsModule,
     ReactiveFormsModule
   ],
-  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent ],
-  declarations: [ ProfileComponent, NavComponent, SizePipe, ConfigDialogComponent, DocRenameDialogComponent],
+  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent ],
+  declarations: [
+    ProfileComponent,
+    NavComponent,
+    SizePipe,
+    RemotePipe,
+    ConfigDialogComponent,
+    DocRenameDialogComponent,
+    RemoteDeleteDialogComponent,
+    JoinDialogComponent],
   exports: [
     CommonModule,
     MatInputModule,
@@ -72,7 +83,7 @@ import { ProfileComponent } from './profile/profile.component'
     MatSidenavModule,
     MatListModule,
     MatGridListModule,
-    MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatSnackBarModule,
     MatToolbarModule,
     MatIconModule,
@@ -87,7 +98,8 @@ import { ProfileComponent } from './profile/profile.component'
     ProfileComponent,
     NavComponent,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RemotePipe
   ]
 })
 export class SharedModule {}

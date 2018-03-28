@@ -1,6 +1,6 @@
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { MuteCore } from 'mute-core'
+import { MuteCore, State } from 'mute-core'
 import { filter, map } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
@@ -8,6 +8,7 @@ import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
+import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
@@ -23,9 +24,10 @@ import { SyncStorageService } from '../doc/sync/sync-storage.service'
 export class DocComponent implements OnDestroy, OnInit {
   @ViewChild('infoSidenav') infoSidenav
 
-  public doc: Doc
   private subs: Subscription[]
   private inited = false
+
+  public doc: Doc
 
   public muteCore: MuteCore
 
@@ -37,6 +39,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
+    private localStorage: LocalStorageService,
     public ui: UiService
   ) {
     this.subs = []
@@ -53,7 +56,7 @@ export class DocComponent implements OnDestroy, OnInit {
       .subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
         this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
-          log.debug('Should invite bot: ', doc)
+          // log.debug('Should invite bot: ', doc)
           // if (this.doc.isRemote) {
           //   this.network.inviteBot(this.botStorage.bot.wsURL)
           // }
@@ -127,4 +130,7 @@ export class DocComponent implements OnDestroy, OnInit {
     this.inited = true
   }
 
+  getDocState (): State {
+    return this.muteCore.syncService.state
+  }
 }

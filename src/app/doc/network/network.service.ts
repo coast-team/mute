@@ -59,7 +59,9 @@ export class NetworkService {
     this.leaveSubject = new Subject()
 
     // Configure Netflux logs
-    setLogLevel(LogLevel.WEB_GROUP)
+    if (environment.netfluxLog) {
+      setLogLevel(LogLevel.WEB_GROUP)
+    }
   }
 
   init (): void {

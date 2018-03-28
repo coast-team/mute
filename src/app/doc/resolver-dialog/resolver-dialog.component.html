@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Restore document from trash</h2>
+<div mat-dialog-content class="mat-typography">
+  <p>The following document is in the trash and must be restored before editing:</p>
+  <p fxLayoutAlign="start center">
+    <span class="mat-caption hint">Name</span> {{doc.title}}
+  </p>
+  <p fxLayoutAlign="start center">
+    <span class="mat-caption hint">Created</span> {{doc.created | date:'longDate'}}
+  </p>
+  <p fxLayoutAlign="start center">
+    <span class="mat-caption hint">Opened by me</span> {{doc.opened | date:'MMMM d, y, h:mm a'}}
+  </p>
+  <p fxLayoutAlign="start center">
+    <span class="mat-caption hint">Modified</span> {{doc.modified | date:'MMMM d, y, h:mm a'}}
+  </p>
+  <p *ngIf="remoteName" fxLayoutAlign="start center">
+    <span class="mat-caption hint synchro"  fxLayoutAlign="start center">
+      <mat-icon [matTooltip]="remoteName" aria-label="remote storage" class="synchronized-icon">cloud</mat-icon>
+      Synchronized
+    </span> {{doc | muteRemote }}
+  </p><br />
+  <p>Would you like to restore it?</p>
+</div>
+
+<div mat-dialog-actions fxLayoutAlign="end center">
+  <button mat-button mat-dialog-close>NO</button>
+  <button mat-button [mat-dialog-close]="true">YES</button>
+</div>

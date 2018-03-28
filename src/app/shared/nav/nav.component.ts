@@ -9,6 +9,7 @@ import { SettingsService } from '../../core/settings/settings.service'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
+import { JoinDialogComponent } from './join-dialog/join-dialog.component'
 
 @Component({
   selector: 'mute-nav',
@@ -18,7 +19,6 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 })
 export class NavComponent implements OnDestroy {
   @Input() selected: Folder
-  @Output() change: EventEmitter<Folder>
 
   // Folders
   public local: Folder
@@ -48,7 +48,6 @@ export class NavComponent implements OnDestroy {
     this.local = localStorage.local
     this.trash = localStorage.trash
     this.remote = botStorage.remote
-    this.change = new EventEmitter()
     this.subs = []
     this.isRemoteExist = this.botStorage.remote !== undefined
     this.subs[this.subs.length] = this.botStorage.onStatus.subscribe((code) => {
@@ -90,28 +89,27 @@ export class NavComponent implements OnDestroy {
   }
 
   createDoc (remotely = false) {
-    this.localStorage.createDoc()
-      .then((doc) => {
-        this.localStorage.save(doc)
-        if (remotely) {
-          this.router.navigate(['/', doc.key, {remote: true}])
-        } else {
-          this.router.navigate(['/', doc.key])
-        }
-      })
-      .catch((err) => {
-        log.warn('Failed to create a document locally: ', err)
-      })
+    const key = this.localStorage.generateKey()
+    if (remotely) {
+      this.router.navigate(['/', key, { remote: true }])
+    } else {
+      this.router.navigate(['/', key])
+    }
   }
 
   openFolder (folder: Folder) {
     this.settings.updateOpenedFolder(folder)
     this.selected = folder
-    this.change.emit(folder)
     this.router.navigate(['/'])
   }
 
   openSettingsDialog () {
     this.dialog.open(ConfigDialogComponent)
+  }
+
+  openJoinDialog () {
+    this.dialog.open(JoinDialogComponent, {
+      width: '300px'
+    })
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable } from 'rxjs/Observable'
 import { Observer } from 'rxjs/Observer'
-import { bufferTime, filter } from 'rxjs/operators'
+import { auditTime } from 'rxjs/operators'
 
 import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
@@ -44,12 +44,8 @@ export class SyncStorageService {
 
   set stateSource (source: Observable<State>) {
     source.pipe(
-      bufferTime(750),
-      filter((states: State[]) => states.length > 0)
-    ).subscribe((states: State[]) => {
-      const lastIndex = states.length - 1
-      this.storage.saveDocBody(this.doc, states[lastIndex])
-    })
+      auditTime(2000)
+    ).subscribe((state) => this.storage.saveDocBody(this.doc, state))
   }
 
   get onStoredState (): Observable<State> {

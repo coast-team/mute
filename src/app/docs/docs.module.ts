@@ -3,8 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
 import { SharedModule } from '../shared/shared.module'
 import { DocsComponent } from './docs.component'
-import { ToolbarComponent } from './toolbar/toolbar.component';
-import { RemotePipe } from './remote.pipe'
+import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
   imports: [
@@ -14,8 +13,7 @@ import { RemotePipe } from './remote.pipe'
   ],
   declarations: [
     ToolbarComponent,
-    DocsComponent,
-    RemotePipe,
+    DocsComponent
   ],
   entryComponents: []
 })

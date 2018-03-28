@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
-import { Doc } from '../core/Doc'
+import { Doc } from '../../core/Doc'
 
 @Pipe({
   name: 'muteRemote'

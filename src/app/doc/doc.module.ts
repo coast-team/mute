@@ -5,8 +5,8 @@ import { SharedModule } from '../shared/shared.module'
 import { DocResolverService } from './doc-resolver.service'
 import { DocComponent } from './doc.component'
 import { EditorComponent } from './editor/editor.component'
-// import { StyleToolbarComponent } from './editor/style-toolbar/style-toolbar.component'
 import { NetworkService } from './network/network.service'
+import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.component'
 import { RightSideModule } from './right-side'
 import { SyncComponent } from './toolbar/sync/sync.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
@@ -21,8 +21,10 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
     EditorComponent,
     CursorsDirective,
     ToolbarComponent,
-    SyncComponent
+    SyncComponent,
+    ResolverDialogComponent
   ],
+  entryComponents: [ ResolverDialogComponent ],
   providers: [ NetworkService, DocResolverService ]
 })
 export class DocModule {}

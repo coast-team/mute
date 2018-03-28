@@ -1,9 +1,9 @@
-<mute-toolbar [title]="folder.title" (menu)="leftSidenav.toggle()"></mute-toolbar>
+<mute-toolbar [folder]="folder" (menu)="leftSidenav.toggle()"></mute-toolbar>
 <mat-sidenav-container>
 
   <!-- Left Sidenav-->
   <mat-sidenav #leftSidenav [mode]="sideNavMode" class="nav" [opened]="!this.media.isActive('xs')">
-    <mute-nav [selected]="folder" (change)="openFolder($event)"></mute-nav>
+    <mute-nav [selected]="folder"></mute-nav>
   </mat-sidenav>
 
 
@@ -20,7 +20,7 @@
     <button mat-menu-item (click)="infoDoc()">
       <mat-icon aria-label="delete document">info</mat-icon>Info
     </button>
-    <button mat-menu-item (click)="moveToTrash(menuDoc)">
+    <button mat-menu-item (click)="delete(menuDoc)">
       <mat-icon aria-label="delete document">delete</mat-icon>Move to trash
     </button>
   </mat-menu>
@@ -29,67 +29,77 @@
   <div fxLayoutAlign="center stretch" ngClass.gt-sm="table-container" ngClass.lt-md="table-container-mobile">
     <ng-container *ngIf="isFinishOpen; else fetchingDocs">
       <ng-container *ngIf="docs.length !== 0; else noDocs">
-        <mat-table fxFlex #table [dataSource]="docsSource">
+        <mat-table fxFlex #table [dataSource]="docsSource" [ngClass]="{mobile: isMobile}">
 
           <!-- Position Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell class="table-header" fxFlex="40%" *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell class="name-cell" fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc"
-              (mouseenter)="showActions(doc)"
-              (mouseleave)="hideActions(doc)"
-              (dblclick)="open(doc)"
-            >
-              <ng-container *ngIf="isMenu; else editableTitle">
-                <span (click)="open(doc)" fxLayoutAlign="start center">
-                  <mat-icon class="title-icon ">insert_drive_file</mat-icon>
-                  {{doc.title}}
-                </span>
-              </ng-container>
-              <ng-template #editableTitle>
+            <mat-cell fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
+
+              <!-- Document name -->
+              <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
                 <mat-icon class="title-icon ">insert_drive_file</mat-icon>
-                <span>{{doc.title}}</span>
-              </ng-template>
-              <div fxFlex fxLayoutAlign="end center">
-                <div *ngIf="!isMenu; else mobileActions" class="actions" fxHide [fxShow]="isActionsVisible(doc)" fxLayoutGap="10px">
-                  <ng-container *ngIf="folder.id !== localStorage.trash.id; then docActions; else trashActions"></ng-container>
-                </div>
+                {{doc.title}}
+              </button>
 
-                <ng-template #mobileActions>
-                  <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setMenuDoc(doc)">
-                    <mat-icon aria-label="show actions">more_vert</mat-icon>
-                  </button>
-                </ng-template>
-
-                <ng-template #docActions>
-                  <button mat-icon-button (click)="open(doc)" matTooltip="open">
-                    <mat-icon aria-label="open document">open_in_browser</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
-                    <mat-icon aria-label="rename document">mode_edit</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="share(doc)"  matTooltip="share">
-                    <mat-icon aria-label="share document">share</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="moveToTrash(doc)" matTooltip="move to trash">
-                    <mat-icon aria-label="delete document">delete</mat-icon>
-                  </button>
-                </ng-template>
-
-                <ng-template #trashActions>
-                  <button mat-icon-button (click)="restore(doc)" matTooltip="restore">
-                    <mat-icon aria-label="share document">restore</mat-icon>
-                  </button>
-                  <button mat-icon-button (click)="delete(doc)" matTooltip="delete">
-                    <mat-icon aria-label="delete document">delete</mat-icon>
-                  </button>
-                </ng-template>
+              <!-- Document action buttons -->
+              <div *ngIf="isMobile; else desktopActions">
+                <!-- <ng-container  fxHide [fxShow]="isActionsVisible(doc)"> -->
+                <!-- Mobile actions -->
+                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setMenuDoc(doc)">
+                  <mat-icon aria-label="show actions">more_vert</mat-icon>
+                </button>
+                <!-- </ng-container> -->
               </div>
+
+              <!-- Desktop actions -->
+              <ng-template #desktopActions>
+                <div [ngSwitch]="folder.id" class='desktop-actions'>
+                  <ng-container *ngSwitchCase="localStorage.local.id">
+                    <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
+                      <mat-icon aria-label="rename document">mode_edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="share(doc)" matTooltip="share">
+                      <mat-icon aria-label="share document">share</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="delete(doc)" matTooltip="move to trash">
+                      <mat-icon aria-label="delete document">delete</mat-icon>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="localStorage.trash.id">
+                    <button mat-icon-button (click)="restore(doc)" matTooltip="restore">
+                      <mat-icon aria-label="share document">restore</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="delete(doc)" matTooltip="delete">
+                      <mat-icon aria-label="delete document">delete</mat-icon>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="botStorage.remote.id">
+                    <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
+                      <mat-icon aria-label="rename document">mode_edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="share(doc)" matTooltip="share">
+                      <mat-icon aria-label="share document">share</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="delete(doc)" matTooltip="remove my login reference from remote server">
+                      <mat-icon aria-label="remove my login reference from remote server">delete</mat-icon>
+                    </button>
+                  </ng-container>
+                </div>
+              </ng-template>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="location">
+            <mat-header-cell class="table-header" fxFlex="100px" *matHeaderCellDef>Location</mat-header-cell>
+            <mat-cell *matCellDef="let doc" fxFlex="100px" fxLayoutAlign="start center" class="col-key">
+              <mat-icon aria-label="location" fxFlexOffset="10px">{{getDocLocationIcon(doc)}}</mat-icon>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="key">
-            <mat-header-cell class="table-header" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell *matCellDef="let doc" class="col-key">{{doc.key}}</mat-cell>
+            <mat-header-cell class="table-header"  fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
+            <mat-cell *matCellDef="let doc"  fxFlex="100px" class="col-key">{{doc.key}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
@@ -99,17 +109,19 @@
 
           <ng-container matColumnDef="opened">
             <mat-header-cell class="table-header" *matHeaderCellDef>Opened by me</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.opened | date:'longDate'}} </mat-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.opened | date:'MMMM d, y, h:mm a'}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="modified">
-            <mat-header-cell class="table-header" *matHeaderCellDef>Modified by me</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.modified | date:'longDate'}} </mat-cell>
+            <mat-header-cell class="table-header" *matHeaderCellDef>Modified</mat-header-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.modified | date:'MMMM d, y, h:mm a'}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="synchronized">
             <mat-header-cell class="table-header" *matHeaderCellDef>
-              <mat-icon aria-label="remote storage" class="synchronized-icon">cloud</mat-icon>Synchronized
+              <div fxLayoutAlign="start center">
+                <mat-icon aria-label="remote storage" [matTooltip]="remoteName" class="synchronized-icon">cloud</mat-icon>Synchronized
+              </div>
             </mat-header-cell>
             <mat-cell *matCellDef="let doc"> {{ doc | muteRemote }} </mat-cell>
           </ng-container>
@@ -134,7 +146,7 @@
     </ng-template>
 
     <ng-template #fetchingDocs>
-      <mat-spinner fxFlexAlign="center"></mat-spinner>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </ng-template>
   </div>
 
