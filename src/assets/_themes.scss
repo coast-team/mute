@@ -86,8 +86,8 @@ $theme: mat-light-theme(
 // DARK theme
 //###########################################################
 $theme: mat-dark-theme(
-  mat-palette($mat-light-blue, 600, 200, 800),
-  mat-palette($mat-amber, A400, A700)
+  mat-palette($mat-pink),
+  mat-palette($mat-blue-grey)
 );
 $prefix: 'dark';
 
@@ -101,8 +101,7 @@ $prefix: 'dark';
 //###########################################################
 $theme:   mat-light-theme(
   mat-palette($mat-indigo, 400),
-  mat-palette($mat-amber, A200, A100, A400),
-  mat-palette($mat-deep-orange)
+  mat-palette($mat-yellow, A700)
 );
 $prefix: 'indigo';
 
