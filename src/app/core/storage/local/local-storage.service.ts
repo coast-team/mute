@@ -204,9 +204,7 @@ export class LocalStorageService extends Storage {
       throw new Error('Too many documents found')
     }
     this.check()
-    return await new Promise((resolve, reject) => {
-      this.db.getAttachment(docs[0].id, 'body')
-    }) as Blob
+    return await this.db.getAttachment(docs[0].id, 'body')
   }
 
   async saveDocBody (doc: Doc, body: State): Promise <any> {
