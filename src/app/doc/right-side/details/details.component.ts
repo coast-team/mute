@@ -34,7 +34,6 @@ export class DetailsComponent {
   @Input() doc: Doc
 
   constructor (
-  ) {
-  }
+  ) {}
 
 }

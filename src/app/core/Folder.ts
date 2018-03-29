@@ -15,6 +15,7 @@ export class Folder extends File {
 
   static create (title: string, icon: string, isRemote: boolean, parentFolderId?: string): Folder {
     const folder = new Folder()
+    folder.created = new Date()
     folder.init(title, parentFolderId)
     folder.isRemote = isRemote
     folder.icon = icon

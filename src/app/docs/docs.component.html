@@ -104,17 +104,17 @@
 
           <ng-container matColumnDef="created">
             <mat-header-cell class="table-header" *matHeaderCellDef>Created</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.created | date:'longDate'}} </mat-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.created | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="opened">
             <mat-header-cell class="table-header" *matHeaderCellDef>Opened by me</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.opened | date:'MMMM d, y, h:mm a'}} </mat-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.opened | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="modified">
             <mat-header-cell class="table-header" *matHeaderCellDef>Modified</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.modified | date:'MMMM d, y, h:mm a'}} </mat-cell>
+            <mat-cell *matCellDef="let doc"> {{doc.modified | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="synchronized">

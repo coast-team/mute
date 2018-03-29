@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common'
+import { CommonModule, DatePipe } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
@@ -29,8 +29,9 @@ import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
 import { DocRenameDialogComponent } from './doc-rename-dialog/doc-rename-dialog.component'
 import { JoinDialogComponent } from './nav/join-dialog/join-dialog.component'
 import { NavComponent } from './nav/nav.component'
+import { DateEnhancedPipe } from './pipes/date-enhanced.pipe'
 import { RemotePipe } from './pipes/remote.pipe'
-import { SizePipe } from './pipes/size-pipe'
+import { SizePipe } from './pipes/size.pipe'
 import { ProfileComponent } from './profile/profile.component'
 import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delete-dialog.component'
 
@@ -63,11 +64,13 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     ReactiveFormsModule
   ],
   entryComponents: [ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent ],
+  providers: [DatePipe],
   declarations: [
     ProfileComponent,
     NavComponent,
     SizePipe,
     RemotePipe,
+    DateEnhancedPipe,
     ConfigDialogComponent,
     DocRenameDialogComponent,
     RemoteDeleteDialogComponent,
@@ -99,7 +102,8 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     NavComponent,
     FormsModule,
     ReactiveFormsModule,
-    RemotePipe
+    RemotePipe,
+    DateEnhancedPipe
   ]
 })
 export class SharedModule {}

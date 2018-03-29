@@ -20,7 +20,7 @@
     <mute-right-side fxHide.lt-md [doc]="doc" class="info-panel"></mute-right-side>
 
   <!-- Mobile Info Sidenav only -->
-    <mat-sidenav align="end" mode="over" #infoSidenav
+    <mat-sidenav *ngIf="isMobile" align="end" mode="over" #infoSidenav
       fxHide.gt-sm class="info-sidenav" ngClass.lt-sm="info-sidenav-lt-sm">
       <mute-right-side [doc]="doc"></mute-right-side>
     </mat-sidenav>

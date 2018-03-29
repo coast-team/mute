@@ -19,6 +19,7 @@ export class Doc extends File {
 
   static create (key: string, title: string, parentFolderId?: string): Doc {
     const doc = new Doc()
+    doc.created = new Date()
     doc.key = key
     doc.remotes = []
     doc.init(title, parentFolderId)

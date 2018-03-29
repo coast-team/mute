@@ -26,6 +26,8 @@ const selectListForDoc = [
   'description',
 ]
 
+const DB_NAME_PREFIX = 'documents_v0.4.0_v2 -'
+
 @Injectable()
 export class LocalStorageService extends Storage {
 
@@ -295,7 +297,7 @@ export class LocalStorageService extends Storage {
             type: 'uuid',
             sub_storage: {
               type: 'indexeddb',
-              database: `documents_v0.4.0-${login}`
+              database: `${DB_NAME_PREFIX}${login}`
             }
           }
         })

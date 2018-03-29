@@ -22,7 +22,6 @@ export abstract class File {
     this._description = serialized.description
     this._title = serialized.title
     this._parentFolderId = serialized.parentFolderId
-    this.created = new Date()
   }
 
   protected init (title: string, parentFolderId?: string) {

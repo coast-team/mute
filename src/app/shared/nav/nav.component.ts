@@ -58,6 +58,9 @@ export class NavComponent implements OnDestroy {
       case BotStorageService.NOT_AUTHORIZED:
         this.remoteErrorMessage = 'Unavailable for non authenticated users'
         break
+      case BotStorageService.AVAILABLE:
+        this.remoteErrorMessage = undefined
+        break
       }
       this.cd.markForCheck()
     })
@@ -67,6 +70,9 @@ export class NavComponent implements OnDestroy {
       break
     case LocalStorageService.NO_ACCESS:
       this.localErrorMessage = 'Disabled by your browser'
+      break
+    case LocalStorageService.AVAILABLE:
+      this.localErrorMessage = undefined
       break
     }
     // this.cd.markForCheck()

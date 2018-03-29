@@ -1,9 +1,11 @@
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
 import { filter, map } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
+import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
@@ -28,7 +30,7 @@ export class DocComponent implements OnDestroy, OnInit {
   private inited = false
 
   public doc: Doc
-
+  public isMobile: boolean
   public muteCore: MuteCore
 
   constructor (
@@ -39,6 +41,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
+    private media: ObservableMedia,
     private localStorage: LocalStorageService,
     public ui: UiService
   ) {
@@ -46,6 +49,20 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit () {
+    this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
+      this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
+    })
+
+    this.subs[this.subs.length] = this.richCollaboratorsService.onUpdate.subscribe(
+      (collab: ICollaborator) => {
+        if (collab.login === this.botStorage.login) {
+          if (this.doc.remotes.length === 0) {
+            this.doc.addRemote(this.botStorage.id)
+          }
+          this.doc.remotes[0].synchronized = new Date()
+        }
+      }
+    )
     if (this.inited) {
       this.network.clean()
       this.muteCore.dispose()
@@ -56,10 +73,9 @@ export class DocComponent implements OnDestroy, OnInit {
       .subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
         this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
-          // log.debug('Should invite bot: ', doc)
-          // if (this.doc.isRemote) {
-          //   this.network.inviteBot(this.botStorage.bot.wsURL)
-          // }
+          if (this.doc.remotes.length !== 0) {
+            this.network.inviteBot(this.botStorage.wsURL)
+          }
         })
 
       // TODO: Retrieve previous id for this document if existing

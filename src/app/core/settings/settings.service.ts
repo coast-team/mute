@@ -16,6 +16,8 @@ const selectList = [
   'openedFolder'
 ]
 
+const DB_NAME = 'settings_v2'
+
 interface ISerialize {
   profile: ISerializeProfile,
   theme: string,
@@ -42,7 +44,7 @@ export class SettingsService {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
-    this.openedFolder = '/local'
+    this.openedFolder = 'local'
   }
 
   async init (): Promise<void> {
@@ -56,7 +58,7 @@ export class SettingsService {
           type: 'uuid',
           sub_storage: {
             type: 'indexeddb',
-            database: 'settings'
+            database: DB_NAME
           }
         }
       })
