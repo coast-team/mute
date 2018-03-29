@@ -47,7 +47,7 @@ export class BotStorageService extends Storage {
   }
 
   async fetchDocs (): Promise<string[]> {
-    if (this.url) {
+    if (this.url && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return await new Promise((resolve) => {
         this.http.get(`${this.httpURL}/docs/${this.settings.profile.login}`)
           .subscribe(
