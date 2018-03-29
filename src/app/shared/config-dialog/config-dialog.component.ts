@@ -9,10 +9,9 @@ import { SettingsService } from '../../core/settings/settings.service'
 @Component({
   selector: 'mute-config-dialog',
   templateUrl: './config-dialog.component.html',
-  styleUrls: ['./config-dialog.component.scss']
+  styleUrls: ['./config-dialog.component.scss'],
 })
 export class ConfigDialogComponent {
-
   public profile: Profile
   public initialTheme: string
   public theme: string
@@ -20,7 +19,7 @@ export class ConfigDialogComponent {
 
   public displayNameFormControl: FormControl
 
-  constructor (
+  constructor(
     public dialogRef: MatDialogRef<ConfigDialogComponent>,
     public settings: SettingsService,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -29,22 +28,19 @@ export class ConfigDialogComponent {
     this.displayName = this.profile.displayName
     this.initialTheme = this.settings.theme
     this.theme = this.settings.theme
-    this.displayNameFormControl = new FormControl('', [
-      Validators.maxLength(27),
-    ])
+    this.displayNameFormControl = new FormControl('', [Validators.maxLength(27)])
   }
 
-  cancel () {
+  cancel() {
     this.settings.updateTheme(this.initialTheme)
   }
 
-  save () {
+  save() {
     this.profile.displayName = this.displayName
     this.settings.updateTheme(this.theme)
   }
 
-  applyTheme ({ value }: { value: string }) {
+  applyTheme({ value }: { value: string }) {
     this.settings.updateTheme(value)
   }
-
 }

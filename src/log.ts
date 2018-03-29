@@ -17,7 +17,7 @@ export class Log {
    * @param {string} msg message
    * @param {any}    obj any javascript object
    */
-  debug (msg: string, obj?: any): void {
+  debug(msg: string, obj?: any): void {
     BRAGI.log('DEBUG:' + this.getTimestamp(), msg, obj)
   }
 
@@ -27,20 +27,20 @@ export class Log {
    * @param {string} msg   message
    * @param {any}    obj   any javascript object
    */
-  info (group: string, msg: string, obj?: any): void {
-    BRAGI.log(group + ':'  + this.getTimestamp(), msg, obj)
+  info(group: string, msg: string, obj?: any): void {
+    BRAGI.log(group + ':' + this.getTimestamp(), msg, obj)
   }
 
-  angular (msg: string, obj?: any) {
+  angular(msg: string, obj?: any) {
     this.info('ANGULAR', msg, obj)
   }
 
- /**
-  * Browser native console.trace. Works in Chrome, but maybe not in other browsers.
-  * @param {string} msg   message
-  * @param {any}    obj   any javascript object
-  */
-  trace (msg: string, obj?: any): void {
+  /**
+   * Browser native console.trace. Works in Chrome, but maybe not in other browsers.
+   * @param {string} msg   message
+   * @param {any}    obj   any javascript object
+   */
+  trace(msg: string, obj?: any): void {
     loglevel.trace(this.prefix('TRACE') + msg, obj)
   }
 
@@ -50,7 +50,7 @@ export class Log {
    * @param {string} msg   message
    * @param {any}    obj   any javascript object
    */
-  warn (msg: string, obj?: any): void {
+  warn(msg: string, obj?: any): void {
     loglevel.warn(this.prefix('WARN') + msg, obj)
   }
 
@@ -60,14 +60,14 @@ export class Log {
    * @param {string} msg   message
    * @param {any}    obj   any javascript object
    */
-  error (msg: string, obj?: any): void {
+  error(msg: string, obj?: any): void {
     loglevel.error(this.prefix('ERROR') + msg, obj)
   }
 
   /**
    * Disable all log messages.
    */
-  on (): void {
+  on(): void {
     BRAGI.options.groupsEnabled = true
     loglevel.enableAll()
   }
@@ -75,20 +75,22 @@ export class Log {
   /**
    * Enable all log messages.
    */
-  off (): void {
+  off(): void {
     BRAGI.options.groupsEnabled = false
     loglevel.disableAll()
   }
 
-  noConflict () {}
+  noConflict() {}
 
-  private getTimestamp (): string {
+  private getTimestamp(): string {
     const now = new Date()
-    return `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}T`
-      + `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}Z`
+    return (
+      `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}T` +
+      `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}.${now.getMilliseconds()}Z`
+    )
   }
 
-  private prefix (prefix = ''): string {
+  private prefix(prefix = ''): string {
     const timestamp = this.getTimestamp()
     if (prefix !== '') {
       return '[ ' + prefix + ':' + timestamp + '  ]  '
@@ -98,9 +100,9 @@ export class Log {
   }
 }
 
-function _window (): Window {
+function _window(): Window {
   /* tslint:disable: no-invalid-this */
   return typeof this === 'object' ? this : Function('return this')()
 }
 
-(_window() as any).log = new Log()
+;(_window() as any).log = new Log()

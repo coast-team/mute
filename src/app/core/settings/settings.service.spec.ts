@@ -4,7 +4,7 @@ import { SettingsService } from './profile.service'
 describe('SettingsService', () => {
   let settings: SettingsService
 
-  beforeEach(async(() => settings = new SettingsService()))
+  beforeEach(async(() => (settings = new SettingsService())))
 
   it('Correct Init', () => expect(settings).toBeTruthy())
 
@@ -27,5 +27,4 @@ describe('SettingsService', () => {
     settings['removeItem']('testKey')
     expect(settings['getItem']('testKey')).toBeFalsy()
   })
-
 })

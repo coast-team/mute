@@ -24,7 +24,7 @@ $editor-font-family: 'Montserrat', sans-serif;
   .collaborator-cursor-bookmark {
     // This prevent line collapse bug in Firefox
     &::before {
-      content: "";
+      content: '';
     }
   }
 
@@ -52,8 +52,8 @@ $editor-font-family: 'Montserrat', sans-serif;
     line-height: 12px;
     left: -2px;
     font-size: 10px;
-    transition: width .12s;
-    border-radius: 2px 7px 7px 0
+    transition: width 0.12s;
+    border-radius: 2px 7px 7px 0;
   }
 }
 

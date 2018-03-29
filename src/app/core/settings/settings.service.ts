@@ -10,23 +10,18 @@ import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
 import { ISerialize as ISerializeProfile, Profile } from './Profile'
 
-const selectList = [
-  'profile',
-  'theme',
-  'openedFolder'
-]
+const selectList = ['profile', 'theme', 'openedFolder']
 
 const DB_NAME = 'settings_v2'
 
 interface ISerialize {
-  profile: ISerializeProfile,
-  theme: string,
+  profile: ISerializeProfile
+  theme: string
   openedFolder: string
 }
 
 @Injectable()
 export class SettingsService {
-
   public theme: string
   public openedFolder: string
   public changeSubject: Subject<EProperties[]>
@@ -37,18 +32,15 @@ export class SettingsService {
   private profileChangeSub: Subscription
   private isDBAvailable: boolean
 
-  constructor (
-    private rendererFactory: RendererFactory2,
-    private auth: AuthService
-  ) {
+  constructor(private rendererFactory: RendererFactory2, private auth: AuthService) {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
     this.openedFolder = 'local'
   }
 
-  async init (): Promise<void> {
-    this.isDBAvailable = await getIndexedDBState() === EIndexedDBState.OK
+  async init(): Promise<void> {
+    this.isDBAvailable = (await getIndexedDBState()) === EIndexedDBState.OK
 
     if (this.isDBAvailable) {
       // Create profiles database if doesn't exist already
@@ -58,9 +50,9 @@ export class SettingsService {
           type: 'uuid',
           sub_storage: {
             type: 'indexeddb',
-            database: DB_NAME
-          }
-        }
+            database: DB_NAME,
+          },
+        },
       })
     }
 
@@ -71,54 +63,56 @@ export class SettingsService {
     await this.setProfile(accounts)
   }
 
-  get profile (): Profile { return this._profile }
+  get profile(): Profile {
+    return this._profile
+  }
 
-  get onChange (): Observable<EProperties[]> {
+  get onChange(): Observable<EProperties[]> {
     return this.changeSubject.asObservable()
   }
 
-  async updateTheme (name: string): Promise<void> {
+  async updateTheme(name: string): Promise<void> {
     if (this.setTheme(name)) {
       this.changeSubject.next([EProperties.theme])
       await this.saveToDB()
     }
   }
 
-  async updateOpenedFolder (folder: Folder): Promise<void> {
+  async updateOpenedFolder(folder: Folder): Promise<void> {
     if (this.setOpenedFolder(folder.id)) {
       this.changeSubject.next([EProperties.openedFolder])
       await this.saveToDB()
     }
   }
 
-  isAuthenticated () {
+  isAuthenticated() {
     return this.auth.isAuthenticated()
   }
 
-  async signout (): Promise<void> {
+  async signout(): Promise<void> {
     await this.auth.logout().toPromise()
     await this.setProfile([this.anonymous])
   }
 
-  async signin (provider: string): Promise<void> {
+  async signin(provider: string): Promise<void> {
     await this.auth.authenticate(provider).toPromise()
     await this.setProfile([this.auth.getPayload()])
   }
 
-  resendNotification () {
+  resendNotification() {
     // FIXME: rid of this method
     this.changeSubject.next([EProperties.profile])
   }
 
-  get anonymous (): IAccount {
+  get anonymous(): IAccount {
     return {
       provider: window.location.hostname,
       login: `anonymous`,
-      name: 'Anonymous'
+      name: 'Anonymous',
     }
   }
 
-  private async setProfile (accounts: IAccount[]): Promise<void> {
+  private async setProfile(accounts: IAccount[]): Promise<void> {
     const data = await this.readFromDB(accounts.map((a) => a.login))
 
     const changedProperties = [EProperties.profile]
@@ -144,7 +138,7 @@ export class SettingsService {
     this.changeSubject.next(changedProperties)
   }
 
-  private setTheme (name: string): boolean {
+  private setTheme(name: string): boolean {
     if (this.theme !== name) {
       this.renderer.removeClass(window.document.body, 'dark-theme')
       this.renderer.removeClass(window.document.body, 'indigo-theme')
@@ -184,17 +178,16 @@ export class SettingsService {
       this.updateThemeProperty(name, 'fg-fg-slider-off-active')
 
       // Update theme primary color for html page
-      window.document.querySelector('meta[name=theme-color]').setAttribute(
-        'content',
-        window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${name}-primary`)
-      )
+      window.document
+        .querySelector('meta[name=theme-color]')
+        .setAttribute('content', window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${name}-primary`))
       this.theme = name
       return true
     }
     return false
   }
 
-  private setOpenedFolder (id: string) {
+  private setOpenedFolder(id: string) {
     if (id) {
       this.openedFolder = id
       return true
@@ -202,7 +195,7 @@ export class SettingsService {
     return false
   }
 
-  private async saveToDB (isNew = false): Promise<void> {
+  private async saveToDB(isNew = false): Promise<void> {
     if (this.isDBAvailable) {
       const data = this.serialize()
       if (isNew) {
@@ -213,7 +206,7 @@ export class SettingsService {
     }
   }
 
-  private async readFromDB (lookingLogins: string []): Promise<{ id: string, value: ISerialize } | undefined> {
+  private async readFromDB(lookingLogins: string[]): Promise<{ id: string; value: ISerialize } | undefined> {
     if (this.isDBAvailable) {
       const rows = (await this.db.allDocs({
         query: {
@@ -227,11 +220,11 @@ export class SettingsService {
                 }
               }
               return false
-            }
+            },
           },
-          value: lookingLogins
+          value: lookingLogins,
         },
-        select_list: selectList
+        select_list: selectList,
       })).data.rows
       if (rows && rows.length === 1) {
         return rows[0]
@@ -241,19 +234,18 @@ export class SettingsService {
     }
   }
 
-  private serialize (): ISerialize {
+  private serialize(): ISerialize {
     return {
       profile: this._profile.serialize(),
       theme: this.theme,
-      openedFolder: this.openedFolder
+      openedFolder: this.openedFolder,
     }
   }
 
-  private updateThemeProperty (theme, propertyName: string) {
+  private updateThemeProperty(theme, propertyName: string) {
     window.document.documentElement.style.setProperty(
       `--theme-${propertyName}`,
       window.getComputedStyle(window.document.documentElement).getPropertyValue(`--${theme}-${propertyName}`)
     )
   }
-
 }

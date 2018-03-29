@@ -5,9 +5,8 @@ import { environment } from '../environments/environment'
 @Component({
   selector: 'mute-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-
   public visible = environment.devLabel
 }

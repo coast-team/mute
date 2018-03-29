@@ -28,41 +28,32 @@ import { HistoryModule } from './history/history.module'
     AppRoutingModule,
     DocsModule,
     DocModule,
-    HistoryModule
+    HistoryModule,
   ],
-  declarations: [
-    AppComponent,
-    DevLabelComponent
-  ],
+  declarations: [AppComponent, DevLabelComponent],
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (
-        settings: SettingsService,
-        localStorage: LocalStorageService,
-        botStorage: BotStorageService
-      ) => async () => {
+      useFactory: (settings: SettingsService, localStorage: LocalStorageService, botStorage: BotStorageService) => async () => {
         await getIndexedDBState()
         await settings.init()
         await localStorage.init(settings)
       },
-      deps: [ SettingsService, LocalStorageService, BotStorageService],
-      multi: true
-    }
+      deps: [SettingsService, LocalStorageService, BotStorageService],
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor (
-    private snackBar: MatSnackBar,
-    private sw: SwUpdate
-  ) {
+  constructor(private snackBar: MatSnackBar, private sw: SwUpdate) {
     sw.available.subscribe((event) => {
       const snackBarRef = this.snackBar.open('New version of MUTE is available.', 'Update', {
-        duration: 5000
+        duration: 5000,
       })
       snackBarRef.onAction().subscribe(() => {
-        sw.activateUpdate()
+        sw
+          .activateUpdate()
           .then(() => document.location.reload())
           .catch((err) => log.debug('Error activating SW update: ', err))
       })

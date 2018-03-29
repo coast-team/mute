@@ -3,7 +3,7 @@
 }
 
 .mat-card {
-  font-family: "Droid Sans", sans-serif, serif;
+  font-family: 'Droid Sans', sans-serif, serif;
   margin-bottom: 16px;
 }
 
@@ -33,10 +33,11 @@ h3 {
   font-size: 18pt;
   font-weight: 600;
   text-transform: uppercase;
-  font-family: "Roboto-Medium";
+  font-family: 'Roboto-Medium';
 }
 
-.header-1::after, .header-2::after {
+.header-1::after,
+.header-2::after {
   display: block;
   content: ' ';
   margin-top: 2px;
@@ -45,26 +46,26 @@ h3 {
 }
 
 .header-2 {
-  font-family: "Roboto-Medium";
+  font-family: 'Roboto-Medium';
   font-size: 16pt;
   font-weight: 600;
 }
 
 .header-3 {
-  font-family: "Roboto-Medium";
+  font-family: 'Roboto-Medium';
   font-size: 12.4pt;
   font-weight: 700;
 }
 
 .header-4 {
-  font-family: "Roboto-Medium";
+  font-family: 'Roboto-Medium';
   font-style: italic;
   font-size: 1.7rem;
   font-weight: 700;
 }
 
 .header-5 {
-  font-family: "Roboto-Medium";
+  font-family: 'Roboto-Medium';
   text-transform: uppercase;
   font-size: 11pt;
   font-weight: 700;
@@ -96,10 +97,10 @@ h3 {
   border-radius: 4px;
   vertical-align: middle;
   border: #ccc solid 1px;
-  padding: 1px .4em;
+  padding: 1px 0.4em;
   color: #922;
   font-size: 90%;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 
 .quotation {
@@ -110,12 +111,12 @@ h3 {
 
 .quotation::before {
   width: 20px;
-  content: " ";
+  content: ' ';
   position: absolute;
   left: 2px;
   top: 0;
   height: 100%;
-  background: url(data:image/gif;base64,R0lGODlhIAABAIABAOjo6P///yH5BAEAAAEALAAAAAAgAAEAAAIHhI8Yy+1cAAA7) 0 0;
+  background: url(data:image/gif;base64,R0lGODlhIAABAIABAOjo6P///yH5BAEAAAEALAAAAAAgAAEAAAIHhI8Yy+1cAAA7);
   background-size: 20px 1px;
 }
 
@@ -126,7 +127,7 @@ h3 {
   background-position: center 0;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAwCAMAAAA8VkqRAAAAclBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACa4vOeAAAAJXRSTlMADcjpDswcLZOzsvOYBvWdbtvTX0D69+ORa1dRJCDtuaF7ZDkoQyuUXgAAAMhJREFUOMvt0reywjAUhOFjKxmcrgMZboL//V8Rm6GwkNUx0LClvhkVZ1fEZoqHqMwO7wuUSb0YxcJKxtLpxIt2SzJRykkQp5RgdAjaIKRJCEn6gWdA9OzRoqLVRscQnc9bdtXX/eyurOF7N3erLVDPwCGHxoVwamH1LwGUBfBbhrCvoLlMitL9DY8trLtJg7qoCj18VAN1OYE/YJBuDe1RJtBVo5wbqPb+GL5yWG1GLX0YZYw5iQ93yQ/yAHfZzu5qt/mxr97VFS15JGSVM0C6AAAAAElFTkSuQmCC);
   background-size: 1em;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   vertical-align: middle;
   white-space: nowrap;
   height: 1em;
@@ -140,8 +141,8 @@ h3 {
 .block-code {
   color: #922;
   font-size: 90%;
-  opacity: .3;
-  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  opacity: 0.3;
+  font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 }
 
 .url {

@@ -16,34 +16,30 @@ const settingsServiceStub = undefined
 const mdSnackBarStub = undefined
 
 describe('ToolbarComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        ToolbarComponent
-      ],
-      imports: [
-        RouterTestingModule
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      providers: [
-        { provide: UiService, useValue: uiServiceStub },
-        { provide: NetworkService, useValue: networkServiceStub },
-        { provide: SettingsService, useValue: settingsServiceStub },
-        { provide: MatSnackBar, useValue: mdSnackBarStub }
-      ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [ToolbarComponent],
+        imports: [RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [
+          { provide: UiService, useValue: uiServiceStub },
+          { provide: NetworkService, useValue: networkServiceStub },
+          { provide: SettingsService, useValue: settingsServiceStub },
+          { provide: MatSnackBar, useValue: mdSnackBarStub },
+        ],
+      })
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(ToolbarComponent)
+          comp = fixture.componentInstance
+        })
     })
-    .compileComponents()
-    .then(() => {
-      fixture = TestBed.createComponent(ToolbarComponent)
-      comp = fixture.componentInstance
-    })
-  }))
+  )
   tests()
 })
 
-function tests () {
+function tests() {
   it('Correct Init', () => {
     expect(comp).toBeTruthy()
   })

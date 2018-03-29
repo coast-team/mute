@@ -11,17 +11,8 @@ import { TimelineComponent } from './timeline/timeline.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  imports: [
-    SharedModule,
-    FormsModule
-  ],
-  declarations: [
-    HistoryComponent,
-    TimelineComponent,
-    CollaboratorsComponent,
-    ControlsComponent,
-    ToolbarComponent
-  ],
+  imports: [SharedModule, FormsModule],
+  declarations: [HistoryComponent, TimelineComponent, CollaboratorsComponent, ControlsComponent, ToolbarComponent],
   providers: [HistoryService, HistoryResolverService],
 })
 export class HistoryModule {}

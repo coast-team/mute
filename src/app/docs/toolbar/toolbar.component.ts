@@ -1,4 +1,4 @@
-import {  ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core'
 
 import { Folder } from '../../core/Folder'
 
@@ -14,11 +14,11 @@ export class ToolbarComponent implements OnChanges {
 
   public header: string
 
-  constructor () {
+  constructor() {
     this.menu = new EventEmitter()
   }
 
-  ngOnChanges () {
+  ngOnChanges() {
     this.header = this.folder.title
     if (this.folder.isRemote) {
       this.header += `: ${this.folder.id}`

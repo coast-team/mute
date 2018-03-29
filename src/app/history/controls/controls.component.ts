@@ -8,10 +8,9 @@ import { CONTROLS } from './controls'
 @Component({
   selector: 'mute-controls',
   templateUrl: './controls.component.html',
-  styleUrls: ['./controls.component.scss']
+  styleUrls: ['./controls.component.scss'],
 })
 export class ControlsComponent implements OnInit {
-
   public isPlaying: boolean
   public pausePlayBtn: string
   @Input() currentOp: number
@@ -21,20 +20,16 @@ export class ControlsComponent implements OnInit {
   @Output() onControls: EventEmitter<number>
   @Output() onSlide: EventEmitter<number>
 
-  constructor (
-    private router: Router,
-    public ui: UiService
-  ) {
+  constructor(private router: Router, public ui: UiService) {
     this.pausePlayBtn = 'play_arrow'
-    this.onControls = new EventEmitter<number>(),
-    this.onSlide = new EventEmitter<number>()
+    ;(this.onControls = new EventEmitter<number>()), (this.onSlide = new EventEmitter<number>())
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.isPlaying = false
   }
 
-  onClickPlay () {
+  onClickPlay() {
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
       this.onControls.emit(CONTROLS.PAUSE)
@@ -42,22 +37,22 @@ export class ControlsComponent implements OnInit {
       this.isPlaying = !this.isPlaying
       this.onControls.emit(this.isPlaying ? CONTROLS.PLAY : CONTROLS.PAUSE)
     }
-    this.pausePlayBtn = (this.isPlaying && this.nbOperations !== this.currentOp) ? 'pause' : 'play_arrow'
+    this.pausePlayBtn = this.isPlaying && this.nbOperations !== this.currentOp ? 'pause' : 'play_arrow'
   }
 
-  onClickFastForward () {
+  onClickFastForward() {
     this.onControls.emit(CONTROLS.FAST_FORWARD)
   }
 
-  onClickFastRewind () {
+  onClickFastRewind() {
     this.onControls.emit(CONTROLS.FAST_REWIND)
   }
 
-  updateStep (step: number) {
+  updateStep(step: number) {
     this.onSlide.emit(step)
   }
 
-  showEditor () {
+  showEditor() {
     this.router.navigate(['/' + this.doc.key])
   }
 }

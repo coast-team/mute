@@ -17,28 +17,30 @@ export class Profile {
   private _displayName: string
   private changeSubject: Subject<EProperties[]>
 
-  constructor (accounts: IAccount[]) {
+  constructor(accounts: IAccount[]) {
     this._displayName = accounts[0].name
     this.activeAccount = accounts[0]
     this.accounts = accounts
     this.changeSubject = new Subject()
   }
 
-  static deserialize (accounts: IAccount[], dbId: string, serialized: ISerialize) {
-    const profile = new Profile (accounts)
+  static deserialize(accounts: IAccount[], dbId: string, serialized: ISerialize) {
+    const profile = new Profile(accounts)
     profile._displayName = serialized.displayName
     profile.activeAccount = accounts[0]
     profile.dbId = dbId
     return profile
   }
 
-  get onChange (): Observable<EProperties[]> {
+  get onChange(): Observable<EProperties[]> {
     return this.changeSubject.asObservable()
   }
 
-  get displayName () { return this._displayName }
+  get displayName() {
+    return this._displayName
+  }
 
-  set displayName (value: string) {
+  set displayName(value: string) {
     if (value.length === 0) {
       this._displayName = 'Anonymous'
     } else {
@@ -47,21 +49,29 @@ export class Profile {
     this.changeSubject.next([EProperties.profileDisplayName])
   }
 
-  get name (): string { return this.activeAccount.name }
-  get login (): string {
+  get name(): string {
+    return this.activeAccount.name
+  }
+  get login(): string {
     if (this.activeAccount.provider === 'github') {
       return this.activeAccount.login + `@github`
     }
     return this.activeAccount.login
   }
-  get avatar (): string { return this.activeAccount.avatar }
-  get email (): string { return this.activeAccount.email }
-  get provider (): string { return this.activeAccount.provider }
+  get avatar(): string {
+    return this.activeAccount.avatar
+  }
+  get email(): string {
+    return this.activeAccount.email
+  }
+  get provider(): string {
+    return this.activeAccount.provider
+  }
 
-  serialize (): ISerialize {
+  serialize(): ISerialize {
     return {
       displayName: this.displayName,
-      logins: this.accounts.map((a: IAccount) => a.login)
+      logins: this.accounts.map((a: IAccount) => a.login),
     }
   }
 }

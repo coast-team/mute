@@ -22,7 +22,8 @@ import {
   MatTableModule,
   MatTabsModule,
   MatToolbarModule,
-  MatTooltipModule } from '@angular/material'
+  MatTooltipModule,
+} from '@angular/material'
 import { RouterModule } from '@angular/router'
 import 'hammerjs/hammer'
 import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
@@ -61,9 +62,9 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     MatDialogModule,
     RouterModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
-  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent ],
+  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent],
   providers: [DatePipe],
   declarations: [
     ProfileComponent,
@@ -74,7 +75,8 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     ConfigDialogComponent,
     DocRenameDialogComponent,
     RemoteDeleteDialogComponent,
-    JoinDialogComponent],
+    JoinDialogComponent,
+  ],
   exports: [
     CommonModule,
     MatInputModule,
@@ -103,7 +105,7 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     FormsModule,
     ReactiveFormsModule,
     RemotePipe,
-    DateEnhancedPipe
-  ]
+    DateEnhancedPipe,
+  ],
 })
 export class SharedModule {}

@@ -5,19 +5,18 @@ import { RichCollaborator } from '../../rich-collaborators/'
 let lineHeight: number
 
 export class CollaboratorCursor {
-
   private selectionCSS: string
   private color: string
   private cm: CodeMirror.Editor
 
   // Attributes for cursor and selection
-  private bookmark: { find: () => CodeMirror.Position, clear: () => void } | undefined
+  private bookmark: { find: () => CodeMirror.Position; clear: () => void } | undefined
   private selection: CodeMirror.TextMarker | undefined
   private cursor: HTMLElement
   private cursorBookmark: HTMLElement
   private cursorTransition: HTMLElement
-  private transitionPos: { line: number, ch: number } | undefined
-  private nextPos: { line: number, ch: number } | undefined
+  private transitionPos: { line: number; ch: number } | undefined
+  private nextPos: { line: number; ch: number } | undefined
   private cursorHeight: string | undefined
   private cursorMarginTop: string | undefined
 
@@ -26,7 +25,7 @@ export class CollaboratorCursor {
   private displayNameWidth: string
   private displayNameTimeout: any
 
-  constructor (cm: CodeMirror.Editor, collab: RichCollaborator) {
+  constructor(cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
     this.color = collab.color
     this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
@@ -74,23 +73,23 @@ export class CollaboratorCursor {
     }
 
     // Append elements to DOM
-    const {top, left} = this.cm.cursorCoords({line: 0, ch: 0}, 'window')
+    const { top, left } = this.cm.cursorCoords({ line: 0, ch: 0 }, 'window')
   }
 
-  resetDisplayNameTimeout () {
+  resetDisplayNameTimeout() {
     if (this.displayName.style.width !== this.displayNameWidth) {
       this.displayName.style.width = this.displayNameWidth
     }
     clearTimeout(this.displayNameTimeout)
-    this.displayNameTimeout = setTimeout(() => this.displayName.style.width = '0', 1500)
+    this.displayNameTimeout = setTimeout(() => (this.displayName.style.width = '0'), 1500)
   }
 
-  updateDisplayName (displayName: string) {
+  updateDisplayName(displayName: string) {
     this.displayName.innerHTML = `&nbsp;${displayName}`
     this.displayNameWidth = `${15 + displayName.length * 5}px`
   }
 
-  updateCursor (nextPos: CodeMirror.Position, animated = true) {
+  updateCursor(nextPos: CodeMirror.Position, animated = true) {
     if (this.bookmark) {
       if (this.transitionPos) {
         this.nextPos = nextPos
@@ -103,22 +102,16 @@ export class CollaboratorCursor {
         this.translate(from, nextPos, animated)
       }
       this.bookmark.clear()
-      this.bookmark = this.cm.getDoc().setBookmark(
-        nextPos,
-        { widget: this.cursorBookmark, insertLeft: true }
-      ) as any
+      this.bookmark = this.cm.getDoc().setBookmark(nextPos, { widget: this.cursorBookmark, insertLeft: true }) as any
     } else {
       this.removeSelection()
-      this.bookmark = this.cm.getDoc().setBookmark(
-        nextPos,
-        { widget: this.cursorBookmark, insertLeft: true }
-      ) as any
+      this.bookmark = this.cm.getDoc().setBookmark(nextPos, { widget: this.cursorBookmark, insertLeft: true }) as any
       this.setBookmarkCursorProperties()
       this.resetDisplayNameTimeout()
     }
   }
 
-  removeCursor (): void {
+  removeCursor(): void {
     if (this.bookmark) {
       this.bookmark.clear()
       this.bookmark = undefined
@@ -130,7 +123,7 @@ export class CollaboratorCursor {
     }
   }
 
-  updateSelection (anchor: CodeMirror.Position, head: CodeMirror.Position) {
+  updateSelection(anchor: CodeMirror.Position, head: CodeMirror.Position) {
     if (this.selection) {
       this.selection.clear()
     }
@@ -155,19 +148,19 @@ export class CollaboratorCursor {
     this.updateCursor(head, false)
   }
 
-  removeSelection () {
+  removeSelection() {
     if (this.selection) {
       this.selection.clear()
       this.selection = undefined
     }
   }
 
-  clean () {
+  clean() {
     this.removeCursor()
     this.cm.getWrapperElement().removeChild(this.cursorTransition)
   }
 
-  private translate (from: CodeMirror.Position, to: CodeMirror.Position, animated = true) {
+  private translate(from: CodeMirror.Position, to: CodeMirror.Position, animated = true) {
     this.transitionPos = to
     this.nextPos = undefined
     const { left, top } = this.cm.cursorCoords(from, 'local')
@@ -199,7 +192,7 @@ export class CollaboratorCursor {
     }, 0)
   }
 
-  private calculateCursorProperties (): {height: string, marginTop: string} {
+  private calculateCursorProperties(): { height: string; marginTop: string } {
     if (this.bookmark) {
       let fontSize: string
       const previousSibling: any = this.cursorBookmark.parentElement.previousElementSibling
@@ -213,12 +206,12 @@ export class CollaboratorCursor {
       const cursorHeight = fontSizeNumber + 5
       return {
         height: `${cursorHeight}px`,
-        marginTop: `${(lineHeight - cursorHeight) / 2}px`
+        marginTop: `${(lineHeight - cursorHeight) / 2}px`,
       }
     }
   }
 
-  private setBookmarkCursorProperties () {
+  private setBookmarkCursorProperties() {
     if (this.bookmark) {
       const { height, marginTop } = this.calculateCursorProperties()
       if (this.cursor.style.height !== height) {

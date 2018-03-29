@@ -4,11 +4,10 @@ import { Doc } from '../../core/Doc'
 import { DateEnhancedPipe } from './date-enhanced.pipe'
 
 @Pipe({
-  name: 'muteRemote'
+  name: 'muteRemote',
 })
 export class RemotePipe extends DateEnhancedPipe implements PipeTransform {
-
-  transform (doc: Doc): string {
+  transform(doc: Doc): string {
     if (doc) {
       if (doc.remotes.length === 0) {
         return 'No'
@@ -20,5 +19,4 @@ export class RemotePipe extends DateEnhancedPipe implements PipeTransform {
     }
     return ''
   }
-
 }

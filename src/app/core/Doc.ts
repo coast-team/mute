@@ -2,14 +2,13 @@ import { File } from './File'
 import { Folder } from './Folder'
 
 export class Doc extends File {
-
   public key: string
   public remotes: Array<{
-    id: string,
+    id: string
     synchronized?: Date
   }>
 
-  static deserialize (id: string, serialized: any): Doc {
+  static deserialize(id: string, serialized: any): Doc {
     const doc = new Doc()
     doc.remotes = serialized.remotes || []
     doc.key = serialized.key
@@ -17,7 +16,7 @@ export class Doc extends File {
     return doc
   }
 
-  static create (key: string, title: string, parentFolderId?: string): Doc {
+  static create(key: string, title: string, parentFolderId?: string): Doc {
     const doc = new Doc()
     doc.created = new Date()
     doc.key = key
@@ -26,15 +25,19 @@ export class Doc extends File {
     return doc
   }
 
-  constructor () {
+  constructor() {
     super()
   }
 
-  get isDoc () { return true }
+  get isDoc() {
+    return true
+  }
 
-  get title () { return this._title }
+  get title() {
+    return this._title
+  }
 
-  set title (newTitle: string) {
+  set title(newTitle: string) {
     newTitle = newTitle || 'Untitled Document'
     if (this._title !== newTitle) {
       this._title = newTitle
@@ -42,7 +45,7 @@ export class Doc extends File {
     }
   }
 
-  addRemote (id: string) {
+  addRemote(id: string) {
     for (const r of this.remotes) {
       if (r.id === id) {
         return false
@@ -52,11 +55,11 @@ export class Doc extends File {
     return true
   }
 
-  serialize (): any {
+  serialize(): any {
     return Object.assign(super.serialize(), {
       type: 'doc',
       key: this.key,
-      remotes: this.remotes
+      remotes: this.remotes,
     })
   }
 }

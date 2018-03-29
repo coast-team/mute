@@ -11,12 +11,10 @@ import { CollaboratorCursor } from './CollaboratorCursor'
 import * as proto from './cursor_pb'
 
 @Directive({
-  selector: '[muteCursors]'
+  selector: '[muteCursors]',
 })
-
 @Injectable()
 export class CursorsDirective implements OnInit, OnDestroy {
-
   @Input() cm: CodeMirror.Editor
   @Input() mcDocService: DocService
 
@@ -33,10 +31,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
   protected id: string
 
-  constructor (
-    private collabService: RichCollaboratorsService,
-    private network: NetworkService
-  ) {
+  constructor(private collabService: RichCollaboratorsService, private network: NetworkService) {
     this.id = 'Cursor'
     this.protoCursor = proto.Cursor.create()
     this.protoAnchor = proto.Position.create()
@@ -45,7 +40,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.subs = []
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.cmDoc = this.cm.getDoc()
 
     // When a new peer joins
@@ -112,11 +107,11 @@ export class CursorsDirective implements OnInit, OnDestroy {
       })
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.subs.forEach((sub) => sub.unsubscribe())
   }
 
-  private protoPos2codemirrorPos (pos: proto.IPosition): CodeMirror.Position {
+  private protoPos2codemirrorPos(pos: proto.IPosition): CodeMirror.Position {
     if (pos.id) {
       const id = Identifier.fromPlain(pos.id)
       return this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pos.index)
@@ -126,7 +121,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     }
   }
 
-  private sendMyCursorPos () {
+  private sendMyCursorPos() {
     const anchor = this.cmDoc.getCursor('anchor')
     const head = this.cmDoc.getCursor('head')
 
@@ -154,7 +149,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
       this.protoHead.index = muteCoreHead.index
       this.protoCursor.head = this.protoHead
     } else {
-        // End of the document
+      // End of the document
       this.protoHead.id = undefined
       this.protoHead.index = undefined
     }
@@ -164,7 +159,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
   }
 
-  private listenEventsForCursorChange () {
+  private listenEventsForCursorChange() {
     let cursorShouldBeSent = false
 
     CodeMirror.on(this.cm, 'cursorActivity', (instance: CodeMirror.Editor) => {
@@ -177,9 +172,11 @@ export class CursorsDirective implements OnInit, OnDestroy {
       // Cursor should be sent if the key is one that moves the cursor (arrow keys for example)
       cursorShouldBeSent = 33 <= event.keyCode && event.keyCode <= 40
     })
-    CodeMirror.on(this.cm, 'mousedown', () => cursorShouldBeSent = true)
+    CodeMirror.on(this.cm, 'mousedown', () => (cursorShouldBeSent = true))
 
-    CodeMirror.on(this.cm, 'touchstart', () => { cursorShouldBeSent = true })
+    CodeMirror.on(this.cm, 'touchstart', () => {
+      cursorShouldBeSent = true
+    })
 
     CodeMirror.on(this.cm, 'keyHandled', (instance: CodeMirror.Editor, name: string, event: Event) => {
       // check whether all text were selected

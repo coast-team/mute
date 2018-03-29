@@ -8,4 +8,6 @@ export const AUTHORS: Array<[number, string]> = [
   [randId(), 'Geralt of Rivia'],
 ]
 
-function randId () { return Math.ceil(Math.random() * 10000)}
+function randId() {
+  return Math.ceil(Math.random() * 10000)
+}

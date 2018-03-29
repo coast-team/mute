@@ -7,45 +7,43 @@ import { File } from '../File'
 
 @Injectable()
 export class UiService {
-
   private docDigestSubject: Subject<number>
   private docTreeSubject: Subject<string>
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
 
-  constructor () {
+  constructor() {
     this.docDigestSubject = new Subject()
     this.docTreeSubject = new Subject()
     this.navToggleSubject = new Subject<void>()
     this.docNavToggleSubject = new Subject<void>()
   }
 
-  get onNavToggle (): Observable<void> {
+  get onNavToggle(): Observable<void> {
     return this.navToggleSubject.asObservable()
   }
 
-  toggleNav (): void {
+  toggleNav(): void {
     this.navToggleSubject.next()
   }
 
-  get onDocNavToggle (): Observable<void> {
+  get onDocNavToggle(): Observable<void> {
     return this.docNavToggleSubject.asObservable()
   }
 
-  set digest (digest: number) {
+  set digest(digest: number) {
     this.docDigestSubject.next(digest)
   }
 
-  get onDocDigest (): Observable<number> {
+  get onDocDigest(): Observable<number> {
     return this.docDigestSubject.asObservable()
   }
 
-  set tree (tree: string) {
+  set tree(tree: string) {
     this.docTreeSubject.next(tree)
   }
 
-  get onDocTree (): Observable<string> {
+  get onDocTree(): Observable<string> {
     return this.docTreeSubject.asObservable()
   }
-
 }

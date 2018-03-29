@@ -7,30 +7,25 @@ let comp: TimelineComponent
 let fixture: ComponentFixture<TimelineComponent>
 
 describe('TimelineComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        TimelineComponent
-      ],
-      imports: [
-        RouterTestingModule
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      providers: [
-      ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [TimelineComponent],
+        imports: [RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [],
+      })
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(TimelineComponent)
+          comp = fixture.componentInstance
+        })
     })
-    .compileComponents()
-    .then(() => {
-      fixture = TestBed.createComponent(TimelineComponent)
-      comp = fixture.componentInstance
-    })
-  }))
+  )
   tests()
 })
 
-function tests () {
+function tests() {
   it('Correct Init', () => {
     expect(comp).toBeTruthy()
   })

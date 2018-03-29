@@ -9,19 +9,11 @@ import { Pipe, PipeTransform } from '@angular/core'
  *   {{ 1024 |  size}}
  *   formats to: 1 KB
 */
-@Pipe({name: 'muteSize'})
+@Pipe({ name: 'muteSize' })
 export class SizePipe implements PipeTransform {
+  private units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB']
 
-  private units = [
-    'bytes',
-    'KB',
-    'MB',
-    'GB',
-    'TB',
-    'PB'
-  ]
-
-  transform (bytes = 0, precision = 2 ): string {
+  transform(bytes = 0, precision = 2): string {
     if (isNaN(parseFloat(String(bytes))) || !isFinite(bytes)) {
       return '?'
     }

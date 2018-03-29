@@ -5,11 +5,10 @@ import { Subscription } from 'rxjs/Subscription'
 @Component({
   selector: 'mute-timeline',
   templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss']
+  styleUrls: ['./timeline.component.scss'],
 })
 @Injectable()
 export class TimelineComponent implements OnInit, OnDestroy {
-
   @Input() currentOp: number
   @Input() delay: number
   @Input() nbOperations: number
@@ -21,17 +20,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private subscriptionPlayer: Subscription
   stepSize: number
 
-  constructor () {
+  constructor() {
     this.onSlide = new EventEmitter<number>()
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.step = 1
     this.stepSize = 1
     this.player = timer(0, this.delay)
   }
 
-  updateOperation (newOp: number) {
+  updateOperation(newOp: number) {
     if (newOp <= this.nbOperations) {
       this.currentOp = newOp
     } else {
@@ -41,30 +40,29 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.onSlide.emit(this.currentOp)
   }
 
-  play () {
+  play() {
     this.subscriptionPlayer = this.player.subscribe(() => {
       this.updateOperation(this.currentOp + this.step)
     })
   }
 
-  pause () {
+  pause() {
     this.subscriptionPlayer.unsubscribe()
   }
 
-  goToBegin () {
+  goToBegin() {
     this.currentOp = 0
     this.onSlide.emit(this.currentOp)
   }
 
-  goToEnd () {
+  goToEnd() {
     this.currentOp = this.nbOperations
     this.onSlide.emit(this.currentOp)
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     if (this.subscriptionPlayer) {
       this.pause()
     }
   }
-
 }

@@ -1,11 +1,5 @@
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger
-} from '@angular/animations'
-import { Component, OnDestroy, ViewChild,  } from '@angular/core'
+import { animate, state, style, transition, trigger } from '@angular/animations'
+import { Component, OnDestroy, ViewChild } from '@angular/core'
 import { MatButton, MatCard, MatDialog, MatSnackBar } from '@angular/material'
 
 import { Profile } from '../../core/settings/Profile'
@@ -18,63 +12,61 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
   styleUrls: ['./profile.component.scss'],
   animations: [
     trigger('cardState', [
-      state('visible', style({
-        opacity: '1'
-      })),
+      state(
+        'visible',
+        style({
+          opacity: '1',
+        })
+      ),
       transition('void => visible', animate('150ms ease-out')),
-      transition('visible => void', animate('150ms ease-in'))
-    ])
-  ]
+      transition('visible => void', animate('150ms ease-in')),
+    ]),
+  ],
 })
 export class ProfileComponent implements OnDestroy {
-
   @ViewChild('profileIcon') profileIcon: MatButton
 
   public cardState: string
   public profile: Profile
 
-  constructor (
-    private snackBar: MatSnackBar,
-    public settings: SettingsService,
-    private dialog: MatDialog
-  ) {
+  constructor(private snackBar: MatSnackBar, public settings: SettingsService, private dialog: MatDialog) {
     this.profile = settings.profile
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     global.window.removeEventListener('click', this.hideCard)
   }
 
-  clickOnCard (event: Event) {
+  clickOnCard(event: Event) {
     event.stopPropagation()
   }
 
-  openSettingsDialog () {
+  openSettingsDialog() {
     const dialog = this.dialog.open(ConfigDialogComponent)
     dialog.afterClosed().subscribe(() => {
       this.cardState = 'void'
     })
   }
 
-  signout () {
-    this.settings.signout()
-      .then(() => {
-        this.profile = this.settings.profile
-        const snackBarRef = this.snackBar.open('Signed out', 'close', {
-          duration: 3000
-        })
-        this.profileIcon.focus()
-        snackBarRef.afterDismissed().subscribe(() => this.hideCard())
+  signout() {
+    this.settings.signout().then(() => {
+      this.profile = this.settings.profile
+      const snackBarRef = this.snackBar.open('Signed out', 'close', {
+        duration: 3000,
       })
+      this.profileIcon.focus()
+      snackBarRef.afterDismissed().subscribe(() => this.hideCard())
+    })
   }
 
-  signinWith (provider: string) {
-    this.settings.signin(provider)
+  signinWith(provider: string) {
+    this.settings
+      .signin(provider)
       .then(() => {
         this.profile = this.settings.profile
         provider = provider[0].toUpperCase() + provider.substr(1)
         const snackBarRef = this.snackBar.open(`Signed in with ${provider}`, 'close', {
-          duration: 5000
+          duration: 5000,
         })
         this.profileIcon.focus()
         snackBarRef.afterDismissed().subscribe(() => this.hideCard())
@@ -83,12 +75,12 @@ export class ProfileComponent implements OnDestroy {
         log.error('Failed to signin: ', err)
         provider = provider[0].toUpperCase() + provider.substr(1)
         this.snackBar.open(`FAILED to sign in with ${provider}`, 'close', {
-          duration: 5000
+          duration: 5000,
         })
       })
   }
 
-  toggleCard (event: Event) {
+  toggleCard(event: Event) {
     event.stopPropagation()
     if (this.cardState === 'visible') {
       this.hideCard()
@@ -97,12 +89,12 @@ export class ProfileComponent implements OnDestroy {
     }
   }
 
-  showCard () {
+  showCard() {
     global.window.addEventListener('click', this.hideCard.bind(this))
     this.cardState = 'visible'
   }
 
-  hideCard () {
+  hideCard() {
     global.window.removeEventListener('click', this.hideCard)
     this.cardState = 'void'
   }

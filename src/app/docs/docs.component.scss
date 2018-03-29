@@ -35,7 +35,8 @@
 .contenteditable {
   padding: 4px;
 
-  &:active, &:focus{
+  &:active,
+  &:focus {
     outline-width: 1px;
     outline-color: var(--theme-accent);
   }
@@ -76,7 +77,6 @@
   font-weight: 700;
 }
 
-
 .title-button {
   position: relative;
   bottom: 1px;
@@ -97,7 +97,6 @@ mat-sidenav-container {
   }
 
   .rightsidenav {
-
     .divider {
       border: 0;
       height: 1px;

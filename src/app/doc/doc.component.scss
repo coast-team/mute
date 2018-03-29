@@ -8,9 +8,15 @@
   display: block;
   width: 100%;
 
-  &.editor-md { width: 65%; }
-  &.editor-lg { width: 80%; }
-  &.editor-gt-lg { width: 80%; }
+  &.editor-md {
+    width: 65%;
+  }
+  &.editor-lg {
+    width: 80%;
+  }
+  &.editor-gt-lg {
+    width: 80%;
+  }
 }
 
 .info-panel {

@@ -6,12 +6,13 @@ describe('SyncComponent', () => {
   let component: SyncComponent
   let fixture: ComponentFixture<SyncComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SyncComponent ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [SyncComponent],
+      }).compileComponents()
     })
-    .compileComponents()
-  }))
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SyncComponent)

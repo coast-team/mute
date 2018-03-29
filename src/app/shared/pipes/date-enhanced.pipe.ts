@@ -9,11 +9,10 @@ const todayDate = today.getDate()
 const basic = 'MMMM d, y, h:mm a'
 
 @Pipe({
-  name: 'muteDate'
+  name: 'muteDate',
 })
 export class DateEnhancedPipe extends DatePipe implements PipeTransform {
-
-  transform (date: any): string {
+  transform(date: any): string {
     if (date && date instanceof Date) {
       let prefix = ''
       let format = 'MMMM d, y, h:mm a'
@@ -30,5 +29,4 @@ export class DateEnhancedPipe extends DatePipe implements PipeTransform {
     }
     return ''
   }
-
 }

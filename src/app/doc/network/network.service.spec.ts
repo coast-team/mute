@@ -12,5 +12,4 @@ describe('NetworkService', () => {
   it('Correct Init', () => {
     expect(networkService).toBeTruthy()
   })
-
 })

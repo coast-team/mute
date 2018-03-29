@@ -6,7 +6,7 @@ export enum EIndexedDBState {
   OK = 3,
 }
 
-export async function getIndexedDBState (): Promise<EIndexedDBState> {
+export async function getIndexedDBState(): Promise<EIndexedDBState> {
   if (!state) {
     if (window.indexedDB) {
       // open test

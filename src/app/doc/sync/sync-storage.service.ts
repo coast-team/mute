@@ -10,22 +10,22 @@ import { RichLogootSOperation, State } from 'mute-core'
 
 @Injectable()
 export class SyncStorageService {
-
   private doc: Doc
 
   private storedStateObservable: Observable<State>
   private storedStateObservers: Array<Observer<State>> = []
 
-  constructor (private storage: LocalStorageService) {
+  constructor(private storage: LocalStorageService) {
     this.storedStateObservable = Observable.create((observer) => {
       this.storedStateObservers.push(observer)
     })
   }
 
-  set initSource (source: Observable<Doc>) {
+  set initSource(source: Observable<Doc>) {
     source.subscribe((doc: Doc) => {
       this.doc = doc
-      this.storage.getDocBody(doc)
+      this.storage
+        .getDocBody(doc)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
             .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
@@ -42,13 +42,11 @@ export class SyncStorageService {
     })
   }
 
-  set stateSource (source: Observable<State>) {
-    source.pipe(
-      auditTime(2000)
-    ).subscribe((state) => this.storage.saveDocBody(this.doc, state))
+  set stateSource(source: Observable<State>) {
+    source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocBody(this.doc, state))
   }
 
-  get onStoredState (): Observable<State> {
+  get onStoredState(): Observable<State> {
     return this.storedStateObservable
   }
 }

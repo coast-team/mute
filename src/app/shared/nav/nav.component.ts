@@ -15,7 +15,7 @@ import { JoinDialogComponent } from './join-dialog/join-dialog.component'
   selector: 'mute-nav',
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent implements OnDestroy {
   @Input() selected: Folder
@@ -37,7 +37,7 @@ export class NavComponent implements OnDestroy {
 
   private subs: Subscription[]
 
-  constructor (
+  constructor(
     private router: Router,
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
@@ -52,49 +52,48 @@ export class NavComponent implements OnDestroy {
     this.isRemoteExist = this.botStorage.remote !== undefined
     this.subs[this.subs.length] = this.botStorage.onStatus.subscribe((code) => {
       switch (code) {
-      case BotStorageService.NOT_RESPONDING:
-        this.remoteErrorMessage = 'Remote server is not responding'
-        break
-      case BotStorageService.NOT_AUTHORIZED:
-        this.remoteErrorMessage = 'Unavailable for non authenticated users'
-        break
-      case BotStorageService.AVAILABLE:
-        this.remoteErrorMessage = undefined
-        break
+        case BotStorageService.NOT_RESPONDING:
+          this.remoteErrorMessage = 'Remote server is not responding'
+          break
+        case BotStorageService.NOT_AUTHORIZED:
+          this.remoteErrorMessage = 'Unavailable for non authenticated users'
+          break
+        case BotStorageService.AVAILABLE:
+          this.remoteErrorMessage = undefined
+          break
       }
       this.cd.markForCheck()
     })
     switch (this.localStorage.status) {
-    case LocalStorageService.NOT_SUPPORTED:
-      this.localErrorMessage = 'Not supported in your browser'
-      break
-    case LocalStorageService.NO_ACCESS:
-      this.localErrorMessage = 'Disabled by your browser'
-      break
-    case LocalStorageService.AVAILABLE:
-      this.localErrorMessage = undefined
-      break
+      case LocalStorageService.NOT_SUPPORTED:
+        this.localErrorMessage = 'Not supported in your browser'
+        break
+      case LocalStorageService.NO_ACCESS:
+        this.localErrorMessage = 'Disabled by your browser'
+        break
+      case LocalStorageService.AVAILABLE:
+        this.localErrorMessage = undefined
+        break
     }
     // this.cd.markForCheck()
     const nav: any = navigator
     if (nav.storage && nav.storage.estimate) {
       this.isStorageManagerAvailable = true
-      nav.storage.estimate()
-        .then(({quota, usage}: {quota: number, usage: number}) => {
-          this.quota = quota
-          this.usage = usage
-          this.cd.markForCheck()
-        })
+      nav.storage.estimate().then(({ quota, usage }: { quota: number; usage: number }) => {
+        this.quota = quota
+        this.usage = usage
+        this.cd.markForCheck()
+      })
     } else {
       this.isStorageManagerAvailable = false
     }
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.subs.forEach((sub) => sub.unsubscribe())
   }
 
-  createDoc (remotely = false) {
+  createDoc(remotely = false) {
     const key = this.localStorage.generateKey()
     if (remotely) {
       this.router.navigate(['/', key, { remote: true }])
@@ -103,19 +102,19 @@ export class NavComponent implements OnDestroy {
     }
   }
 
-  openFolder (folder: Folder) {
+  openFolder(folder: Folder) {
     this.settings.updateOpenedFolder(folder)
     this.selected = folder
     this.router.navigate(['/'])
   }
 
-  openSettingsDialog () {
+  openSettingsDialog() {
     this.dialog.open(ConfigDialogComponent)
   }
 
-  openJoinDialog () {
+  openJoinDialog() {
     this.dialog.open(JoinDialogComponent, {
-      width: '300px'
+      width: '300px',
     })
   }
 }

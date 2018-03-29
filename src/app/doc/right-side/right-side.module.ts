@@ -8,17 +8,9 @@ import { InviteBotComponent } from './invite-bot/invite-bot.component'
 import { RightSideComponent } from './right-side.component'
 
 @NgModule({
-  declarations: [
-    RightSideComponent,
-    InviteBotComponent,
-    MarkdownCheatsheetComponent,
-    DetailsComponent
-  ],
-  imports: [
-    SharedModule,
-    RouterModule
-  ],
-  exports: [ RightSideComponent ],
-  providers: [ ]
+  declarations: [RightSideComponent, InviteBotComponent, MarkdownCheatsheetComponent, DetailsComponent],
+  imports: [SharedModule, RouterModule],
+  exports: [RightSideComponent],
+  providers: [],
 })
-export class RightSideModule { }
+export class RightSideModule {}

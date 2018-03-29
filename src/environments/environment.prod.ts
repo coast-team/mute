@@ -14,9 +14,9 @@ export const environment = {
   rtcConfiguration: {
     iceServers: [
       {
-        urls: 'stun:stun.l.google.com:19302'
-      }
-    ]
+        urls: 'stun:stun.l.google.com:19302',
+      },
+    ],
   },
 
   // Signaling server URL
@@ -33,8 +33,8 @@ export const environment = {
     {
       secure: true, // If true: https & wss protocols are used
       host: 'botstorage.coedit.re', // Server hostname or IP address
-      port: 443 // Server port
-    }
+      port: 443, // Server port
+    },
   ],
 
   // Authentication providers
@@ -42,7 +42,7 @@ export const environment = {
     baseUrl: 'https://auth.coedit.re/',
     providers: {
       github: { clientId: '', scope: [] }, // Github application clientId
-      google: { clientId: '', scope: [] }  // Google application clientId
-    }
-  }
+      google: { clientId: '', scope: [] }, // Google application clientId
+    },
+  },
 }

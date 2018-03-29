@@ -23,7 +23,8 @@ import { UiService } from '../core/ui/ui.service'
       <a #link [href]="objectURL" [download]="filename"></a>
     </div>
   `,
-  styles: [`
+  styles: [
+    `
     :host {
       position: fixed;
       bottom: 10px;
@@ -34,10 +35,10 @@ import { UiService } from '../core/ui/ui.service'
     button {
       padding: 2px 3px;
     }
-  `]
+  `,
+  ],
 })
 export class DevLabelComponent implements OnInit {
-
   @ViewChild('link') link: ElementRef
   @ViewChild('detectChanges') detectChanges: ElementRef
   private tree: string
@@ -49,7 +50,7 @@ export class DevLabelComponent implements OnInit {
   public filename: string
   public nbOfDetectChanges: number
 
-  constructor (
+  constructor(
     private sanitizer: DomSanitizer,
     private ui: UiService,
     private detectRef: ChangeDetectorRef,
@@ -61,7 +62,7 @@ export class DevLabelComponent implements OnInit {
     this.shortID = (hash as any).substr(0, 7)
   }
 
-  ngOnInit (): void {
+  ngOnInit(): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
       this.digest = mnemonic.encode_int32(digest)
       this.detectRef.detectChanges()
@@ -72,13 +73,13 @@ export class DevLabelComponent implements OnInit {
     })
   }
 
-  private updateObjectURL (blob: Blob): void {
+  private updateObjectURL(blob: Blob): void {
     const objectURL = URL.createObjectURL(blob)
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
     this.detectRef.detectChanges()
   }
 
-  async exportLog (): Promise<void> {
+  async exportLog(): Promise<void> {
     const urlParts: string[] = window.location.href.split('/')
     const docID = urlParts[urlParts.length - 1]
     try {
@@ -93,11 +94,11 @@ export class DevLabelComponent implements OnInit {
     }
   }
 
-  exportTree (): void {
+  exportTree(): void {
     if (this.tree !== undefined) {
       const urlParts: string[] = window.location.href.split('/')
       const docID = urlParts[urlParts.length - 1]
-      const blob = new Blob([this.tree], { type : 'text\/json' })
+      const blob = new Blob([this.tree], { type: 'text/json' })
       this.filename = `tree-${docID}-${this.digest}.json`
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
@@ -109,9 +110,8 @@ export class DevLabelComponent implements OnInit {
     }
   }
 
-  detectChangesRun () {
+  detectChangesRun() {
     this.detectChanges.nativeElement.innerHTML = ++this.nbOfDetectChanges
     return false
   }
-
 }

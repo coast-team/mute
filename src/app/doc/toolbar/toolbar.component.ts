@@ -7,7 +7,7 @@ import { LocalStorageService } from '../../core/storage/local/local-storage.serv
 @Component({
   selector: 'mute-toolbar',
   templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.scss']
+  styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
   @Input() doc: Doc
@@ -15,14 +15,12 @@ export class ToolbarComponent {
   @Output() info: EventEmitter<void>
   @ViewChild('input') input: ElementRef
 
-  constructor (
-    private localStorage: LocalStorageService
-  ) {
+  constructor(private localStorage: LocalStorageService) {
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
   }
 
-  updateTitle (event) {
+  updateTitle(event) {
     if (event.type === 'keydown' && event.keyCode === 13) {
       this.input.nativeElement.blur()
     } else if (event.type === 'blur') {
@@ -36,7 +34,7 @@ export class ToolbarComponent {
     }
   }
 
-  selectTitle () {
+  selectTitle() {
     this.input.nativeElement.select()
   }
 }

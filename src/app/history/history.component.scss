@@ -29,7 +29,6 @@ mat-card {
 mat-sidenav-container {
   height: 100%;
 
-
   .leftsidenav {
     min-width: 250px;
   }
@@ -40,28 +39,26 @@ mat-sidenav-container {
   }
 
   @keyframes slidein {
-  from {
-    letter-spacing: -10px;
-    opacity: 0;
+    from {
+      letter-spacing: -10px;
+      opacity: 0;
+    }
+
+    to {
+      letter-spacing: normal;
+      opacity: 1;
+    }
   }
 
-  to {
-    letter-spacing: normal;
-    opacity: 1;
+  @keyframes slideout {
+    from {
+      font-size: 100%;
+      opacity: 1;
+    }
+
+    to {
+      font-size: 0%;
+      opacity: 0;
+    }
   }
 }
-
-@keyframes slideout {
-  from {
-    font-size: 100%;
-    opacity: 1;
-  }
-
-  to {
-    font-size: 0%;
-    opacity: 0;
-  }
-}
-
-}
-

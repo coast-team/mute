@@ -1,12 +1,6 @@
 {
-  "extends": [
-    "tslint-eslint-rules",
-    "tslint:recommended",
-    "tslint-config-prettier"
-  ],
-  "rulesDirectory": [
-    "node_modules/codelyzer"
-  ],
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rulesDirectory": ["node_modules/codelyzer"],
   "rules": {
     "callable-types": true,
     "deprecation": {
@@ -14,42 +8,19 @@
     },
     "max-classes-per-file": false,
     "trailing-comma": false,
-    "import-blacklist": [
-      true,
-      "rxjs",
-      "rxjs/Rx"
-    ],
-    "max-line-length": [
-      true,
-      140
-    ],
+    "import-blacklist": [true, "rxjs", "rxjs/Rx"],
     "member-access": false,
     "member-ordering": [
       true,
       {
-        "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
-        ]
+        "order": ["static-field", "instance-field", "static-method", "instance-method"]
       }
     ],
-    "no-console": [
-      true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
-    ],
+    "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
     "no-default-export": true,
     "no-duplicate-variable": true,
     "no-empty": false,
-    "no-inferrable-types": [
-      true,
-      "ignore-params"
-    ],
+    "no-inferrable-types": [true, "ignore-params"],
     "no-non-null-assertion": true,
     "no-invalid-this": true,
     "no-require-imports": false,
@@ -57,20 +28,11 @@
     "no-string-literal": false,
     "no-switch-case-fall-through": true,
     "no-use-before-declare": true,
-    "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,
-    "quotemark": [true, "single"],
-    // "semicolon": [true, "never"],
-    "variable-name": [
-      true,
-      "allow-leading-underscore",
-      "ban-keywords",
-      "check-format"
-    ],
+    "variable-name": [true, "allow-leading-underscore", "ban-keywords", "check-format"],
     "no-unused-variable": {
       "severity": "warning"
     },
-    "ter-indent": [true, 2],
     "directive-selector": [true, "attribute", "mute", "camelCase"],
     "component-selector": [true, "element", "mute", "kebab-case"],
     "use-input-property-decorator": true,
@@ -85,10 +47,6 @@
     "use-pipe-transform-interface": true,
     "pipe-naming": [true, "camelCase", "mute"],
     "component-class-suffix": true,
-    "directive-class-suffix": true,
-    "import-destructuring-spacing": true,
-    "templates-use-public": true,
-    "invoke-injectable": true,
-    "space-before-function-paren": true
+    "directive-class-suffix": true
   }
 }

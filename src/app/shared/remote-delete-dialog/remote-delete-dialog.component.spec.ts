@@ -1,25 +1,26 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { RemoteDeleteDialogComponent } from './remote-delete-dialog.component';
+import { RemoteDeleteDialogComponent } from './remote-delete-dialog.component'
 
 describe('RemoteDeleteDialogComponent', () => {
-  let component: RemoteDeleteDialogComponent;
-  let fixture: ComponentFixture<RemoteDeleteDialogComponent>;
+  let component: RemoteDeleteDialogComponent
+  let fixture: ComponentFixture<RemoteDeleteDialogComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RemoteDeleteDialogComponent ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [RemoteDeleteDialogComponent],
+      }).compileComponents()
     })
-    .compileComponents();
-  }));
+  )
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RemoteDeleteDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(RemoteDeleteDialogComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

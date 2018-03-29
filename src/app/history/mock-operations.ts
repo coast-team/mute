@@ -8,5 +8,5 @@ export const OPERATIONS: Array<TextDelete | TextInsert> = [
   new TextInsert(62, 'u'),
   new TextInsert(67, 'Mute is collaborative text editor. '),
   new TextDelete(127, 3),
-  new TextInsert(127, '4.0.0')
+  new TextInsert(127, '4.0.0'),
 ]

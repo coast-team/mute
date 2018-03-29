@@ -1,25 +1,26 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { DocRenameDialogComponent } from './doc-rename-dialog.component';
+import { DocRenameDialogComponent } from './doc-rename-dialog.component'
 
 describe('DocRenameDialogComponent', () => {
-  let component: DocRenameDialogComponent;
-  let fixture: ComponentFixture<DocRenameDialogComponent>;
+  let component: DocRenameDialogComponent
+  let fixture: ComponentFixture<DocRenameDialogComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DocRenameDialogComponent ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [DocRenameDialogComponent],
+      }).compileComponents()
     })
-    .compileComponents();
-  }));
+  )
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocRenameDialogComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(DocRenameDialogComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

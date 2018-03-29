@@ -10,7 +10,7 @@ describe('LocalStorageService', () => {
     doc = localStorage.createDoc()
   })
 
-  it ('Correct Init', () => {
+  it('Correct Init', () => {
     expect(localStorage).toBeTruthy()
   })
 
@@ -21,11 +21,10 @@ describe('LocalStorageService', () => {
   })
 
   it('Delete doc', () => {
-    localStorage.delete(doc).then( () => {
-      localStorage.get(doc.id).catch( (del) => {
+    localStorage.delete(doc).then(() => {
+      localStorage.get(doc.id).catch((del) => {
         expect(del === new Error('Cannot find document ' + doc.id)).toBeTruthy()
       })
     })
   })
-
 })

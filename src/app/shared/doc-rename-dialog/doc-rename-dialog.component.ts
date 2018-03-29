@@ -9,36 +9,32 @@ import { LocalStorageService } from '../../core/storage/local/local-storage.serv
 @Component({
   selector: 'mute-doc-rename-dialog',
   templateUrl: './doc-rename-dialog.component.html',
-  styleUrls: ['./doc-rename-dialog.component.css']
+  styleUrls: ['./doc-rename-dialog.component.css'],
 })
 export class DocRenameDialogComponent {
-
   public title: string
   public titleFormControl: FormControl
 
   private doc: Doc
 
-  constructor (
+  constructor(
     public dialogRef: MatDialogRef<DocRenameDialogComponent>,
     public localStorage: LocalStorageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.doc = data
     this.title = this.doc.title
-    this.titleFormControl = new FormControl('', [
-      Validators.maxLength(128),
-    ])
+    this.titleFormControl = new FormControl('', [Validators.maxLength(128)])
   }
 
-  selectAll (event: FocusEvent) {
-    (event.target as HTMLInputElement).select()
+  selectAll(event: FocusEvent) {
+    ;(event.target as HTMLInputElement).select()
   }
 
-  save () {
+  save() {
     if (this.title !== '') {
       this.doc.title = this.title
       this.localStorage.save(this.doc)
     }
   }
-
 }

@@ -13,7 +13,6 @@ import { RichCollaborator } from './RichCollaborator'
 
 @Injectable()
 export class RichCollaboratorsService {
-
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
   private updateSubject: Subject<RichCollaborator>
@@ -22,71 +21,75 @@ export class RichCollaboratorsService {
 
   public collaborators: RichCollaborator[]
 
-  constructor (settings: SettingsService, network: NetworkService) {
+  constructor(settings: SettingsService, network: NetworkService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.updateSubject = new Subject()
 
     this.availableColors = COLORS.slice()
 
-    let me = new RichCollaborator({
-      id: -1,
-      login: settings.profile.login,
-      displayName: settings.profile.displayName,
-      email: settings.profile.email,
-      avatar: settings.profile.avatar
-    }, this.pickColor())
+    let me = new RichCollaborator(
+      {
+        id: -1,
+        login: settings.profile.login,
+        displayName: settings.profile.displayName,
+        email: settings.profile.email,
+        avatar: settings.profile.avatar,
+      },
+      this.pickColor()
+    )
     this.collaborators = [me]
-    settings.onChange.pipe(
-      filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
-    ).subscribe(
-      (props) => {
+    settings.onChange
+      .pipe(filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)))
+      .subscribe((props) => {
         const index = this.collaborators.indexOf(me)
         if (props.includes(EProperties.profile)) {
-          me = new RichCollaborator({
-            id: -1,
-            login: settings.profile.login,
-            displayName: settings.profile.displayName,
-            email: settings.profile.email,
-            avatar: settings.profile.avatar
-          }, this.pickColor())
+          me = new RichCollaborator(
+            {
+              id: -1,
+              login: settings.profile.login,
+              displayName: settings.profile.displayName,
+              email: settings.profile.email,
+              avatar: settings.profile.avatar,
+            },
+            this.pickColor()
+          )
         } else {
           me.displayName = settings.profile.displayName
         }
         this.collaborators[index] = me
         this.updateSubject.next(me)
-      }
-    )
+      })
   }
 
-  get onUpdate (): Observable<RichCollaborator> {
+  get onUpdate(): Observable<RichCollaborator> {
     return this.updateSubject.asObservable()
   }
 
-  get onJoin (): Observable<RichCollaborator> {
+  get onJoin(): Observable<RichCollaborator> {
     return this.joinSubject.asObservable()
   }
 
-  get onLeave (): Observable<number> {
+  get onLeave(): Observable<number> {
     return this.leaveSubject.asObservable()
   }
 
-  set updateSource (source: Observable<ICollaborator>) {
+  set updateSource(source: Observable<ICollaborator>) {
     source.subscribe((collab: ICollaborator) => this.newOrUpdateCollab(collab))
   }
 
-  set joinSource (source: Observable<number>) {
+  set joinSource(source: Observable<number>) {
     source.subscribe((id: number) => this.newOrUpdateCollab({ id }))
   }
 
-  set leaveSource (source: Observable<number>) {
+  set leaveSource(source: Observable<number>) {
     source.subscribe((id: number) => {
       this.collaborators = this.collaborators.filter((c) => c.id !== id)
       this.leaveSubject.next(id)
     })
   }
 
-  private newOrUpdateCollab (collab: ICollaborator): void {
+  private newOrUpdateCollab(collab: ICollaborator): void {
     let rc
     for (const c of this.collaborators) {
       if (collab.id === c.id) {
@@ -106,7 +109,7 @@ export class RichCollaboratorsService {
     }
   }
 
-  private pickColor (): string {
+  private pickColor(): string {
     if (this.availableColors.length !== 0) {
       const index = Math.floor(Math.random() * this.availableColors.length)
       for (let i = 0; i < this.availableColors.length; i++) {
@@ -121,7 +124,7 @@ export class RichCollaboratorsService {
     }
   }
 
-  private recycleColor (color: string) {
+  private recycleColor(color: string) {
     if (!this.availableColors.includes(color)) {
       this.availableColors.push(color)
     }

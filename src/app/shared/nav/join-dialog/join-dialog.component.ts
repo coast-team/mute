@@ -6,24 +6,18 @@ import { Router } from '@angular/router'
 @Component({
   selector: 'mute-join-dialog',
   templateUrl: './join-dialog.component.html',
-  styleUrls: ['./join-dialog.component.css']
+  styleUrls: ['./join-dialog.component.css'],
 })
 export class JoinDialogComponent {
-
   public key: string
   public keyFormControl: FormControl
 
-  constructor (
-    private router: Router
-  ) {
+  constructor(private router: Router) {
     this.key = ''
-    this.keyFormControl = new FormControl('', [
-      Validators.maxLength(512),
-    ])
+    this.keyFormControl = new FormControl('', [Validators.maxLength(512)])
   }
 
-  join () {
+  join() {
     this.router.navigateByUrl(`/${this.key}`)
   }
-
 }

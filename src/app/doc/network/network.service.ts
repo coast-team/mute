@@ -13,7 +13,6 @@ import { BotProtocol, BotResponse, Message } from './message_pb'
 
 @Injectable()
 export class NetworkService {
-
   public wg: WebGroup
   public key: string
   private botUrls: string[]
@@ -41,9 +40,7 @@ export class NetworkService {
   private stateSubject: BehaviorSubject<WebGroupState>
   private signalingSubject: BehaviorSubject<SignalingState>
 
-  constructor (
-    private zone: NgZone
-  ) {
+  constructor(private zone: NgZone) {
     this.botUrls = []
     this.key = ''
 
@@ -64,11 +61,11 @@ export class NetworkService {
     }
   }
 
-  init (): void {
+  init(): void {
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
         signalingServer: environment.signalingServer,
-        rtcConfiguration: environment.rtcConfiguration
+        rtcConfiguration: environment.rtcConfiguration,
       })
       window.wg = this.wg
 
@@ -87,11 +84,16 @@ export class NetworkService {
         const msg = Message.decode(bytes)
         const serviceName = msg.service
         if (serviceName === 'botprotocol') {
-          const content = BotProtocol.create({key: this.key})
-          this.wg.sendTo(id, Message.encode(Message.create({
-            service: 'botprotocol',
-            content: BotProtocol.encode(content).finish()
-          })).finish())
+          const content = BotProtocol.create({ key: this.key })
+          this.wg.sendTo(
+            id,
+            Message.encode(
+              Message.create({
+                service: 'botprotocol',
+                content: BotProtocol.encode(content).finish(),
+              })
+            ).finish()
+          )
         } else if (serviceName === 'botresponse') {
           const url = BotResponse.decode(msg.content).url
           this.botUrls.push(url)
@@ -105,25 +107,24 @@ export class NetworkService {
     })
   }
 
-  leave () {
+  leave() {
     this.wg.leave()
   }
 
-  set initSource (source: Observable<string>) {
-    source.pipe(takeUntil(this.disposeSubject))
-      .subscribe((key: string) => {
-        this.key = key
-        this.join(key)
-      })
+  set initSource(source: Observable<string>) {
+    source.pipe(takeUntil(this.disposeSubject)).subscribe((key: string) => {
+      this.key = key
+      this.join(key)
+    })
   }
 
-  set messageToBroadcastSource (source: Observable<BroadcastMessage>) {
+  set messageToBroadcastSource(source: Observable<BroadcastMessage>) {
     this.messageToBroadcastSubscription = source.subscribe((broadcastMessage: BroadcastMessage) => {
       this.send(broadcastMessage.service, broadcastMessage.content)
     })
   }
 
-  set messageToSendRandomlySource (source: Observable<SendRandomlyMessage>) {
+  set messageToSendRandomlySource(source: Observable<SendRandomlyMessage>) {
     this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
       const otherMembers: number[] = this.members.filter((i) => i !== this.wg.myId)
       const index: number = Math.ceil(Math.random() * otherMembers.length) - 1
@@ -132,31 +133,49 @@ export class NetworkService {
     })
   }
 
-  set messageToSendToSource (source: Observable<SendToMessage>) {
+  set messageToSendToSource(source: Observable<SendToMessage>) {
     this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
       this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
     })
   }
 
-  get myId (): number { return this.wg.myId }
+  get myId(): number {
+    return this.wg.myId
+  }
 
-  get members (): number[] { return this.wg.members }
+  get members(): number[] {
+    return this.wg.members
+  }
 
-  get onMessage (): Observable<NetworkMessage> { return this.messageSubject.asObservable() }
+  get onMessage(): Observable<NetworkMessage> {
+    return this.messageSubject.asObservable()
+  }
 
-  get onJoin (): Observable<JoinEvent> { return this.joinSubject.asObservable() }
+  get onJoin(): Observable<JoinEvent> {
+    return this.joinSubject.asObservable()
+  }
 
-  get onLeave (): Observable<number> { return this.leaveSubject.asObservable() }
+  get onLeave(): Observable<number> {
+    return this.leaveSubject.asObservable()
+  }
 
-  get onPeerJoin (): Observable<number> { return this.peerJoinSubject.asObservable() }
+  get onPeerJoin(): Observable<number> {
+    return this.peerJoinSubject.asObservable()
+  }
 
-  get onPeerLeave (): Observable<number> { return this.peerLeaveSubject.asObservable() }
+  get onPeerLeave(): Observable<number> {
+    return this.peerLeaveSubject.asObservable()
+  }
 
-  get onStateChange (): Observable<WebGroupState> { return this.stateSubject.asObservable() }
+  get onStateChange(): Observable<WebGroupState> {
+    return this.stateSubject.asObservable()
+  }
 
-  get onSignalingStateChange (): Observable<SignalingState> { return this.signalingSubject.asObservable() }
+  get onSignalingStateChange(): Observable<SignalingState> {
+    return this.signalingSubject.asObservable()
+  }
 
-  clean (): void {
+  clean(): void {
     if (this.wg !== undefined) {
       this.wg.leave()
       this.leaveSubject.next()
@@ -181,15 +200,15 @@ export class NetworkService {
     }
   }
 
-  inviteBot (url: string): void {
+  inviteBot(url: string): void {
     if (!this.botUrls.includes(url)) {
       const fullUrl = url.startsWith('ws') ? url : `ws://${url}`
       this.zone.runOutsideAngular(() => this.wg.invite(fullUrl))
     }
   }
 
-  send (service: string, content: Uint8Array, id?: number|undefined): void {
-    const msg = Message.create({ service, content})
+  send(service: string, content: Uint8Array, id?: number | undefined): void {
+    const msg = Message.create({ service, content })
     if (id === undefined) {
       this.wg.send(Message.encode(msg).finish())
     } else {
@@ -197,7 +216,7 @@ export class NetworkService {
     }
   }
 
-  private join (key) {
+  private join(key) {
     console.assert(key !== '')
     this.wg.join(key)
   }

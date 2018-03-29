@@ -6,15 +6,8 @@ import { DocsComponent } from './docs.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  imports: [
-    SharedModule,
-    FormsModule,
-    ReactiveFormsModule
-  ],
-  declarations: [
-    ToolbarComponent,
-    DocsComponent
-  ],
-  entryComponents: []
+  imports: [SharedModule, FormsModule, ReactiveFormsModule],
+  declarations: [ToolbarComponent, DocsComponent],
+  entryComponents: [],
 })
 export class DocsModule {}

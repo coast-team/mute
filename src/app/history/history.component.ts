@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  Injectable,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild } from '@angular/core'
+import { Component, ElementRef, Injectable, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import * as CodeMirror from 'codemirror'
@@ -28,12 +20,10 @@ import 'codemirror/mode/javascript/javascript'
 @Component({
   selector: 'mute-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  styleUrls: ['./history.component.scss'],
 })
-
 @Injectable()
 export class HistoryComponent implements OnInit, OnDestroy {
-
   private operations: Array<IDelete | IInsert>
   private subs: Subscription[]
   public docAuthors: Author[]
@@ -53,7 +43,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   public rightSideNavMode = 'side'
 
-  constructor (
+  constructor(
     private zone: NgZone,
     private route: ActivatedRoute,
     private history: HistoryService,
@@ -65,21 +55,18 @@ export class HistoryComponent implements OnInit, OnDestroy {
     this.subs = []
   }
 
-  ngOnInit () {
+  ngOnInit() {
     // TODO replace by the specified service which maybe exist
-    this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: {doc: Doc}) => {
+    this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       this.doc = doc
-      this.history.getAuthors(this.doc)
-        .then((docAuths: Author[]) => {
-          this.docAuthors = docAuths
-        })
+      this.history.getAuthors(this.doc).then((docAuths: Author[]) => {
+        this.docAuthors = docAuths
+      })
 
-      this.history.getOperations(this.doc)
-        .then((ops: Array<IDelete | IInsert>) => {
-          this.operations = ops
-          this.showVersion(this.operations.length)
-
-        })
+      this.history.getOperations(this.doc).then((ops: Array<IDelete | IInsert>) => {
+        this.operations = ops
+        this.showVersion(this.operations.length)
+      })
 
       this.ui.onNavToggle.subscribe(() => {
         this.leftSidenavElm.opened = !this.leftSidenavElm.opened
@@ -123,7 +110,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.subs.forEach((s) => s.unsubscribe())
   }
 
@@ -131,7 +118,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
    * numOperations corresponds to a numero between
    * 1 and countOperation().
    */
-  showVersion (numOperation: number) {
+  showVersion(numOperation: number) {
     let begin = 0
     let end = 0
     let reverse = false
@@ -170,54 +157,54 @@ export class HistoryComponent implements OnInit, OnDestroy {
     } else {
       this.colorizeAuthors(begin, end + 1)
     }
-
   }
 
-  generateText (beginOp: number, endOp: number): string {
+  generateText(beginOp: number, endOp: number): string {
     let textContent = ''
     for (let i = beginOp; i <= endOp; i++) {
       const currentOp = this.operations[i]
       if (currentOp instanceof TextInsert) {
-        textContent = textContent.slice(0, currentOp.offset) +
-        currentOp.content + textContent.slice(currentOp.offset)
+        textContent = textContent.slice(0, currentOp.offset) + currentOp.content + textContent.slice(currentOp.offset)
       } else if (currentOp instanceof TextDelete) {
-        textContent = textContent.slice(0, currentOp.offset) +
-        textContent.slice(currentOp.offset + currentOp.length, textContent.length)
+        textContent = textContent.slice(0, currentOp.offset) + textContent.slice(currentOp.offset + currentOp.length, textContent.length)
       }
     }
     return textContent
   }
 
-  destroyText (begin, end) {
+  destroyText(begin, end) {
     const doc = this.editor.getDoc()
     const pos1 = doc.posFromIndex(begin)
     const pos2 = doc.posFromIndex(end + 1)
-    doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: red' })
-    doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slideout;'
-       + 'animation-duration: 0.5s;' })
+    doc.markText({ line: pos1.line, ch: pos1.ch }, { line: pos2.line, ch: pos2.ch }, { css: 'background-color: red' })
+    doc.markText(
+      { line: pos1.line, ch: pos1.ch },
+      { line: pos2.line, ch: pos2.ch },
+      {
+        css: 'animation-name: slideout;' + 'animation-duration: 0.5s;',
+      }
+    )
   }
 
-  countOperations (): number {
+  countOperations(): number {
     return this.operations ? this.operations.length : 0
   }
 
-  countMax (): number {
+  countMax(): number {
     if (this.countOperations() === 0) {
       return 0
     }
     return Math.floor(this.countOperations() / 2)
   }
 
-  onInputChange (event: any) {
+  onInputChange(event: any) {
     let indexOp = event.target.value
     indexOp = indexOp >= this.countOperations() ? this.countOperations() : indexOp
     indexOp = indexOp <= 0 ? 1 : indexOp
     this.showVersion(indexOp)
   }
 
-  colorizeAuthors (begin: number, end: number) {
+  colorizeAuthors(begin: number, end: number) {
     const doc = this.editor.getDoc()
     const pos1 = doc.posFromIndex(begin)
     const pos2 = doc.posFromIndex(end)
@@ -225,58 +212,58 @@ export class HistoryComponent implements OnInit, OnDestroy {
       length = this.docAuthors.length
     }
     this.animateText(begin, end)
-    const color = this.docAuthors[(Math.floor(Math.random() * 10)) % length].getColor()
-    doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: ' + color})
+    const color = this.docAuthors[Math.floor(Math.random() * 10) % length].getColor()
+    doc.markText({ line: pos1.line, ch: pos1.ch }, { line: pos2.line, ch: pos2.ch }, { css: 'background-color: ' + color })
   }
 
-  colorizeDifferences (begin: number, end: number, reverse: boolean) {
+  colorizeDifferences(begin: number, end: number, reverse: boolean) {
     const doc = this.editor.getDoc()
     const pos1 = doc.posFromIndex(begin)
     const pos2 = doc.posFromIndex(end)
     this.animateText(begin, end)
     if (!reverse) {
-      doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #4CAF50' })
+      doc.markText({ line: pos1.line, ch: pos1.ch }, { line: pos2.line, ch: pos2.ch }, { css: 'background-color: #4CAF50' })
     } else {
-      doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'background-color: #E57373' })
+      doc.markText({ line: pos1.line, ch: pos1.ch }, { line: pos2.line, ch: pos2.ch }, { css: 'background-color: #E57373' })
     }
   }
 
-  animateText (begin: number, end: number) {
+  animateText(begin: number, end: number) {
     const doc = this.editor.getDoc()
     const pos1 = doc.posFromIndex(begin)
     const pos2 = doc.posFromIndex(end)
-    doc.markText({line: pos1.line, ch: pos1.ch},
-       {line: pos2.line, ch: pos2.ch}, {css: 'animation-name: slidein;'
-       + 'animation-duration: 0.300s;' })
+    doc.markText(
+      { line: pos1.line, ch: pos1.ch },
+      { line: pos2.line, ch: pos2.ch },
+      {
+        css: 'animation-name: slidein;' + 'animation-duration: 0.300s;',
+      }
+    )
   }
 
-  onControlsChange (controlType: number) {
+  onControlsChange(controlType: number) {
     switch (controlType) {
-    case CONTROLS.PLAY:
-      this.timelineComponent.play()
-      break
-    case CONTROLS.PAUSE:
-      this.timelineComponent.pause()
-      break
-    case CONTROLS.FAST_FORWARD:
-      this.timelineComponent.goToEnd()
-      break
-    case CONTROLS.FAST_REWIND:
-      this.timelineComponent.goToBegin()
-      break
+      case CONTROLS.PLAY:
+        this.timelineComponent.play()
+        break
+      case CONTROLS.PAUSE:
+        this.timelineComponent.pause()
+        break
+      case CONTROLS.FAST_FORWARD:
+        this.timelineComponent.goToEnd()
+        break
+      case CONTROLS.FAST_REWIND:
+        this.timelineComponent.goToBegin()
+        break
     }
   }
 
-  onToggle (state: boolean) {
+  onToggle(state: boolean) {
     this.state = state
     this.showVersion(this.currentOp)
   }
 
-  updateStep (step: number) {
+  updateStep(step: number) {
     this.step = step <= 0 ? 1 : step
   }
-
 }

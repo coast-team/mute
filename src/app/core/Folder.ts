@@ -1,11 +1,10 @@
 import { File } from './File'
 
 export class Folder extends File {
-
   public icon: string
   public isRemote: boolean
 
-  static deserialize (id: string, serialized: any): Folder {
+  static deserialize(id: string, serialized: any): Folder {
     const folder = new Folder()
     folder.icon = serialized.icon
     folder.isRemote = serialized.isRemote
@@ -13,7 +12,7 @@ export class Folder extends File {
     return folder
   }
 
-  static create (title: string, icon: string, isRemote: boolean, parentFolderId?: string): Folder {
+  static create(title: string, icon: string, isRemote: boolean, parentFolderId?: string): Folder {
     const folder = new Folder()
     folder.created = new Date()
     folder.init(title, parentFolderId)
@@ -22,23 +21,27 @@ export class Folder extends File {
     return folder
   }
 
-  constructor () {
+  constructor() {
     super()
   }
 
-  get isDoc () { return false }
+  get isDoc() {
+    return false
+  }
 
-  get title () { return this._title }
+  get title() {
+    return this._title
+  }
 
-  set title (newTitle: string) {
+  set title(newTitle: string) {
     this._title = newTitle || 'Untitled Folder'
   }
 
-  serialize (): object {
+  serialize(): object {
     return Object.assign(super.serialize(), {
       type: 'folder',
       icon: this.icon,
-      isRemote: this.isRemote
+      isRemote: this.isRemote,
     })
   }
 }

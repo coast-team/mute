@@ -10,24 +10,28 @@ import { HistoryComponent } from './history/history.component'
 const routes: Routes = [
   {
     path: '',
-    component: DocsComponent
-  }, {
+    component: DocsComponent,
+  },
+  {
     path: 'history/:key',
     component: HistoryComponent,
     resolve: { doc: HistoryResolverService },
-  }, {
+  },
+  {
     path: ':key',
     component: DocComponent,
     resolve: { doc: DocResolverService },
-    canDeactivate: [DocResolverService]
-  }, {
-    path: '**', redirectTo: ''
-  }
+    canDeactivate: [DocResolverService],
+  },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ]
 
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
-  exports: [ RouterModule ],
-  providers: []
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+  providers: [],
 })
 export class AppRoutingModule {}

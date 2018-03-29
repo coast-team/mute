@@ -11,9 +11,9 @@ export abstract class File {
   public opened: Date
   public modified: Date
 
-  constructor () { }
+  constructor() {}
 
-  protected deserialize (id: string, serialized: any) {
+  protected deserialize(id: string, serialized: any) {
     this.id = id
     this.previousParentFolderId = serialized.previousParentFolderId
     this.created = serialized.created
@@ -24,31 +24,35 @@ export abstract class File {
     this._parentFolderId = serialized.parentFolderId
   }
 
-  protected init (title: string, parentFolderId?: string) {
+  protected init(title: string, parentFolderId?: string) {
     this.title = title
     this._parentFolderId = parentFolderId || ''
     this._description = ''
   }
 
-  abstract get isDoc (): boolean
+  abstract get isDoc(): boolean
 
-  abstract get title ()
-  abstract set title (newTitle: string)
+  abstract get title()
+  abstract set title(newTitle: string)
 
-  get parentFolderId () { return this._parentFolderId }
-  set parentFolderId (id: string) {
+  get parentFolderId() {
+    return this._parentFolderId
+  }
+  set parentFolderId(id: string) {
     this.previousParentFolderId = this._parentFolderId
     this._parentFolderId = id
     this.modified = new Date()
   }
 
-  get description () { return this._description }
-  set description (description: string) {
+  get description() {
+    return this._description
+  }
+  set description(description: string) {
     this._description = description
     this.modified = new Date()
   }
 
-  serialize (): object {
+  serialize(): object {
     return {
       title: this._title,
       parentFolderId: this.parentFolderId,

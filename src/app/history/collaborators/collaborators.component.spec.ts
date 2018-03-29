@@ -10,31 +10,25 @@ let fixture: ComponentFixture<CollaboratorsComponent>
 const docHistoryService = undefined
 
 describe('CollaboratorsComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        CollaboratorsComponent
-      ],
-      imports: [
-        RouterTestingModule
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      providers: [
-        { provide: DocHistoryService, useValue: docHistoryService}
-      ]
+  beforeEach(
+    async(() => {
+      TestBed.configureTestingModule({
+        declarations: [CollaboratorsComponent],
+        imports: [RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [{ provide: DocHistoryService, useValue: docHistoryService }],
+      })
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(CollaboratorsComponent)
+          comp = fixture.componentInstance
+        })
     })
-    .compileComponents()
-    .then(() => {
-      fixture = TestBed.createComponent(CollaboratorsComponent)
-      comp = fixture.componentInstance
-    })
-  }))
+  )
   tests()
 })
 
-function tests () {
+function tests() {
   it('Correct Init', () => {
     expect(comp).toBeTruthy()
   })

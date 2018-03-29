@@ -22,16 +22,15 @@ import { RemoteDeleteDialogComponent } from '../shared/remote-delete-dialog/remo
 
 enum ActionTYPES {
   DESKTOP,
-  MOBILE
+  MOBILE,
 }
 
 @Component({
   selector: 'mute-docs',
   templateUrl: './docs.component.html',
-  styleUrls: ['./docs.component.scss']
+  styleUrls: ['./docs.component.scss'],
 })
 export class DocsComponent implements OnDestroy, OnInit {
-
   @ViewChild('leftSidenav') leftSidenav: MatSidenav
   @ViewChild('rightSidenav') rightSidenav
 
@@ -53,7 +52,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   public actions
 
-  constructor (
+  constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
@@ -76,13 +75,11 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder) || this.localStorage.local)
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.remoteName = this.botStorage.id
-    this.subs[this.subs.length] = this.settings.onChange
-      .pipe(filter((props) => props.includes(EProperties.openedFolder)))
-      .subscribe(() => {
-        this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder))
-      })
+    this.subs[this.subs.length] = this.settings.onChange.pipe(filter((props) => props.includes(EProperties.openedFolder))).subscribe(() => {
+      this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder))
+    })
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {
         this.sideNavMode = 'over'
@@ -94,74 +91,71 @@ export class DocsComponent implements OnDestroy, OnInit {
     })
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.docsSubject.complete()
     this.subs.forEach((s) => s.unsubscribe())
   }
 
-  setMenuDoc (doc: Doc) {
+  setMenuDoc(doc: Doc) {
     this.menuDoc = doc
   }
 
-  restore (doc: Doc): Promise<void> {
-    return this.localStorage.move(doc, this.localStorage.local)
-      .then(() => {
-        this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
-        this.docsSubject.next(this.docs)
-      })
+  restore(doc: Doc): Promise<void> {
+    return this.localStorage.move(doc, this.localStorage.local).then(() => {
+      this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+      this.docsSubject.next(this.docs)
+    })
   }
 
-  infoDoc () {
+  infoDoc() {
     this.rightSidenav.open()
   }
 
-  delete (doc: Doc) {
+  delete(doc: Doc) {
     switch (this.folder) {
-    case this.localStorage.local:
-      this.moveToTrash(doc)
-      break
-    case this.localStorage.trash:
-      this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
-      this.docsSubject.next(this.docs)
-      this.localStorage.delete(doc)
-        .then(() => {
+      case this.localStorage.local:
+        this.moveToTrash(doc)
+        break
+      case this.localStorage.trash:
+        this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+        this.docsSubject.next(this.docs)
+        this.localStorage.delete(doc).then(() => {
           this.snackBar.open(`"${doc.title}" has been deleted.`, 'close', {
-            duration: 3000
+            duration: 3000,
           })
         })
-      break
-    case this.botStorage.remote:
-      const dialogRef = this.dialog.open(RemoteDeleteDialogComponent, {
-        data: doc.title,
-        width: '400px'
-      })
-      dialogRef.afterClosed().subscribe(
-        (result) => {
+        break
+      case this.botStorage.remote:
+        const dialogRef = this.dialog.open(RemoteDeleteDialogComponent, {
+          data: doc.title,
+          width: '400px',
+        })
+        dialogRef.afterClosed().subscribe((result) => {
           if (result) {
             this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
             this.docsSubject.next(this.docs)
             this.botStorage.remove(doc)
             this.snackBar.open(`"${this.settings.profile.login}" has been removed.`, 'Close', {
-              duration: 5000
+              duration: 5000,
             })
           }
-        }
-      )
-      break
+        })
+        break
     }
   }
 
-  open (doc: Doc) {
+  open(doc: Doc) {
     if (this.folder !== this.localStorage.trash) {
       this.router.navigate(['/', doc.key])
     }
   }
 
-  rename (doc: Doc) {
+  rename(doc: Doc) {
     this.dialog.open(DocRenameDialogComponent, { data: doc })
   }
 
-  share (doc: Doc) { // Workaround, but not pretty
+  share(doc: Doc) {
+    // Workaround, but not pretty
     const aux = document.createElement('input')
     aux.setAttribute('value', `${window.location.origin}/${doc.key}`)
     document.body.appendChild(aux)
@@ -169,44 +163,44 @@ export class DocsComponent implements OnDestroy, OnInit {
     document.execCommand('copy')
     document.body.removeChild(aux)
     this.snackBar.open(`Link copied to clipboard.`, 'Close', {
-      duration: 5000
+      duration: 5000,
     })
   }
 
-  openFolder (folder: Folder) {
+  openFolder(folder: Folder) {
     this.folder = folder
     this.setDisplayedColumns()
     this.isFinishOpen = false
-    this.localStorage.getDocs(folder)
-      .then((docs) => {
-        this.docs = docs
-        this.docsSubject.next(this.docs)
-        this.isFinishOpen = true
-      })
+    this.localStorage.getDocs(folder).then((docs) => {
+      this.docs = docs
+      this.docsSubject.next(this.docs)
+      this.isFinishOpen = true
+    })
   }
 
-  getDocLocationIcon (doc: Doc) {
+  getDocLocationIcon(doc: Doc) {
     return this.localStorage.lookupFolder(doc.parentFolderId).icon
   }
 
-  private moveToTrash (doc: Doc) {
+  private moveToTrash(doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
     this.docsSubject.next(this.docs)
-    this.localStorage.move(doc, this.localStorage.trash)
-      .then(() => {
-        this.snackBar.open(`"${doc.title}" moved to trash.`, 'Undo', {
-          duration: 5000
-        }).onAction().subscribe(() => {
-          this.localStorage.move(doc, this.localStorage.local)
-            .then(() => {
-              this.docs[this.docs.length] = doc
-              this.docsSubject.next(this.docs)
-            })
+    this.localStorage.move(doc, this.localStorage.trash).then(() => {
+      this.snackBar
+        .open(`"${doc.title}" moved to trash.`, 'Undo', {
+          duration: 5000,
         })
-      })
+        .onAction()
+        .subscribe(() => {
+          this.localStorage.move(doc, this.localStorage.local).then(() => {
+            this.docs[this.docs.length] = doc
+            this.docsSubject.next(this.docs)
+          })
+        })
+    })
   }
 
-  private setDisplayedColumns () {
+  private setDisplayedColumns() {
     if (this.folder === this.botStorage.remote) {
       this.displayedColumns = this.displayedColumnsRemote
     } else {
@@ -216,13 +210,11 @@ export class DocsComponent implements OnDestroy, OnInit {
 }
 
 class DocsSource extends DataSource<any> {
-  constructor (
-    private docs: Subject<Doc[]>
-  ) {
+  constructor(private docs: Subject<Doc[]>) {
     super()
   }
-  connect (): Observable<Doc[]> {
+  connect(): Observable<Doc[]> {
     return this.docs
   }
-  disconnect () {}
+  disconnect() {}
 }

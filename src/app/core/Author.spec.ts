@@ -1,13 +1,13 @@
 import { Author } from './Author'
 
-describe( 'Author', () => {
+describe('Author', () => {
   let author: Author
 
-  beforeEach( () => {
+  beforeEach(() => {
     author = new Author('name', 10, 'blue')
   })
 
-  it( 'Correct Init', () => {
+  it('Correct Init', () => {
     expect(author).toBeTruthy()
   })
 
@@ -22,5 +22,4 @@ describe( 'Author', () => {
   it('Get name', () => {
     expect(author.getId() === 10).toBeTruthy()
   })
-
 })

@@ -10,7 +10,7 @@ import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.compo
 
 @Injectable()
 export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocComponent> {
-  constructor (
+  constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -18,20 +18,19 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     private botStorage: BotStorageService
   ) {}
 
-  async resolve (route: ActivatedRouteSnapshot): Promise<Doc> {
+  async resolve(route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
     const remote = route.paramMap.get('remote')
 
     try {
       // Retreive the document from the local database
-      let doc = await this.localStorage.lookupDoc(key)
-        .then((docs: Doc[]) => {
-          if (docs && docs.length === 1) {
-            return docs[0]
-          } else if (docs.length > 1) {
-            log.error('Faild to fetch doc: more then one doc exist with this key: ', key)
-          }
-        })
+      let doc = await this.localStorage.lookupDoc(key).then((docs: Doc[]) => {
+        if (docs && docs.length === 1) {
+          return docs[0]
+        } else if (docs.length > 1) {
+          log.error('Faild to fetch doc: more then one doc exist with this key: ', key)
+        }
+      })
 
       if (doc) {
         if (doc.parentFolderId === this.localStorage.trash.id) {
@@ -64,13 +63,13 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
         return doc
       }
     } catch (err) {
-      this.snackBar.open(`Could not open or create a document: ${err.message}`, 'close', {duration: 3000})
-      this.router.navigateByUrl('', {skipLocationChange: false})
+      this.snackBar.open(`Could not open or create a document: ${err.message}`, 'close', { duration: 3000 })
+      this.router.navigateByUrl('', { skipLocationChange: false })
       return undefined
     }
   }
 
-  async canDeactivate (docComponent: DocComponent): Promise<boolean> {
+  async canDeactivate(docComponent: DocComponent): Promise<boolean> {
     const doc = docComponent.doc
     if (doc) {
       await this.localStorage.saveDocBody(doc, docComponent.getDocState())

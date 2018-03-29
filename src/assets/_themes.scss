@@ -73,22 +73,15 @@
 //###########################################################
 // DEFAULT theme
 //###########################################################
-$theme: mat-light-theme(
-  mat-palette($mat-light-blue, 600, 200, 800),
-  mat-palette($mat-amber, A400, A700)
-);
+$theme: mat-light-theme(mat-palette($mat-light-blue, 600, 200, 800), mat-palette($mat-amber, A400, A700));
 
 @include define-theme-css-variables($theme);
 @include angular-material-theme($theme);
 
-
 //###########################################################
 // DARK theme
 //###########################################################
-$theme: mat-dark-theme(
-  mat-palette($mat-pink),
-  mat-palette($mat-blue-grey)
-);
+$theme: mat-dark-theme(mat-palette($mat-pink), mat-palette($mat-blue-grey));
 $prefix: 'dark';
 
 @include define-theme-css-variables($theme, $prefix);
@@ -99,10 +92,7 @@ $prefix: 'dark';
 //###########################################################
 // INDIGO theme
 //###########################################################
-$theme:   mat-light-theme(
-  mat-palette($mat-indigo, 400),
-  mat-palette($mat-yellow, A700)
-);
+$theme: mat-light-theme(mat-palette($mat-indigo, 400), mat-palette($mat-yellow, A700));
 $prefix: 'indigo';
 
 @include define-theme-css-variables($theme, $prefix);
@@ -110,71 +100,70 @@ $prefix: 'indigo';
   @include angular-material-theme($theme);
 }
 
-
 //###########################################################
 // Global CSS variables set to default theme by default
 //###########################################################
 @mixin define-global-css-variables($prefix: 'default') {
   :root {
-    --theme-primary: var(--#{$prefix}-primary);
-    --theme-accent: var(--#{$prefix}-accent);
-    --theme-warn: var(--#{$prefix}-warn);
+    --theme-primary: var(-- #{$prefix}-primary);
+    --theme-accent: var(-- #{$prefix}-accent);
+    --theme-warn: var(-- #{$prefix}-warn);
 
-    --theme-bg-card: var(--#{$prefix}-bg-card);
-    --theme-bg-background: var(--#{$prefix}-bg-background);
+    --theme-bg-card: var(-- #{$prefix}-bg-card);
+    --theme-bg-background: var(-- #{$prefix}-bg-background);
 
     // BACKGROUND
     // bars
-    --theme-bg-status-bar: var(--#{$prefix}-bg-status-bar);
-    --theme-bg-app-bar: var(--#{$prefix}-bg-app-bar);
+    --theme-bg-status-bar: var(-- #{$prefix}-bg-status-bar);
+    --theme-bg-app-bar: var(-- #{$prefix}-bg-app-bar);
 
     // background
-    --theme-bg-background: var(--#{$prefix}-bg-background);
+    --theme-bg-background: var(-- #{$prefix}-bg-background);
 
     // hover
-    --theme-bg-hover: var(--#{$prefix}-bg-hover);
+    --theme-bg-hover: var(-- #{$prefix}-bg-hover);
 
     // dialog
-    --theme-bg-dialog: var(--#{$prefix}-bg-dialog);
+    --theme-bg-dialog: var(-- #{$prefix}-bg-dialog);
 
     // buttons
-    --theme-bg-disabled-button: var(--#{$prefix}-bg-disabled-button);
-    --theme-bg-raised-button: var(--#{$prefix}-bg-raised-button);
-    --theme-bg-focused-button: var(--#{$prefix}-bg-focused-button);
-    --theme-bg-selected-button: var(--#{$prefix}-bg-selected-button);
-    --theme-bg-selected-disabled-button: var(--#{$prefix}-bg-selected-disabled-button);
+    --theme-bg-disabled-button: var(-- #{$prefix}-bg-disabled-button);
+    --theme-bg-raised-button: var(-- #{$prefix}-bg-raised-button);
+    --theme-bg-focused-button: var(-- #{$prefix}-bg-focused-button);
+    --theme-bg-selected-button: var(-- #{$prefix}-bg-selected-button);
+    --theme-bg-selected-disabled-button: var(-- #{$prefix}-bg-selected-disabled-button);
 
     // unselected-chip
-    --theme-bg-unselected-chip: var(--#{$prefix}-bg-unselected-chip);
+    --theme-bg-unselected-chip: var(-- #{$prefix}-bg-unselected-chip);
 
     // card
-    --theme-bg-card: var(--#{$prefix}-bg-card);
+    --theme-bg-card: var(-- #{$prefix}-bg-card);
 
     // disabled-list-option
-    --theme-bg-disabled-list-option: var(--#{$prefix}-bg-disabled-list-option);
+    --theme-bg-disabled-list-option: var(-- #{$prefix}-bg-disabled-list-option);
 
     // FORGROUND
     // text
-    --theme-fg-text: var(--#{$prefix}-fg-text);
-    --theme-fg-secondary-text: var(--#{$prefix}-fg-secondary-text);
-    --theme-fg-hint-text: var(--#{$prefix}-fg-hint-text);
+    --theme-fg-text: var(-- #{$prefix}-fg-text);
+    --theme-fg-secondary-text: var(-- #{$prefix}-fg-secondary-text);
+    --theme-fg-hint-text: var(-- #{$prefix}-fg-hint-text);
 
     // divider
-    --theme-fg-divider: var(--#{$prefix}-fg-divider);
-    --theme-fg-dividers: var(--#{$prefix}-fg-dividers);
+    --theme-fg-divider: var(-- #{$prefix}-fg-divider);
+    --theme-fg-dividers: var(-- #{$prefix}-fg-dividers);
 
     // disabled
-    --theme-fg-disabled: var(--#{$prefix}-fg-disabled);
-    --theme-fg-disabled-button: var(--#{$prefix}-fg-disabled-button);
+    --theme-fg-disabled: var(-- #{$prefix}-fg-disabled);
+    --theme-fg-disabled-button: var(-- #{$prefix}-fg-disabled-button);
 
     // icons
-    --theme-fg-icon: var(--#{$prefix}-fg-icon);
-    --theme-fg-icons: var(--#{$prefix}-fg-icons);
+    --theme-fg-icon: var(-- #{$prefix}-fg-icon);
+    --theme-fg-icons: var(-- #{$prefix}-fg-icons);
 
     // slider
-    --theme-fg-slider-min: var(--#{$prefix}-fg-slider-min);
-    --theme-fg-slider-off: var(--#{$prefix}-fg-slider-off);
-    --theme-fg-fg-slider-off-active: var(--#{$prefix}-fg-fg-slider-off-active);
+    --theme-fg-slider-min: var(-- #{$prefix}-fg-slider-min);
+    --theme-fg-slider-off: var(-- #{$prefix}-fg-slider-off);
+    --theme-fg-fg-slider-off-active: var(-- #{$prefix}-fg-fg-slider-off-active);
   }
 }
 @include define-global-css-variables('default');
@@ -184,7 +173,6 @@ $prefix: 'indigo';
 //   --theme-bg-color: var(--default-bg-card);
 //   --theme-fg-text: var(--default-fg-text);
 // }
-
 
 // Possibles values: ########################################
 

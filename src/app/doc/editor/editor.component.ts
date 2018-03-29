@@ -9,7 +9,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
 } from '@angular/core'
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
@@ -28,14 +28,12 @@ import 'tui-editor/dist/tui-editor-extScrollSync.js'
   styleUrls: [
     // FIXME: Importing CodeMirror's CSS here doesn't work.
     // Should find a proper way to do it.
-    './editor.component.scss'
+    './editor.component.scss',
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 @Injectable()
 export class EditorComponent implements OnChanges, OnDestroy, OnInit {
-
   @Input() docService: DocService
   @Output() isReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
@@ -46,20 +44,18 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   private remoteOperationsSubscription: Subscription
   private textOperationsObservable: Observable<TextOperation[]>
 
-  constructor (
-    private zone: NgZone,
-  ) {
+  constructor(private zone: NgZone) {
     this.isInited = false
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.zone.runOutsideAngular(() => {
       const tuiEditor = new Editor({
         el: this.editorElt.nativeElement,
         initialEditType: 'markdown',
         previewStyle: 'vertical',
         height: '100%',
-        exts: ['scrollSync']
+        exts: ['scrollSync'],
       })
       this.editor = tuiEditor.getCodeMirror()
       this.setupGlobalForTests()
@@ -68,18 +64,16 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         (h: ChangeEventHandler) => this.editor.on('change', h),
         (h: ChangeEventHandler) => this.editor.off('change', h),
         (instance, change) => new ChangeEvent(instance, change)
+      ).pipe(
+        filter((changeEvent: ChangeEvent) => {
+          // The change's origin indicates the kind of changes performed
+          // When the application updates the editor programatically, this field remains undefined
+          // Allow to filter the changes performed by our application
+          return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
+        })
       )
-        .pipe(
-          filter((changeEvent: ChangeEvent) => {
-            // The change's origin indicates the kind of changes performed
-            // When the application updates the editor programatically, this field remains undefined
-            // Allow to filter the changes performed by our application
-            return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
-          })
-        )
 
-      const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream
-        .pipe(map((changeEvent) => [changeEvent]))
+      const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream.pipe(map((changeEvent) => [changeEvent]))
       /*
         .bufferTime(1000)
         .filter((changeEvents: ChangeEvent[]) => {
@@ -90,9 +84,10 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       */
 
       this.textOperationsObservable = multipleOperationsStream.pipe(
-        map((changeEvents: ChangeEvent[]) => changeEvents
-          .map((changeEvent: ChangeEvent) => changeEvent.toTextOperations())
-          .reduce((acc, textOperations) => acc.concat(textOperations), [])
+        map((changeEvents: ChangeEvent[]) =>
+          changeEvents
+            .map((changeEvent: ChangeEvent) => changeEvent.toTextOperations())
+            .reduce((acc, textOperations) => acc.concat(textOperations), [])
         ),
         share()
       )
@@ -103,7 +98,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     })
   }
 
-  ngOnChanges (): void {
+  ngOnChanges(): void {
     this.zone.runOutsideAngular(() => {
       if (this.isInited) {
         this.editor.setValue('')
@@ -116,14 +111,13 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         this.docService.localTextOperationsSource = this.textOperationsObservable
       }
 
-      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe( (textOperations: TextOperation[]) => {
-
+      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe((textOperations: TextOperation[]) => {
         const updateDoc: () => void = () => {
           const doc: CodeMirror.Doc = this.editor.getDoc()
 
           // log.info('operation:editor', 'applied: ', textOperations)
 
-          textOperations.forEach( (textOperation: TextOperation) => {
+          textOperations.forEach((textOperation: TextOperation) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
             if (textOperation instanceof TextInsert) {
               doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')
@@ -145,15 +139,15 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
     })
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.remoteOperationsSubscription.unsubscribe()
   }
 
-  focus () {
+  focus() {
     this.editor.focus()
   }
 
-  private setupGlobalForTests () {
+  private setupGlobalForTests() {
     const doc = this.editor.getDoc() as any
     window.muteTest = {
       insert: (index: number, text: string) => {
@@ -168,10 +162,9 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         } else {
           return this.editor.getValue()
         }
-      }
+      },
     }
   }
-
 }
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
@@ -180,12 +173,12 @@ class ChangeEvent {
   instance: CodeMirror.Editor
   change: CodeMirror.EditorChange
 
-  constructor (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
+  constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
     this.instance = instance
     this.change = change
   }
 
-  toTextOperations (): TextOperation[] {
+  toTextOperations(): TextOperation[] {
     const textOperations: TextOperation[] = []
     const pos: CodeMirror.Position = this.change.from
     const index: number = this.instance.getDoc().indexFromPos(pos)
@@ -205,12 +198,11 @@ class ChangeEvent {
     return textOperations
   }
 
-  isInsertOperation (): boolean {
+  isInsertOperation(): boolean {
     return this.change.text.length > 1 || this.change.text[0].length > 0
   }
 
-  isDeleteOperation (): boolean {
+  isDeleteOperation(): boolean {
     return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
-
 }
