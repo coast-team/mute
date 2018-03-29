@@ -34,6 +34,11 @@ export class RightSideComponent implements OnInit, OnDestroy {
       this.collaborators = this.collabService.collaborators
       this.cd.detectChanges()
     })
+
+    this.subs[this.subs.length] = this.collabService.onLeave.subscribe((id: number) => {
+      this.collaborators = this.collabService.collaborators
+      this.cd.detectChanges()
+    })
   }
 
   ngOnDestroy () {

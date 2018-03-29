@@ -81,8 +81,8 @@ export class RichCollaboratorsService {
 
   set leaveSource (source: Observable<number>) {
     source.subscribe((id: number) => {
-      this.leaveSubject.next(id)
       this.collaborators = this.collaborators.filter((c) => c.id !== id)
+      this.leaveSubject.next(id)
     })
   }
 

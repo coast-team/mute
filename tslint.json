@@ -1,7 +1,8 @@
 {
   "extends": [
     "tslint-eslint-rules",
-    "tslint:recommended"
+    "tslint:recommended",
+    "tslint-config-prettier"
   ],
   "rulesDirectory": [
     "node_modules/codelyzer"
@@ -59,7 +60,7 @@
     "object-literal-key-quotes": [true, "as-needed"],
     "object-literal-sort-keys": false,
     "quotemark": [true, "single"],
-    "semicolon": [true, "never"],
+    // "semicolon": [true, "never"],
     "variable-name": [
       true,
       "allow-leading-underscore",
