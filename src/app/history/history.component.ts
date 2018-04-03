@@ -10,7 +10,6 @@ import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
 import { UiService } from '../core/ui/ui.service'
 import { CONTROLS } from './controls/controls'
-import { ControlsComponent } from './controls/controls.component'
 import { HistoryService, IDelete, IInsert } from './history.service'
 import { TimelineComponent } from './timeline/timeline.component'
 
@@ -39,7 +38,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
   public currentOp: number
   public doc: Doc
   public step: number
-  private oldText: string
 
   public rightSideNavMode = 'side'
 
@@ -51,7 +49,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
     public media: ObservableMedia
   ) {
     this.step = 1
-    this.oldText = ''
     this.subs = []
   }
 
@@ -145,7 +142,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       const generatedText = this.generateText(0, numOperation - 1)
       // just replace the content of editor the generated text.
       doc.setValue(generatedText)
-      this.oldText = generatedText
       this.currentOp = numOperation
     }
 

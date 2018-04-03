@@ -1,7 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core'
+import { Component, Inject } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material'
-import { ErrorStateMatcher } from '@angular/material/core'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
 
 import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'

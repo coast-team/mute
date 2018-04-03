@@ -17,12 +17,12 @@ export class ControlsComponent implements OnInit {
   @Input() nbOperations: number
   @Input() max: number
   @Input() doc: Doc
-  @Output() onControls: EventEmitter<number>
-  @Output() onSlide: EventEmitter<number>
+  @Output() controls: EventEmitter<number>
+  @Output() slide: EventEmitter<number>
 
   constructor(private router: Router, public ui: UiService) {
     this.pausePlayBtn = 'play_arrow'
-    ;(this.onControls = new EventEmitter<number>()), (this.onSlide = new EventEmitter<number>())
+    ;(this.controls = new EventEmitter<number>()), (this.slide = new EventEmitter<number>())
   }
 
   ngOnInit() {
@@ -32,24 +32,24 @@ export class ControlsComponent implements OnInit {
   onClickPlay() {
     if (this.currentOp === this.nbOperations) {
       this.isPlaying = false
-      this.onControls.emit(CONTROLS.PAUSE)
+      this.controls.emit(CONTROLS.PAUSE)
     } else {
       this.isPlaying = !this.isPlaying
-      this.onControls.emit(this.isPlaying ? CONTROLS.PLAY : CONTROLS.PAUSE)
+      this.controls.emit(this.isPlaying ? CONTROLS.PLAY : CONTROLS.PAUSE)
     }
     this.pausePlayBtn = this.isPlaying && this.nbOperations !== this.currentOp ? 'pause' : 'play_arrow'
   }
 
   onClickFastForward() {
-    this.onControls.emit(CONTROLS.FAST_FORWARD)
+    this.controls.emit(CONTROLS.FAST_FORWARD)
   }
 
   onClickFastRewind() {
-    this.onControls.emit(CONTROLS.FAST_REWIND)
+    this.controls.emit(CONTROLS.FAST_REWIND)
   }
 
   updateStep(step: number) {
-    this.onSlide.emit(step)
+    this.slide.emit(step)
   }
 
   showEditor() {

@@ -1,12 +1,9 @@
 import { DatePipe } from '@angular/common'
 import { Pipe, PipeTransform } from '@angular/core'
 
-import { Doc } from '../../core/Doc'
-
 const today = new Date()
 const todayYear = today.getFullYear()
 const todayDate = today.getDate()
-const basic = 'MMMM d, y, h:mm a'
 
 @Pipe({
   name: 'muteDate',

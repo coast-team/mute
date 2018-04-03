@@ -1,6 +1,5 @@
-import { Component, Inject } from '@angular/core'
+import { Component } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA } from '@angular/material'
 import { Router } from '@angular/router'
 
 @Component({

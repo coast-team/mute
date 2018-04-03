@@ -1,15 +1,13 @@
-import { APP_INITIALIZER, NgModule, Renderer2 } from '@angular/core'
+import { APP_INITIALIZER, NgModule } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
-import { AuthService } from 'ng2-ui-auth'
 
 import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
-import { Profile } from './core/settings/Profile'
 import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot/bot-storage.service'
 import { getIndexedDBState } from './core/storage/local/indexedDBCheck'
@@ -46,7 +44,7 @@ import { HistoryModule } from './history/history.module'
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private snackBar: MatSnackBar, private sw: SwUpdate) {
+  constructor(private snackBar: MatSnackBar, sw: SwUpdate) {
     sw.available.subscribe((event) => {
       const snackBarRef = this.snackBar.open('New version of MUTE is available.', 'Update', {
         duration: 5000,

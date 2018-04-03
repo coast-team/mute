@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
 
-import { Doc } from '../../core/Doc'
-
 @Component({
   selector: 'mute-toolbar',
   templateUrl: './toolbar.component.html',

@@ -17,7 +17,7 @@
     "e2e": "ng e2e",
     "proto":
       "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_pb.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_pb.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
-    "precommit": "npm run lint && npm run lintmd",
+    "precommit": "lint-staged npm run lintmd",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
@@ -85,9 +85,11 @@
     "karma-coverage-istanbul-reporter": "^1.4.2",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "lint-staged": "^7.0.2",
     "live-server": "^1.2.0",
     "markdownlint-cli": "^0.8.1",
     "pm2": "^2.10.1",
+    "pretty-quick": "^1.4.1",
     "protractor": "~5.1.2",
     "sigver": "^18.0.0",
     "ts-node": "~4.1.0",
@@ -101,5 +103,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "lint-staged": {
+    "*.ts": ["npm run lint -- --fix", "git add"],
+    "*.{ts,json,scss,css,md}": ["prettier --write", "git add"]
   }
 }

@@ -3,7 +3,7 @@ import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendT
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
-import { takeUntil, throttleTime } from 'rxjs/operators'
+import { takeUntil } from 'rxjs/operators'
 import { ReplaySubject } from 'rxjs/ReplaySubject'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'

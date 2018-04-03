@@ -1,5 +1,4 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core'
-import { ObservableMedia } from '@angular/flex-layout'
 
 import { Doc } from '../../core/Doc'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
@@ -25,7 +24,6 @@ export class ToolbarComponent {
       this.input.nativeElement.blur()
     } else if (event.type === 'blur') {
       const newTitle = this.input.nativeElement.value
-      const oldTitle = this.doc.title
       this.doc.title = newTitle
       if (newTitle !== this.doc.title) {
         this.input.nativeElement.value = this.doc.title

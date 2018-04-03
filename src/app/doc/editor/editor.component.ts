@@ -22,6 +22,46 @@ import * as CodeMirror from 'codemirror'
 import * as Editor from 'tui-editor'
 import 'tui-editor/dist/tui-editor-extScrollSync.js'
 
+type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
+
+class ChangeEvent {
+  instance: CodeMirror.Editor
+  change: CodeMirror.EditorChange
+
+  constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
+    this.instance = instance
+    this.change = change
+  }
+
+  toTextOperations(): TextOperation[] {
+    const textOperations: TextOperation[] = []
+    const pos: CodeMirror.Position = this.change.from
+    const index: number = this.instance.getDoc().indexFromPos(pos)
+
+    // Some changes should be translated into both a TextDelete and a TextInsert operations
+    // It's especially the case when the changes replace a character
+    if (this.isDeleteOperation()) {
+      const length: number = this.change.removed.join('\n').length
+      textOperations.push(new TextDelete(index, length))
+    }
+    if (this.isInsertOperation()) {
+      const text: string = this.change.text.join('\n')
+      textOperations.push(new TextInsert(index, text))
+    }
+
+    // log.info('operation:editor', 'generated: ', textOperations)
+    return textOperations
+  }
+
+  isInsertOperation(): boolean {
+    return this.change.text.length > 1 || this.change.text[0].length > 0
+  }
+
+  isDeleteOperation(): boolean {
+    return this.change.removed.length > 1 || this.change.removed[0].length > 0
+  }
+}
+
 @Component({
   selector: 'mute-editor',
   templateUrl: './editor.component.html',
@@ -164,45 +204,5 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         }
       },
     }
-  }
-}
-
-type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
-
-class ChangeEvent {
-  instance: CodeMirror.Editor
-  change: CodeMirror.EditorChange
-
-  constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
-    this.instance = instance
-    this.change = change
-  }
-
-  toTextOperations(): TextOperation[] {
-    const textOperations: TextOperation[] = []
-    const pos: CodeMirror.Position = this.change.from
-    const index: number = this.instance.getDoc().indexFromPos(pos)
-
-    // Some changes should be translated into both a TextDelete and a TextInsert operations
-    // It's especially the case when the changes replace a character
-    if (this.isDeleteOperation()) {
-      const length: number = this.change.removed.join('\n').length
-      textOperations.push(new TextDelete(index, length))
-    }
-    if (this.isInsertOperation()) {
-      const text: string = this.change.text.join('\n')
-      textOperations.push(new TextInsert(index, text))
-    }
-
-    // log.info('operation:editor', 'generated: ', textOperations)
-    return textOperations
-  }
-
-  isInsertOperation(): boolean {
-    return this.change.text.length > 1 || this.change.text[0].length > 0
-  }
-
-  isDeleteOperation(): boolean {
-    return this.change.removed.length > 1 || this.change.removed[0].length > 0
   }
 }

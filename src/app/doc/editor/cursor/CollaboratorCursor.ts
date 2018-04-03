@@ -71,9 +71,6 @@ export class CollaboratorCursor {
       const lineHeightPx = global.window.getComputedStyle(this.cm.getWrapperElement(), null).getPropertyValue('line-height')
       lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2))
     }
-
-    // Append elements to DOM
-    const { top, left } = this.cm.cursorCoords({ line: 0, ch: 0 }, 'window')
   }
 
   resetDisplayNameTimeout() {
@@ -178,9 +175,6 @@ export class CollaboratorCursor {
     this.cursorTransition.style.display = 'inline-block'
     const { left: newLeft, top: newTop } = this.cm.cursorCoords(to, 'local')
     const adjustedNewTop = newTop - scrollTop
-    const local = this.cm.cursorCoords(to, 'local')
-    const page = this.cm.cursorCoords(to, 'page')
-    const window = this.cm.cursorCoords(to, 'window')
     setTimeout(() => {
       if (animated) {
         this.cursorTransition.style.transition = 'transform 0.07s linear'

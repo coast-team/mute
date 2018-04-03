@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material'
-import { ErrorStateMatcher } from '@angular/material/core'
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
 
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'

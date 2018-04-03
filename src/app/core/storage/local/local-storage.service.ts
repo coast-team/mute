@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
-import { AsyncSubject } from 'rxjs/AsyncSubject'
-import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
 
 import { Doc } from '../../Doc'
@@ -94,7 +92,7 @@ export class LocalStorageService extends Storage {
   async delete(file: File): Promise<void> {
     this.check()
     await new Promise((resolve, reject) => {
-      this.db.remove(file.id).then(() => resolve(), (err) => reject(err))
+      this.db.remove(file.id).then(() => resolve(), (err: Error) => reject(err))
     })
   }
 
@@ -132,7 +130,7 @@ export class LocalStorageService extends Storage {
 
       const remoteKeys = await this.botStorage.fetchDocs()
 
-      const resultDocs = []
+      const resultDocs: Doc[] = []
       remoteKeys.forEach((key) => {
         let doc
         for (const d of docs) {

@@ -1,5 +1,3 @@
-import { Folder } from './Folder'
-
 export abstract class File {
   private _parentFolderId: string
   private _description: string

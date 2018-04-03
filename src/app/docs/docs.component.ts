@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections'
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material'
-import { ActivatedRoute, Router } from '@angular/router'
+import { Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
@@ -10,7 +10,6 @@ import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../core/Doc'
-import { File } from '../core/File'
 import { Folder } from '../core/Folder'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
@@ -20,9 +19,14 @@ import { UiService } from '../core/ui/ui.service'
 import { DocRenameDialogComponent } from '../shared/doc-rename-dialog/doc-rename-dialog.component'
 import { RemoteDeleteDialogComponent } from '../shared/remote-delete-dialog/remote-delete-dialog.component'
 
-enum ActionTYPES {
-  DESKTOP,
-  MOBILE,
+class DocsSource extends DataSource<any> {
+  constructor(private docs: Subject<Doc[]>) {
+    super()
+  }
+  connect(): Observable<Doc[]> {
+    return this.docs
+  }
+  disconnect() {}
 }
 
 @Component({
@@ -55,7 +59,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute,
     private botStorage: BotStorageService,
     private settings: SettingsService,
     public localStorage: LocalStorageService,
@@ -207,14 +210,4 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.displayedColumns = this.displayedColumnsLocal
     }
   }
-}
-
-class DocsSource extends DataSource<any> {
-  constructor(private docs: Subject<Doc[]>) {
-    super()
-  }
-  connect(): Observable<Doc[]> {
-    return this.docs
-  }
-  disconnect() {}
 }

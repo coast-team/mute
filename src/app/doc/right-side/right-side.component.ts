@@ -1,6 +1,4 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { Observable } from 'rxjs/Observable'
-import { map } from 'rxjs/operators'
 import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../../core/Doc'

@@ -1,7 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, Input } from '@angular/core'
-import { Observable } from 'rxjs/Observable'
-import { Subscription } from 'rxjs/Subscription'
 
 import { Doc } from '../../../core/Doc'
 import { RichCollaborator } from '../../../doc/rich-collaborators'

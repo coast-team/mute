@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core'
 import { MatDialog } from '@angular/material'
-import { Router, RouterLinkActive } from '@angular/router'
+import { Router } from '@angular/router'
 import { Subscription } from 'rxjs/Subscription'
 
-import { environment } from '../../../environments/environment'
 import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings/settings.service'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'

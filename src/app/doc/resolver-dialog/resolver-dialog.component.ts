@@ -12,7 +12,7 @@ import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 export class ResolverDialogComponent implements OnInit {
   public remoteName: string
 
-  constructor(private botStorage: BotStorageService, @Inject(MAT_DIALOG_DATA) public doc: Doc) {
+  constructor(botStorage: BotStorageService, @Inject(MAT_DIALOG_DATA) public doc: Doc) {
     if (botStorage.remote && botStorage.status === BotStorageService.AVAILABLE) {
       this.remoteName = botStorage.id
     }

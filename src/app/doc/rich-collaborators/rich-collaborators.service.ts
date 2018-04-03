@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { ICollaborator } from 'mute-core'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
 import { Subject } from 'rxjs/Subject'
@@ -121,12 +120,6 @@ export class RichCollaboratorsService {
       }
     } else {
       return COLORS[Math.floor(Math.random() * COLORS.length)]
-    }
-  }
-
-  private recycleColor(color: string) {
-    if (!this.availableColors.includes(color)) {
-      this.availableColors.push(color)
     }
   }
 }

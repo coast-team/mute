@@ -1,8 +1,5 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Inject, Injectable } from '@angular/core'
-import { AsyncSubject } from 'rxjs/AsyncSubject'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { Observable } from 'rxjs/Observable'
+import { HttpClient } from '@angular/common/http'
+import { Injectable } from '@angular/core'
 import { filter } from 'rxjs/operators'
 
 import { environment } from '../../../../environments/environment'
@@ -26,7 +23,6 @@ export class BotStorageService extends Storage {
 
   constructor(private http: HttpClient, private settings: SettingsService) {
     super()
-    const { secure, url, webSocketPath } = environment.botStorage
 
     if (environment.botStorage && environment.botStorage.url) {
       this.name = ''
@@ -44,7 +40,7 @@ export class BotStorageService extends Storage {
     if (this.url && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(`${this.httpURL}/docs/${this.settings.profile.login}`).subscribe(
-          (keys: string[]) => resolve(keys),
+          (keys) => resolve(keys),
           (err) => {
             log.warn('Could not retreive documents keys from the bot storage')
             super.setStatus(BotStorageService.NOT_RESPONDING)
@@ -108,7 +104,7 @@ export class BotStorageService extends Storage {
     return Promise.resolve()
   }
 
-  private extractHostname(url) {
+  private extractHostname(url: string) {
     let hostname
 
     // find & remove protocol (http, ftp, etc.) and get hostname

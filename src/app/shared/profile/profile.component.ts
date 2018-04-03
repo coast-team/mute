@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, OnDestroy, ViewChild } from '@angular/core'
-import { MatButton, MatCard, MatDialog, MatSnackBar } from '@angular/material'
+import { MatButton, MatDialog, MatSnackBar } from '@angular/material'
 
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'

@@ -10,7 +10,6 @@ import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
-import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
@@ -42,7 +41,6 @@ export class DocComponent implements OnDestroy, OnInit {
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
     private media: ObservableMedia,
-    private localStorage: LocalStorageService,
     public ui: UiService
   ) {
     this.subs = []
@@ -111,7 +109,7 @@ export class DocComponent implements OnDestroy, OnInit {
                 email: this.settings.profile.email,
                 avatar: this.settings.profile.avatar,
               }
-            } else if (props[EProperties.profileDisplayName]) {
+            } else {
               return { id: this.network.myId, displayName: this.settings.profile.displayName }
             }
           })

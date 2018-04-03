@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core'
-import { MAT_SNACK_BAR_DATA, MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
 import 'rxjs/add/operator/toPromise'

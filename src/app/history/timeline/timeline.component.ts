@@ -14,14 +14,14 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() nbOperations: number
   @Input() max: number
   @Input() step: number
-  @Output() onSlide: EventEmitter<number>
+  @Output() slide: EventEmitter<number>
 
   player: any
   private subscriptionPlayer: Subscription
   stepSize: number
 
   constructor() {
-    this.onSlide = new EventEmitter<number>()
+    this.slide = new EventEmitter<number>()
   }
 
   ngOnInit() {
@@ -37,7 +37,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
       this.currentOp = this.nbOperations
       this.pause()
     }
-    this.onSlide.emit(this.currentOp)
+    this.slide.emit(this.currentOp)
   }
 
   play() {
@@ -52,12 +52,12 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   goToBegin() {
     this.currentOp = 0
-    this.onSlide.emit(this.currentOp)
+    this.slide.emit(this.currentOp)
   }
 
   goToEnd() {
     this.currentOp = this.nbOperations
-    this.onSlide.emit(this.currentOp)
+    this.slide.emit(this.currentOp)
   }
 
   ngOnDestroy() {

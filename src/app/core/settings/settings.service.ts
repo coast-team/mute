@@ -1,6 +1,6 @@
-import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core'
-import { AuthService, JwtInterceptor } from 'ng2-ui-auth'
-import { Observable, Subscribable } from 'rxjs/Observable'
+import { Injectable, Renderer2, RendererFactory2 } from '@angular/core'
+import { AuthService } from 'ng2-ui-auth'
+import { Observable } from 'rxjs/Observable'
 import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
@@ -32,7 +32,7 @@ export class SettingsService {
   private profileChangeSub: Subscription
   private isDBAvailable: boolean
 
-  constructor(private rendererFactory: RendererFactory2, private auth: AuthService) {
+  constructor(rendererFactory: RendererFactory2, private auth: AuthService) {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
@@ -229,7 +229,8 @@ export class SettingsService {
       if (rows && rows.length === 1) {
         return rows[0]
       } else {
-        log.warn('Settings error: failed to retreive profiles (undefined of more than one entry) ', rows)
+        log.warn('Settings error: failed to retreive profiles (undefined of more than one entry)', rows)
+        return Promise.reject(new Error('Settings error: failed to retreive profiles (undefined of more than one entry)'))
       }
     }
   }
