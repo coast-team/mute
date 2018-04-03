@@ -12,11 +12,12 @@
     "builddev": "npm run build -- --env ovhdev",
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
     "lint": "ng lint --type-check",
+    "lintmd": "markdownlint ./*.md",
     "test": "ng test",
     "e2e": "ng e2e",
     "proto":
       "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_pb.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_pb.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
-    "precommit": "npm run lint",
+    "precommit": "npm run lint && npm run lintmd",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
@@ -85,6 +86,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "live-server": "^1.2.0",
+    "markdownlint-cli": "^0.8.1",
     "pm2": "^2.10.1",
     "protractor": "~5.1.2",
     "sigver": "^18.0.0",

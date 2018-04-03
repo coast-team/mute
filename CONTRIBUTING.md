@@ -6,41 +6,44 @@ The following is a set of guidelines for contributing to Mute and its dependenci
 
 This document is inspired by [Atom Contributing Guidelines](https://github.com/atom/atom/blob/master/CONTRIBUTING.md).
 
-#### Table Of Contents
+## Table Of Contents
 
 [Code of Conduct](#code-of-conduct)
 
 [What should I know before I get started?](#what-should-i-know-before-i-get-started)
-  * [Mute objectives and dependencies.](#mute-objectives-and-dependencies)
+
+* [Mute objectives and dependencies.](#mute-objectives-and-dependencies)
 
 [How Can I Contribute?](#how-can-i-contribute)
-  * [Reporting Bugs](#reporting-bugs)
-  * [Suggesting Enhancements](#suggesting-enhancements)
-  * [Your First Code Contribution](#your-first-code-contribution)
-  * [Pull Requests](#pull-requests)
+
+* [Reporting Bugs](#reporting-bugs)
+* [Suggesting Enhancements](#suggesting-enhancements)
+* [Your First Code Contribution](#your-first-code-contribution)
+* [Pull Requests](#pull-requests)
 
 [Styleguides](#styleguides)
-  * [Git Commit Messages](#git-commit-messages)
-  * [Typescript Styleguide](#typescript-styleguide)
-  * [Specs Styleguide](#specs-styleguide)
-  * [Documentation Styleguide](#documentation-styleguide)
+
+* [Git Commit Messages](#git-commit-messages)
+* [Typescript Styleguide](#typescript-styleguide)
+* [Specs Styleguide](#specs-styleguide)
+* [Documentation Styleguide](#documentation-styleguide)
 
 [Additional Notes](#additional-notes)
-  * [Issue and Pull Request Labels](#issue-and-pull-request-labels)
+
+* [Issue and Pull Request Labels](#issue-and-pull-request-labels)
 
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the [Contributor Covenant](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
-## What should I know before I get started?
+## What should I know before I get started
 
-### Mute objectives and dependencies.
+### Mute objectives and dependencies
 
 Mute is an open-source project led by the [Coast Team](https://team.inria.fr/coast/) in Loria/Inria Grand Est. It's a P2P collaborative text-editor
 that implements conflict-free merge algorithm for synchronous/asynchronous collaborations:
 
-[André et al., 2013]<a id="ref-1"> Luc André, Stéphane Martin, Gérald Oster et Claudia-Lavinia Ignat. **Supporting Adaptable Granularity of Changes for Massive-scale Collaborative Editing**. In *Proceedings of the international conference on collaborative computing: networking, applications and worksharing - CollaborateCom 2013*. IEEE Computer Society, Austin, Texas, USA, october 2013, pages 50–59. doi: [10.4108/icst.collaboratecom.2013.254123](https://dx.doi.org/10.4108/icst.collaboratecom.2013.254123). url: https://hal.inria.fr/hal-00903813/.
-
+[André et al., 2013] Luc André, Stéphane Martin, Gérald Oster et Claudia-Lavinia Ignat. **Supporting Adaptable Granularity of Changes for Massive-scale Collaborative Editing**. In _Proceedings of the international conference on collaborative computing: networking, applications and worksharing - CollaborateCom 2013_. IEEE Computer Society, Austin, Texas, USA, october 2013, pages 50–59. doi: [10.4108/icst.collaboratecom.2013.254123](https://dx.doi.org/10.4108/icst.collaboratecom.2013.254123). url: <https://hal.inria.fr/hal-00903813>.
 
 Mute is based on several dependencies which implements a part of the algorithm and which can be reused for other project.
 
@@ -48,13 +51,13 @@ Here's a list of the big ones:
 
 * [Mute](https://github.com/coast-team/mute) - Mute client part. It's the main component of Mute which consist of Angular Web App.
 * [Mute-Core](https://github.com/coast-team/mute-core) - Mute Service part: provide construction of Mute data structures and communication between
-Mute client and Netflux.
+  Mute client and Netflux.
 * [Netflux](https://github.com/coast-team/netflux) - P2P network algorithm which is in charge of communication. It implements several network topology and is built over WebSocket.
 * [Mute-structs](https://github.com/coast-team/mute-structs) - Defines Mute Data structures for messages and communication protocol.
 
 There are many more (like bot-storage or identification package), but this list should be a good starting point.
 
-## How Can I Contribute?
+## How Can I Contribute
 
 ### Reporting Bugs
 
@@ -69,7 +72,7 @@ Before creating bug reports, please check [this list](#before-submitting-a-bug-r
 * **Determine [which repository the problem should be reported in](#mute-objectives-and-dependencies)**.
 * **Perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aissue+user%3Acoast-team)** to see if the problem has already been reported. If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one.
 
-#### How Do I Submit A (Good) Bug Report?
+#### How Do I Submit A (Good) Bug Report
 
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined [which repository](#mute-objectives-and-dependencies) your bug is related to, create an issue on that repository and provide the following information by filling in [the template](ISSUE_TEMPLATE.md).
 
@@ -109,7 +112,7 @@ Before creating enhancement suggestions, please check [this list](#before-submit
 * **Determine [which repository the enhancement should be suggested in](#mute-objectives-and-dependencies).**
 * **Perform a [cursory search](https://github.com/issues?utf8=%E2%9C%93&q=is%3Aissue+user%3Acoast-team)** to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 
-#### How Do I Submit A (Good) Enhancement Suggestion?
+#### How Do I Submit A (Good) Enhancement Suggestion
 
 Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined [which repository](#mute-and-dependencies) your enhancement suggestion is related to, create an issue on that repository and provide the following information:
 
@@ -131,6 +134,7 @@ Unsure where to begin contributing to Mute? You can start by looking through `he
 #### Local development
 
 All packages can be developed locally, by checking out the corresponding repository and [linking](https://yarnpkg.com/lang/en/docs/cli/link/) the package to Mute or [packing](https://yarnpkg.com/lang/en/docs/cli/pack/) the dependency:
+
 ```bash
 #With yarn
 yarn build && yarn pack
@@ -139,9 +143,11 @@ npm build && npm pack
 ```
 
 If you're using Yarn, do not forget to clean the cache after packing the dependency and before installing it in Mute:
+
 ```bash
 yarn cache clean
 ```
+
 ### Pull Requests
 
 * Fill in [the required template](PULL_REQUEST_TEMPLATE.md)
@@ -157,7 +163,7 @@ yarn cache clean
 
 ### Git Commit Messages
 
-Mute repositories use [commitizen](https://github.com/commitizen/cz-cli) to format 
+Mute repositories use [commitizen](https://github.com/commitizen/cz-cli) to format
 git commit messages.
 
 * Use the present tense ("Add feature" not "Added feature")
@@ -172,11 +178,11 @@ The global styleguide is the one from [Angular Styleguide](https://angular.io/gu
 
 ### Specs Styleguide
 
-Some project use [Ava]() for spec and some other use [Jasmine](). You could use the one already present in the repository
+Some project use Ava for spec and some other use Jasmine. You could use the one already present in the repository
 or configure Jasmine.
 
-- Treat `describe` as a noun or situation.
-- Treat `it` as a statement about state or how an operation changes state.
+* Treat `describe` as a noun or situation.
+* Treat `it` as a statement about state or how an operation changes state.
 
 #### Example
 
@@ -186,7 +192,7 @@ describe ('a dog', () => {
     # spec here
     describe ('when the dog is happy', () => {
       it ('wags its tail', () => {
-        # spec here  
+        # spec here
       })
     })
   })
@@ -203,7 +209,7 @@ describe ('a dog', () => {
 
 This section lists the labels we use to help us track and manage issues and pull requests. Most labels are used across all Coast team repositories, but some are specific to `coast-team/mute`.
 
-[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of issues or pull requests you're interested in. To help you find issues and pull requests, each label is listed with a description of when they are used. We  encourage you to read about [search filters](https://help.github.com/articles/searching-issues/) which will help you write more focused queries.
+[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of issues or pull requests you're interested in. To help you find issues and pull requests, each label is listed with a description of when they are used. We encourage you to read about [search filters](https://help.github.com/articles/searching-issues/) which will help you write more focused queries.
 
 The labels are loosely grouped by their purpose, but it's not required that every issue have a label from every group or that an issue can't have more than one label from the same group.
 
@@ -211,28 +217,27 @@ Please open an issue on `coast-team/mute` if you have suggestions for new labels
 
 #### Type of Issue and Issue State
 
-| Label name | Description |
-| --- | --- |
-| `bug` | Confirmed bugs or reports that are very likely to be bugs. |
-| `deploy`| Features or bugs related to deployment of the application. |
-| `dev`| Features or bug related to dev-tools. (logs, etc...) |
-| `duplicate` | Issues which are duplicates of other issues, i.e. they have been reported before. |
-| `enhancement` | Feature requests. |
-| `help-wanted` | The Coast team would appreciate help from the community in resolving these issues. |
-| `invalid` | Issues which aren't valid (e.g. user errors). |
-| `optional` | Features that are not a priority for Coast Team. |
-| `question` | Questions more than bug reports or feature requests (e.g. how do I do X). |
-| `ui` | Features or bugs that are purely aesthetics. |
-| `use case` | Description of use-case which need an implementation proposition or feature proposition. |
-| `wontfix` | The Coast team has decided not to fix these issues for now, either because they're working as intended or for some other reason. |
-
+| Label name    | Description                                                                                                                      |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `bug`         | Confirmed bugs or reports that are very likely to be bugs.                                                                       |
+| `deploy`      | Features or bugs related to deployment of the application.                                                                       |
+| `dev`         | Features or bug related to dev-tools. (logs, etc...)                                                                             |
+| `duplicate`   | Issues which are duplicates of other issues, i.e. they have been reported before.                                                |
+| `enhancement` | Feature requests.                                                                                                                |
+| `help-wanted` | The Coast team would appreciate help from the community in resolving these issues.                                               |
+| `invalid`     | Issues which aren't valid (e.g. user errors).                                                                                    |
+| `optional`    | Features that are not a priority for Coast Team.                                                                                 |
+| `question`    | Questions more than bug reports or feature requests (e.g. how do I do X).                                                        |
+| `ui`          | Features or bugs that are purely aesthetics.                                                                                     |
+| `use case`    | Description of use-case which need an implementation proposition or feature proposition.                                         |
+| `wontfix`     | The Coast team has decided not to fix these issues for now, either because they're working as intended or for some other reason. |
 
 #### Pull Request Labels
 
-| Label name | Description
-| --- | --- |
-| `work-in-progress` | Pull requests which are still being worked on, more changes will follow. |
-| `needs-review` | Pull requests which need code review, and approval from maintainers or Coast team. |
-| `under-review` | Pull requests being reviewed by maintainers or Coast team. |
+| Label name         | Description                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| `work-in-progress` | Pull requests which are still being worked on, more changes will follow.                 |
+| `needs-review`     | Pull requests which need code review, and approval from maintainers or Coast team.       |
+| `under-review`     | Pull requests being reviewed by maintainers or Coast team.                               |
 | `requires-changes` | Pull requests which need to be updated based on review comments and then reviewed again. |
-| `needs-testing` | Pull requests which need manual testing. |
+| `needs-testing`    | Pull requests which need manual testing.                                                 |
