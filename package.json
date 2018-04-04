@@ -11,13 +11,13 @@
     "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && zopfli dist/*.js dist/*.css dist/*.html",
     "builddev": "npm run build -- --env ovhdev",
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
-    "lint": "ng lint --type-check",
-    "lintmd": "markdownlint ./*.md",
+    "lint":
+      "ng lint --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md",
     "test": "ng test",
     "e2e": "ng e2e",
     "proto":
       "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_pb.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_pb.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
-    "precommit": "lint-staged npm run lintmd",
+    "precommit": "lint-staged",
     "commitmsg": "validate-commit-msg",
     "cz": "git-cz",
     "build-desktop": "nativefier --name 'Mute' 'https://www.coedit.re' ./dist-desktop"
@@ -89,7 +89,6 @@
     "live-server": "^1.2.0",
     "markdownlint-cli": "^0.8.1",
     "pm2": "^2.10.1",
-    "pretty-quick": "^1.4.1",
     "protractor": "~5.1.2",
     "sigver": "^18.0.0",
     "ts-node": "~4.1.0",
@@ -105,7 +104,11 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["npm run lint -- --fix", "git add"],
-    "*.{ts,json,scss,css,md}": ["prettier --write", "git add"]
+    "linters": {
+      "*.md": ["prettier --write --list-different", "git add", "markdownlint"],
+      "*.ts": ["ng lint --type-check --fix", "git add"],
+      "*.{ts,json,scss,css}": ["prettier --write --list-different", "git add"]
+    },
+    "concurrent": false
   }
 }

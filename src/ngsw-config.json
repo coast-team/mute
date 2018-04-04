@@ -1,21 +1,13 @@
 {
   "index": "/index.html",
-  "assetGroups": [{
-    "name": "app",
-    "installMode": "prefetch",
-    "resources": {
-      "files": [
-        "/index.html",
-        "/assets/**",
-        "/fonts/**",
-        "!/**/*.scss",
-        "!/**/*.txt"
-      ],
-      "versionedFiles": [
-        "/*.bundle.css",
-        "/*.bundle.js",
-        "/*.chunk.js"
-      ]
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/index.html", "/assets/**", "/fonts/**", "!/**/*.scss", "!/**/*.txt"],
+        "versionedFiles": ["/*.bundle.css", "/*.bundle.js", "/*.chunk.js"]
+      }
     }
-  }]
+  ]
 }

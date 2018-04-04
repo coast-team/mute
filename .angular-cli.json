@@ -7,11 +7,7 @@
     {
       "root": "src",
       "outDir": "dist",
-      "assets": [
-        "assets",
-        "fonts",
-        "manifest.json"
-      ],
+      "assets": ["assets", "fonts", "manifest.json"],
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
@@ -20,13 +16,9 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "mute",
       "serviceWorker": true,
-      "styles": [
-        "styles.scss"
-      ],
+      "styles": ["styles.scss"],
       "stylePreprocessorOptions": {
-        "includePaths": [
-          "assets"
-        ]
+        "includePaths": ["assets"]
       },
       "scripts": [
         "../node_modules/loglevel/dist/loglevel.min.js",
@@ -71,7 +63,6 @@
   },
   "defaults": {
     "styleExt": "css",
-    "component": {
-    }
+    "component": {}
   }
 }
