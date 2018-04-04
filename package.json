@@ -89,6 +89,7 @@
     "live-server": "^1.2.0",
     "markdownlint-cli": "^0.8.1",
     "pm2": "^2.10.1",
+    "prettier": "^1.11.1",
     "protractor": "~5.1.2",
     "sigver": "^18.0.0",
     "ts-node": "~4.1.0",
