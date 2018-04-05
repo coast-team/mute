@@ -98,7 +98,7 @@ export class RichCollaboratorsService {
       }
     }
 
-    this.collaborators = this.collaborators.splice(0)
+    this.collaborators = this.collaborators.slice(0)
     if (!rc) {
       rc = new RichCollaborator(collab, this.pickColor())
       this.collaborators.push(rc)
