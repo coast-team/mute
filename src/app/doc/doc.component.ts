@@ -223,6 +223,17 @@ export class DocComponent implements OnDestroy, OnInit {
 
   initLogs(): void {
     this.logs = new LogsService()
+
+    const myDocId = this.doc.key
+
+    this.logsSubs.push(this.network.onJoin.subscribe((event: JoinEvent) => {
+      const obj = { type: 'connection', timestamp: Date.now(), siteId: this.siteId }
+      this.logs.log(obj)
+    }))
+    this.logsSubs.push(this.network.onLeave.subscribe(() => {
+      const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
+      this.logs.log(obj)
+    }))
   }
 
   destroyLogs(): void {
