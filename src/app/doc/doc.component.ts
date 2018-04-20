@@ -234,6 +234,15 @@ export class DocComponent implements OnDestroy, OnInit {
       const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
       this.logs.log(obj)
     }))
+
+    this.logsSubs.push(this.network.onPeerJoin.subscribe((peer: number) => {
+      const obj = { type: 'peerConnection', timestamp: Date.now(), siteId: peer }
+      this.logs.log(obj)
+    }))
+    this.logsSubs.push(this.network.onPeerLeave.subscribe((peer: number) => {
+      const obj = { type: 'peerDisconnection', timestamp: Date.now(), siteId: peer }
+      this.logs.log(obj)
+    }))
   }
 
   destroyLogs(): void {
