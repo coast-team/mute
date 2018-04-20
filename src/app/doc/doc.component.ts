@@ -2,7 +2,7 @@ import { BreakpointObserver } from '@angular/cdk/layout'
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
-import { MuteCore, State } from 'mute-core'
+import { JoinEvent, MuteCore, State } from 'mute-core'
 import { LogootSAdd, LogootSDel, LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
 import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
@@ -226,32 +226,49 @@ export class DocComponent implements OnDestroy, OnInit {
 
     const myDocId = this.doc.key
 
-    this.logsSubs.push(this.network.onJoin.subscribe((event: JoinEvent) => {
-      const obj = { type: 'connection', timestamp: Date.now(), siteId: this.siteId }
-      this.logs.log(obj)
-    }))
-    this.logsSubs.push(this.network.onLeave.subscribe(() => {
-      const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
-      this.logs.log(obj)
-    }))
+    // unsubscribe all subscription if there are some left (in the case you create an document while one is alread open)
+    if (this.logsSubs.length !== 0) {
+      this.destroyLogs()
+    }
 
-    this.logsSubs.push(this.network.onPeerJoin.subscribe((peer: number) => {
-      const obj = { type: 'peerConnection', timestamp: Date.now(), siteId: peer }
-      this.logs.log(obj)
-    }))
-    this.logsSubs.push(this.network.onPeerLeave.subscribe((peer: number) => {
-      const obj = { type: 'peerDisconnection', timestamp: Date.now(), siteId: peer }
-      this.logs.log(obj)
-    }))
+    this.logsSubs.push(
+      this.network.onJoin.subscribe((event: JoinEvent) => {
+        const obj = { type: 'connection', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+    this.logsSubs.push(
+      this.network.onLeave.subscribe(() => {
+        const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
 
-    this.logsSubs.push(this.muteCore.collaboratorsService.onCollaboratorJoin.subscribe((c: Collaborator) => {
-      const obj = { type: 'collaboratorJoin', timestamp: Date.now(), siteId: c.id }
-      this.logs.log(obj)
-    }))
-    this.logsSubs.push(this.muteCore.collaboratorsService.onCollaboratorLeave.subscribe((c: number) => {
-      const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId: c }
-      this.logs.log(obj)
-    }))
+    this.logsSubs.push(
+      this.network.onPeerJoin.subscribe((peer: number) => {
+        const obj = { type: 'peerConnection', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+    this.logsSubs.push(
+      this.network.onPeerLeave.subscribe((peer: number) => {
+        const obj = { type: 'peerDisconnection', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+
+    this.logsSubs.push(
+      this.muteCore.collaboratorsService.onJoin.subscribe((c: ICollaborator) => {
+        const obj = { type: 'collaboratorJoin', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+    this.logsSubs.push(
+      this.muteCore.collaboratorsService.onLeave.subscribe((c: number) => {
+        const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
   }
 
   destroyLogs(): void {
