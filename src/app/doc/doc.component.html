@@ -13,7 +13,7 @@
     <mat-drawer-container class="content" hasBackdrop="false">
 
       <mat-drawer-content>
-        <mute-editor [ngClass]="extrasmall" [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
+        <mute-editor [ngClass]="extrasmall" #editorComponent [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
       </mat-drawer-content>
       <mat-drawer position="end" [mode]="drawerMode | async" [opened]="drawerOpened | async" #infoSidenav class="info-sidenav"
         ngClass.lt-sm="info-sidenav-lt-sm">

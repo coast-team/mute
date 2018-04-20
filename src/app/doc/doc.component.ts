@@ -3,6 +3,7 @@ import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@an
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
+import { LogootSAdd, LogootSDel, LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
 import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
@@ -14,9 +15,11 @@ import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
+import { LogsService } from '../doc/logs/logs.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
+import { EditorComponent } from './editor/editor.component'
 
 export enum VIEWPORT {
   LARGE,
@@ -35,10 +38,12 @@ export enum VIEWPORT {
 export class DocComponent implements OnDestroy, OnInit {
   @ViewChild('infoSidenav') infoSidenav
 
+  @ViewChild('editorComponent') editor: EditorComponent
+
+  public doc: Doc
   private subs: Subscription[]
   private inited = false
 
-  public doc: Doc
   public isMobile: boolean
   public muteCore: MuteCore
   public viewport: Observable<VIEWPORT>
@@ -46,6 +51,10 @@ export class DocComponent implements OnDestroy, OnInit {
   public drawerMode: ReplaySubject<string>
   public drawerOpened: ReplaySubject<boolean>
   public extrasmall: string
+
+  private siteId: number
+  public logs: LogsService
+  private logsSubs: Subscription[] = []
 
   public showDevLabel: boolean
 
@@ -202,11 +211,22 @@ export class DocComponent implements OnDestroy, OnInit {
     this.network.clean()
     this.muteCore.dispose()
     this.subs.forEach((s) => s.unsubscribe())
+    this.destroyLogs()
   }
 
   editorReady(): void {
     this.muteCore.init(this.doc.key)
     this.inited = true
+
+    this.initLogs()
+  }
+
+  initLogs(): void {
+    this.logs = new LogsService()
+  }
+
+  destroyLogs(): void {
+    this.logsSubs.forEach((s) => s.unsubscribe())
   }
 
   getDocState(): State {
