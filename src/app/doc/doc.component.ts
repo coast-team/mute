@@ -3,11 +3,13 @@ import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@an
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { JoinEvent, MuteCore, State } from 'mute-core'
+import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
+import { LocalOperation } from 'mute-core/dist/types/logs/LocalOperation'
+import { RemoteOperation } from 'mute-core/dist/types/logs/RemoteOperation'
 import { LogootSAdd, LogootSDel, LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
 import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
-import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { environment } from '../../environments/environment'
 import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
@@ -257,14 +259,25 @@ export class DocComponent implements OnDestroy, OnInit {
     )
 
     this.logsSubs.push(
-      this.muteCore.collaboratorsService.onJoin.subscribe((c: ICollaborator) => {
-        const obj = { type: 'collaboratorJoin', timestamp: Date.now(), siteId: this.siteId }
+      this.muteCore.onLocalOperation.subscribe((operation: LocalOperation) => {
+        const obj = {
+          ...operation,
+          timestamp: Date.now(),
+          collaborators: this.network.members,
+          neighbours: 'TODO',
+        }
         this.logs.log(obj)
       })
     )
+
     this.logsSubs.push(
-      this.muteCore.collaboratorsService.onLeave.subscribe((c: number) => {
-        const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId: this.siteId }
+      this.muteCore.onRemoteOperation.subscribe((operation: RemoteOperation) => {
+        const obj = {
+          ...operation,
+          timestamp: Date.now(),
+          collaborators: this.network.members,
+          neighbours: 'TODO',
+        }
         this.logs.log(obj)
       })
     )
@@ -272,45 +285,6 @@ export class DocComponent implements OnDestroy, OnInit {
 
   destroyLogs(): void {
     this.logsSubs.forEach((s) => s.unsubscribe())
-  }
-
-  localOperationsLogs(): void {
-    this.logsSubs.push(
-      this.editor.textOperationsObservable.subscribe((operations: TextOperation[]) => {
-        operations.forEach((operation: TextOperation) => {
-          if (operation instanceof TextInsert) {
-            const ope = operation as TextInsert
-            const obj = {
-              type: 'localInsertion',
-              timestamp: Date.now(),
-              siteId: this.siteId,
-              clock: this.muteCore.syncService.getClock,
-              index: ope.offset,
-              content: ope.content,
-              length: ope.content.length,
-              context: this.muteCore.syncService.getVector,
-              collaborators: this.network.members,
-              neighbours: 'TODO',
-            }
-            this.logs.log(obj)
-          } else if (operation instanceof TextDelete) {
-            const ope = operation as TextDelete
-            const obj = {
-              type: 'localDeletion',
-              timestamp: Date.now(),
-              siteId: this.siteId,
-              clock: this.muteCore.syncService.getClock,
-              index: ope.offset,
-              content: 'TODO',
-              length: ope.length,
-              context: this.muteCore.syncService.getVector,
-              collaborators: this.network.members,
-              neighbours: 'TODO',
-            }
-          }
-        })
-      })
-    )
   }
 
   private withEncryption() {

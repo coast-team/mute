@@ -74,7 +74,6 @@ class ChangeEvent {
 export class EditorComponent implements OnChanges, OnDestroy, OnInit {
   @Input() docService: DocService
   @Output() isReady: EventEmitter<any> = new EventEmitter()
-  @Output() isLocalOperationReady: EventEmitter<any> = new EventEmitter()
   @ViewChild('editorElt') editorElt
 
   public editor: CodeMirror.Editor
@@ -131,8 +130,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         ),
         share()
       )
-
-      this.isLocalOperationReady.next(undefined)
 
       this.docService.localTextOperationsSource = this.textOperationsObservable
 
