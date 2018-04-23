@@ -226,7 +226,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
     const myDocId = this.doc.key
 
-    // unsubscribe all subscription if there are some left (in the case you create an document while one is alread open)
+    // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
     if (this.logsSubs.length !== 0) {
       this.destroyLogs()
     }
@@ -267,6 +267,44 @@ export class DocComponent implements OnDestroy, OnInit {
       this.muteCore.collaboratorsService.onLeave.subscribe((c: number) => {
         const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId: this.siteId }
         this.logs.log(obj)
+      })
+    )
+
+    this.logsSubs.push(
+      this.editor.textOperationsObservable.subscribe((operations: TextOperation[]) => {
+        operations.forEach((operation: TextOperation) => {
+          if (operation instanceof TextInsert) {
+            const ope = operation as TextInsert
+            const obj = {
+              type: 'localInsertion',
+              timestamp: Date.now(),
+              siteId: this.siteId,
+              clock: this.muteCore.syncService.getClock,
+              index: ope.offset,
+              content: ope.content,
+              length: ope.content.length,
+              context: this.muteCore.syncService.state,
+              collaborators: this.network.members,
+              neighbours: 'TODO',
+            }
+            this.logs.log(obj)
+          } else if (operation instanceof TextDelete) {
+            const ope = operation as TextDelete
+            const obj = {
+              type: 'localDeletion',
+              timestamp: Date.now(),
+              siteId: this.siteId,
+              clock: this.muteCore.syncService.getClock,
+              index: ope.offset,
+              content: 'TODO',
+              length: ope.length,
+              context: this.muteCore.syncService.state,
+              collaborators: this.network.members,
+              neighbours: 'TODO',
+            }
+            this.logs.log(obj)
+          }
+        })
       })
     )
   }

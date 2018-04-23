@@ -80,7 +80,7 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
   private isInited: boolean
   private remoteOperationsSubscription: Subscription
-  private textOperationsObservable: Observable<TextOperation[]>
+  public textOperationsObservable: Observable<TextOperation[]>
 
   constructor(private zone: NgZone) {
     this.isInited = false
