@@ -146,6 +146,12 @@ export class DocComponent implements OnDestroy, OnInit {
     }
     this.network.init()
 
+    this.logs = new LogsService()
+    // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
+    if (this.logsSubs.length !== 0) {
+      this.destroyLogs()
+    }
+
     this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       this.doc = doc
       this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
@@ -222,14 +228,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   initLogs(): void {
-    this.logs = new LogsService()
-
     const myDocId = this.doc.key
-
-    // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
-    if (this.logsSubs.length !== 0) {
-      this.destroyLogs()
-    }
 
     this.logsSubs.push(
       this.network.onJoin.subscribe((event: JoinEvent) => {
@@ -269,7 +268,13 @@ export class DocComponent implements OnDestroy, OnInit {
         this.logs.log(obj)
       })
     )
+  }
 
+  destroyLogs(): void {
+    this.logsSubs.forEach((s) => s.unsubscribe())
+  }
+
+  localOperationsLogs(): void {
     this.logsSubs.push(
       this.editor.textOperationsObservable.subscribe((operations: TextOperation[]) => {
         operations.forEach((operation: TextOperation) => {
@@ -283,7 +288,7 @@ export class DocComponent implements OnDestroy, OnInit {
               index: ope.offset,
               content: ope.content,
               length: ope.content.length,
-              context: this.muteCore.syncService.state,
+              context: this.muteCore.syncService.getVector,
               collaborators: this.network.members,
               neighbours: 'TODO',
             }
@@ -298,23 +303,14 @@ export class DocComponent implements OnDestroy, OnInit {
               index: ope.offset,
               content: 'TODO',
               length: ope.length,
-              context: this.muteCore.syncService.state,
+              context: this.muteCore.syncService.getVector,
               collaborators: this.network.members,
               neighbours: 'TODO',
             }
-            this.logs.log(obj)
           }
         })
       })
     )
-  }
-
-  destroyLogs(): void {
-    this.logsSubs.forEach((s) => s.unsubscribe())
-  }
-
-  getDocState(): State {
-    return this.muteCore.syncService.state
   }
 
   private withEncryption() {
