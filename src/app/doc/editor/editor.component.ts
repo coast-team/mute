@@ -1,15 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Injectable,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core'
+import { ChangeDetectionStrategy, Component, EventEmitter, Injectable, NgZone, OnDestroy, OnInit, Output, ViewChild } from '@angular/core'
 import { Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
@@ -29,9 +18,10 @@ import { DocService } from '../doc.service'
 })
 @Injectable()
 export class EditorComponent implements OnDestroy, OnInit {
-  @Output() isReady: EventEmitter<void>
-  @Output() isLocalOperationReady: EventEmitter<any>
-  @ViewChild('editorElt') editorElt: ElementRef
+  @Output()
+  isReady: EventEmitter<any>
+  @ViewChild('editorElt')
+  editorElt
 
   public editor: CodeMirror.Editor
 
@@ -40,7 +30,6 @@ export class EditorComponent implements OnDestroy, OnInit {
 
   constructor(docService: DocService, private zone: NgZone) {
     this.isReady = new EventEmitter()
-    this.isLocalOperationReady = new EventEmitter()
     this.subs = []
     this.doc = docService.doc
   }
@@ -98,7 +87,6 @@ export class EditorComponent implements OnDestroy, OnInit {
         }
       })
 
-      this.isLocalOperationReady.next(undefined)
       this.isReady.next()
     })
   }
