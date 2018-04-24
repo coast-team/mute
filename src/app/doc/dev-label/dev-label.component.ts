@@ -5,6 +5,7 @@ import * as mnemonic from '@coast-team/mnemonicjs'
 
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { UiService } from '../../core/ui/ui.service'
+import { LogsService } from '../logs/logs.service'
 
 @Component({
   selector: 'mute-dev-label',
@@ -12,6 +13,7 @@ import { UiService } from '../../core/ui/ui.service'
     <div class="mat-caption">
       <br /> Digest: {{digest}}
       <br /> Exports:
+      <button (click)="exportMuteLog()">MuteLog</button>
       <button (click)="exportLog()">Log</button>
       <button (click)="exportTree()">Tree</button>
       <a #link [href]="objectURL" [download]="filename"></a>
@@ -65,6 +67,23 @@ export class DevLabelComponent implements OnInit {
     const objectURL = URL.createObjectURL(blob)
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
     this.detectRef.detectChanges()
+  }
+
+  async exportMuteLog(): Promise<void> {
+    const urlParts: string[] = window.location.href.split('/')
+    const docID = urlParts[urlParts.length - 1]
+    try {
+      const log = new LogsService('muteLogs-' + docID)
+      const obj = (await log.getLogs()).map((e) => JSON.stringify(e) + '\n')
+      const blob: Blob = new Blob(obj)
+      this.filename = `log-${docID}-${this.digest}.json`
+      this.updateObjectURL(blob)
+      this.link.nativeElement.click()
+    } catch (error) {
+      const message = `The log could not be retrieved: ${error}.`
+      const action = 'Close'
+      this.snackBar.open(message, action)
+    }
   }
 
   async exportLog(): Promise<void> {

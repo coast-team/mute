@@ -10,7 +10,6 @@ export class LogsService {
   constructor (databaseName: string) {
     this.db = new IndexdbDatabase()
     this.db.init(databaseName)
-    console.log('[LOGS] Log system start')
   }
 
   log (obj: object) {
@@ -18,9 +17,11 @@ export class LogsService {
     console.log('[LOGS]', obj)
   }
 
-  getLogs (): void {
-    this.db.get().then((obj: object) => {
-      console.log('getLogs', obj)
-    }).catch((err) => { console.log('[LOGS]', err) })
+  getLogs (): Promise<object[]> {
+    return new Promise((resolve, reject) => {
+      this.db.get().then((obj: object) => {
+        resolve(obj as object[])
+      }).catch((err) => reject(err))
+    })
   }
 }

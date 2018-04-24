@@ -240,7 +240,6 @@ export class DocComponent implements OnDestroy, OnInit {
       this.network.onLeave.subscribe(() => {
         const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
         this.logs.log(obj)
-        this.logs.getLogs()
       })
     )
 
@@ -272,18 +271,6 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.logsSubs.push(
       this.muteCore.onLocalOperation.subscribe((operation: LocalOperation) => {
-        const obj = {
-          ...operation,
-          timestamp: Date.now(),
-          collaborators: this.network.members,
-          neighbours: 'TODO',
-        }
-        this.logs.log(obj)
-      })
-    )
-
-    this.logsSubs.push(
-      this.muteCore.onRemoteOperation.subscribe((operation: RemoteOperation) => {
         const obj = {
           ...operation,
           timestamp: Date.now(),
