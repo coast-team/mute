@@ -148,12 +148,6 @@ export class DocComponent implements OnDestroy, OnInit {
     }
     this.network.init()
 
-    this.logs = new LogsService()
-    // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
-    if (this.logsSubs.length !== 0) {
-      this.destroyLogs()
-    }
-
     this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       this.doc = doc
       this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
@@ -230,7 +224,11 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   initLogs(): void {
-    const myDocId = this.doc.key
+    this.logs = new LogsService('muteLogs-' + this.doc.key)
+    // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
+    if (this.logsSubs.length !== 0) {
+      this.destroyLogs()
+    }
 
     this.logsSubs.push(
       this.network.onJoin.subscribe((event: JoinEvent) => {
@@ -242,6 +240,7 @@ export class DocComponent implements OnDestroy, OnInit {
       this.network.onLeave.subscribe(() => {
         const obj = { type: 'disconnection', timestamp: Date.now(), siteId: this.siteId }
         this.logs.log(obj)
+        this.logs.getLogs()
       })
     )
 
@@ -259,7 +258,32 @@ export class DocComponent implements OnDestroy, OnInit {
     )
 
     this.logsSubs.push(
+      this.muteCore.collaboratorsService.onJoin.subscribe((c: ICollaborator) => {
+        const obj = { type: 'collaboratorJoin', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+    this.logsSubs.push(
+      this.muteCore.collaboratorsService.onLeave.subscribe((c: number) => {
+        const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId: this.siteId }
+        this.logs.log(obj)
+      })
+    )
+
+    this.logsSubs.push(
       this.muteCore.onLocalOperation.subscribe((operation: LocalOperation) => {
+        const obj = {
+          ...operation,
+          timestamp: Date.now(),
+          collaborators: this.network.members,
+          neighbours: 'TODO',
+        }
+        this.logs.log(obj)
+      })
+    )
+
+    this.logsSubs.push(
+      this.muteCore.onRemoteOperation.subscribe((operation: RemoteOperation) => {
         const obj = {
           ...operation,
           timestamp: Date.now(),
