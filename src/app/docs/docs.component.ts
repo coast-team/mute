@@ -53,6 +53,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   public isMobile: boolean
   public menuDoc: Doc
   public remoteName: string
+  public remoteId: string
 
   public actions
 
@@ -71,6 +72,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.title = ''
     this.subs = []
     if (this.botStorage.remote) {
+      this.remoteId = this.botStorage.remote.id
       this.displayedColumnsLocal.push('synchronized')
       this.displayedColumnsRemote.push('synchronized')
     }

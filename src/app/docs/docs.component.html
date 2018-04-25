@@ -74,7 +74,7 @@
                       <mat-icon aria-label="delete document">delete</mat-icon>
                     </button>
                   </ng-container>
-                  <ng-container *ngSwitchCase="botStorage.remote.id">
+                  <ng-container *ngSwitchCase="remoteId">
                     <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
                       <mat-icon aria-label="rename document">mode_edit</mat-icon>
                     </button>
@@ -98,8 +98,8 @@
           </ng-container>
 
           <ng-container matColumnDef="key">
-            <mat-header-cell class="table-header"  fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell *matCellDef="let doc"  fxFlex="100px" class="col-key">{{doc.key}}</mat-cell>
+            <mat-header-cell class="table-header" fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
+            <mat-cell *matCellDef="let doc" fxFlex="100px" class="col-key">{{doc.key}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
@@ -141,7 +141,9 @@
     <ng-template #noDocCreated>
       <h3 class="noDoc mat-title" fxFlexAlign="start" fxLayoutAlign="center center">
         No documents!
-        <button mat-button (click)="open()"><span class="mat-title title-button">Create a new one.</span></button>
+        <button mat-button (click)="open()">
+          <span class="mat-title title-button">Create a new one.</span>
+        </button>
       </h3>
     </ng-template>
 

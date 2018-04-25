@@ -23,12 +23,14 @@ export class BotStorageService extends Storage {
 
   constructor(private http: HttpClient, private settings: SettingsService) {
     super()
+    const botStorage = environment.botStorage || undefined
 
-    if (environment.botStorage && environment.botStorage.url) {
+    if (botStorage && 'url' in botStorage && 'secure' in botStorage && 'webSocketPath' in botStorage) {
+      const bs = botStorage as any
       this.name = ''
-      this.secure = environment.botStorage.secure
-      this.url = environment.botStorage.url
-      this.webSocketPath = environment.botStorage.webSocketPath
+      this.secure = bs.secure
+      this.url = bs.url
+      this.webSocketPath = bs.webSocketPath
       this.remote = Folder.create('Remote storage', 'cloud', true)
       this.remote.id = this.id
     }
@@ -83,7 +85,7 @@ export class BotStorageService extends Storage {
 
   private updateStatus(): Promise<void> {
     if (this.url) {
-      if (!this.settings.isAuthenticated() && !environment.botStorage.isAnonymousAllowed) {
+      if (!this.settings.isAuthenticated() && !(environment.botStorage as any).isAnonymousAllowed) {
         super.setStatus(BotStorageService.NOT_AUTHORIZED)
       } else {
         return new Promise((resolve) => {

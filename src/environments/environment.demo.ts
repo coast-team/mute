@@ -1,4 +1,5 @@
 export const environment = {
+  commit: '',
   production: true,
   devLabel: false,
   netfluxLog: false,
@@ -11,9 +12,14 @@ export const environment = {
       },
     ],
   },
-  signalingServer: 'ws://cpi1.loria.fr:10000',
+  signalingServer: 'ws://cpi2.loria.fr:10000',
   serviceWorker: false,
-  storages: [],
+  botStorage: {
+    secure: true,
+    url: 'botstorage.coedit.re',
+    webSocketPath: 'ws',
+    isAnonymousAllowed: true,
+  },
   auth: {
     baseUrl: '',
     providers: {},

@@ -230,7 +230,7 @@ export class SettingsService {
         return rows[0]
       } else {
         log.warn('Settings error: failed to retreive profiles (undefined of more than one entry)', rows)
-        return Promise.reject(new Error('Settings error: failed to retreive profiles (undefined of more than one entry)'))
+        return Promise.resolve(undefined)
       }
     }
   }

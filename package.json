@@ -70,6 +70,7 @@
     "@types/codemirror": "latest",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.2",
+    "@types/loglevel": "^1.5.3",
     "@types/mathjax": "0.0.32",
     "@types/node": "^8.9.5",
     "codelyzer": "^4.2.1",

@@ -57,7 +57,7 @@ export class NetworkService {
 
     // Configure Netflux logs
     if (environment.netfluxLog) {
-      setLogLevel(LogLevel.WEB_GROUP)
+      setLogLevel(LogLevel.CHANNEL_BUILDER, LogLevel.TOPOLOGY)
     }
   }
 

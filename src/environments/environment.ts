@@ -6,8 +6,14 @@
 export const environment = {
   production: false,
   devLabel: true,
-  netfluxLog: false,
-  rtcConfiguration: { iceServers: [] },
+  netfluxLog: true,
+  rtcConfiguration: {
+    iceServers: [
+      {
+        urls: ['stun:stun.l.google.com:19302'],
+      },
+    ],
+  },
   signalingServer: 'ws://localhost:8010',
   serviceWorker: false,
   botStorage: {
