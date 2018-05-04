@@ -7,7 +7,7 @@
 
   <mat-menu #newDocMenu="matMenu">
     <h2 class="mat-caption new-doc-hint-text">Create a new document:</h2>
-    <button mat-menu-item>
+    <button mat-menu-item (click)="createDoc()">
       <mat-icon>computer</mat-icon>
       <span>On current device</span>
     </button>

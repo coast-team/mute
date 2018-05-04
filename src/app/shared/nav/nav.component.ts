@@ -94,7 +94,12 @@ export class NavComponent implements OnDestroy {
   }
 
   createDoc () {
-    this.router.navigate(['/', this.localStorage.generateKey()])
+    this.localStorage
+      .generateKey()
+      .then((key) => {
+        this.router.navigate(['/', key])
+      })
+      .catch()
   }
 
   openFolder (folder: Folder) {

@@ -4,6 +4,7 @@ import { AsyncSubject } from 'rxjs/AsyncSubject'
 import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
 
+import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
 import { Folder } from '../../Folder'
@@ -38,7 +39,7 @@ export class LocalStorageService implements IStorage {
   private dbLogin: string
   private statusSubject: AsyncSubject<LocalStorageStatus>
 
-  constructor (settings: SettingsService) {
+  constructor (settings: SettingsService, private symCrypto: SymmetricCryptoService) {
     this.local = new Folder('local', 'Local storage', 'computer')
     this.trash = new Folder('trash', 'Trash', 'delete')
     this.statusSubject = new AsyncSubject()
@@ -206,22 +207,14 @@ export class LocalStorageService implements IStorage {
     })
   }
 
-  createDoc (key = this.generateKey()) {
+  createDoc (key) {
     const doc = new Doc(key, 'Untitled Document', this.local.route)
     this.createFile(doc)
     return doc
   }
 
-  generateKey (): string {
-    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    const length = 42 // Should be less then MAX_KEY_LENGTH value
-    const values = new Uint32Array(length)
-    window.crypto.getRandomValues(values)
-    let result = ''
-    for (let i = 0; i < length; i++) {
-      result += mask[values[i] % mask.length]
-    }
-    return result
+  generateKey (): Promise<string> {
+    return this.symCrypto.generateKey()
   }
 
   private openDB (login) {

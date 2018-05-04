@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router'
 
+import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
 
@@ -11,13 +12,15 @@ export class DocResolverService implements Resolve<Doc> {
   constructor (
     private router: Router,
     private snackBar: MatSnackBar,
-    private storage: LocalStorageService
+    private storage: LocalStorageService,
+    private symCrypto: SymmetricCryptoService
   ) {}
 
   async resolve (route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
 
     try {
+      const cryptoKey = this.symCrypto.importKey(key)
       // If user come here directly via URL
       return this.storage.searchDoc(key)
         .then((docs: Doc[]) => {
@@ -34,7 +37,7 @@ export class DocResolverService implements Resolve<Doc> {
     } catch (err) {
       log.warn(`Failed to open document.`, err.message)
       this.snackBar.open(`Could not open or create a document: ${err.message}`, 'close', {duration: 3000})
-      this.router.navigateByUrl('/docs', {skipLocationChange: false})
+      this.router.navigateByUrl('/', {skipLocationChange: false})
       return undefined
     }
   }

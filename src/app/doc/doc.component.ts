@@ -1,9 +1,13 @@
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore } from 'mute-core'
+import { merge } from 'rxjs/observable/merge'
 import { filter, map } from 'rxjs/operators'
+import { Subject } from 'rxjs/Subject'
 import { Subscription } from 'rxjs/Subscription'
 
+import * as mnemonic from '@coast-team/mnemonicjs'
+import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
@@ -37,7 +41,8 @@ export class DocComponent implements OnDestroy, OnInit {
     private network: NetworkService,
     private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
-    public ui: UiService
+    public ui: UiService,
+    private symCrypto: SymmetricCryptoService
   ) {
     this.subs = []
   }
@@ -72,11 +77,62 @@ export class DocComponent implements OnDestroy, OnInit {
 
         this.zone.runOutsideAngular(() => {
           this.muteCore = new MuteCore(id)
-          this.muteCore.messageSource = this.network.onMessage
+          this.muteCore.collaboratorsService.messageSource = this.network.onMessage
+          const newOnMessage = new Subject<any>()
+
+          this.muteCore.syncMessageService.messageSource = newOnMessage.asObservable()
+
+          this.network.onMessage.pipe(
+            filter((msg) => msg.service === 'SyncMessage')
+          ).subscribe((msg) => {
+            this.symCrypto
+              .decrypt(msg.content)
+              .then((content) => {
+                console.log('Msg (' + msg.content.byteLength + ' bytes) to decrypt : ', mnemonic.encode(msg.content))
+                console.log('Msg (' + content.byteLength + ' bytes) decrypted : ', mnemonic.encode(content))
+                newOnMessage.next(Object.assign({}, msg, { content }))
+              })
+          })
           this.network.initSource = this.muteCore.onInit
-          this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
-          this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
-          this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
+          const newBroadcast = new Subject<any>()
+          this.network.messageToBroadcastSource = merge(
+            this.muteCore.collaboratorsService.onMsgToBroadcast,
+            newBroadcast
+
+          ) as any
+          this.muteCore.syncMessageService.onMsgToBroadcast.subscribe((msg) => {
+            this.symCrypto
+              .encrypt(msg.content)
+              .then((content) => {
+                console.log('Msg (' + msg.content.byteLength + ' bytes) to encrypt : ' + mnemonic.encode(msg.content))
+                console.log('Msg (' + content.byteLength + ' bytes) encrypted : ', mnemonic.encode(content))
+                newBroadcast.next(Object.assign({}, msg, { content }))
+              })
+          })
+          this.network.messageToSendRandomlySource = merge(
+            this.muteCore.collaboratorsService.onMsgToSendRandomly,
+            this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
+              map((msg) => {
+                console.log('(Randomly) Msg sent : ', msg.service)
+
+                return this.symCrypto
+                  .encrypt(msg.content)
+                  .then((content) => Object.assign({}, msg, { content }))
+              })
+            )
+          ) as any
+          this.network.messageToSendToSource = merge(
+            this.muteCore.collaboratorsService.onMsgToSendTo,
+            this.muteCore.syncMessageService.onMsgToSendTo.pipe(
+              map((msg) => {
+                console.log('(SendTo) Msg sent : ', msg.service)
+
+                return this.symCrypto
+                  .encrypt(msg.content)
+                  .then((content) => Object.assign({}, msg, { content }))
+              })
+            )
+          ) as any
 
           this.richCollaboratorsService.pseudoChangeSource = this.muteCore.collaboratorsService.onCollaboratorChangePseudo
           this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onCollaboratorJoin
@@ -84,12 +140,21 @@ export class DocComponent implements OnDestroy, OnInit {
           this.muteCore.collaboratorsService.peerJoinSource = this.network.onPeerJoin
           this.muteCore.collaboratorsService.peerLeaveSource = this.network.onPeerLeave
           this.muteCore.collaboratorsService.pseudoSource = this.settings.onChange.pipe(
-            filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
+            filter(
+              (props) =>
+                props.includes(EProperties.profile) ||
+                props.includes(EProperties.profileDisplayName)
+            ),
             map(() => this.settings.profile.displayName)
           )
 
-          this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
-          this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
+          this.muteCore.syncService.setJoinAndStateSources(
+            this.network.onJoin,
+            this.syncStorage.onStoredState
+          )
+          this.syncStorage.initSource = this.muteCore.onInit.pipe(
+            map(() => this.doc)
+          )
           this.syncStorage.stateSource = this.muteCore.syncService.onState
 
           this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
@@ -102,7 +167,8 @@ export class DocComponent implements OnDestroy, OnInit {
           // FIXME: rid of calling resendNotification method
           this.settings.resendNotification()
         })
-      })
+      }
+    )
   }
 
   ngOnDestroy () {
