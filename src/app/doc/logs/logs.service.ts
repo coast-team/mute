@@ -1,26 +1,35 @@
-import { Injectable } from '@angular/core'
+import { Injectable, OnDestroy } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
+import { Doc } from '../../core/Doc'
 import { Database } from './Database'
 import { IndexdbDatabase } from './IndexdbDatabase'
 import { RabbitMq } from './RabbitMq'
 
 @Injectable()
-export class LogsService {
+export class LogsService implements OnDestroy {
   private dbLocal: Database
   private dbDistante: RabbitMq
 
+  private docKey: string
   private displayLogs: boolean
+  private shareLogs: boolean
 
-  constructor() {
+  constructor(route: ActivatedRoute) {
     this.displayLogs = false
-  }
 
-  init(docKey: string) {
+    route.data.subscribe(({ doc }: { doc: Doc }) => {
+      this.docKey = doc.signalingKey
+      this.shareLogs = doc.shareLogs
+    })
+
     // Initialize the local DB
     this.dbLocal = new IndexdbDatabase()
-    this.dbLocal.init('muteLogs-' + docKey)
+    this.dbLocal.init('muteLogs-' + this.docKey)
 
     // Initialize the distant DB
-    this.dbDistante = new RabbitMq(docKey)
+    if (this.shareLogs) {
+      this.dbDistante = new RabbitMq(this.docKey)
+    }
   }
 
   log(obj: object) {
@@ -29,7 +38,10 @@ export class LogsService {
     }
 
     this.dbLocal.store(obj)
-    this.dbDistante.send(obj)
+
+    if (this.shareLogs) {
+      this.dbDistante.send(obj)
+    }
   }
 
   getLogs(): Promise<object[]> {
@@ -45,5 +57,20 @@ export class LogsService {
 
   public setDisplayLogs(display: boolean) {
     this.displayLogs = display
+  }
+
+  toogleLogs(): void {
+    this.shareLogs = !this.shareLogs
+    if (this.shareLogs && this.dbDistante === null) {
+      this.dbDistante = new RabbitMq(this.docKey)
+    }
+  }
+
+  get isSharingLogs(): boolean {
+    return this.shareLogs
+  }
+
+  ngOnDestroy(): void {
+    throw new Error('Method not implemented.')
   }
 }

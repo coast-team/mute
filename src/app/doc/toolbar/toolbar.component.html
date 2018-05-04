@@ -7,8 +7,8 @@
 
       <div class="title">
         <mat-form-field ngClass.gt-xs="gt-xs" color="accent">
-          <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)" (focus)="selectTitle()"
-          />
+          <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)"
+            (focus)="selectTitle()" />
         </mat-form-field>
       </div>
     </div>
@@ -23,6 +23,9 @@
       </button>
       <mute-profile class="action profile"></mute-profile>
     </div>
+    <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)">
+      Share Logs
+    </mat-slide-toggle>
   </div>
 </mat-toolbar>
 
@@ -51,7 +54,8 @@
     <mat-divider></mat-divider>
     <div class="logs">
       <mat-form-field class="log-slider netflux-log">
-        <mat-select (selectionChange)="updateNetfluxLog()" [(value)]="netfluxLog" placeholder="Netflux log levels" multiple>
+        <mat-select (selectionChange)="updateNetfluxLog()" [(value)]="netfluxLog" placeholder="Netflux log levels"
+          multiple>
           <mat-option [value]="LogLevel.DEBUG">Debug</mat-option>
           <mat-option [value]="LogLevel.CHANNEL">Channel</mat-option>
           <mat-option [value]="LogLevel.SIGNALING">Signaling</mat-option>
@@ -62,9 +66,9 @@
         </mat-select>
       </mat-form-field>
       <mat-slide-toggle (change)="updateCryptoLog()" [(ngModel)]="cryptoLog" class="log-slider">Cryptography logs
-      </mat-slide-toggle><br/>
+      </mat-slide-toggle><br />
       <mat-slide-toggle (change)="updateDocLog()" [(ngModel)]="docLog" class="log-slider">Document logs
-      </mat-slide-toggle><br/>
+      </mat-slide-toggle><br />
     </div>
   </div>
 </mat-menu>

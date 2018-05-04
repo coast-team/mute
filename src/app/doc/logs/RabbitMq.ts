@@ -44,7 +44,6 @@ export class RabbitMq extends StompService {
     this.publish(this.queue, obj)
 
     if (this.queuedMessages.length > this.queueLength) {
-      console.log('ADDDDDD to localstorage')
       const oldLogs = JSON.parse(window.localStorage.getItem(this.localName)) as string[]
       oldLogs.push(obj)
       window.localStorage.setItem(this.localName, JSON.stringify(oldLogs))

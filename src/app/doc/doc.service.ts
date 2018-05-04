@@ -222,7 +222,6 @@ export class DocService implements OnDestroy {
 
   private initLogs(): void {
     const siteId = this.muteCore.myMuteCoreId
-    this.logs.init(this.doc.signalingKey)
 
     // For displyaing logs in console
 
