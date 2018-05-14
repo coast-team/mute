@@ -22,6 +22,7 @@ export class Doc extends File {
   public signalingKey: string
   public cryptoKey: string
   public shareLogs: boolean
+  public logsStrategy: string
   public remotes: Array<{
     id: string
     synchronized?: Date
@@ -42,6 +43,7 @@ export class Doc extends File {
       doc.cryptoKey = serialized.cryptoKey
     }
     doc.shareLogs = serialized.shareLogs
+    doc.logsStrategy = serialized.logsStrategy
     doc.deserialize(id, serialized)
     return doc
   }
@@ -61,6 +63,7 @@ export class Doc extends File {
     this.remoteContentChanges = new Subject()
     this._title = title || DEFAULT_TITLE
     this.shareLogs = false
+    this.logsStrategy = 'sendall'
   }
 
   get isDoc() {
@@ -122,6 +125,7 @@ export class Doc extends File {
       cryptoKey: this.cryptoKey,
       remotes: this.remotes,
       shareLogs: this.shareLogs,
+      logsStrategy: this.logsStrategy,
     })
   }
 
