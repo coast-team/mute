@@ -1,16 +1,17 @@
-import { ILogsStrategy } from './LogsStrategy'
+import { LogsStrategy } from './LogsStrategy'
 import { RabbitMq } from './RabbitMq'
 
-export class SendIfActivateLogsStrategy implements ILogsStrategy {
-  private db: RabbitMq
+export class SendIfActivateLogsStrategy extends LogsStrategy {
 
-  constructor (database: RabbitMq) {
-    this.db = database
+  constructor (docKey: string) {
+    super(docKey)
   }
 
   public sendLogs (obj: object, share: boolean) {
+    console.log('[LOGS]', obj)
+    this.dbLocal.store(obj)
     if (share) {
-      this.db.send(obj)
+      this.dbDistante.send(obj)
     }
   }
 }
