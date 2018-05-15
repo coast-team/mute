@@ -80,16 +80,6 @@ export class ToolbarComponent implements OnDestroy {
     }
   }
 
-  updateShareLogs(event) {
-    this.doc.shareLogs = event.checked
-    this.localStorage.save(this.doc)
-  }
-
-  updateLogsStrategy(event) {
-    // console.log(event, this.doc)
-    this.localStorage.save(this.doc)
-  }
-
   selectTitle() {
     this.input.nativeElement.select()
   }
