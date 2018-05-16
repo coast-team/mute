@@ -15,7 +15,7 @@ $root.Message = (function() {
      * Properties of a Message.
      * @exports IMessage
      * @interface IMessage
-     * @property {string|null} [service] Message service
+     * @property {number|null} [service] Message service
      * @property {Uint8Array|null} [content] Message content
      */
 
@@ -36,11 +36,11 @@ $root.Message = (function() {
 
     /**
      * Message service.
-     * @member {string} service
+     * @member {number} service
      * @memberof Message
      * @instance
      */
-    Message.prototype.service = "";
+    Message.prototype.service = 0;
 
     /**
      * Message content.
@@ -75,7 +75,7 @@ $root.Message = (function() {
         if (!writer)
             writer = $Writer.create();
         if (message.service != null && message.hasOwnProperty("service"))
-            writer.uint32(/* id 1, wireType 2 =*/10).string(message.service);
+            writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.service);
         if (message.content != null && message.hasOwnProperty("content"))
             writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.content);
         return writer;
@@ -100,7 +100,7 @@ $root.Message = (function() {
             var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
-                message.service = reader.string();
+                message.service = reader.uint32();
                 break;
             case 2:
                 message.content = reader.bytes();

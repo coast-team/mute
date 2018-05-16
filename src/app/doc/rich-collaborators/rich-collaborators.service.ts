@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { ChangeDetectorRef, Injectable } from '@angular/core'
 import { ICollaborator } from 'mute-core'
 import { Observable } from 'rxjs/Observable'
 import { filter } from 'rxjs/operators'
@@ -20,7 +20,7 @@ export class RichCollaboratorsService {
 
   public collaborators: RichCollaborator[]
 
-  constructor(settings: SettingsService, network: NetworkService) {
+  constructor(private changeRef: ChangeDetectorRef, settings: SettingsService, network: NetworkService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.updateSubject = new Subject()
@@ -74,11 +74,23 @@ export class RichCollaboratorsService {
   }
 
   set updateSource(source: Observable<ICollaborator>) {
-    source.subscribe((collab: ICollaborator) => this.newOrUpdateCollab(collab))
+    source.subscribe((collab: ICollaborator) => {
+      for (const c of this.collaborators) {
+        if (collab.id === c.id) {
+          c.update(collab)
+          break
+        }
+      }
+    })
   }
 
-  set joinSource(source: Observable<number>) {
-    source.subscribe((id: number) => this.newOrUpdateCollab({ id }))
+  set joinSource(source: Observable<ICollaborator>) {
+    source.subscribe((collab) => {
+      const rc = new RichCollaborator(collab, this.pickColor())
+      this.collaborators.push(rc)
+      this.joinSubject.next(rc)
+      this.changeRef.detectChanges()
+    })
   }
 
   set leaveSource(source: Observable<number>) {
@@ -86,26 +98,6 @@ export class RichCollaboratorsService {
       this.collaborators = this.collaborators.filter((c) => c.id !== id)
       this.leaveSubject.next(id)
     })
-  }
-
-  private newOrUpdateCollab(collab: ICollaborator): void {
-    let rc
-    for (const c of this.collaborators) {
-      if (collab.id === c.id) {
-        c.update(collab)
-        rc = c
-        break
-      }
-    }
-
-    this.collaborators = this.collaborators.slice(0)
-    if (!rc) {
-      rc = new RichCollaborator(collab, this.pickColor())
-      this.collaborators.push(rc)
-      this.joinSubject.next(rc)
-    } else {
-      this.updateSubject.next(rc)
-    }
   }
 
   private pickColor(): string {

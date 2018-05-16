@@ -29,10 +29,10 @@ export class CursorsDirective implements OnInit, OnDestroy {
   private protoAnchor: proto.Position
   private protoHead: proto.Position
 
-  protected id: string
+  protected id: number
 
   constructor(private collabService: RichCollaboratorsService, private network: NetworkService) {
-    this.id = 'Cursor'
+    this.id = 687
     this.protoCursor = proto.Cursor.create()
     this.protoAnchor = proto.Position.create()
     this.protoHead = proto.Position.create()

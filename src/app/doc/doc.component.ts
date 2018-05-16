@@ -73,15 +73,8 @@ export class DocComponent implements OnDestroy, OnInit {
         }
       })
 
-      // TODO: Retrieve previous id for this document if existing
-      const ids = new Int32Array(1)
-      window.crypto.getRandomValues(ids)
-      const id = ids[0]
-
       this.zone.runOutsideAngular(() => {
-        // id is a replicaNumber in mute-core
         this.muteCore = new MuteCore({
-          id,
           displayName: this.settings.profile.displayName,
           login: this.settings.profile.login,
           email: this.settings.profile.email,

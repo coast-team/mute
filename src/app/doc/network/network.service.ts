@@ -82,27 +82,27 @@ export class NetworkService {
       }
       this.wg.onMessage = (id, bytes: Uint8Array) => {
         const msg = Message.decode(bytes)
-        const serviceName = msg.service
-        if (serviceName === 'botprotocol') {
-          const content = BotProtocol.create({ key: this.key })
-          this.wg.sendTo(
-            id,
-            Message.encode(
-              Message.create({
-                service: 'botprotocol',
-                content: BotProtocol.encode(content).finish(),
-              })
-            ).finish()
-          )
-        } else if (serviceName === 'botresponse') {
-          const url = BotResponse.decode(msg.content).url
-          this.botUrls.push(url)
-        } else {
-          // FIXME: As Netflux spec changed and in order to not change mute-core, the isBroadcast parameter
-          // (the third parameter in NetworkMessage constructor) is set to true.
-          const networkMessage = new NetworkMessage(serviceName, id, true, msg.content)
-          this.messageSubject.next(networkMessage)
-        }
+        // const serviceName = msg.service
+        // if (serviceName === 'botprotocol') {
+        //   const content = BotProtocol.create({ key: this.key })
+        //   this.wg.sendTo(
+        //     id,
+        //     Message.encode(
+        //       Message.create({
+        //         service: 'botprotocol',
+        //         content: BotProtocol.encode(content).finish(),
+        //       })
+        //     ).finish()
+        //   )
+        // } else if (serviceName === 'botresponse') {
+        //   const url = BotResponse.decode(msg.content).url
+        //   this.botUrls.push(url)
+        // } else {
+        // FIXME: As Netflux spec changed and in order to not change mute-core, the isBroadcast parameter
+        // (the third parameter in NetworkMessage constructor) is set to true.
+        const networkMessage = new NetworkMessage(msg.service, id, true, msg.content)
+        this.messageSubject.next(networkMessage)
+        // }
       }
     })
   }
@@ -207,7 +207,7 @@ export class NetworkService {
     }
   }
 
-  send(service: string, content: Uint8Array, id?: number | undefined): void {
+  send(service: number, content: Uint8Array, id?: number | undefined): void {
     const msg = Message.create({ service, content })
     if (id === undefined) {
       this.wg.send(Message.encode(msg).finish())
