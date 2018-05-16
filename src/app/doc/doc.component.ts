@@ -2,8 +2,8 @@ import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@an
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
+import { Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
-import { Subscription } from 'rxjs/Subscription'
 
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { Doc } from '../core/Doc'

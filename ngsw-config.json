@@ -1,0 +1,12 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/index.html", "/assets/**", "/fonts/**", "!/**/*.scss", "!/**/*.txt"]
+      }
+    }
+  ]
+}

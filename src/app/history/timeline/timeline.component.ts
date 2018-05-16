@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Injectable, Input, OnDestroy, OnInit, Output } from '@angular/core'
-import { timer } from 'rxjs/observable/timer'
-import { Subscription } from 'rxjs/Subscription'
+import { Subscription, timer } from 'rxjs'
 
 @Component({
   selector: 'mute-timeline',

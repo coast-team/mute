@@ -1,8 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
-import { Observable } from 'rxjs/Observable'
-import { Subject } from 'rxjs/Subject'
-import { Subscription } from 'rxjs/Subscription'
+import { Observable, Subject, Subscription } from 'rxjs'
 
 import { Folder } from '../Folder'
 import { EIndexedDBState, getIndexedDBState } from '../storage/local/indexedDBCheck'

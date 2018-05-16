@@ -8,7 +8,7 @@
     },
     "max-classes-per-file": false,
     "trailing-comma": false,
-    "import-blacklist": [true, "rxjs", "rxjs/Rx"],
+    "import-blacklist": [true, "rxjs/Rx"],
     "member-access": false,
     "member-ordering": [
       true,

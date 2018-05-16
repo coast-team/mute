@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { DocService, RichLogootSOperation } from 'mute-core'
 import { LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
-import { from } from 'rxjs/observable/from'
+import { from } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import * as diff from 'diff'

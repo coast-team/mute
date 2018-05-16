@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
-import 'rxjs/add/operator/toPromise'
 
 import { hash } from '../../lastcommithash'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'

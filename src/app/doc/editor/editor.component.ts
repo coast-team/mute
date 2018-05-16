@@ -13,10 +13,8 @@ import {
 } from '@angular/core'
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
-import { Observable } from 'rxjs/Observable'
-import { fromEventPattern } from 'rxjs/observable/fromEventPattern'
+import { fromEventPattern, Observable, Subscription } from 'rxjs'
 import { filter, map, share } from 'rxjs/operators'
-import { Subscription } from 'rxjs/Subscription'
 
 import * as CodeMirror from 'codemirror'
 import * as Editor from 'tui-editor'

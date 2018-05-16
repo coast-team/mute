@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy } from '@angular/core'
 import { MatDialog } from '@angular/material'
 import { Router } from '@angular/router'
-import { Subscription } from 'rxjs/Subscription'
+import { Subscription } from 'rxjs'
 
 import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings/settings.service'

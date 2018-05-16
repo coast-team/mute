@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router'
 import * as CodeMirror from 'codemirror'
 import { DocService } from 'mute-core'
 import { TextDelete, TextInsert } from 'mute-structs'
-import { Subscription } from 'rxjs/Subscription'
+import { Subscription } from 'rxjs'
 
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'

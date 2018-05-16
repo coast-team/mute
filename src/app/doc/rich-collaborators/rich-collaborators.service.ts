@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core'
 import { ICollaborator } from 'mute-core'
-import { Observable } from 'rxjs/Observable'
+import { Observable, Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
-import { Subject } from 'rxjs/Subject'
 
 import { EProperties } from '../../core/settings/EProperties'
 import { SettingsService } from '../../core/settings/settings.service'

@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'
 import { SignalingState, WebGroupState } from 'netflux'
-import { Subscription } from 'rxjs/Subscription'
+import { Subscription } from 'rxjs'
 
 import { NetworkService } from '../../../doc/network/network.service'
 

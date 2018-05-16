@@ -1,12 +1,8 @@
 import { Injectable, NgZone } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { Observable } from 'rxjs/Observable'
+import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } from 'rxjs'
 import { takeUntil } from 'rxjs/operators'
-import { ReplaySubject } from 'rxjs/ReplaySubject'
-import { Subject } from 'rxjs/Subject'
-import { Subscription } from 'rxjs/Subscription'
 
 import { environment } from '../../../environments/environment'
 import { BotProtocol, BotResponse, Message } from './message_pb'

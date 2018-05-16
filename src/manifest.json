@@ -4,6 +4,9 @@
   "background_color": "white",
   "theme_color": "#2196F3",
   "description": "A P2P collaborative text editor.",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
   "icons": [
     {
       "src": "assets/images/icons/icon-48x48.png",
@@ -50,7 +53,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "display": "standalone",
-  "start_url": "./?utm_source=homescreen"
+  ]
 }
