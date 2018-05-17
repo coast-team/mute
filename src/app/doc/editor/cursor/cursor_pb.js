@@ -377,6 +377,7 @@ $root.sync = (function() {
          * @property {number|null} [clock] RichLogootSOperationMsg clock
          * @property {sync.ILogootSAddMsg|null} [logootSAddMsg] RichLogootSOperationMsg logootSAddMsg
          * @property {sync.ILogootSDelMsg|null} [logootSDelMsg] RichLogootSOperationMsg logootSDelMsg
+         * @property {Array.<sync.IDotMsg>|null} [dependencies] RichLogootSOperationMsg dependencies
          */
 
         /**
@@ -388,6 +389,7 @@ $root.sync = (function() {
          * @param {sync.IRichLogootSOperationMsg=} [properties] Properties to set
          */
         function RichLogootSOperationMsg(properties) {
+            this.dependencies = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -425,6 +427,14 @@ $root.sync = (function() {
          * @instance
          */
         RichLogootSOperationMsg.prototype.logootSDelMsg = null;
+
+        /**
+         * RichLogootSOperationMsg dependencies.
+         * @member {Array.<sync.IDotMsg>} dependencies
+         * @memberof sync.RichLogootSOperationMsg
+         * @instance
+         */
+        RichLogootSOperationMsg.prototype.dependencies = $util.emptyArray;
 
         // OneOf field names bound to virtual getters and setters
         var $oneOfFields;
@@ -472,6 +482,9 @@ $root.sync = (function() {
                 $root.sync.LogootSAddMsg.encode(message.logootSAddMsg, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.logootSDelMsg != null && message.hasOwnProperty("logootSDelMsg"))
                 $root.sync.LogootSDelMsg.encode(message.logootSDelMsg, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.dependencies != null && message.dependencies.length)
+                for (var i = 0; i < message.dependencies.length; ++i)
+                    $root.sync.DotMsg.encode(message.dependencies[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -504,6 +517,11 @@ $root.sync = (function() {
                     break;
                 case 4:
                     message.logootSDelMsg = $root.sync.LogootSDelMsg.decode(reader, reader.uint32());
+                    break;
+                case 5:
+                    if (!(message.dependencies && message.dependencies.length))
+                        message.dependencies = [];
+                    message.dependencies.push($root.sync.DotMsg.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1393,6 +1411,115 @@ $root.sync = (function() {
         };
 
         return IntervalMsg;
+    })();
+
+    sync.DotMsg = (function() {
+
+        /**
+         * Properties of a DotMsg.
+         * @memberof sync
+         * @interface IDotMsg
+         * @property {number} replicaNumber DotMsg replicaNumber
+         * @property {number} clock DotMsg clock
+         */
+
+        /**
+         * Constructs a new DotMsg.
+         * @memberof sync
+         * @classdesc Represents a DotMsg.
+         * @implements IDotMsg
+         * @constructor
+         * @param {sync.IDotMsg=} [properties] Properties to set
+         */
+        function DotMsg(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * DotMsg replicaNumber.
+         * @member {number} replicaNumber
+         * @memberof sync.DotMsg
+         * @instance
+         */
+        DotMsg.prototype.replicaNumber = 0;
+
+        /**
+         * DotMsg clock.
+         * @member {number} clock
+         * @memberof sync.DotMsg
+         * @instance
+         */
+        DotMsg.prototype.clock = 0;
+
+        /**
+         * Creates a new DotMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.DotMsg
+         * @static
+         * @param {sync.IDotMsg=} [properties] Properties to set
+         * @returns {sync.DotMsg} DotMsg instance
+         */
+        DotMsg.create = function create(properties) {
+            return new DotMsg(properties);
+        };
+
+        /**
+         * Encodes the specified DotMsg message. Does not implicitly {@link sync.DotMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.DotMsg
+         * @static
+         * @param {sync.IDotMsg} message DotMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DotMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.replicaNumber);
+            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
+            return writer;
+        };
+
+        /**
+         * Decodes a DotMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.DotMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.DotMsg} DotMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DotMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.DotMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.replicaNumber = reader.int32();
+                    break;
+                case 2:
+                    message.clock = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            if (!message.hasOwnProperty("replicaNumber"))
+                throw $util.ProtocolError("missing required 'replicaNumber'", { instance: message });
+            if (!message.hasOwnProperty("clock"))
+                throw $util.ProtocolError("missing required 'clock'", { instance: message });
+            return message;
+        };
+
+        return DotMsg;
     })();
 
     return sync;

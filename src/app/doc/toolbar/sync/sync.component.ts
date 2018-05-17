@@ -50,10 +50,6 @@ export class SyncComponent implements OnInit, OnDestroy {
           this.groupDetails = 'Successfully joined the group.'
           this.syncState = this.SYNC
           break
-        case WebGroupState.LEAVING:
-          this.groupDetails = 'Leaving the group...'
-          this.syncState = this.SYNC_DISABLED
-          break
         case WebGroupState.LEFT:
           this.groupDetails = 'Left the group.'
           this.syncState = this.SYNC_DISABLED
@@ -70,14 +66,14 @@ export class SyncComponent implements OnInit, OnDestroy {
         case SignalingState.CONNECTING:
           this.signalingDetails = 'Connecting to the signaling server...'
           break
-        case SignalingState.CONNECTED:
-          this.signalingDetails = 'Successfully connected to one group member.'
+        case SignalingState.OPEN:
+          this.signalingDetails = 'Successfully connected to the signaling server'
           break
-        case SignalingState.STABLE:
-          this.signalingDetails = 'Connection with signaling server is stable.'
+        case SignalingState.CHECKING:
+          this.signalingDetails = 'Checking group membership'
           break
-        case SignalingState.CLOSING:
-          this.signalingDetails = 'Closing connection with the signaling server.'
+        case SignalingState.CHECKED:
+          this.signalingDetails = 'Either everything is ok or is about to joining the group'
           break
         case SignalingState.CLOSED:
           this.signalingDetails = 'No longer connected to the signaling server.'

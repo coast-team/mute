@@ -179,6 +179,9 @@ export namespace sync {
 
         /** RichLogootSOperationMsg logootSDelMsg */
         logootSDelMsg?: (sync.ILogootSDelMsg|null);
+
+        /** RichLogootSOperationMsg dependencies */
+        dependencies?: (sync.IDotMsg[]|null);
     }
 
     /** Represents a RichLogootSOperationMsg. */
@@ -201,6 +204,9 @@ export namespace sync {
 
         /** RichLogootSOperationMsg logootSDelMsg. */
         public logootSDelMsg?: (sync.ILogootSDelMsg|null);
+
+        /** RichLogootSOperationMsg dependencies. */
+        public dependencies: sync.IDotMsg[];
 
         /** RichLogootSOperationMsg type. */
         public type?: ("logootSAddMsg"|"logootSDelMsg");
@@ -637,5 +643,56 @@ export namespace sync {
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IntervalMsg;
+    }
+
+    /** Properties of a DotMsg. */
+    interface IDotMsg {
+
+        /** DotMsg replicaNumber */
+        replicaNumber: number;
+
+        /** DotMsg clock */
+        clock: number;
+    }
+
+    /** Represents a DotMsg. */
+    class DotMsg implements IDotMsg {
+
+        /**
+         * Constructs a new DotMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IDotMsg);
+
+        /** DotMsg replicaNumber. */
+        public replicaNumber: number;
+
+        /** DotMsg clock. */
+        public clock: number;
+
+        /**
+         * Creates a new DotMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DotMsg instance
+         */
+        public static create(properties?: sync.IDotMsg): sync.DotMsg;
+
+        /**
+         * Encodes the specified DotMsg message. Does not implicitly {@link sync.DotMsg.verify|verify} messages.
+         * @param message DotMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IDotMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DotMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DotMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.DotMsg;
     }
 }
