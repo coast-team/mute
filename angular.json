@@ -19,7 +19,7 @@
             "stylePreprocessorOptions": {
               "includePaths": ["src/assets"]
             },
-            "assets": ["src/assets", "src/fonts", "src/manifest.json"],
+            "assets": ["src/assets", "src/manifest.json"],
             "styles": ["src/styles.scss"],
             "scripts": [
               "node_modules/loglevel/dist/loglevel.min.js",
@@ -154,7 +154,7 @@
               "node_modules/jio/dist/jio-latest.min.js"
             ],
             "styles": ["src/styles.scss"],
-            "assets": ["src/assets", "src/fonts", "src/manifest.json"]
+            "assets": ["src/assets", "src/manifest.json"]
           }
         },
         "lint": {
