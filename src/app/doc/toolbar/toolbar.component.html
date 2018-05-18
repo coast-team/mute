@@ -4,12 +4,8 @@
   </button>
 
   <div fxFlex class="title">
-    <mat-form-field ngClass.sm="sm" ngClass.md="md" ngClass.gt-md="gt-md" dividerColor="accent" floatPlaceholder="never">
-      <input #input matInput
-          [value]="doc.title"
-          (keydown)="updateTitle($event)"
-          (blur)="updateTitle($event)"
-          (focus)="selectTitle()"
+    <mat-form-field ngClass.sm="sm" ngClass.md="md" ngClass.gt-md="gt-md" color="accent">
+      <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)" (focus)="selectTitle()"
       />
     </mat-form-field>
   </div>
