@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
+    "prepare": "echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute build script'",
     "ng": "ng",
     "prestart": "pm2 gracefulReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
