@@ -6,13 +6,11 @@ describe('ConfigDialogComponent', () => {
   let component: ConfigDialogComponent
   let fixture: ComponentFixture<ConfigDialogComponent>
 
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [ConfigDialogComponent],
-      }).compileComponents()
-    })
-  )
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ConfigDialogComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ConfigDialogComponent)

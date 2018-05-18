@@ -6,13 +6,11 @@ describe('DocRenameDialogComponent', () => {
   let component: DocRenameDialogComponent
   let fixture: ComponentFixture<DocRenameDialogComponent>
 
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [DocRenameDialogComponent],
-      }).compileComponents()
-    })
-  )
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [DocRenameDialogComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DocRenameDialogComponent)

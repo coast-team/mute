@@ -111,7 +111,7 @@ export class LocalStorageService extends Storage {
           }
         }
         if (folder.id === this.local.id) {
-          if (!doc && !await this.isInTrash(key)) {
+          if (!doc && !(await this.isInTrash(key))) {
             doc = Doc.create(key, '', this.local.id)
             docs.push(doc)
           }

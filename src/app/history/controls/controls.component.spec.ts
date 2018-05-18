@@ -10,21 +10,19 @@ let fixture: ComponentFixture<HistoryControlsComponent>
 const uiServiceStub = undefined
 
 describe('HistoryControlsComponent', () => {
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [HistoryControlsComponent],
-        imports: [RouterTestingModule],
-        schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [{ provide: UiService, useValue: uiServiceStub }],
-      })
-        .compileComponents()
-        .then(() => {
-          fixture = TestBed.createComponent(HistoryControlsComponent)
-          comp = fixture.componentInstance
-        })
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [HistoryControlsComponent],
+      imports: [RouterTestingModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [{ provide: UiService, useValue: uiServiceStub }],
     })
-  )
+      .compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(HistoryControlsComponent)
+        comp = fixture.componentInstance
+      })
+  }))
   tests()
 })
 

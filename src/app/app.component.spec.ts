@@ -16,20 +16,18 @@ let comp: AppComponent
 let fixture: ComponentFixture<AppComponent>
 
 describe('AppComponent', () => {
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        imports: [RouterTestingModule],
-        declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent, RouterOutletStubComponent],
-      })
-
-        .compileComponents()
-        .then(() => {
-          fixture = TestBed.createComponent(AppComponent)
-          comp = fixture.componentInstance
-        })
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent, RouterOutletStubComponent],
     })
-  )
+
+      .compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(AppComponent)
+        comp = fixture.componentInstance
+      })
+  }))
   tests()
 })
 

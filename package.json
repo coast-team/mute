@@ -12,7 +12,7 @@
     "postbuild": "sed -i -- \"s/'.*'/''/g\" src/lastcommithash.ts && zopfli dist/*.js dist/*.css dist/*.html",
     "builddev": "npm run build -- --env ovhdev",
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
-    "lint": "ng lint --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md",
+    "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md",
     "test": "ng test",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_pb.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_pb.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
@@ -120,7 +120,7 @@
         "markdownlint"
       ],
       "*.ts": [
-        "ng lint --type-check --fix",
+        "ng lint mute --type-check --fix",
         "git add"
       ],
       "*.{ts,json,scss,css}": [

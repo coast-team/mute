@@ -6,13 +6,11 @@ describe('RemoteDeleteDialogComponent', () => {
   let component: RemoteDeleteDialogComponent
   let fixture: ComponentFixture<RemoteDeleteDialogComponent>
 
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [RemoteDeleteDialogComponent],
-      }).compileComponents()
-    })
-  )
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [RemoteDeleteDialogComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RemoteDeleteDialogComponent)

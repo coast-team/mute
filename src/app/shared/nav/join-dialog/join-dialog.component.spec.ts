@@ -6,13 +6,11 @@ describe('JoinDialogComponent', () => {
   let component: JoinDialogComponent
   let fixture: ComponentFixture<JoinDialogComponent>
 
-  beforeEach(
-    async(() => {
-      TestBed.configureTestingModule({
-        declarations: [JoinDialogComponent],
-      }).compileComponents()
-    })
-  )
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [JoinDialogComponent],
+    }).compileComponents()
+  }))
 
   beforeEach(() => {
     fixture = TestBed.createComponent(JoinDialogComponent)
