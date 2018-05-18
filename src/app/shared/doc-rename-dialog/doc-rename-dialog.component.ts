@@ -11,8 +11,7 @@ import { LocalStorageService } from '../../core/storage/local/local-storage.serv
   styleUrls: ['./doc-rename-dialog.component.css'],
 })
 export class DocRenameDialogComponent {
-  public title: string
-  public titleFormControl: FormControl
+  public titleControl: FormControl
 
   private doc: Doc
 
@@ -22,8 +21,8 @@ export class DocRenameDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.doc = data
-    this.title = this.doc.title
-    this.titleFormControl = new FormControl('', [Validators.maxLength(128)])
+    this.titleControl = new FormControl('', [Validators.maxLength(128)])
+    this.titleControl.setValue(this.doc.title)
   }
 
   selectAll(event: FocusEvent) {
@@ -31,8 +30,8 @@ export class DocRenameDialogComponent {
   }
 
   save() {
-    if (this.title !== '') {
-      this.doc.title = this.title
+    if (this.titleControl.value !== '') {
+      this.doc.title = this.titleControl.value
       this.localStorage.save(this.doc)
     }
   }

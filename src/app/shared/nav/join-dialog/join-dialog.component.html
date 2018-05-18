@@ -2,8 +2,8 @@
 
 <div mat-dialog-content>
   <mat-form-field fxFlex>
-    <input matInput placeholder="Key" [(ngModel)]="key" maxlength="512" [formControl]="keyFormControl">
-    <mat-hint align="end">{{key.length}} / 512</mat-hint>
+    <input matInput placeholder="Key" maxlength="512" [formControl]="keyControl">
+    <mat-hint align="end">{{keyControl.value.length}} / 512</mat-hint>
   </mat-form-field>
 </div>
 

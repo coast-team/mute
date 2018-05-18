@@ -14,9 +14,8 @@ export class ConfigDialogComponent {
   public profile: Profile
   public initialTheme: string
   public theme: string
-  public displayName: string
 
-  public displayNameFormControl: FormControl
+  public displayNameControl: FormControl
 
   constructor(
     public dialogRef: MatDialogRef<ConfigDialogComponent>,
@@ -24,10 +23,10 @@ export class ConfigDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.profile = settings.profile
-    this.displayName = this.profile.displayName
     this.initialTheme = this.settings.theme
     this.theme = this.settings.theme
-    this.displayNameFormControl = new FormControl('', [Validators.maxLength(27)])
+    this.displayNameControl = new FormControl('', [Validators.maxLength(27)])
+    this.displayNameControl.setValue(this.profile.displayName)
   }
 
   cancel() {
@@ -35,7 +34,7 @@ export class ConfigDialogComponent {
   }
 
   save() {
-    this.profile.displayName = this.displayName
+    this.profile.displayName = this.displayNameControl.value
     this.settings.updateTheme(this.theme)
   }
 

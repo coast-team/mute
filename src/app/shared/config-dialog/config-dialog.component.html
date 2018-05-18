@@ -13,9 +13,8 @@
 
     <div fxLayout="column">
       <mat-form-field>
-        <input matInput placeholder="Display name" [(ngModel)]="displayName" maxlength="27"
-              [formControl]="displayNameFormControl">
-        <mat-hint align="end">{{displayName.length}} / 27</mat-hint>
+        <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl">
+        <mat-hint align="end">{{displayNameControl.value.length}} / 27</mat-hint>
       </mat-form-field>
       <mat-form-field>
         <input matInput disabled tabindex="-1" placeholder="Login" [value]="profile.login">
@@ -25,22 +24,22 @@
 
 
   <h3 class="mat-subheading-2">Theme</h3>
-    <mat-form-field>
-      <span matPrefix [ngClass]="['circle', theme]"></span>
-      <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
-        <mat-option value="default">
-          <span class="circle default"></span> light
-        </mat-option>
+  <mat-form-field>
+    <span matPrefix [ngClass]="['circle', theme]"></span>
+    <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
+      <mat-option value="default">
+        <span class="circle default"></span> light
+      </mat-option>
 
-        <mat-option value="dark">
-          <span class="circle dark"></span> dark
-        </mat-option>
+      <mat-option value="dark">
+        <span class="circle dark"></span> dark
+      </mat-option>
 
-        <mat-option value="indigo">
-          <span class="circle indigo"></span> light
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-option value="indigo">
+        <span class="circle indigo"></span> light
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 
 <div mat-dialog-actions fxLayoutAlign="end center">

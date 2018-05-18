@@ -8,15 +8,14 @@ import { Router } from '@angular/router'
   styleUrls: ['./join-dialog.component.css'],
 })
 export class JoinDialogComponent {
-  public key: string
-  public keyFormControl: FormControl
+  public keyControl: FormControl
 
   constructor(private router: Router) {
-    this.key = ''
-    this.keyFormControl = new FormControl('', [Validators.maxLength(512)])
+    this.keyControl = new FormControl('', [Validators.maxLength(512)])
+    this.keyControl.setValue('')
   }
 
   join() {
-    this.router.navigateByUrl(`/${this.key}`)
+    this.router.navigateByUrl(`/${this.keyControl.value}`)
   }
 }
