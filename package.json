@@ -15,7 +15,7 @@
     "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md",
     "test": "ng test",
     "e2e": "ng e2e",
-    "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_pb.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_pb.d.ts src/app/doc/network/message_pb.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_pb.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_pb.d.ts src/app/doc/editor/cursor/cursor_pb.js",
+    "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message.proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message.proto.d.ts src/app/doc/network/message.proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor.proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor.proto.d.ts src/app/doc/editor/cursor/cursor.proto.js",
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "cz": "git-cz"
