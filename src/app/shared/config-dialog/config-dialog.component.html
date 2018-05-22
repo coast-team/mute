@@ -23,10 +23,10 @@
   </div>
 
 
-  <h3 class="mat-subheading-2">Theme</h3>
+  <!-- <h3 class="mat-subheading-2">Theme</h3> -->
   <mat-form-field>
-    <span matPrefix [ngClass]="['circle', theme]"></span>
-    <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
+    <span matSuffix [ngClass]="['circle', theme]"></span>
+    <mat-select placeholder="Theme" [(value)]="theme" (selectionChange)="applyTheme($event)">
       <mat-option value="default">
         <span class="circle default"></span> light
       </mat-option>
