@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators'
 import { NetworkService } from '../../network/'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { CollaboratorCursor } from './CollaboratorCursor'
-import * as proto from './cursor_pb'
+import * as proto from './cursor_proto'
 
 @Directive({
   selector: '[muteCursors]',

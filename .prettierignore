@@ -1,5 +1,5 @@
 package.json
 package-lock.json
-*.proto.{ts,js}
-*.proto.d.ts
+*_proto.{ts,js}
+*_proto.d.ts
 

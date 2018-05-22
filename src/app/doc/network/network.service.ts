@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } fro
 import { takeUntil } from 'rxjs/operators'
 
 import { environment } from '../../../environments/environment'
-import { Message } from './message.proto'
+import { Message } from './message_proto'
 
 @Injectable()
 export class NetworkService {
