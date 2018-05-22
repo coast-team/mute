@@ -100,9 +100,9 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
 
       const operationStream: Observable<ChangeEvent> = fromEventPattern(
         (h: ChangeEventHandler) => this.editor.on('change', h),
-        (h: ChangeEventHandler) => this.editor.off('change', h),
-        (instance, change) => new ChangeEvent(instance, change)
+        (h: ChangeEventHandler) => this.editor.off('change', h)
       ).pipe(
+        map(([instance, change]) => new ChangeEvent(instance, change)),
         filter((changeEvent: ChangeEvent) => {
           // The change's origin indicates the kind of changes performed
           // When the application updates the editor programatically, this field remains undefined
