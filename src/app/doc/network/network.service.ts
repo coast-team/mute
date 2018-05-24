@@ -53,7 +53,15 @@ export class NetworkService {
 
     // Configure Netflux logs
     if (environment.netfluxLog) {
-      setLogLevel(LogLevel.CHANNEL_BUILDER, LogLevel.TOPOLOGY)
+      setLogLevel(
+        LogLevel.DEBUG,
+        LogLevel.CHANNEL,
+        LogLevel.SIGNALING,
+        LogLevel.WEB_GROUP,
+        LogLevel.WEBRTC,
+        LogLevel.CHANNEL_BUILDER,
+        LogLevel.TOPOLOGY
+      )
     }
   }
 
@@ -78,27 +86,7 @@ export class NetworkService {
       }
       this.wg.onMessage = (id, bytes: Uint8Array) => {
         const msg = Message.decode(bytes)
-        // const serviceName = msg.service
-        // if (serviceName === 'botprotocol') {
-        //   const content = BotProtocol.create({ key: this.key })
-        //   this.wg.sendTo(
-        //     id,
-        //     Message.encode(
-        //       Message.create({
-        //         service: 'botprotocol',
-        //         content: BotProtocol.encode(content).finish(),
-        //       })
-        //     ).finish()
-        //   )
-        // } else if (serviceName === 'botresponse') {
-        //   const url = BotResponse.decode(msg.content).url
-        //   this.botUrls.push(url)
-        // } else {
-        // FIXME: As Netflux spec changed and in order to not change mute-core, the isBroadcast parameter
-        // (the third parameter in NetworkMessage constructor) is set to true.
-        const networkMessage = new NetworkMessage(msg.service, id, true, msg.content)
-        this.messageSubject.next(networkMessage)
-        // }
+        this.messageSubject.next(new NetworkMessage(msg.service, id, true, msg.content))
       }
     })
   }

@@ -124,7 +124,7 @@
         "git add"
       ],
       "*.{ts,json,scss,css}": [
-        "prettier --write --list-different",
+        "prettier --write --list-different -e *proto*",
         "git add"
       ]
     },
