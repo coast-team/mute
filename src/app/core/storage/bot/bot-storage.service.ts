@@ -76,7 +76,11 @@ export class BotStorageService extends Storage {
 
   get wsURL() {
     const scheme = this.secure ? 'wss' : 'ws'
-    return `${scheme}://${this.url}/${this.webSocketPath}`
+    if (this.webSocketPath && this.webSocketPath !== '') {
+      return `${scheme}://${this.url}/${this.webSocketPath}`
+    } else {
+      return `${scheme}://${this.url}`
+    }
   }
 
   get id() {
