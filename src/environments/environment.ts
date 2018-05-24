@@ -19,15 +19,15 @@ export const environment = {
   botStorage: {
     secure: false,
     url: 'localhost:20000',
-    webSocketPath: 'ws',
+    webSocketPath: '',
     isAnonymousAllowed: false,
   },
   auth: {
     baseUrl: 'http://localhost:4000/',
     providers: {
-      github: { clientId: 'aa9276bbe09317cace57', scope: ['user:email'] },
+      github: { clientId: 'f936a2022e9e03ae004a', scope: ['user:email'] },
       google: {
-        clientId: '900988055557-r0u3sq6o1rg2t3tjidh7pq2h0nbjpp3d.apps.googleusercontent.com',
+        clientId: '266602967129-rpub82t4tln6b2q9bl80ht3a18bpbrp4.apps.googleusercontent.com',
         scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
       },
     },
