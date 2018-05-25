@@ -1,6 +1,6 @@
 {
   "name": "mute",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
     "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute build script'",
@@ -18,7 +18,8 @@
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
-    "cz": "git-cz"
+    "cz": "git-cz",
+    "release": "standard-version --no-verify"
   },
   "keywords": [],
   "contributors": [
@@ -95,6 +96,7 @@
     "protractor": "~5.3.0",
     "rxjs-compat": "^6.2.0",
     "sigver": "^19.1.1",
+    "standard-version": "^4.4.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
     "tslint-config-prettier": "^1.13.0",
