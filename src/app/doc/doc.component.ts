@@ -2,7 +2,7 @@ import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@an
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
-import { merge, Subject, Subscription } from 'rxjs'
+import { merge, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
@@ -83,11 +83,10 @@ export class DocComponent implements OnDestroy, OnInit {
           avatar: this.settings.profile.avatar,
         })
         this.muteCore.collaboratorsService.messageSource = this.network.onMessage
-        const newOnMessage = new Subject<any>()
-        this.muteCore.syncMessageService.messageSource = newOnMessage.asObservable()
-        this.network.onMessage.pipe(filter((msg) => msg.service === 423)).subscribe((msg) => {
-          this.symCrypto.decrypt(msg.content).then((content) => newOnMessage.next(Object.assign({}, msg, { content })))
-        })
+        this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
+          filter(({ service }) => service === 423),
+          flatMap((msg) => this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+        )
 
         this.network.initSource = this.muteCore.onInit
 

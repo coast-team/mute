@@ -23,7 +23,7 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
   async resolve(route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
     const remote = route.paramMap.get('remote')
-    this.symCrypto.importKey(key)
+    await this.symCrypto.importKey(key)
 
     try {
       // Retreive the document from the local database

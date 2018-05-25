@@ -3,29 +3,22 @@ import { symmetricCrypto } from 'crypto-api-wrapper'
 
 @Injectable()
 export class SymmetricCryptoService {
-  private textDecoder: TextDecoder
   private key: CryptoKey
-  constructor() {
-    this.textDecoder = new TextDecoder('utf-8')
-  }
 
   async generateKey(): Promise<string> {
     this.key = await symmetricCrypto.generateEncryptionKey()
-    const keyData = await symmetricCrypto.exportKey(this.key)
-    return btoa(JSON.stringify(keyData))
+    return symmetricCrypto.toB64(await symmetricCrypto.exportKey(this.key))
   }
 
-  async importKey(keyData: string): Promise<void> {
-    this.key = await symmetricCrypto.importKey(JSON.parse(atob(keyData)))
+  async importKey(key: string): Promise<void> {
+    this.key = await symmetricCrypto.importKey(symmetricCrypto.fromB64(key))
   }
 
   async encrypt(msg: Uint8Array): Promise<Uint8Array> {
-    const ciphertext = await symmetricCrypto.encrypt(msg, this.key)
-    return ciphertext
+    return symmetricCrypto.encrypt(msg, this.key)
   }
 
   async decrypt(ciphertext: Uint8Array): Promise<Uint8Array> {
-    const plaintext = await symmetricCrypto.decrypt(ciphertext, this.key)
-    return plaintext
+    return symmetricCrypto.decrypt(ciphertext, this.key)
   }
 }
