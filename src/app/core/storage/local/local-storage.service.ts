@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
 import { filter } from 'rxjs/operators'
 
+import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
 import { Folder } from '../../Folder'
@@ -37,7 +38,7 @@ export class LocalStorageService extends Storage {
   private db: any
   private dbLogin: string
 
-  constructor(private botStorage: BotStorageService) {
+  constructor(private botStorage: BotStorageService, private symCrypto: SymmetricCryptoService) {
     super()
     this.local = Folder.create('Local storage', 'devices', false)
     this.local.id = 'local'
@@ -207,7 +208,7 @@ export class LocalStorageService extends Storage {
     })
   }
 
-  async createDoc(key = this.generateKey()): Promise<Doc> {
+  async createDoc(key): Promise<Doc> {
     const doc = Doc.create(key, '', this.local.id)
     await this.save(doc)
     return doc
@@ -226,16 +227,8 @@ export class LocalStorageService extends Storage {
     }
   }
 
-  generateKey(): string {
-    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    const length = 42 // Should be less then MAX_KEY_LENGTH value
-    const values = new Uint32Array(length)
-    window.crypto.getRandomValues(values)
-    let result = ''
-    for (let i = 0; i < length; i++) {
-      result += mask[values[i] % mask.length]
-    }
-    return result
+  generateKey(): Promise<string> {
+    return this.symCrypto.generateKey()
   }
 
   private async isInTrash(key: string): Promise<boolean> {

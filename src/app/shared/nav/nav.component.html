@@ -1,13 +1,16 @@
 <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="1.3rem">
-  <h1 class="logo"><a routerLink="/">MUTE</a></h1>
-  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent"
-    [matMenuTriggerFor]="newDocMenu">
+  <h1 class="logo">
+    <a routerLink="/">MUTE</a>
+  </h1>
+  <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" [matMenuTriggerFor]="newDocMenu">
     New Document
   </button>
 
   <mat-menu #newDocMenu="matMenu">
     <button mat-menu-item (click)="createDoc()">
-      <span class="new-doc-icons"><mat-icon>devices</mat-icon></span>
+      <span class="new-doc-icons">
+        <mat-icon>devices</mat-icon>
+      </span>
       <span>Locally</span>
     </button>
     <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
@@ -18,7 +21,9 @@
       <span>Locally & Remotely</span>
     </button>
     <button mat-menu-item (click)="openJoinDialog()">
-      <span class="new-doc-icons"><mat-icon>group_work</mat-icon></span>
+      <span class="new-doc-icons">
+        <mat-icon>group_work</mat-icon>
+      </span>
       <span>Join by key</span>
     </button>
   </mat-menu>
@@ -26,16 +31,14 @@
   <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
 
     <!-- Local storage -->
-    <button mat-button [disabled]="localErrorMessage"
-      [ngClass]="{'active': selected === local && !localErrorMessage}" (click)="openFolder(local)">
+    <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === local && !localErrorMessage}" (click)="openFolder(local)">
       <div fxLayoutAlign="start center">
         <mat-icon [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
       </div>
     </button>
 
     <!-- Trash -->
-    <button mat-button [disabled]="localErrorMessage"
-      [ngClass]="{'active': selected === trash && !localErrorMessage}" (click)="openFolder(trash)">
+    <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === trash && !localErrorMessage}" (click)="openFolder(trash)">
       <div fxLayoutAlign="start center">
         <mat-icon [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
       </div>
@@ -55,9 +58,7 @@
 
     <ng-container *ngIf="isRemoteExist">
       <!-- Remote storage -->
-      <button mat-button [ngClass]="{'active': selected === remote}"
-        [disabled]="remoteErrorMessage"
-        (click)="openFolder(remote)">
+      <button mat-button [ngClass]="{'active': selected === remote}" [disabled]="remoteErrorMessage" (click)="openFolder(remote)">
         <div fxLayoutAlign="start center">
           <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
         </div>

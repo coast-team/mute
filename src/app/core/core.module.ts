@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core'
 import { JwtInterceptor, Ng2UiAuthModule } from 'ng2-ui-auth'
 
 import { environment } from '../../environments/environment'
+import { SymmetricCryptoService } from './crypto/symmetric-crypto.service'
 import { SettingsService } from './settings/settings.service'
 import { BotStorageService } from './storage/bot/bot-storage.service'
 import { LocalStorageService } from './storage/local/local-storage.service'
@@ -23,6 +24,7 @@ import { UiService } from './ui/ui.service'
     LocalStorageService,
     BotStorageService,
     UiService,
+    SymmetricCryptoService,
   ],
 })
 export class CoreModule {}
