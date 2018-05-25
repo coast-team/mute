@@ -51,7 +51,7 @@
     "core-js": "^2.5.4",
     "crypto-api-wrapper": "^0.4.2",
     "hammerjs": "^2.0.8",
-    "jio": "git+https://github.com/Nexedi/jio.git#81cb08d",
+    "jio": "git+https://github.com/Nexedi/jio.git#70754e8",
     "loglevel": "^1.6.1",
     "material-design-icons": "^3.0.1",
     "mute-core": "^1.0.3",
