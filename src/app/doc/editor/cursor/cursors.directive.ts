@@ -19,7 +19,6 @@ export class CursorsDirective implements OnInit, OnDestroy {
   @Input() mcDocService: DocService
 
   private subs: Subscription[]
-  private cursorPosAfterBlur: CodeMirror.Position
 
   private cmDoc: CodeMirror.Doc
   private cursors: Map<number, CollaboratorCursor> // CodeMirror cursors of other peers
@@ -68,16 +67,21 @@ export class CursorsDirective implements OnInit, OnDestroy {
       }
     })
 
+    let cursorPosBeforeBlur: CodeMirror.Position
     CodeMirror.on(this.cm, 'blur', () => {
       this.protoCursor.anchor = undefined
       this.protoCursor.head = undefined
       this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
-      this.cursorPosAfterBlur = this.cmDoc.getCursor('head')
+      cursorPosBeforeBlur = this.cmDoc.getCursor('head')
     })
 
     CodeMirror.on(this.cm, 'focus', () => {
       const head = this.cmDoc.getCursor('head')
-      if (this.cursorPosAfterBlur && this.cursorPosAfterBlur.line === head.line && this.cursorPosAfterBlur.ch === head.ch) {
+      /*
+       This check is useful to support a use case which is not covered by 'cursorActivity' event.
+       It is when the user's cursor position remains the same after blur and focus events.
+      */
+      if (!cursorPosBeforeBlur || (cursorPosBeforeBlur.line === head.line && cursorPosBeforeBlur.ch === head.ch)) {
         this.sendMyCursorPos()
       }
     })

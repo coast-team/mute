@@ -68,7 +68,7 @@ export class CollaboratorCursor {
     })
     this.cm.getWrapperElement().appendChild(this.cursorTransition)
     if (!lineHeight) {
-      const lineHeightPx = global.window.getComputedStyle(this.cm.getWrapperElement(), null).getPropertyValue('line-height')
+      const lineHeightPx = window.getComputedStyle(this.cm.getWrapperElement(), null).getPropertyValue('line-height')
       lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2))
     }
   }
@@ -191,10 +191,10 @@ export class CollaboratorCursor {
       let fontSize: string
       const previousSibling: any = this.cursorBookmark.parentElement.previousElementSibling
       if (previousSibling) {
-        fontSize = global.window.getComputedStyle(previousSibling, null).getPropertyValue('font-size')
+        fontSize = window.getComputedStyle(previousSibling, null).getPropertyValue('font-size')
       } else {
         const line = this.cursorBookmark.parentElement.parentElement.parentElement
-        fontSize = global.window.getComputedStyle(line, null).getPropertyValue('font-size')
+        fontSize = window.getComputedStyle(line, null).getPropertyValue('font-size')
       }
       const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2))
       const cursorHeight = fontSizeNumber + 5
