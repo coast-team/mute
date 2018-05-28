@@ -91,9 +91,11 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       const tuiEditor = new Editor({
         el: this.editorElt.nativeElement,
         initialEditType: 'markdown',
-        previewStyle: 'vertical',
+        previewStyle: 'tab',
         height: '100%',
         exts: ['scrollSync'],
+        usageStatistics: false,
+        hideModeSwitch: true,
       })
       this.editor = tuiEditor.getCodeMirror()
       this.setupGlobalForTests()
