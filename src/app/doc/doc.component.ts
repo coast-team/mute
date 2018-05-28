@@ -6,6 +6,7 @@ import { merge, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
+import { environment } from '../../environments/environment'
 import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
@@ -82,34 +83,14 @@ export class DocComponent implements OnDestroy, OnInit {
           email: this.settings.profile.email,
           avatar: this.settings.profile.avatar,
         })
-        this.muteCore.collaboratorsService.messageSource = this.network.onMessage
-        this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
-          filter(({ service }) => service === 423),
-          flatMap((msg) => this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-        )
 
         this.network.initSource = this.muteCore.onInit
 
-        this.network.messageToBroadcastSource = merge(
-          this.muteCore.collaboratorsService.onMsgToBroadcast,
-          this.muteCore.syncMessageService.onMsgToBroadcast.pipe(
-            flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-          )
-        )
-
-        this.network.messageToSendRandomlySource = merge(
-          this.muteCore.collaboratorsService.onMsgToSendRandomly,
-          this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
-            flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-          )
-        )
-
-        this.network.messageToSendToSource = merge(
-          this.muteCore.collaboratorsService.onMsgToSendTo,
-          this.muteCore.syncMessageService.onMsgToSendTo.pipe(
-            flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-          )
-        )
+        if (environment.encryption) {
+          this.withEncryption()
+        } else {
+          this.withoutEncryption()
+        }
 
         this.richCollaboratorsService.updateSource = this.muteCore.collaboratorsService.onUpdate
         this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onJoin
@@ -161,5 +142,44 @@ export class DocComponent implements OnDestroy, OnInit {
 
   getDocState(): State {
     return this.muteCore.syncService.state
+  }
+
+  private withEncryption() {
+    this.muteCore.collaboratorsService.messageSource = this.network.onMessage
+    this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
+      filter(({ service }) => service === 423),
+      flatMap((msg) => this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+    )
+
+    this.network.messageToBroadcastSource = merge(
+      this.muteCore.collaboratorsService.onMsgToBroadcast,
+      this.muteCore.syncMessageService.onMsgToBroadcast.pipe(
+        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+      )
+    )
+
+    this.network.messageToSendRandomlySource = merge(
+      this.muteCore.collaboratorsService.onMsgToSendRandomly,
+      this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
+        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+      )
+    )
+
+    this.network.messageToSendToSource = merge(
+      this.muteCore.collaboratorsService.onMsgToSendTo,
+      this.muteCore.syncMessageService.onMsgToSendTo.pipe(
+        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+      )
+    )
+  }
+
+  private withoutEncryption() {
+    this.muteCore.messageSource = this.network.onMessage
+
+    this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
+
+    this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
+
+    this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
   }
 }

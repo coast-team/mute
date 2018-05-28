@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
-  netfluxLog: true,
+  netfluxLog: false,
   rtcConfiguration: {
     iceServers: [
       {
@@ -14,16 +14,12 @@ export const environment = {
       },
     ],
   },
-  signalingServer: 'ws://localhost:8010',
+  signalingServer: 'ws://152.81.72.125:8010',
   serviceWorker: false,
-  botStorage: {
-    secure: false,
-    url: 'localhost:20000',
-    webSocketPath: '',
-    isAnonymousAllowed: false,
-  },
+  botStorage: {},
+  encryption: false,
   auth: {
-    baseUrl: 'http://localhost:4000/',
+    baseUrl: 'http://152.81.72.125:4000/',
     providers: {
       github: { clientId: 'f936a2022e9e03ae004a', scope: ['user:email'] },
       google: {

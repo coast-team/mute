@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { MatDialog, MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, CanDeactivate, Resolve, Router } from '@angular/router'
 
+import { environment } from '../../environments/environment'
 import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
@@ -23,7 +24,9 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
   async resolve(route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
     const remote = route.paramMap.get('remote')
-    await this.symCrypto.importKey(key)
+    if (environment.encryption) {
+      await this.symCrypto.importKey(key)
+    }
 
     try {
       // Retreive the document from the local database

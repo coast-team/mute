@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
 import { filter } from 'rxjs/operators'
 
+import { environment } from '../../../../environments/environment'
 import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
@@ -227,8 +228,20 @@ export class LocalStorageService extends Storage {
     }
   }
 
-  generateKey(): Promise<string> {
-    return this.symCrypto.generateKey()
+  async generateKey(): Promise<string> {
+    if (environment.encryption) {
+      return this.symCrypto.generateKey()
+    } else {
+      const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      const length = 42 // Should be less then MAX_KEY_LENGTH value
+      const values = new Uint32Array(length)
+      window.crypto.getRandomValues(values)
+      let key = ''
+      for (let i = 0; i < length; i++) {
+        key += mask[values[i] % mask.length]
+      }
+      return key
+    }
   }
 
   private async isInTrash(key: string): Promise<boolean> {

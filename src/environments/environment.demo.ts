@@ -20,6 +20,7 @@ export const environment = {
     webSocketPath: 'ws',
     isAnonymousAllowed: true,
   },
+  encryption: false,
   auth: {
     baseUrl: '',
     providers: {},

@@ -37,6 +37,8 @@ export const environment = {
     },
   ],
 
+  encryption: true,
+
   // Authentication providers
   auth: {
     baseUrl: 'https://auth.coedit.re/',
