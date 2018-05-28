@@ -93,9 +93,11 @@ export class CollaboratorCursor {
       } else {
         this.cursorBookmark.style.visibility = 'hidden'
         const from = this.bookmark.find()
-        const { height, marginTop } = this.calculateCursorProperties()
-        this.cursorHeight = height
-        this.cursorMarginTop = marginTop
+        const props = this.calculateCursorProperties()
+        if (props) {
+          this.cursorHeight = props.height
+          this.cursorMarginTop = props.marginTop
+        }
         this.translate(from, nextPos, animated)
       }
       this.bookmark.clear()
@@ -187,32 +189,36 @@ export class CollaboratorCursor {
   }
 
   private calculateCursorProperties(): { height: string; marginTop: string } {
-    if (this.bookmark) {
-      let fontSize: string
-      const previousSibling: any = this.cursorBookmark.parentElement.previousElementSibling
-      if (previousSibling) {
-        fontSize = window.getComputedStyle(previousSibling, null).getPropertyValue('font-size')
-      } else {
-        const line = this.cursorBookmark.parentElement.parentElement.parentElement
-        fontSize = window.getComputedStyle(line, null).getPropertyValue('font-size')
-      }
-      const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2))
-      const cursorHeight = fontSizeNumber + 5
-      return {
-        height: `${cursorHeight}px`,
-        marginTop: `${(lineHeight - cursorHeight) / 2}px`,
-      }
+    let fontSize: string
+    const previousSibling: any = this.cursorBookmark.parentElement.previousElementSibling
+    if (previousSibling) {
+      fontSize = window.getComputedStyle(previousSibling, null).getPropertyValue('font-size')
+    } else if (
+      this.cursorBookmark.parentElement &&
+      this.cursorBookmark.parentElement.parentElement &&
+      this.cursorBookmark.parentElement.parentElement.parentElement
+    ) {
+      const line = this.cursorBookmark.parentElement.parentElement.parentElement
+      fontSize = window.getComputedStyle(line, null).getPropertyValue('font-size')
+    } else {
+      return
+    }
+    const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2))
+    const cursorHeight = fontSizeNumber + 5
+    return {
+      height: `${cursorHeight}px`,
+      marginTop: `${(lineHeight - cursorHeight) / 2}px`,
     }
   }
 
   private setBookmarkCursorProperties() {
-    if (this.bookmark) {
-      const { height, marginTop } = this.calculateCursorProperties()
-      if (this.cursor.style.height !== height) {
-        this.cursor.style.height = height
+    const props = this.calculateCursorProperties()
+    if (props) {
+      if (this.cursor.style.height !== props.height) {
+        this.cursor.style.height = props.height
       }
-      if (this.cursor.style.marginTop !== marginTop) {
-        this.cursor.style.marginTop = marginTop
+      if (this.cursor.style.marginTop !== props.marginTop) {
+        this.cursor.style.marginTop = props.marginTop
       }
       if (this.cursorBookmark.style.visibility === 'hidden') {
         this.cursorBookmark.style.visibility = 'visible'
