@@ -27,12 +27,14 @@ export class BotStorageService extends Storage {
 
     if (botStorage && 'url' in botStorage && 'secure' in botStorage && 'webSocketPath' in botStorage) {
       const bs = botStorage as any
-      this.name = ''
       this.secure = bs.secure
       this.url = bs.url
       this.webSocketPath = bs.webSocketPath
       this.remote = Folder.create('Remote storage', 'cloud', true)
       this.remote.id = this.id
+    } else {
+      this.name = ''
+      this.url = ''
     }
 
     settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => this.updateStatus())
