@@ -18,7 +18,7 @@ import { filter, map, share } from 'rxjs/operators'
 
 import * as CodeMirror from 'codemirror'
 import * as Editor from 'tui-editor'
-import 'tui-editor/dist/tui-editor-extScrollSync.js'
+// import 'tui-editor/dist/tui-editor-extScrollSync.js'
 
 type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
 
@@ -93,7 +93,6 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         initialEditType: 'markdown',
         previewStyle: 'tab',
         height: '100%',
-        exts: ['scrollSync'],
         usageStatistics: false,
         hideModeSwitch: true,
       })
@@ -151,13 +150,12 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
         this.docService.localTextOperationsSource = this.textOperationsObservable
       }
 
-      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe((textOperations: TextOperation[]) => {
+      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe(({ collaborator, operations }) => {
         const updateDoc: () => void = () => {
           const doc: CodeMirror.Doc = this.editor.getDoc()
 
           // log.info('operation:editor', 'applied: ', textOperations)
-
-          textOperations.forEach((textOperation: TextOperation) => {
+          operations.forEach((textOperation: TextOperation) => {
             const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
             if (textOperation instanceof TextInsert) {
               doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')

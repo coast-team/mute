@@ -109,6 +109,16 @@ export class CursorsDirective implements OnInit, OnDestroy {
           }
         }
       })
+
+    // On remote operation
+    this.mcDocService.onRemoteTextOperations.subscribe(({ collaborator }) => {
+      if (collaborator) {
+        const cursor = this.cursors.get(collaborator.id)
+        if (cursor) {
+          cursor.resetDisplayNameTimeout()
+        }
+      }
+    })
   }
 
   ngOnDestroy() {

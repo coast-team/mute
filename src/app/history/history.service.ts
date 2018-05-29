@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core'
 import { DocService, RichLogootSOperation } from 'mute-core'
-import { LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
-import { from } from 'rxjs'
+import { LogootSOperation, TextDelete, TextInsert } from 'mute-structs'
 import { map } from 'rxjs/operators'
 
 import * as diff from 'diff'
+import { from } from 'rxjs'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
@@ -24,9 +24,11 @@ export class HistoryService {
         .getDocBody(doc)
         .then((body: any) => {
           const logootSOp: LogootSOperation[] = body.richLogootSOps
-            .map((richLogootSOp: any): RichLogootSOperation | null => {
-              return RichLogootSOperation.fromPlain(richLogootSOp)
-            })
+            .map(
+              (richLogootSOp: any): RichLogootSOperation | null => {
+                return RichLogootSOperation.fromPlain(richLogootSOp)
+              }
+            )
             .filter((richLogootSOp: RichLogootSOperation | null) => {
               return richLogootSOp instanceof RichLogootSOperation
             })
@@ -34,8 +36,8 @@ export class HistoryService {
           const mcDocService = new DocService(42)
           mcDocService.onRemoteTextOperations
             .pipe(
-              map((ops: TextOperation[]) => {
-                return ops.map((op: IDelete | IInsert) => {
+              map(({ operations }) => {
+                return operations.map((op: IDelete | IInsert) => {
                   const randAuthor = AUTHORS[Math.floor(Math.random() * AUTHORS.length)]
                   op.authorId = randAuthor[0]
                   op.authorName = randAuthor[1]
@@ -44,7 +46,12 @@ export class HistoryService {
               })
             )
             .subscribe((ops) => resolve(ops))
-          mcDocService.remoteLogootSOperationSource = from([logootSOp])
+          mcDocService.remoteLogootSOperationSource = from(
+            logootSOp.map((op) => ({
+              collaborator: undefined,
+              operations: [op],
+            }))
+          )
         })
         .catch((err) => {
           log.error('Error getting document body of: ', doc)
