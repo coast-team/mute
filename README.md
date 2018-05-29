@@ -10,9 +10,9 @@ This project was generated with [angular-cli](https://github.com/angular/angular
 
 MUTE is a peer-to-peer collaborative editor in the browser, which means that any user sends his modifications directly to other collaborators instead of transmitting them via a server. However the peer-to-peer technology requires a few servers for full working capacity. Thus the complete MUTE instance is composed of the following servers:
 
-* HTTP(S) server serving MUTE static files.
-* WebSocket signaling server which is mandatory in order to establish a connection between two users.
-* STAN/TURN help to establish peer-to-peer connection in some scenarios (user is behind a NAT for example).
+- HTTP(S) server serving MUTE static files.
+- WebSocket signaling server which is mandatory in order to establish a connection between two users.
+- STAN/TURN help to establish peer-to-peer connection in some scenarios (user is behind a NAT for example).
 
 MUTE comes with a default free STAN server (already deployed on the Internet). TURN server deployment is out of scope of this guide.
 
@@ -28,8 +28,8 @@ Proceeds the following steps:
 
 **Examples**:
 
-* [Demo deployment on Raspberry Pi](https://github.com/coast-team/mute/wiki/Deploy:-Raspberry-Pi)
-* [Production deployment with NGINX on Ubuntu 16.04](https://github.com/coast-team/mute/wiki/Deploy:-Production)
+- [Demo deployment on Raspberry Pi](https://github.com/coast-team/mute/wiki/Deploy:-Raspberry-Pi)
+- [Production deployment with NGINX on Ubuntu 16.04](https://github.com/coast-team/mute/wiki/Deploy:-Production)
 
 ## Build
 

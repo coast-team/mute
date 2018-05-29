@@ -10,4 +10,4 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* **cursor:** doesn't send cursor position on app load ([6e2f5d6](https://github.com/coast-team/mute/commit/6e2f5d6))
+- **cursor:** doesn't send cursor position on app load ([6e2f5d6](https://github.com/coast-team/mute/commit/6e2f5d6))

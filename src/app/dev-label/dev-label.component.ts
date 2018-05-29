@@ -24,17 +24,17 @@ import { UiService } from '../core/ui/ui.service'
   `,
   styles: [
     `
-    :host {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      z-index: 100;
-      color: var(--theme-fg-hint-text);
-    }
-    button {
-      padding: 2px 3px;
-    }
-  `,
+      :host {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 100;
+        color: var(--theme-fg-hint-text);
+      }
+      button {
+        padding: 2px 3px;
+      }
+    `,
   ],
 })
 export class DevLabelComponent implements OnInit {

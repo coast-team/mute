@@ -50,8 +50,7 @@ export class AppModule {
         duration: 5000,
       })
       snackBarRef.onAction().subscribe(() => {
-        sw
-          .activateUpdate()
+        sw.activateUpdate()
           .then(() => document.location.reload())
           .catch((err) => log.debug('Error activating SW update: ', err))
       })
