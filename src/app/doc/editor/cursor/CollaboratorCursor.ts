@@ -33,7 +33,10 @@ export class CollaboratorCursor {
     // HTML element for display name
     this.displayName = document.createElement('span')
     this.displayName.className = 'collaborator-display-name mat-elevation-z2'
-    this.displayName.style.backgroundColor = collab.color
+    this.displayName.style.backgroundColor = 'var(--theme-bg-background)'
+    this.displayName.style.borderStyle = 'solid'
+    this.displayName.style.borderColor = collab.color
+    this.displayName.style.borderWidth = '0'
     this.displayName.style.width = '0'
     this.updateDisplayName(collab.displayName)
 
@@ -76,9 +79,13 @@ export class CollaboratorCursor {
   resetDisplayNameTimeout() {
     if (this.displayName.style.width !== this.displayNameWidth) {
       this.displayName.style.width = this.displayNameWidth
+      this.displayName.style.borderWidth = '1px 5px 1px 2px'
     }
     clearTimeout(this.displayNameTimeout)
-    this.displayNameTimeout = setTimeout(() => (this.displayName.style.width = '0'), 1500)
+    this.displayNameTimeout = setTimeout(() => {
+      this.displayName.style.width = '0'
+      this.displayName.style.borderWidth = '0'
+    }, 1500)
   }
 
   updateDisplayName(displayName: string) {
@@ -165,6 +172,7 @@ export class CollaboratorCursor {
     const { left, top } = this.cm.cursorCoords(from, 'local')
     if (this.displayName.style.width !== '0') {
       this.displayName.style.width = '0'
+      this.displayName.style.borderWidth = '0'
     }
     const { top: scrollTop } = this.cm.getScrollInfo()
     const adjustedTop = top - scrollTop
