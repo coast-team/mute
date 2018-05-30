@@ -10,10 +10,10 @@
     </mat-form-field>
   </div>
 
-  <mute-sync fxHide.lt-md></mute-sync>
-  <button fxHide.gt-sm mat-icon-button (click)="info.emit()">
+  <mute-sync class="sync action"></mute-sync>
+  <button mat-icon-button class="action" (click)="info.emit()">
     <mat-icon>info</mat-icon>
   </button>
-  <mute-profile fxHide.lt-md></mute-profile>
+  <mute-profile class="action" fxHide.lt-md></mute-profile>
 
 </mat-toolbar>

@@ -1,8 +1,9 @@
+import { BreakpointObserver } from '@angular/cdk/layout'
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
-import { merge, Subscription } from 'rxjs'
+import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
@@ -16,6 +17,13 @@ import { UiService } from '../core/ui/ui.service'
 import { NetworkService } from '../doc/network'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
+
+export enum VIEWPORT {
+  LARGE,
+  MEDIUM,
+  SMALL,
+  EXTRASMALL,
+}
 
 @Component({
   selector: 'mute-doc',
@@ -33,6 +41,11 @@ export class DocComponent implements OnDestroy, OnInit {
   public doc: Doc
   public isMobile: boolean
   public muteCore: MuteCore
+  public viewport: Observable<VIEWPORT>
+
+  public drawerMode: ReplaySubject<string>
+  public drawerOpened: ReplaySubject<boolean>
+  public extrasmall: string
 
   constructor(
     private zone: NgZone,
@@ -44,9 +57,54 @@ export class DocComponent implements OnDestroy, OnInit {
     private botStorage: BotStorageService,
     private media: ObservableMedia,
     public ui: UiService,
-    private symCrypto: SymmetricCryptoService
+    private symCrypto: SymmetricCryptoService,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.subs = []
+    this.drawerMode = new ReplaySubject()
+    this.drawerOpened = new ReplaySubject()
+    this.extrasmall = ''
+    merge(
+      this.breakpointObserver.observe(['(min-width: 1450px)']).pipe(
+        filter((result) => result.matches),
+        map(() => VIEWPORT.LARGE)
+      ),
+      this.breakpointObserver.observe(['(min-width: 1130px) and (max-width: 1450px)']).pipe(
+        filter((result) => result.matches),
+        map(() => VIEWPORT.MEDIUM)
+      ),
+      this.breakpointObserver.observe(['(min-width: 800px) and (max-width: 1130px)']).pipe(
+        filter((result) => result.matches),
+        map(() => VIEWPORT.SMALL)
+      ),
+      this.breakpointObserver.observe(['(max-width: 800px)']).pipe(
+        filter((result) => result.matches),
+        map(() => VIEWPORT.EXTRASMALL)
+      )
+    ).subscribe((viewport) => {
+      switch (viewport) {
+        case VIEWPORT.LARGE:
+          this.drawerMode.next('over')
+          this.drawerOpened.next(true)
+          this.extrasmall = ''
+          break
+        case VIEWPORT.MEDIUM:
+          this.drawerMode.next('side')
+          this.drawerOpened.next(true)
+          this.extrasmall = ''
+          break
+        case VIEWPORT.SMALL:
+          this.drawerMode.next('push')
+          this.drawerOpened.next(false)
+          this.extrasmall = ''
+          break
+        case VIEWPORT.EXTRASMALL:
+          this.drawerMode.next('push')
+          this.drawerOpened.next(false)
+          this.extrasmall = 'extrasmall'
+          break
+      }
+    })
   }
 
   ngOnInit() {

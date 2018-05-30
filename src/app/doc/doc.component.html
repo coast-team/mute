@@ -1,6 +1,4 @@
-<mute-toolbar [doc]="doc"
-  (menu)="menuSidenav.toggle()"
-  (info)="infoSidenav.toggle()">
+<mute-toolbar [doc]="doc" (menu)="menuSidenav.toggle()" (info)="infoSidenav.toggle()">
 </mute-toolbar>
 
 <mat-sidenav-container>
@@ -11,18 +9,23 @@
   </mat-sidenav>
 
   <!-- Content -->
-  <div class="editor" ngClass.md="editor-md"
-    ngClass.lg="editor-lg" ngClass.gt-lg="editor-gt-lg">
-    <mute-editor [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
-  </div>
+  <mat-sidenav-content class="content">
+    <mat-drawer-container class="content" hasBackdrop="false">
+
+      <mat-drawer-content>
+        <mute-editor [ngClass]="extrasmall" [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
+      </mat-drawer-content>
+      <mat-drawer position="end" [mode]="drawerMode | async" [opened]="drawerOpened | async" #infoSidenav class="info-sidenav"
+        ngClass.lt-sm="info-sidenav-lt-sm">
+        <mute-right-side [doc]="doc" class="info-panel"></mute-right-side>
+      </mat-drawer>
+    </mat-drawer-container>
+  </mat-sidenav-content>
 
   <!-- Desktop Info panel -->
-    <mute-right-side fxHide.lt-md [doc]="doc" class="info-panel"></mute-right-side>
+  <!-- <mute-right-side fxHide.lt-md [doc]="doc" class="info-panel"></mute-right-side> -->
 
   <!-- Mobile Info Sidenav only -->
-    <mat-sidenav *ngIf="isMobile" align="end" mode="over" #infoSidenav
-      fxHide.gt-sm class="info-sidenav" ngClass.lt-sm="info-sidenav-lt-sm">
-      <mute-right-side [doc]="doc"></mute-right-side>
-    </mat-sidenav>
+
 
 </mat-sidenav-container>

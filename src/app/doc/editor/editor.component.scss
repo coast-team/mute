@@ -1,7 +1,6 @@
 :host {
   height: 100%;
   box-sizing: border-box;
-  padding: 10px 0;
   display: block;
 }
 
@@ -10,30 +9,19 @@ mat-card {
   padding: 0;
   overflow: hidden;
   box-sizing: border-box;
+  margin: 0 auto;
+  flex-basis: 100%;
+  max-width: 800px;
 
-  &.card-lt-sm {
-    flex-basis: 100%;
-    margin: 0 8px;
-  }
-  &.card-lt-lg {
-    flex-basis: 100%;
-    margin: 0 16px;
-  }
   &.card-lg {
-    margin-left: calc(50% - (575px));
-    flex-basis: 1150px;
-    min-width: 1150px;
-    max-width: 1150px;
+    margin: 0 auto;
+    flex-basis: 100%;
+    max-width: 800px;
   }
   &.card-gt-lg {
-    margin-left: calc(62.5% - (575px));
-    flex-basis: 1150px;
-    min-width: 1150px;
-    max-width: 1150px;
+    margin: 0 auto;
+    flex-basis: 950px;
+    min-width: 950px;
+    max-width: 950px;
   }
-}
-
-.airbag {
-  height: 20px;
-  flex: 0 0 auto;
 }
