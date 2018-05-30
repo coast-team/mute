@@ -1,24 +1,29 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
-  <button mat-icon-button (click)="menu.emit()">
-    <mat-icon>menu</mat-icon>
-  </button>
+  <div fxFill fxLayoutAlign="space-between">
+    <div fxLayoutAlign="start center">
+      <button mat-icon-button (click)="menu.emit()">
+        <mat-icon>menu</mat-icon>
+      </button>
 
-  <div fxFlex class="title">
-    <mat-form-field ngClass.sm="sm" ngClass.md="md" ngClass.gt-md="gt-md" color="accent">
-      <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)" (focus)="selectTitle()"
-      />
-    </mat-form-field>
+      <div class="title">
+        <mat-form-field ngClass.gt-xs="gt-xs" color="accent">
+          <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)" (focus)="selectTitle()"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div fxLayoutAlign="end center">
+      <mute-sync class="sync action"></mute-sync>
+      <button mat-icon-button class="action" [matMenuTriggerFor]="docMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <button mat-icon-button class="action" (click)="info.emit()">
+        <mat-icon>info</mat-icon>
+      </button>
+      <mute-profile class="action"></mute-profile>
+    </div>
   </div>
-
-  <mute-sync class="sync action"></mute-sync>
-  <button mat-icon-button class="action" [matMenuTriggerFor]="docMenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <button mat-icon-button class="action" (click)="info.emit()">
-    <mat-icon>info</mat-icon>
-  </button>
-  <mute-profile class="action" fxHide.lt-md></mute-profile>
-
 </mat-toolbar>
 
 <mat-menu #docMenu="matMenu" overlapTrigger="false">

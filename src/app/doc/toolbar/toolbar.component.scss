@@ -6,10 +6,6 @@
   z-index: 2;
 }
 
-.action {
-  margin-right: 5px;
-}
-
 .sync {
   padding: 8px;
   position: relative;
@@ -17,25 +13,16 @@
 }
 
 .title {
-  text-align: center;
+  margin-left: 16px;
 
   mat-form-field {
-    width: 90%;
+    width: 140px;
+    font-size: 0.9em;
+    position: relative;
+    top: 2px;
 
-    &.sm {
-      width: 60%;
-    }
-
-    &.md {
-      width: 50%;
-    }
-
-    &.gt-md {
-      width: 40%;
-    }
-
-    input {
-      text-align: center;
+    &.gt-xs {
+      width: 250px;
     }
   }
 }
