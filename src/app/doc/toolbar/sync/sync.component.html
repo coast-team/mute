@@ -1,21 +1,13 @@
-<span class="sync-icon"
-  [ngSwitch]="syncState"
-  [@cardState]='cardState'
-  (mouseenter)='showCard()'
-  (mouseleave)='hideCard()'
->
+<span class="sync-icon" [ngSwitch]="syncState" [@cardState]='cardState' (mouseenter)='showCard()' (mouseleave)='hideCard()'>
   <mat-icon *ngSwitchCase="SYNC">sync</mat-icon>
   <mat-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</mat-icon>
   <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
 </span>
 
-<mat-card *ngIf="cardState === 'visible'"
-  class="mat-elevation-z8 sync-details"
-  [@cardState]='cardState'
->
+<mat-card *ngIf="cardState === 'visible'" class="mat-elevation-z8 sync-details" [@cardState]='cardState'>
   <span class="arrow"></span>
-  <div class="header mat-subheading-2">{{groupDetails}}</div>
   <mat-card-content>
-    <p class="mat-body-1">{{signalingDetails}}</p>
+    <p class="mat-subheading-2 center">{{groupDetails}}</p>
+    <p class="mat-body-1 center">{{signalingDetails}}</p>
   </mat-card-content>
 </mat-card>

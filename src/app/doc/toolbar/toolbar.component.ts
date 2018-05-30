@@ -1,7 +1,9 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core'
 
 import { Doc } from '../../core/Doc'
+import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
+import { NetworkService } from '../network'
 
 @Component({
   selector: 'mute-toolbar',
@@ -14,9 +16,13 @@ export class ToolbarComponent {
   @Output() info: EventEmitter<void>
   @ViewChild('input') input: ElementRef
 
-  constructor(private localStorage: LocalStorageService) {
+  public botNotAvailable: boolean
+
+  constructor(private network: NetworkService, private botStorage: BotStorageService, private localStorage: LocalStorageService) {
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
+    this.botNotAvailable = true
+    botStorage.onStatus.subscribe((code) => (this.botNotAvailable = code !== BotStorageService.AVAILABLE))
   }
 
   updateTitle(event) {
@@ -34,5 +40,9 @@ export class ToolbarComponent {
 
   selectTitle() {
     this.input.nativeElement.select()
+  }
+
+  inviteBot() {
+    this.network.inviteBot(this.botStorage.wsURL)
   }
 }

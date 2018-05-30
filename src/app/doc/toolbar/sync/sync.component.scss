@@ -23,17 +23,16 @@
 
 .sync-details {
   position: fixed;
+  display: inline-block;
+  width: 220px;
   top: 66px;
-  right: 20px;
+  right: 42px;
   z-index: 1000;
-  opacity: 0;
+  // opacity: 0;
 
-  h4 {
+  .center {
     text-align: center;
-  }
-
-  .header {
-    text-align: center;
+    white-space: normal;
   }
 
   .arrow {
@@ -42,7 +41,7 @@
     border-style: dashed dashed solid;
     border-width: 0 8.5px 8.5px;
     position: fixed;
-    right: 76px;
+    right: 168px;
     top: 58px;
     z-index: 1000;
   }

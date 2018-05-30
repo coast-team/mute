@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
 
 import { CursorsDirective } from '../doc/editor/cursor/cursors.directive'
 import { SharedModule } from '../shared/shared.module'
@@ -12,7 +13,7 @@ import { SyncComponent } from './toolbar/sync/sync.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  imports: [SharedModule, RightSideModule],
+  imports: [SharedModule, RightSideModule, RouterModule],
   declarations: [DocComponent, EditorComponent, CursorsDirective, ToolbarComponent, SyncComponent, ResolverDialogComponent],
   entryComponents: [ResolverDialogComponent],
   providers: [NetworkService, DocResolverService],

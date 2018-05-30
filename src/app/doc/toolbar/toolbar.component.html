@@ -11,9 +11,19 @@
   </div>
 
   <mute-sync class="sync action"></mute-sync>
+  <button mat-icon-button class="action" [matMenuTriggerFor]="docMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
   <button mat-icon-button class="action" (click)="info.emit()">
     <mat-icon>info</mat-icon>
   </button>
   <mute-profile class="action" fxHide.lt-md></mute-profile>
 
 </mat-toolbar>
+
+<mat-menu #docMenu="matMenu" overlapTrigger="false">
+  <button mat-menu-item [routerLink]="['/history', doc.key]">
+    Version history
+  </button>
+  <button mat-menu-item (click)="inviteBot()" [disabled]="botNotAvailable">Invite bot storage</button>
+</mat-menu>
