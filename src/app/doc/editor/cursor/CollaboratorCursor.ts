@@ -79,7 +79,7 @@ export class CollaboratorCursor {
   resetDisplayNameTimeout() {
     if (this.displayName.style.width !== this.displayNameWidth) {
       this.displayName.style.width = this.displayNameWidth
-      this.displayName.style.borderWidth = '1px 5px 1px 2px'
+      this.displayName.style.borderWidth = '0 5px 0 5px'
     }
     clearTimeout(this.displayNameTimeout)
     this.displayNameTimeout = setTimeout(() => {
