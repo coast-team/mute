@@ -59,13 +59,11 @@
     --#{$prefix}-fg-disabled-button: #{map-get($fg, disabled-button)};
 
     // icons
-    --#{$prefix}-fg-icon: #{map-get($fg, hint-icon)};
     --#{$prefix}-fg-icons:#{map-get($fg, hint-icons)};
 
     // slider
     --#{$prefix}-fg-slider-min:#{map-get($fg, hint-slider-min)};
     --#{$prefix}-fg-slider-off:#{map-get($fg, hint-slider-off)};
-    --#{$prefix}-fg-slider-off-active: #{map-get($fg, hint-slider-off-active)};
   }
 }
 
@@ -156,13 +154,11 @@ $prefix: 'indigo';
     --theme-fg-disabled-button: var(--#{$prefix}-fg-disabled-button);
 
     // icons
-    --theme-fg-icon: var(--#{$prefix}-fg-icon);
     --theme-fg-icons: var(--#{$prefix}-fg-icons);
 
     // slider
     --theme-fg-slider-min: var(--#{$prefix}-fg-slider-min);
     --theme-fg-slider-off: var(--#{$prefix}-fg-slider-off);
-    --theme-fg-fg-slider-off-active: var(--#{$prefix}-fg-fg-slider-off-active);
   }
 }
 @include define-global-css-variables('default');
