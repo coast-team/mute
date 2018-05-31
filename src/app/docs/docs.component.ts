@@ -146,9 +146,11 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
-  open(doc: Doc) {
+  open() {
     if (this.folder !== this.localStorage.trash) {
-      this.router.navigate(['/', doc.key])
+      this.localStorage.generateKey().then((key) => {
+        this.router.navigate(['/', key])
+      })
     }
   }
 
