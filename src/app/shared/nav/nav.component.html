@@ -12,20 +12,20 @@
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>
         </span>
-        <span>Locally</span>
+        <span>Without bot storage</span>
       </button>
       <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>
           <mat-icon>cloud</mat-icon>
         </span>
-        <span>Locally & Remotely</span>
+        <span>With bot storage</span>
       </button>
-      <button mat-menu-item (click)="openJoinDialog()">
+      <button *ngIf="isStandalone" mat-menu-item (click)="openJoinDialog()">
         <span class="new-doc-icons">
           <mat-icon>group_work</mat-icon>
         </span>
-        <span>Join by key</span>
+        <span>Join</span>
       </button>
     </mat-menu>
 

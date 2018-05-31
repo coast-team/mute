@@ -39,6 +39,7 @@ export class NavComponent implements OnDestroy {
   public version: string
   public commit: string
   public isProd: boolean
+  public isStandalone: boolean
 
   private subs: Subscription[]
 
@@ -50,6 +51,7 @@ export class NavComponent implements OnDestroy {
     private botStorage: BotStorageService,
     private settings: SettingsService
   ) {
+    this.isStandalone = window.matchMedia('(display-mode: standalone)').matches
     this.isProd = environment.production
     this.version = appData.version
     this.commit = appData.commit
