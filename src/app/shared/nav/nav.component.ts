@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
+import { appData } from '../../../app-data'
+import { environment } from '../../../environments/environment'
 import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings/settings.service'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
@@ -34,6 +36,10 @@ export class NavComponent implements OnDestroy {
   public quota: number
   public usage: number
 
+  public version: string
+  public commit: string
+  public isProd: boolean
+
   private subs: Subscription[]
 
   constructor(
@@ -44,6 +50,9 @@ export class NavComponent implements OnDestroy {
     private botStorage: BotStorageService,
     private settings: SettingsService
   ) {
+    this.isProd = environment.production
+    this.version = appData.version
+    this.commit = appData.commit
     this.local = localStorage.local
     this.trash = localStorage.trash
     this.remote = botStorage.remote

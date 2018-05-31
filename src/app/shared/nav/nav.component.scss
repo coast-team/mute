@@ -4,6 +4,10 @@
   max-width: 300px;
 }
 
+.container {
+  height: 100%;
+}
+
 .logo {
   width: 100%;
   font-family: $font-logo;
@@ -50,10 +54,30 @@
   }
 
   .hint {
-    color: var(--theme-fg-hint-text);
+    color: var(--theme-fg-secondary-text);
     text-align: center;
     margin: 5px auto;
     width: 80%;
     word-wrap: normal;
+  }
+}
+
+.app-info {
+  margin-bottom: 12px;
+  color: var(--theme-fg-secondary-text);
+  word-wrap: normal;
+  text-align: left;
+  padding-left: 10px;
+
+  a {
+    color: var(--theme-fg-text);
+
+    &:visited {
+      color: var(--theme-fg-text);
+    }
+  }
+
+  p {
+    margin-bottom: 0;
   }
 }

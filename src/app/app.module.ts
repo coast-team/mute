@@ -12,6 +12,7 @@ import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot/bot-storage.service'
 import { getIndexedDBState } from './core/storage/local/indexedDBCheck'
 import { LocalStorageService } from './core/storage/local/local-storage.service'
+import { UiService } from './core/ui/ui.service'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
 import { HistoryModule } from './history/history.module'
@@ -43,7 +44,7 @@ import { HistoryModule } from './history/history.module'
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private snackBar: MatSnackBar, sw: SwUpdate) {
+  constructor(private snackBar: MatSnackBar, private sw: SwUpdate, private ui: UiService) {
     // sw.available.subscribe((event) => {
     //   console.log('Event: ', event)
     //   console.log('current version is', event.current)
@@ -55,7 +56,7 @@ export class AppModule {
     //   console.log('new version is', event.current)
     // })
     sw.available.subscribe((event) => {
-      const version: string = (event.available.appData as any).version
+      const version = (event.available.appData as any).version
       const snackBarRef = this.snackBar.open(`New ${version} is available`, 'Update', {
         duration: 5000,
       })
