@@ -1,7 +1,7 @@
 import { BreakpointObserver } from '@angular/cdk/layout'
 import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { MuteCore, State } from 'mute-core'
 import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
@@ -50,6 +50,7 @@ export class DocComponent implements OnDestroy, OnInit {
   public showDevLabel: boolean
 
   constructor(
+    private router: Router,
     private zone: NgZone,
     private route: ActivatedRoute,
     private richCollaboratorsService: RichCollaboratorsService,
@@ -106,6 +107,13 @@ export class DocComponent implements OnDestroy, OnInit {
           this.drawerOpened.next(false)
           this.extrasmall = 'extrasmall'
           break
+      }
+    })
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false
+    this.router.events.subscribe((evt) => {
+      if (evt instanceof NavigationEnd) {
+        this.router.navigated = false
       }
     })
   }
