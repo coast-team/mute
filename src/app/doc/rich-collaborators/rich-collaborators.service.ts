@@ -77,6 +77,8 @@ export class RichCollaboratorsService {
       for (const c of this.collaborators) {
         if (collab.id === c.id) {
           c.update(collab)
+          this.updateSubject.next(c)
+          this.changeRef.detectChanges()
           break
         }
       }
