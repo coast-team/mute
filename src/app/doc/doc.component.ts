@@ -47,6 +47,8 @@ export class DocComponent implements OnDestroy, OnInit {
   public drawerOpened: ReplaySubject<boolean>
   public extrasmall: string
 
+  public showDevLabel: boolean
+
   constructor(
     private zone: NgZone,
     private route: ActivatedRoute,
@@ -60,6 +62,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private symCrypto: SymmetricCryptoService,
     private breakpointObserver: BreakpointObserver
   ) {
+    this.showDevLabel = environment.devLabel
     this.subs = []
     this.drawerMode = new ReplaySubject()
     this.drawerOpened = new ReplaySubject()

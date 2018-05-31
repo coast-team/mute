@@ -1,5 +1,4 @@
 export const environment = {
-  commit: '',
   production: true,
   devLabel: false,
   netfluxLog: false,

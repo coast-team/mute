@@ -21,7 +21,7 @@ export const environment = {
 
   // Signaling server URL
   // See https://github.com/coast-team/sigver
-  signalingServer: 'wss://signaling.coedit.re',
+  signalingServer: 'ws://localhost:8010',
 
   // Enable/Disable service worker
   serviceWorker: true,
@@ -29,22 +29,19 @@ export const environment = {
   // Whether MUTE should try to look for a Bot Storage
   // Can be an empty array: []
   // See https://github.com/coast-team/mute-bot-storage
-  storages: [
-    {
-      secure: true, // If true: https & wss protocols are used
-      host: 'botstorage.coedit.re', // Server hostname or IP address
-      port: 443, // Server port
-    },
-  ],
+  botStorage: {},
 
   encryption: true,
 
   // Authentication providers
   auth: {
-    baseUrl: 'https://auth.coedit.re/',
+    baseUrl: 'http://localhost:4000/',
     providers: {
-      github: { clientId: '', scope: [] }, // Github application clientId
-      google: { clientId: '', scope: [] }, // Google application clientId
+      github: { clientId: 'f936a2022e9e03ae004a', scope: ['user:email'] },
+      google: {
+        clientId: '266602967129-rpub82t4tln6b2q9bl80ht3a18bpbrp4.apps.googleusercontent.com',
+        scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'],
+      },
     },
   },
 }

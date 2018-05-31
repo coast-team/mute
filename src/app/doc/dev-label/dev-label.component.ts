@@ -3,19 +3,14 @@ import { MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
 
-import { hash } from '../../lastcommithash'
-import { LocalStorageService } from '../core/storage/local/local-storage.service'
-import { UiService } from '../core/ui/ui.service'
+import { LocalStorageService } from '../../core/storage/local/local-storage.service'
+import { UiService } from '../../core/ui/ui.service'
 
 @Component({
   selector: 'mute-dev-label',
   template: `
     <div class="mat-caption">
-      Preview version:
-      <a [href]='url' target="_blank" rel="noopener">{{shortID}}</a>
       <br /> Digest: {{digest}}
-      <br /> Changes:
-      <span #detectChanges>0</span>
       <br /> Exports:
       <button (click)="exportLog()">Log</button>
       <button (click)="exportTree()">Tree</button>
@@ -26,6 +21,8 @@ import { UiService } from '../core/ui/ui.service'
     `
       :host {
         position: fixed;
+        display: inline-block;
+        min-width: 180px;
         bottom: 10px;
         right: 10px;
         z-index: 100;
@@ -39,15 +36,11 @@ import { UiService } from '../core/ui/ui.service'
 })
 export class DevLabelComponent implements OnInit {
   @ViewChild('link') link: ElementRef
-  @ViewChild('detectChanges') detectChanges: ElementRef
   private tree: string
 
-  public url = 'https://github.com/coast-team/mute/tree/'
-  public shortID: string
   public digest: string
   public objectURL: SafeResourceUrl
   public filename: string
-  public nbOfDetectChanges: number
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -55,11 +48,7 @@ export class DevLabelComponent implements OnInit {
     private detectRef: ChangeDetectorRef,
     private storageService: LocalStorageService,
     private snackBar: MatSnackBar
-  ) {
-    this.nbOfDetectChanges = 0
-    this.url += hash
-    this.shortID = (hash as any).substr(0, 7)
-  }
+  ) {}
 
   ngOnInit(): void {
     this.ui.onDocDigest.subscribe((digest: number) => {
@@ -107,10 +96,5 @@ export class DevLabelComponent implements OnInit {
       const action = 'Close'
       this.snackBar.open(message, action)
     }
-  }
-
-  detectChangesRun() {
-    this.detectChanges.nativeElement.innerHTML = ++this.nbOfDetectChanges
-    return false
   }
 }

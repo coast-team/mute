@@ -12,7 +12,6 @@ import { SettingsService } from './core/settings/settings.service'
 import { BotStorageService } from './core/storage/bot/bot-storage.service'
 import { getIndexedDBState } from './core/storage/local/indexedDBCheck'
 import { LocalStorageService } from './core/storage/local/local-storage.service'
-import { DevLabelComponent } from './dev-label/dev-label.component'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
 import { HistoryModule } from './history/history.module'
@@ -28,7 +27,7 @@ import { HistoryModule } from './history/history.module'
     DocModule,
     HistoryModule,
   ],
-  declarations: [AppComponent, DevLabelComponent],
+  declarations: [AppComponent],
   providers: [
     {
       provide: APP_INITIALIZER,
@@ -45,8 +44,19 @@ import { HistoryModule } from './history/history.module'
 })
 export class AppModule {
   constructor(private snackBar: MatSnackBar, sw: SwUpdate) {
+    // sw.available.subscribe((event) => {
+    //   console.log('Event: ', event)
+    //   console.log('current version is', event.current)
+    //   console.log('available version is', event.available)
+    // })
+    // sw.activated.subscribe((event) => {
+    //   console.log('Event: ', event)
+    //   console.log('old version was', event.previous)
+    //   console.log('new version is', event.current)
+    // })
     sw.available.subscribe((event) => {
-      const snackBarRef = this.snackBar.open('New version of MUTE is available.', 'Update', {
+      const version: string = (event.available.appData as any).version
+      const snackBarRef = this.snackBar.open(`New ${version} is available`, 'Update', {
         duration: 5000,
       })
       snackBarRef.onAction().subscribe(() => {
