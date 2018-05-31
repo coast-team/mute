@@ -1,13 +1,12 @@
 {
+  "appData": { "version": "v0.4.0", "commit": "12badc036dad2ca3af18fd79fdb4a0d93609f54d" },
   "index": "/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "updateMode": "prefetch",
-      "resources": {
-        "files": ["/index.html", "/*.js", "/*.css", "/*.png", "/assets/**/*.woff2", "/assets/**/*.png", "!/*.txt"]
-      }
+      "resources": { "files": ["/index.html", "/*.js", "/*.css", "/*.png", "/assets/**/*.woff2", "/assets/**/*.png", "!/*.txt"] }
     }
   ]
 }
