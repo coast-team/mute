@@ -4,8 +4,9 @@
     {
       "name": "app",
       "installMode": "prefetch",
+      "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/assets/**", "/fonts/**", "!/**/*.scss", "!/**/*.txt"]
+        "files": ["/index.html", "/*.js", "/*.css", "/*.png", "/assets/**/*.woff2", "/assets/**/*.png", "!/*.txt"]
       }
     }
   ]
