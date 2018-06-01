@@ -107,6 +107,7 @@ export class SettingsService {
       provider: window.location.hostname,
       login: `anonymous`,
       name: 'Anonymous',
+      avatar: 'assets/images/icons/account-circle.svg',
     }
   }
 

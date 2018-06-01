@@ -7,14 +7,15 @@
   </li>
   <li class="collaborators-item">
     <div class="collaborators" fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
-      <span class="mat-caption meta-title" fxFlexAlign="center">Collaborators</span>
-      <span class="mat-body-2 collab" *ngFor="let collab of collaborators"
-        [style.background-color]="collab.color"
-        [matTooltip]="collab.login"
-        [@peerArriving]="'active'"
-      >
-        {{collab.displayName}}
-      </span>
+      <!-- <span class="mat-caption meta-title" fxFlexAlign="center">Collaborators</span> -->
+      <div class="collab-chips mat-elevation-z2" [style.border-color]="collab.color" *ngFor="let collab of collaborators" fxFlex="140px"
+        fxLayoutAlign='start center'>
+        <img src="{{collab.avatar}}" class="avatar" alt="{{collab.displayName}}" />
+        <span class="mat-body-2 collab" [matTooltip]="collab.login" [@peerArriving]="active">
+          {{collab.displayName}}
+          <!-- <p>{{collab.login}}</p> -->
+        </span>
+      </div>
     </div>
   </li>
 </ul>
