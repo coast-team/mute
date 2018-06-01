@@ -19,7 +19,7 @@
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "cz": "git-cz",
     "release": "standard-version --no-verify",
-    "postrelease": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json && git commit --amend --no-edit -n"
+    "postrelease": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts && git commit --amend --no-edit -n"
   },
   "keywords": [],
   "contributors": [
