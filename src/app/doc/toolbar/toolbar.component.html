@@ -27,7 +27,7 @@
 </mat-toolbar>
 
 <mat-menu #docMenu="matMenu" overlapTrigger="false">
-  <button mat-menu-item [routerLink]="['/history', doc.key]">
+  <button disabled mat-menu-item [routerLink]="['/history', doc.key]">
     Version history
   </button>
   <button mat-menu-item (click)="inviteBot()" [disabled]="botNotAvailable">Invite bot storage</button>
