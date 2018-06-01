@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/coast-team/mute/compare/v0.5.0...v0.5.1) (2018-06-01)
+
+
+### Bug Fixes
+
+* **docs:** add missing doc property in open document ([05b97b7](https://github.com/coast-team/mute/commit/05b97b7))
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/coast-team/mute/compare/v0.4.0...v0.5.0) (2018-06-01)
 
