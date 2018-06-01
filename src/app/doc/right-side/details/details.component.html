@@ -11,7 +11,7 @@
       <div class="collab-chips mat-elevation-z2" [style.border-color]="collab.color" *ngFor="let collab of collaborators" fxFlex="140px"
         fxLayoutAlign='start center'>
         <img src="{{collab.avatar}}" class="avatar" alt="{{collab.displayName}}" />
-        <span class="mat-body-2 collab" [matTooltip]="collab.login" [@peerArriving]="active">
+        <span class="mat-body-2 collab" [@peerArriving]="active">
           {{collab.displayName}}
           <!-- <p>{{collab.login}}</p> -->
         </span>
