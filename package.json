@@ -54,7 +54,7 @@
     "jio": "git+https://github.com/Nexedi/jio.git#70754e8",
     "loglevel": "^1.6.1",
     "material-design-icons": "^3.0.1",
-    "mute-core": "^2.0.0",
+    "mute-core": "^2.1.1",
     "mute-structs": "^0.4.2",
     "netflux": "^4.0.6",
     "ng2-ui-auth": "^9.0.0-beta.2",

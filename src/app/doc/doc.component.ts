@@ -6,7 +6,6 @@ import { JoinEvent, MuteCore, State } from 'mute-core'
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { LocalOperation } from 'mute-core/dist/types/logs/LocalOperation'
 import { RemoteOperation } from 'mute-core/dist/types/logs/RemoteOperation'
-import { LogootSAdd, LogootSDel, LogootSOperation, TextDelete, TextInsert, TextOperation } from 'mute-structs'
 import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
@@ -163,6 +162,7 @@ export class DocComponent implements OnDestroy, OnInit {
           email: this.settings.profile.email,
           avatar: this.settings.profile.avatar,
         })
+        this.siteId = this.muteCore.collaboratorsService.me.muteCoreId
 
         this.network.initSource = this.muteCore.onInit
 
@@ -221,6 +221,10 @@ export class DocComponent implements OnDestroy, OnInit {
     this.inited = true
 
     this.initLogs()
+  }
+
+  getDocState(): State {
+    return this.muteCore.syncService.state
   }
 
   initLogs(): void {
