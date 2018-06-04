@@ -229,10 +229,18 @@ export class DocComponent implements OnDestroy, OnInit {
 
   initLogs(): void {
     this.logs = new LogsService('muteLogs-' + this.doc.key)
+    this.logs.setDisplayLogs(this.settings.displayLogs)
     // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
     if (this.logsSubs.length !== 0) {
       this.destroyLogs()
     }
+
+    // For displyaing logs in console
+    this.logsSubs.push(
+      this.settings.onChange.pipe(filter((properties) => properties.includes(EProperties.displayLogs))).subscribe(() => {
+        this.logs.setDisplayLogs(this.settings.displayLogs)
+      })
+    )
 
     this.logsSubs.push(
       this.network.onJoin.subscribe((event: JoinEvent) => {

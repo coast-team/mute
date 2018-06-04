@@ -23,10 +23,10 @@
   </div>
 
 
-  <!-- <h3 class="mat-subheading-2">Theme</h3> -->
+  <h2 class="mat-subheading-2">Theme</h2>
   <mat-form-field>
     <span matSuffix [ngClass]="['circle', theme]"></span>
-    <mat-select placeholder="Theme" [(value)]="theme" (selectionChange)="applyTheme($event)">
+    <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
       <mat-option value="default">
         <span class="circle default"></span> light
       </mat-option>
@@ -40,6 +40,12 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <h2 class="mat-subheading-2">Logs</h2>
+  <div class="logs">
+    <mat-slide-toggle id="logs" placeholder="Display logs" [checked]="displayLogs" (change)="toggleDisplayLogs($event)">Display logs in console</mat-slide-toggle>
+  </div>
+
 </div>
 
 <div mat-dialog-actions fxLayoutAlign="end center">
