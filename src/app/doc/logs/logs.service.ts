@@ -4,16 +4,12 @@ import { Subscription } from 'rxjs'
 import { Doc } from '../../core/Doc'
 import { Database } from './Database'
 import { LogsStrategy } from './LogsStrategy'
-import { RabbitMq } from './RabbitMq'
 import { SendAllLogsStrategy } from './SendAllLogsStrategy'
 import { SendIfActivateLogsStrategy } from './SendIfActivateLogsStrategy'
 
 @Injectable()
 export class LogsService implements OnDestroy {
   private subs: Subscription[]
-
-  private dbLocal: Database
-  private dbDistante: RabbitMq
 
   private docKey: string
   private displayLogs: boolean
@@ -35,6 +31,14 @@ export class LogsService implements OnDestroy {
   log(obj: object) {
     if (this.displayLogs) {
       log.info('DOC LOGS', obj)
+    }
+    // context is a Map, so it can't be stringify -> we have to convert it
+    if (obj['context']) {
+      const tab = {}
+      obj['context'].forEach((v, k) => {
+        tab[k] = v
+      })
+      obj['context'] = tab
     }
     this.strategy.sendLogs(obj, this.shareLogs)
   }

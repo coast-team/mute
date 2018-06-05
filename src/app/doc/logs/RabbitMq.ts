@@ -36,7 +36,6 @@ export class RabbitMq extends StompService {
 
   public send(data: object): void {
     const obj = JSON.stringify({ collection: this.key, data })
-    console.log('---SEND---', obj)
     this.publish(this.queue, obj)
 
     if (this.queuedMessages.length > this.queueLength) {
