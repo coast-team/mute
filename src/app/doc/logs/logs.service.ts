@@ -14,6 +14,14 @@ export class LogsService {
   }
 
   log(obj: object) {
+    // context is a Map, so it can't be stringify -> we have to convert it
+    if (obj['context']) {
+      const tab = {}
+      obj['context'].forEach((v, k) => {
+        tab[k] = v
+      })
+      obj['context'] = tab
+    }
     this.db.store(obj)
     if (this.displayLogs) {
       console.log('[LOGS]', obj)
