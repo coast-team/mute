@@ -34,7 +34,7 @@ export class ProfileComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    global.window.removeEventListener('click', this.hideCard)
+    window.removeEventListener('click', this.hideCard)
   }
 
   clickOnCard(event: Event) {
@@ -90,12 +90,12 @@ export class ProfileComponent implements OnDestroy {
   }
 
   showCard() {
-    global.window.addEventListener('click', this.hideCard.bind(this))
+    window.addEventListener('click', this.hideCard.bind(this))
     this.cardState = 'visible'
   }
 
   hideCard() {
-    global.window.removeEventListener('click', this.hideCard)
+    window.removeEventListener('click', this.hideCard)
     this.cardState = 'void'
   }
 }
