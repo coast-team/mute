@@ -1,18 +1,13 @@
-import { StompConfig, StompRService, StompService, StompState } from '@stomp/ng2-stompjs'
-import { Message } from '@stomp/stompjs'
-import { Observable } from 'rxjs/Observable'
-import { Subject } from 'rxjs/Subject'
-import { Database } from './Database'
+import { StompConfig, StompService } from '@stomp/ng2-stompjs'
 
 export class RabbitMq extends StompService {
-
   private queue: string
   private key: string
 
   private queueLength: number
   private localName: string
 
-  constructor (docKey: string) {
+  constructor(docKey: string) {
     const config = new StompConfig()
     config.url = 'ws://localhost:15674/ws'
     config.headers = { login: 'guest', passcode: 'guest' }
@@ -39,8 +34,9 @@ export class RabbitMq extends StompService {
     }
   }
 
-  public send (data: object): void {
+  public send(data: object): void {
     const obj = JSON.stringify({ collection: this.key, data })
+    console.log('---SEND---', obj)
     this.publish(this.queue, obj)
 
     if (this.queuedMessages.length > this.queueLength) {
@@ -51,7 +47,7 @@ export class RabbitMq extends StompService {
     }
   }
 
-  protected sendQueuedMessages (): void {
+  protected sendQueuedMessages(): void {
     const queuedMessages = this.queuedMessages
     this.queuedMessages = []
     this.queueLength = 0
@@ -63,6 +59,5 @@ export class RabbitMq extends StompService {
       this.debug(`Attempting to send ${queuedMessage}`)
       this.publish(queuedMessage.queueName, queuedMessage.message, queuedMessage.headers)
     }
-
   }
 }

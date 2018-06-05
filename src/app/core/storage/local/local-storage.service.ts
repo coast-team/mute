@@ -29,6 +29,8 @@ const selectListForDoc = [
   'modified',
   'modifiedByOthers',
   'description',
+  'shareLogs',
+  'logsStrategy',
 ]
 
 const DB_NAME_PREFIX = 'docs-'

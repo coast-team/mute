@@ -1,14 +1,11 @@
 import { LogsStrategy } from './LogsStrategy'
-import { RabbitMq } from './RabbitMq'
 
 export class SendIfActivateLogsStrategy extends LogsStrategy {
-
-  constructor (docKey: string) {
+  constructor(docKey: string) {
     super(docKey)
   }
 
-  public sendLogs (obj: object, share: boolean) {
-    console.log('[LOGS]', obj)
+  public sendLogs(obj: object, share: boolean) {
     this.dbLocal.store(obj)
     if (share) {
       this.dbDistante.send(obj)

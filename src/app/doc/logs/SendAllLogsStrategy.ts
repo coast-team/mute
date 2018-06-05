@@ -1,22 +1,18 @@
-import { element } from 'protractor'
 import { LogsStrategy } from './LogsStrategy'
-import { RabbitMq } from './RabbitMq'
 
 export class SendAllLogsStrategy extends LogsStrategy {
-
-  constructor (docKey: string) {
+  constructor(docKey: string) {
     super(docKey)
   }
 
-  public setShareLogs (share: boolean, state: Map<number, number>) {
+  public setShareLogs(share: boolean, state: Map<number, number>) {
     super.setShareLogs(share, state)
     if (share) {
       this.sendAllLogs()
     }
   }
 
-  public sendLogs (obj: object, share: boolean) {
-    console.log('[LOGS]', obj)
+  public sendLogs(obj: object, share: boolean) {
     this.dbLocal.store(obj)
     if (share) {
       this.dbDistante.send(obj)
@@ -29,7 +25,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
    * There is cases where some connection and deconnection logs will not be sent
    * There is cases where a log will be sent twice (if we turn logs on and operation arrive before we've been able to retrieve local logs)
    */
-  private sendAllLogs () {
+  private sendAllLogs() {
     this.getLocalLogs().then((obj) => {
       const lastState = JSON.parse(window.localStorage.getItem('shareLogs-off-' + this.docKey))
       if (lastState === null) {
