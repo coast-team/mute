@@ -15,6 +15,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatProgressBarModule,
+  MatRadioModule,
   MatSelectModule,
   MatSidenavModule,
   MatSliderModule,
