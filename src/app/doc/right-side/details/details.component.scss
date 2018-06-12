@@ -1,5 +1,6 @@
 :host {
-  min-height: 400px;
+  display: inline-block;
+  height: 100%;
 }
 
 li {
@@ -13,8 +14,7 @@ ul {
 }
 
 .collaborators {
-  // min-height: 300px;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .collab-chips {
@@ -30,6 +30,7 @@ ul {
   min-width: 130px;
   background-color: var(--theme-bg-background);
   margin: 0 0 15px 0;
+  position: relative;
 }
 
 .collab {
@@ -51,4 +52,28 @@ ul {
   border-radius: 50%;
   width: 32px;
   height: 32px;
+}
+
+.profile-card {
+  background: var(--theme-bg-background);
+  position: absolute;
+  right: 0px;
+  z-index: 1000;
+  opacity: 0;
+}
+
+.profile-card-container {
+  margin-bottom: 10px;
+}
+
+.profile-card-name {
+  white-space: nowrap;
+}
+
+.profile-card-login {
+  white-space: nowrap;
+}
+
+.profile-card-info {
+  margin-top: 0.5em;
 }
