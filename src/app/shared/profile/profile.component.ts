@@ -1,9 +1,11 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
-import { Component, OnDestroy, ViewChild } from '@angular/core'
-import { MatButton, MatDialog, MatSnackBar } from '@angular/material'
+import { Component } from '@angular/core'
+import { MatDialog, MatSnackBar } from '@angular/material'
 
+import { Subject } from 'rxjs'
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'
+import { UiService } from '../../core/ui/ui.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 
 @Component({
@@ -12,6 +14,7 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
   styleUrls: ['./profile.component.scss'],
   animations: [
     trigger('cardState', [
+      state('void', style({ opacity: '0', display: 'none' })),
       state(
         'visible',
         style({
@@ -23,18 +26,18 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
     ]),
   ],
 })
-export class ProfileComponent implements OnDestroy {
-  @ViewChild('profileIcon') profileIcon: MatButton
-
-  public cardState: string
+export class ProfileComponent {
   public profile: Profile
+  public cardState: Subject<string>
+  public currentCardState: string
 
-  constructor(private snackBar: MatSnackBar, public settings: SettingsService, private dialog: MatDialog) {
+  constructor(private snackBar: MatSnackBar, public settings: SettingsService, private dialog: MatDialog, ui: UiService) {
     this.profile = settings.profile
-  }
-
-  ngOnDestroy() {
-    window.removeEventListener('click', this.hideCard)
+    this.cardState = new Subject()
+    ui.click.subscribe(() => {
+      this.cardState.next('void')
+      this.currentCardState = 'void'
+    })
   }
 
   clickOnCard(event: Event) {
@@ -44,7 +47,8 @@ export class ProfileComponent implements OnDestroy {
   openSettingsDialog() {
     const dialog = this.dialog.open(ConfigDialogComponent)
     dialog.afterClosed().subscribe(() => {
-      this.cardState = 'void'
+      this.currentCardState = 'void'
+      this.cardState.next('void')
     })
   }
 
@@ -54,8 +58,10 @@ export class ProfileComponent implements OnDestroy {
       const snackBarRef = this.snackBar.open('Signed out', 'close', {
         duration: 3000,
       })
-      this.profileIcon.focus()
-      snackBarRef.afterDismissed().subscribe(() => this.hideCard())
+      snackBarRef.afterDismissed().subscribe(() => {
+        this.currentCardState = 'void'
+        this.cardState.next('void')
+      })
     })
   }
 
@@ -66,10 +72,12 @@ export class ProfileComponent implements OnDestroy {
         this.profile = this.settings.profile
         provider = provider[0].toUpperCase() + provider.substr(1)
         const snackBarRef = this.snackBar.open(`Signed in with ${provider}`, 'close', {
-          duration: 5000,
+          duration: 3000,
         })
-        this.profileIcon.focus()
-        snackBarRef.afterDismissed().subscribe(() => this.hideCard())
+        snackBarRef.afterDismissed().subscribe(() => {
+          this.currentCardState = 'void'
+          this.cardState.next('void')
+        })
       })
       .catch((err) => {
         log.error('Failed to signin: ', err)
@@ -82,20 +90,12 @@ export class ProfileComponent implements OnDestroy {
 
   toggleCard(event: Event) {
     event.stopPropagation()
-    if (this.cardState === 'visible') {
-      this.hideCard()
+    if (this.currentCardState === 'visible') {
+      this.currentCardState = 'void'
+      this.cardState.next('void')
     } else {
-      this.showCard()
+      this.currentCardState = 'visible'
+      this.cardState.next('visible')
     }
-  }
-
-  showCard() {
-    window.addEventListener('click', this.hideCard.bind(this))
-    this.cardState = 'visible'
-  }
-
-  hideCard() {
-    window.removeEventListener('click', this.hideCard)
-    this.cardState = 'void'
   }
 }

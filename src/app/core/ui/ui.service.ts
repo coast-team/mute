@@ -9,6 +9,7 @@ export class UiService {
   private navToggleSubject: Subject<void>
 
   public appUpdate: ReplaySubject<{ version: string; commit: string }>
+  public click: Subject<void>
 
   constructor() {
     this.docDigestSubject = new Subject()
@@ -16,6 +17,7 @@ export class UiService {
     this.navToggleSubject = new Subject()
     this.docNavToggleSubject = new Subject()
     this.appUpdate = new ReplaySubject()
+    this.click = new Subject()
   }
 
   get onNavToggle(): Observable<void> {

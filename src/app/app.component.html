@@ -1,4 +1,6 @@
-<router-outlet></router-outlet>
+<div class='app' (click)="notify()">
+  <router-outlet></router-outlet>
+</div>
 
 <mat-card *ngIf="version" class="update-card mat-elevation-z8" [@update]="state">
   <div fxLayoutAlign="space-between center">

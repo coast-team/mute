@@ -19,7 +19,7 @@ export class AppComponent {
   public version: string
   public state: string
 
-  constructor(ui: UiService) {
+  constructor(private ui: UiService) {
     ui.appUpdate.subscribe(({ version }) => {
       this.version = version
       this.state = 'visible'
@@ -32,5 +32,9 @@ export class AppComponent {
 
   update() {
     document.location.reload()
+  }
+
+  notify() {
+    this.ui.click.next()
   }
 }
