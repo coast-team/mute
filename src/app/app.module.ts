@@ -1,5 +1,4 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core'
-import { MatSnackBar } from '@angular/material'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
@@ -16,6 +15,7 @@ import { UiService } from './core/ui/ui.service'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
 import { HistoryModule } from './history/history.module'
+import { SharedModule } from './shared/shared.module'
 
 @NgModule({
   imports: [
@@ -27,6 +27,7 @@ import { HistoryModule } from './history/history.module'
     DocsModule,
     DocModule,
     HistoryModule,
+    SharedModule,
   ],
   declarations: [AppComponent],
   providers: [
@@ -44,27 +45,11 @@ import { HistoryModule } from './history/history.module'
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private snackBar: MatSnackBar, private sw: SwUpdate, private ui: UiService) {
-    // sw.available.subscribe((event) => {
-    //   console.log('Event: ', event)
-    //   console.log('current version is', event.current)
-    //   console.log('available version is', event.available)
-    // })
-    // sw.activated.subscribe((event) => {
-    //   console.log('Event: ', event)
-    //   console.log('old version was', event.previous)
-    //   console.log('new version is', event.current)
-    // })
+  constructor(private sw: SwUpdate, ui: UiService) {
     sw.available.subscribe((event) => {
       const version = (event.available.appData as any).version
-      const snackBarRef = this.snackBar.open(`New ${version} is available`, 'Update', {
-        duration: 5000,
-      })
-      snackBarRef.onAction().subscribe(() => {
-        sw.activateUpdate()
-          .then(() => document.location.reload())
-          .catch((err) => log.debug('Error activating SW update: ', err))
-      })
+      const commit = (event.available.appData as any).commit
+      ui.appUpdate.next({ version, commit })
     })
   }
 }

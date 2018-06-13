@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
-  netfluxLog: false,
+  netfluxLog: true,
   rtcConfiguration: {
     iceServers: [
       {
@@ -16,7 +16,12 @@ export const environment = {
   },
   signalingServer: 'ws://localhost:8010',
   serviceWorker: false,
-  botStorage: {},
+  botStorage: {
+    secure: false,
+    url: 'localhost:20000',
+    webSocketPath: '',
+    isAnonymousAllowed: false,
+  },
   encryption: false,
   auth: {
     baseUrl: 'http://localhost:4000/',

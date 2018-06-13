@@ -11,3 +11,13 @@
     top: 56px;
   }
 }
+
+.update-card {
+  z-index: 1000;
+  position: fixed;
+  left: 0;
+  bottom: 70px;
+  border-radius: 0 34px 34px 0;
+  padding: 7px;
+  width: 250px;
+}

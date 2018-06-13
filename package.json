@@ -59,7 +59,7 @@
     "netflux": "^4.0.6",
     "ng2-ui-auth": "^9.0.0-beta.2",
     "protobufjs": "^6.8.6",
-    "rxjs": "^6.2.0",
+    "rxjs": "^6.2.1",
     "tui-editor": "^1.0.4",
     "zone.js": "^0.8.26"
   },

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable, Subject } from 'rxjs'
+import { Observable, ReplaySubject, Subject } from 'rxjs'
 
 @Injectable()
 export class UiService {
@@ -8,11 +8,14 @@ export class UiService {
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
 
+  public appUpdate: ReplaySubject<{ version: string; commit: string }>
+
   constructor() {
     this.docDigestSubject = new Subject()
     this.docTreeSubject = new Subject()
-    this.navToggleSubject = new Subject<void>()
-    this.docNavToggleSubject = new Subject<void>()
+    this.navToggleSubject = new Subject()
+    this.docNavToggleSubject = new Subject()
+    this.appUpdate = new ReplaySubject()
   }
 
   get onNavToggle(): Observable<void> {

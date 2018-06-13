@@ -9,6 +9,7 @@ import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings/settings.service'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
+import { UiService } from '../../core/ui/ui.service'
 import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
 import { JoinDialogComponent } from './join-dialog/join-dialog.component'
 
@@ -49,7 +50,8 @@ export class NavComponent implements OnDestroy {
     private dialog: MatDialog,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    public ui: UiService
   ) {
     this.isStandalone = window.matchMedia('(display-mode: standalone)').matches
     this.isProd = environment.production
@@ -127,5 +129,9 @@ export class NavComponent implements OnDestroy {
     this.dialog.open(JoinDialogComponent, {
       width: '300px',
     })
+  }
+
+  update() {
+    document.location.reload()
   }
 }
