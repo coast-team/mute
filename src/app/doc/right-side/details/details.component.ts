@@ -18,7 +18,7 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
     ]),
     trigger('cardState', [
       state('visible', style({ opacity: '1' })),
-      state('void', style({ opacity: '0', display: 'none' })),
+      state('void', style({ opacity: '0' })),
       transition('void => visible', animate('150ms ease-in')),
       transition('visible => void', animate('150ms ease-out')),
     ]),
@@ -28,15 +28,21 @@ export class DetailsComponent {
   @Input() collaborators: RichCollaborator[]
   @Input() doc: Doc
 
-  constructor(private cd: ChangeDetectorRef) {}
+  public cardCollab: ICollaborator
+  public cardState: string
+
+  constructor(private cd: ChangeDetectorRef) {
+    this.cardCollab = { avatar: '', displayName: '', email: '' } as ICollaborator
+  }
 
   showCard(collab: ICollaborator) {
-    ;(collab as any).cardState = 'visible'
+    this.cardCollab = collab
+    this.cardState = 'visible'
     this.cd.detectChanges()
   }
 
-  hideCard(collab: ICollaborator) {
-    ;(collab as any).cardState = 'void'
+  hideCard() {
+    this.cardState = 'void'
     this.cd.detectChanges()
   }
 }

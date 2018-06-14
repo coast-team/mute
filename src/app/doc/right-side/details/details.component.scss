@@ -1,20 +1,22 @@
 :host {
   display: inline-block;
   height: 100%;
+  width: 100%;
 }
 
-li {
-  margin: 12px 0;
+.block {
+  padding: 0 5px;
+  // margin: 0;
 }
 
-ul {
-  padding: 10px 10px 0 10px;
-  list-style: none;
-  margin: 0;
+.doc-details-block {
+  margin: 16px 0;
 }
 
-.collaborators {
-  overflow: visible;
+.collaborators-block {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 70%;
 }
 
 .collab-chips {
@@ -55,11 +57,11 @@ ul {
 }
 
 .profile-card {
-  background: var(--theme-bg-background);
-  position: absolute;
   right: 0px;
   z-index: 1000;
+  margin-bottom: 10px;
   opacity: 0;
+  // display: none;
 }
 
 .profile-card-container {

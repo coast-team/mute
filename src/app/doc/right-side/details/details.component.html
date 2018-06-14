@@ -1,35 +1,31 @@
-<ul>
-  <li>
-    <div fxLayoutAlign="start end">
+<div fxLayout="column" fxLayoutAlign="start stretch" class="block">
+  <div class="doc-details-block">
+    <div fxLayoutAlign="start center">
       <span class="mat-caption meta-title">Created</span>
       <span class="mat-body-2">{{doc.created | date:'longDate'}}</span>
     </div>
-  </li>
-  <!--  -->
-  <li class="collaborators-item">
-    <div class="collaborators" fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
-      <!-- <span class="mat-caption meta-title" fxFlexAlign="center">Collaborators</span> -->
-      <div style="position: relative" *ngFor="let collab of collaborators">
-        <div class="collab-chips mat-elevation-z2" [style.border-color]="collab.color" fxFlex="140px" fxLayoutAlign='start center'
-          (mouseenter)="showCard(collab)" (mouseleave)="hideCard(collab)">
-          <img src="{{collab.avatar}}" class="avatar" alt="{{collab.displayName}}" />
-          <span class="mat-body-2 collab" [@peerArriving]="active">
-            {{collab.displayName}}
-          </span>
-        </div>
-        <mat-card class="profile-card" [@cardState]="collab.cardState || 'void'">
-          <div class="profile-card-container" fxLayoutAlign="start start" fxLayoutGap="10px">
-            <ng-container>
-              <img height="64px" weight="64px" class="card-icon" src="{{collab.avatar}}" />
-            </ng-container>
-
-            <div class="profile-card-info" fxLayout="column">
-              <span class="mat-body-2 profile-card-name">{{collab.displayName}}</span>
-              <span class="mat-caption profile-card-login">jean-philippe.eisenbarth@loria.fr</span>
-            </div>
-          </div>
-        </mat-card>
+  </div>
+  <div class="collaborators-block">
+    <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
+      <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard(collab)" class="collab-chips mat-elevation-z2"
+        [style.border-color]="collab.color" fxFlex="140px" fxLayoutAlign='start center'>
+        <img src="{{collab.avatar}}" class="avatar" alt="{{collab.displayName}}" />
+        <span class="mat-body-2 collab" [@peerArriving]="active">
+          {{collab.displayName}}
+        </span>
       </div>
     </div>
-  </li>
-</ul>
+  </div>
+  <mat-card class="profile-card" [@cardState]="cardState">
+    <div class="profile-card-container" fxLayoutAlign="start start" fxLayoutGap="10px">
+      <ng-container>
+        <img height="64px" weight="64px" class="card-icon" src="{{cardCollab.avatar}}" />
+      </ng-container>
+
+      <div class="profile-card-info" fxLayout="column">
+        <span class="mat-body-2 profile-card-name">{{cardCollab.displayName}}</span>
+        <span class="mat-caption profile-card-login">{{cardCollab.email}}</span>
+      </div>
+    </div>
+  </mat-card>
+</div>

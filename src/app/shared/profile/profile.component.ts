@@ -15,12 +15,7 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
   animations: [
     trigger('cardState', [
       state('void', style({ opacity: '0', display: 'none' })),
-      state(
-        'visible',
-        style({
-          opacity: '1',
-        })
-      ),
+      state('visible', style({ opacity: '1', display: 'block' })),
       transition('void => visible', animate('150ms ease-out')),
       transition('visible => void', animate('150ms ease-in')),
     ]),
