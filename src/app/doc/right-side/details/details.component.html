@@ -8,9 +8,9 @@
   <div class="collaborators-block">
     <div fxLayout="row wrap" fxLayoutAlign="start start" fxLayoutGap="10px">
       <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard(collab)" class="collab-chips mat-elevation-z2"
-        [style.border-color]="collab.color" fxFlex="140px" fxLayoutAlign='start center'>
+        [@joinLeave]="active" [style.border-color]="collab.color" fxFlex="140px" fxLayoutAlign='start center'>
         <img src="{{collab.avatar}}" class="avatar" alt="{{collab.displayName}}" />
-        <span class="mat-body-2 collab" [@peerArriving]="active">
+        <span class="mat-body-2 collab">
           {{collab.displayName}}
         </span>
       </div>
@@ -24,7 +24,7 @@
 
       <div class="profile-card-info" fxLayout="column">
         <span class="mat-body-2 profile-card-name">{{cardCollab.displayName}}</span>
-        <span class="mat-caption profile-card-login">{{cardCollab.email}}</span>
+        <span class="mat-caption profile-card-login">{{cardCollab.login}}</span>
       </div>
     </div>
   </mat-card>

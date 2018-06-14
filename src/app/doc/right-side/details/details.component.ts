@@ -10,7 +10,7 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
   animations: [
-    trigger('peerArriving', [
+    trigger('joinLeave', [
       state('active', style({ transform: 'translateX(0)' })),
       state('void', style({ transform: 'translateX(300px)' })),
       transition(':enter', animate('200ms ease-in')),
@@ -32,7 +32,7 @@ export class DetailsComponent {
   public cardState: string
 
   constructor(private cd: ChangeDetectorRef) {
-    this.cardCollab = { avatar: '', displayName: '', email: '' } as ICollaborator
+    this.cardCollab = { avatar: '', displayName: '', login: '' } as ICollaborator
   }
 
   showCard(collab: ICollaborator) {

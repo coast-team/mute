@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { ICollaborator } from 'mute-core'
 import { Observable, Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
@@ -18,11 +18,13 @@ export class RichCollaboratorsService {
   private availableColors: string[]
 
   public collaborators: RichCollaborator[]
+  public collaboratorsSubject: Subject<RichCollaborator[]>
 
-  constructor(private changeRef: ChangeDetectorRef, settings: SettingsService, network: NetworkService) {
+  constructor(settings: SettingsService, network: NetworkService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.updateSubject = new Subject()
+    this.collaboratorsSubject = new Subject()
 
     this.availableColors = COLORS.slice()
 
@@ -57,6 +59,7 @@ export class RichCollaboratorsService {
         }
         this.collaborators[index] = me
         this.updateSubject.next(me)
+        this.collaboratorsSubject.next(this.collaborators)
       })
   }
 
@@ -78,7 +81,7 @@ export class RichCollaboratorsService {
         if (collab.id === c.id) {
           c.update(collab)
           this.updateSubject.next(c)
-          this.changeRef.detectChanges()
+          this.collaboratorsSubject.next(this.collaborators)
           break
         }
       }
@@ -88,16 +91,22 @@ export class RichCollaboratorsService {
   set joinSource(source: Observable<ICollaborator>) {
     source.subscribe((collab) => {
       const rc = new RichCollaborator(collab, this.pickColor())
-      this.collaborators.push(rc)
+      this.collaborators[this.collaborators.length] = rc
       this.joinSubject.next(rc)
-      this.changeRef.detectChanges()
+      this.collaboratorsSubject.next(this.collaborators)
     })
   }
 
   set leaveSource(source: Observable<number>) {
     source.subscribe((id: number) => {
       this.collaborators = this.collaborators.filter((c) => c.id !== id)
+      for (let i = 0; i < this.collaborators.length; i++) {
+        if (this.collaborators[i].id === id) {
+          this.collaborators = this.collaborators.splice(i, 1)
+        }
+      }
       this.leaveSubject.next(id)
+      this.collaboratorsSubject.next(this.collaborators)
     })
   }
 

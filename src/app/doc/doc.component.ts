@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout'
-import { Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectorRef, Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { JoinEvent, MuteCore, State } from 'mute-core'
@@ -71,7 +71,8 @@ export class DocComponent implements OnDestroy, OnInit {
     private media: ObservableMedia,
     public ui: UiService,
     private symCrypto: SymmetricCryptoService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private cd: ChangeDetectorRef
   ) {
     this.showDevLabel = environment.devLabel
     this.subs = []
@@ -156,6 +157,8 @@ export class DocComponent implements OnDestroy, OnInit {
       })
 
       this.zone.runOutsideAngular(() => {
+        this.richCollaboratorsService.collaboratorsSubject.subscribe(() => this.cd.detectChanges())
+
         this.muteCore = new MuteCore({
           displayName: this.settings.profile.displayName,
           login: this.settings.profile.login,
