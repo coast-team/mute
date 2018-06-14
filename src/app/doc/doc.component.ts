@@ -152,6 +152,7 @@ export class DocComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.collabs.onChanges.subscribe(() => this.cd.detectChanges())
     this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       this.doc = doc
+
       this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
         if (this.doc.remotes.length !== 0) {
           this.network.inviteBot(this.botStorage.wsURL)
@@ -201,6 +202,11 @@ export class DocComponent implements OnDestroy, OnInit {
         this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
         this.syncStorage.stateSource = this.muteCore.syncService.onState
 
+        this.muteCore.titleService.onLocalTitleChange = this.doc.onTitleChange
+        this.muteCore.titleService.joinSource = this.network.onPeerJoin
+        this.muteCore.titleService.initTitle(this.doc.title)
+        this.doc.onRemoteTitleChange = this.muteCore.titleService.onRemoteTitleState
+
         this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
           this.ui.updateDocDigest(digest)
           this.cd.detectChanges()
@@ -214,6 +220,7 @@ export class DocComponent implements OnDestroy, OnInit {
   ngOnDestroy() {
     this.network.clean()
     this.muteCore.dispose()
+    this.doc.dispose()
     this.subs.forEach((s) => s.unsubscribe())
     this.destroyLogs()
   }
@@ -314,6 +321,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
   private withEncryption() {
     this.muteCore.collaboratorsService.messageSource = this.network.onMessage
+    this.muteCore.titleService.messageSource = this.network.onMessage
     this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
       filter(({ service }) => service === 423),
       flatMap((msg) => this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
@@ -321,6 +329,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.network.messageToBroadcastSource = merge(
       this.muteCore.collaboratorsService.onMsgToBroadcast,
+      this.muteCore.titleService.onMsgToBroadcast,
       this.muteCore.syncMessageService.onMsgToBroadcast.pipe(
         flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
       )
@@ -328,6 +337,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.network.messageToSendRandomlySource = merge(
       this.muteCore.collaboratorsService.onMsgToSendRandomly,
+      this.muteCore.titleService.onMsgToSendRandomly,
       this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
         flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
       )
@@ -335,6 +345,7 @@ export class DocComponent implements OnDestroy, OnInit {
 
     this.network.messageToSendToSource = merge(
       this.muteCore.collaboratorsService.onMsgToSendTo,
+      this.muteCore.titleService.onMsgToSendTo,
       this.muteCore.syncMessageService.onMsgToSendTo.pipe(
         flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
       )

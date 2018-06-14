@@ -1,3 +1,4 @@
+import { Observable, Subject } from 'rxjs'
 import { File } from './File'
 
 export class Doc extends File {
@@ -6,12 +7,15 @@ export class Doc extends File {
     id: string
     synchronized?: Date
   }>
+  private titleSubject: Subject<string>
+  private docChangeSubject: Subject<string>
 
   static deserialize(id: string, serialized: any): Doc {
     const doc = new Doc()
     doc.remotes = serialized.remotes || []
     doc.key = serialized.key
     doc.deserialize(id, serialized)
+    console.log('plop')
     return doc
   }
 
@@ -26,6 +30,8 @@ export class Doc extends File {
 
   constructor() {
     super()
+    this.titleSubject = new Subject<string>()
+    this.docChangeSubject = new Subject<string>()
   }
 
   get isDoc() {
@@ -41,7 +47,29 @@ export class Doc extends File {
     if (this._title !== newTitle) {
       this._title = newTitle
       this.modified = new Date()
+      this.titleSubject.next(this._title)
     }
+  }
+
+  get onTitleChange(): Observable<string> {
+    return this.titleSubject.asObservable()
+  }
+
+  get onDocChange(): Observable<string> {
+    return this.docChangeSubject
+  }
+
+  set onRemoteTitleChange(source: Observable<string>) {
+    source.subscribe((newTitle: string) => {
+      this._title = newTitle
+      this.modified = new Date()
+      this.docChangeSubject.next(newTitle)
+    })
+  }
+
+  dispose() {
+    this.titleSubject.complete()
+    this.docChangeSubject.complete()
   }
 
   addRemote(id: string) {
