@@ -2,33 +2,6 @@
   display: inline-block;
 }
 
-.mat-card {
-  font-family: 'Droid Sans', sans-serif, serif;
-  margin-bottom: 16px;
-}
-
-h1 {
-  font-family: 'Lato', sans-serif;
-  color: #424344;
-}
-
-h1:after {
-  display: block;
-  content: ' ';
-  margin-top: 2px;
-  height: 2px;
-  background: #424344;
-}
-
-h2 {
-  font-family: 'Lato', sans-serif;
-  color: #424344;
-}
-
-h3 {
-  font-family: 'Lato', sans-serif;
-}
-
 .header-1 {
   font-size: 18pt;
   font-weight: 600;
@@ -46,26 +19,22 @@ h3 {
 }
 
 .header-2 {
-  font-family: 'Roboto-Medium';
   font-size: 16pt;
   font-weight: 600;
 }
 
 .header-3 {
-  font-family: 'Roboto-Medium';
   font-size: 12.4pt;
   font-weight: 700;
 }
 
 .header-4 {
-  font-family: 'Roboto-Medium';
   font-style: italic;
   font-size: 1.7rem;
   font-weight: 700;
 }
 
 .header-5 {
-  font-family: 'Roboto-Medium';
   text-transform: uppercase;
   font-size: 11pt;
   font-weight: 700;
@@ -85,7 +54,6 @@ h3 {
 }
 
 .list {
-  font-family: 'HyperMD-Bullets';
   display: inline-block;
   color: #666;
   text-align: right;
