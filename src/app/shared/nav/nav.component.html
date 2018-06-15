@@ -81,7 +81,8 @@
 
 
   <div fxLayout="column" fxLayoutAlign="end stretch">
-    <button mat-raised-button class="update-btn" *ngIf="ui.appUpdate | async" color="warn" (click)="update()">Update to v{{(ui.appUpdate | async).version}}</button>
+    <button mat-raised-button class="install-update-btns" *ngIf="ui.appUpdate | async" color="warn" (click)="update()">Update to v{{(ui.appUpdate | async).version}}</button>
+    <button mat-raised-button class="install-update-btns" *ngIf="ui.appInstall | async" color="accent" (click)="install()">Add to home screen</button>
     <div fxLayout="column" fxLayoutAlign="end stretch" class="app-info">
       <p class="mat-caption">Multi-User Text Editor,
 

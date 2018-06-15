@@ -134,4 +134,14 @@ export class NavComponent implements OnDestroy {
   update() {
     document.location.reload()
   }
+
+  install() {
+    const deferredPrompt = this.ui.appInstallEvent as any
+    deferredPrompt.prompt()
+    // Wait for the user to respond to the prompt
+    deferredPrompt.userChoice.then((choiceResult) => {
+      this.ui.appInstall.next(false)
+      this.ui.appInstallEvent = undefined
+    })
+  }
 }

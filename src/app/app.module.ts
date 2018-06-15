@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
 
+import { MatSnackBar } from '@angular/material'
 import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
@@ -45,11 +46,25 @@ import { SharedModule } from './shared/shared.module'
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(private sw: SwUpdate, ui: UiService) {
+  constructor(sw: SwUpdate, ui: UiService, snackBar: MatSnackBar) {
+    // Service worker update
     sw.available.subscribe((event) => {
       const version = (event.available.appData as any).version
       const commit = (event.available.appData as any).commit
       ui.appUpdate.next({ version, commit })
+    })
+
+    // App install event
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent Chrome 67 and earlier from automatically showing the prompt
+      e.preventDefault()
+      // Stash the event so it can be triggered later.
+      ui.appInstall.next(true)
+      ui.appInstallEvent = e
+    })
+
+    window.addEventListener('appinstalled', (evt) => {
+      snackBar.open('Application has successfully been installed', 'Close', { duration: 3000 })
     })
   }
 }

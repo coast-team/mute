@@ -27,6 +27,7 @@ export class AppComponent {
   }
 
   close() {
+    log.debug('should close')
     this.state = 'void'
   }
 

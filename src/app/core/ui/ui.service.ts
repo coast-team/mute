@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Observable, ReplaySubject, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs'
 
 @Injectable()
 export class UiService {
@@ -9,6 +9,8 @@ export class UiService {
   private navToggleSubject: Subject<void>
 
   public appUpdate: ReplaySubject<{ version: string; commit: string }>
+  public appInstall: BehaviorSubject<boolean>
+  public appInstallEvent: Event
   public click: Subject<void>
 
   constructor() {
@@ -17,6 +19,7 @@ export class UiService {
     this.navToggleSubject = new Subject()
     this.docNavToggleSubject = new Subject()
     this.appUpdate = new ReplaySubject()
+    this.appInstall = new BehaviorSubject(false)
     this.click = new Subject()
   }
 
