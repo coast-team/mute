@@ -6,7 +6,7 @@ import { JoinEvent, MuteCore, State } from 'mute-core'
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { LocalOperation } from 'mute-core/dist/types/logs/LocalOperation'
 import { RemoteOperation } from 'mute-core/dist/types/logs/RemoteOperation'
-import { merge, Observable, ReplaySubject, Subscription } from 'rxjs'
+import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
 import { environment } from '../../environments/environment'
@@ -49,8 +49,8 @@ export class DocComponent implements OnDestroy, OnInit {
   public muteCore: MuteCore
   public viewport: Observable<VIEWPORT>
 
-  public drawerMode: ReplaySubject<string>
-  public drawerOpened: ReplaySubject<boolean>
+  public drawerMode: BehaviorSubject<string>
+  public drawerOpened: BehaviorSubject<boolean>
   public extrasmall: string
 
   private siteId: number
@@ -76,8 +76,8 @@ export class DocComponent implements OnDestroy, OnInit {
   ) {
     this.showDevLabel = environment.devLabel
     this.subs = []
-    this.drawerMode = new ReplaySubject()
-    this.drawerOpened = new ReplaySubject()
+    this.drawerMode = new BehaviorSubject('')
+    this.drawerOpened = new BehaviorSubject(false)
     this.extrasmall = ''
     merge(
       this.breakpointObserver.observe(['(min-width: 1450px)']).pipe(
