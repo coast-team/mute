@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.1"></a>
+## [0.7.1](https://github.com/coast-team/mute/compare/v0.7.0...v0.7.1) (2018-06-15)
+
+
+### Bug Fixes
+
+* **release:** correctly make release commit and write changelog ([085bd7d](https://github.com/coast-team/mute/commit/085bd7d))
+
+
+
 <a name="0.7.0"></a>
 
 # [0.7.0](https://github.com/coast-team/mute/compare/v0.5.1...v0.7.0) (2018-06-15)
