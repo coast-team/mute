@@ -1,3 +1,4 @@
+import { MetaDataMessage, MetaDataType } from 'mute-core'
 import { Observable, Subject } from 'rxjs'
 import { File } from './File'
 
@@ -7,7 +8,7 @@ export class Doc extends File {
     id: string
     synchronized?: Date
   }>
-  private titleSubject: Subject<string>
+  private titleSubject: Subject<MetaDataMessage>
   private docChangeSubject: Subject<string>
 
   static deserialize(id: string, serialized: any): Doc {
@@ -15,7 +16,6 @@ export class Doc extends File {
     doc.remotes = serialized.remotes || []
     doc.key = serialized.key
     doc.deserialize(id, serialized)
-    console.log('plop')
     return doc
   }
 
@@ -30,7 +30,7 @@ export class Doc extends File {
 
   constructor() {
     super()
-    this.titleSubject = new Subject<string>()
+    this.titleSubject = new Subject<MetaDataMessage>()
     this.docChangeSubject = new Subject<string>()
   }
 
@@ -47,11 +47,11 @@ export class Doc extends File {
     if (this._title !== newTitle) {
       this._title = newTitle
       this.modified = new Date()
-      this.titleSubject.next(this._title)
+      this.titleSubject.next({ type: MetaDataType.Title, data: this._title })
     }
   }
 
-  get onTitleChange(): Observable<string> {
+  get onTitleChange(): Observable<MetaDataMessage> {
     return this.titleSubject.asObservable()
   }
 
