@@ -9,7 +9,7 @@ export class Doc extends File {
     synchronized?: Date
   }>
   private titleSubject: Subject<MetaDataMessage>
-  private docChangeSubject: Subject<string>
+  private docChangeSubject: Subject<MetaDataType>
 
   static deserialize(id: string, serialized: any): Doc {
     const doc = new Doc()
@@ -31,7 +31,7 @@ export class Doc extends File {
   constructor() {
     super()
     this.titleSubject = new Subject<MetaDataMessage>()
-    this.docChangeSubject = new Subject<string>()
+    this.docChangeSubject = new Subject<MetaDataType>()
   }
 
   get isDoc() {
@@ -55,15 +55,25 @@ export class Doc extends File {
     return this.titleSubject.asObservable()
   }
 
-  get onDocChange(): Observable<string> {
+  get onDocChange(): Observable<MetaDataType> {
     return this.docChangeSubject
   }
 
-  set onRemoteTitleChange(source: Observable<string>) {
-    source.subscribe((newTitle: string) => {
-      this._title = newTitle
-      this.modified = new Date()
-      this.docChangeSubject.next(newTitle)
+  set onRemoteDocChange(source: Observable<MetaDataMessage>) {
+    source.subscribe((message: MetaDataMessage) => {
+      switch (message.type) {
+        case MetaDataType.Title:
+          const newTitle = message.data
+          this._title = newTitle
+          this.modified = new Date()
+          this.docChangeSubject.next(message.type)
+          break
+        case MetaDataType.FixData:
+          this.created = new Date(message.data.creationDate)
+          this.key = message.data.key
+          this.docChangeSubject.next(message.type)
+          break
+      }
     })
   }
 

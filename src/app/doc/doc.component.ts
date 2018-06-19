@@ -206,11 +206,9 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.metaDataService.onLocalChange = merge(this.doc.onTitleChange)
         this.muteCore.metaDataService.joinSource = this.network.onPeerJoin
         this.muteCore.metaDataService.initTitle(this.doc.title)
-        this.doc.onRemoteTitleChange = this.muteCore.metaDataService.onChange.pipe(
-          filter((metaData: MetaDataMessage) => metaData.type === MetaDataType.Title),
-          map((metaData: MetaDataMessage) => {
-            return metaData.data
-          })
+        this.muteCore.metaDataService.initFixMetaData(this.doc.created, this.doc.key)
+        this.doc.onRemoteDocChange = this.muteCore.metaDataService.onChange.pipe(
+          filter((metaData: MetaDataMessage) => metaData.type === MetaDataType.Title || metaData.type === MetaDataType.FixData)
         )
 
         this.muteCore.docService.onDocDigest.subscribe((digest: number) => {

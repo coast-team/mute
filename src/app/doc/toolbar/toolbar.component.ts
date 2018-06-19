@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
 
+import { MetaDataType } from 'mute-core'
 import { Doc } from '../../core/Doc'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
@@ -31,9 +32,11 @@ export class ToolbarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.doc.onDocChange.subscribe((newTitle) => {
-      this.cd.detectChanges()
-      this.localStorage.save(this.doc)
+    this.doc.onDocChange.subscribe((type) => {
+      if (type === MetaDataType.Title) {
+        this.cd.detectChanges()
+        this.localStorage.save(this.doc)
+      }
     })
   }
 
