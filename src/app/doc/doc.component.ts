@@ -6,7 +6,7 @@ import { JoinEvent, MuteCore, State } from 'mute-core'
 import { ICollaborator } from 'mute-core/dist/types/collaborators/ICollaborator'
 import { LocalOperation } from 'mute-core/dist/types/logs/LocalOperation'
 import { RemoteOperation } from 'mute-core/dist/types/logs/RemoteOperation'
-import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs'
+import { BehaviorSubject, merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, flatMap, map } from 'rxjs/operators'
 
 import { MetaDataMessage, MetaDataType } from 'mute-core'
@@ -55,6 +55,8 @@ export class DocComponent implements OnDestroy, OnInit {
   public drawerOpened: BehaviorSubject<boolean>
   public extrasmall: string
 
+  private cryptoReady: Subject<void>
+
   private siteId: number
   public logs: LogsService
   private logsSubs: Subscription[] = []
@@ -80,6 +82,7 @@ export class DocComponent implements OnDestroy, OnInit {
     this.subs = []
     this.drawerMode = new BehaviorSubject('')
     this.drawerOpened = new BehaviorSubject(false)
+    this.cryptoReady = new Subject<void>()
     this.extrasmall = ''
     merge(
       this.breakpointObserver.observe(['(min-width: 1450px)']).pipe(
@@ -199,10 +202,10 @@ export class DocComponent implements OnDestroy, OnInit {
           })
         )
 
-        this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.syncStorage.onStoredState)
         this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
         this.syncStorage.stateSource = this.muteCore.syncService.onState
 
+        this.muteCore.syncService.setJoinAndStateSources(this.network.onJoin, this.cryptoReady, this.syncStorage.onStoredState)
         this.muteCore.metaDataService.onLocalChange = merge(this.doc.onTitleChange)
         this.muteCore.metaDataService.joinSource = this.network.onPeerJoin
         this.muteCore.metaDataService.initTitle(this.doc.title)
@@ -326,34 +329,62 @@ export class DocComponent implements OnDestroy, OnInit {
   private withEncryption() {
     this.muteCore.collaboratorsService.messageSource = this.network.onMessage
     this.muteCore.metaDataService.messageSource = this.network.onMessage
-    this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
-      filter(({ service }) => service === 423),
-      flatMap((msg) => this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-    )
 
     this.network.messageToBroadcastSource = merge(
       this.muteCore.collaboratorsService.onMsgToBroadcast,
-      this.muteCore.metaDataService.onMsgToBroadcast,
-      this.muteCore.syncMessageService.onMsgToBroadcast.pipe(
-        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-      )
+      this.muteCore.metaDataService.onMsgToBroadcast
     )
 
     this.network.messageToSendRandomlySource = merge(
       this.muteCore.collaboratorsService.onMsgToSendRandomly,
-      this.muteCore.metaDataService.onMsgToSendRandomly,
-      this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
-        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-      )
+      this.muteCore.metaDataService.onMsgToSendRandomly
     )
 
     this.network.messageToSendToSource = merge(
       this.muteCore.collaboratorsService.onMsgToSendTo,
-      this.muteCore.metaDataService.onMsgToSendTo,
-      this.muteCore.syncMessageService.onMsgToSendTo.pipe(
-        flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
-      )
+      this.muteCore.metaDataService.onMsgToSendTo
     )
+
+    // When the encryption key is synchronised
+    this.doc.onDocChange.pipe(filter((type: MetaDataType) => type === MetaDataType.FixData)).subscribe((type) => {
+      if (environment.encryption) {
+        this.symCrypto.importKey(this.doc.key).then(() => {
+          this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
+            filter(({ service }) => service === 423),
+            flatMap((msg) => {
+              return this.symCrypto.decrypt(msg.content).then((content) => Object.assign({}, msg, { content }))
+            })
+          )
+
+          this.network.messageToBroadcastSource = merge(
+            this.muteCore.collaboratorsService.onMsgToBroadcast,
+            this.muteCore.metaDataService.onMsgToBroadcast,
+            this.muteCore.syncMessageService.onMsgToBroadcast.pipe(
+              flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+            )
+          )
+
+          this.network.messageToSendRandomlySource = merge(
+            this.muteCore.collaboratorsService.onMsgToSendRandomly,
+            this.muteCore.metaDataService.onMsgToSendRandomly,
+            this.muteCore.syncMessageService.onMsgToSendRandomly.pipe(
+              flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+            )
+          )
+
+          this.network.messageToSendToSource = merge(
+            this.muteCore.collaboratorsService.onMsgToSendTo,
+            this.muteCore.metaDataService.onMsgToSendTo,
+            this.muteCore.syncMessageService.onMsgToSendTo.pipe(
+              flatMap((msg) => this.symCrypto.encrypt(msg.content).then((content) => Object.assign({}, msg, { content })))
+            )
+          )
+
+          this.cryptoReady.next()
+          this.cryptoReady.complete()
+        })
+      }
+    })
   }
 
   private withoutEncryption() {

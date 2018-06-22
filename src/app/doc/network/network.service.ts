@@ -20,13 +20,13 @@ export class NetworkService {
   private leaveSubject: Subject<number>
 
   // Network message subject
-  private messageSubject: ReplaySubject<NetworkMessage>
+  private messageSubject: Subject<NetworkMessage>
 
   /**
    * Peer Join/Leave subjects
    */
-  private peerJoinSubject: ReplaySubject<number>
-  private peerLeaveSubject: ReplaySubject<number>
+  private peerJoinSubject: Subject<number>
+  private peerLeaveSubject: Subject<number>
 
   private messageToBroadcastSubscription: Subscription
   private messageToSendRandomlySubscription: Subscription
@@ -41,11 +41,11 @@ export class NetworkService {
     this.key = ''
 
     // Initialize subjects
-    this.peerJoinSubject = new ReplaySubject()
-    this.peerLeaveSubject = new ReplaySubject()
+    this.peerJoinSubject = new Subject()
+    this.peerLeaveSubject = new Subject()
     this.signalingSubject = new BehaviorSubject(SignalingState.CLOSED)
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
-    this.messageSubject = new ReplaySubject()
+    this.messageSubject = new Subject()
 
     this.disposeSubject = new Subject<void>()
     this.joinSubject = new Subject()
@@ -103,12 +103,18 @@ export class NetworkService {
   }
 
   set messageToBroadcastSource(source: Observable<BroadcastMessage>) {
+    if (this.messageToBroadcastSubscription) {
+      this.messageToBroadcastSubscription.unsubscribe()
+    }
     this.messageToBroadcastSubscription = source.subscribe((broadcastMessage: BroadcastMessage) => {
       this.send(broadcastMessage.service, broadcastMessage.content)
     })
   }
 
   set messageToSendRandomlySource(source: Observable<SendRandomlyMessage>) {
+    if (this.messageToSendRandomlySubscription) {
+      this.messageToSendRandomlySubscription.unsubscribe()
+    }
     this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
       const otherMembers: number[] = this.members.filter((i) => i !== this.wg.myId)
       const index: number = Math.ceil(Math.random() * otherMembers.length) - 1
@@ -118,6 +124,9 @@ export class NetworkService {
   }
 
   set messageToSendToSource(source: Observable<SendToMessage>) {
+    if (this.messageToSendToSubscription) {
+      this.messageToSendToSubscription.unsubscribe()
+    }
     this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
       this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
     })
