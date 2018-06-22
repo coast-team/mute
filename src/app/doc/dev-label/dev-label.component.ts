@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { Component, DoCheck, ElementRef, ViewChild } from '@angular/core'
 import { MatSnackBar } from '@angular/material'
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'
 import * as mnemonic from '@coast-team/mnemonicjs'
 
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { UiService } from '../../core/ui/ui.service'
 import { LogsService } from '../logs/logs.service'
@@ -11,7 +13,7 @@ import { LogsService } from '../logs/logs.service'
   selector: 'mute-dev-label',
   template: `
     <div class="mat-caption">
-      <br /> Digest: {{digest}}
+      <br />{{changes}} | Digest: {{digest | async}}
       <br /> Exports:
       <button (click)="exportMuteLog()">MuteLog</button>
       <button (click)="exportLog()">Log</button>
@@ -36,37 +38,31 @@ import { LogsService } from '../logs/logs.service'
     `,
   ],
 })
-export class DevLabelComponent implements OnInit {
+export class DevLabelComponent implements DoCheck {
   @ViewChild('link') link: ElementRef
-  private tree: string
 
-  public digest: string
+  public changes: number
+  public digest: Observable<string>
   public objectURL: SafeResourceUrl
   public filename: string
 
   constructor(
     private sanitizer: DomSanitizer,
     private ui: UiService,
-    private detectRef: ChangeDetectorRef,
     private storageService: LocalStorageService,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.changes = 0
+    this.digest = this.ui.docDigest.pipe(map((digest: number) => mnemonic.encode_int32(digest)))
+  }
 
-  ngOnInit(): void {
-    this.ui.onDocDigest.subscribe((digest: number) => {
-      this.digest = mnemonic.encode_int32(digest)
-      this.detectRef.detectChanges()
-    })
-
-    this.ui.onDocTree.subscribe((tree: string) => {
-      this.tree = tree
-    })
+  ngDoCheck() {
+    this.changes++
   }
 
   private updateObjectURL(blob: Blob): void {
     const objectURL = URL.createObjectURL(blob)
     this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
-    this.detectRef.detectChanges()
   }
 
   async exportMuteLog(): Promise<void> {
@@ -79,10 +75,9 @@ export class DevLabelComponent implements OnInit {
       this.filename = `log-${docID}-${this.digest}.json`
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
-    } catch (error) {
-      const message = `The log could not be retrieved: ${error}.`
-      const action = 'Close'
-      this.snackBar.open(message, action)
+    } catch (err) {
+      log.warn('Unable to download MuteLog: ', err.message)
+      this.snackBar.open('Unable to download MuteLog', 'Close')
     }
   }
 
@@ -94,26 +89,23 @@ export class DevLabelComponent implements OnInit {
       this.filename = `log-${docID}-${this.digest}.json`
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
-    } catch (error) {
-      const message = `The log could not be retrieved: ${error}.`
-      const action = 'Close'
-      this.snackBar.open(message, action)
+    } catch (err) {
+      log.warn('Unable to get LOG: ', err.message)
+      this.snackBar.open('Unable to download Document Log', 'Close')
     }
   }
 
   exportTree(): void {
-    if (this.tree !== undefined) {
+    if (this.ui.docTree) {
       const urlParts: string[] = window.location.href.split('/')
       const docID = urlParts[urlParts.length - 1]
-      const blob = new Blob([this.tree], { type: 'text/json' })
+      const blob = new Blob([this.ui.docTree], { type: 'text/json' })
       this.filename = `tree-${docID}-${this.digest}.json`
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
     } else {
-      const error = new Error('Tree is empty')
-      const message = `The tree could not be retrieved: ${error}.`
-      const action = 'Close'
-      this.snackBar.open(message, action)
+      log.warn('Tree is empty')
+      this.snackBar.open(`Tree is empty. Nothing to download`, 'Close')
     }
   }
 }

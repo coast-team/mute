@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs'
 @Injectable()
 export class UiService {
   private docDigestSubject: Subject<number>
-  private docTreeSubject: Subject<string>
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
 
@@ -12,15 +11,16 @@ export class UiService {
   public appInstall: BehaviorSubject<boolean>
   public appInstallEvent: Event
   public click: Subject<void>
+  public docTree: string
 
   constructor() {
     this.docDigestSubject = new Subject()
-    this.docTreeSubject = new Subject()
     this.navToggleSubject = new Subject()
     this.docNavToggleSubject = new Subject()
     this.appUpdate = new ReplaySubject()
     this.appInstall = new BehaviorSubject(false)
     this.click = new Subject()
+    this.docTree = ''
   }
 
   get onNavToggle(): Observable<void> {
@@ -35,19 +35,15 @@ export class UiService {
     return this.docNavToggleSubject.asObservable()
   }
 
-  set digest(digest: number) {
-    this.docDigestSubject.next(digest)
-  }
-
-  get onDocDigest(): Observable<number> {
+  get docDigest(): Observable<number> {
     return this.docDigestSubject.asObservable()
   }
 
-  set tree(tree: string) {
-    this.docTreeSubject.next(tree)
+  updateDocDigest(digest: number) {
+    this.docDigestSubject.next(digest)
   }
 
-  get onDocTree(): Observable<string> {
-    return this.docTreeSubject.asObservable()
+  updateDocTree(value: string) {
+    this.docTree = value
   }
 }

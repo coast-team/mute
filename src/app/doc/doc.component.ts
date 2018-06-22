@@ -202,12 +202,11 @@ export class DocComponent implements OnDestroy, OnInit {
         this.syncStorage.stateSource = this.muteCore.syncService.onState
 
         this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
-          this.ui.digest = digest
+          this.ui.updateDocDigest(digest)
+          this.cd.detectChanges()
         })
 
-        this.muteCore.docService.onDocTree.subscribe((tree: string) => {
-          this.ui.tree = tree
-        })
+        this.muteCore.docService.onDocTree.subscribe((tree: string) => this.ui.updateDocTree(tree))
       })
     })
   }
