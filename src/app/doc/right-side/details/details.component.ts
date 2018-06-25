@@ -5,6 +5,8 @@ import { ICollaborator } from 'mute-core'
 import { Doc } from '../../../core/Doc'
 import { RichCollaborator } from '../../../doc/rich-collaborators'
 
+const defaultCollab = { avatar: '', displayName: '', login: '' }
+
 @Component({
   selector: 'mute-details',
   templateUrl: './details.component.html',
@@ -25,18 +27,18 @@ import { RichCollaborator } from '../../../doc/rich-collaborators'
   ],
 })
 export class DetailsComponent {
-  @Input() collaborators: RichCollaborator[]
   @Input() doc: Doc
+  @Input() collaborators: RichCollaborator[]
 
-  public cardCollab: ICollaborator
+  public card: { avatar: string; displayName: string; login: string }
   public cardState: string
 
   constructor(private cd: ChangeDetectorRef) {
-    this.cardCollab = { avatar: '', displayName: '', login: '' } as ICollaborator
+    this.card = defaultCollab
   }
 
   showCard(collab: ICollaborator) {
-    this.cardCollab = collab
+    this.card = Object.assign({}, defaultCollab, collab)
     this.cardState = 'visible'
     this.cd.detectChanges()
   }

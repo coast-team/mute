@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout'
-import { ChangeDetectorRef, Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { JoinEvent, MuteCore, State } from 'mute-core'
@@ -34,6 +34,7 @@ export enum VIEWPORT {
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
   providers: [RichCollaboratorsService, SyncStorageService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable()
 export class DocComponent implements OnDestroy, OnInit {
@@ -63,7 +64,7 @@ export class DocComponent implements OnDestroy, OnInit {
     private router: Router,
     private zone: NgZone,
     private route: ActivatedRoute,
-    private richCollaboratorsService: RichCollaboratorsService,
+    private collabs: RichCollaboratorsService,
     private settings: SettingsService,
     private network: NetworkService,
     private syncStorage: SyncStorageService,
@@ -134,7 +135,7 @@ export class DocComponent implements OnDestroy, OnInit {
       this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
     })
 
-    this.subs[this.subs.length] = this.richCollaboratorsService.onUpdate.subscribe((collab: ICollaborator) => {
+    this.subs[this.subs.length] = this.collabs.onUpdate.subscribe((collab: ICollaborator) => {
       if (collab.login === this.botStorage.login) {
         if (this.doc.remotes.length === 0) {
           this.doc.addRemote(this.botStorage.id)
@@ -148,6 +149,7 @@ export class DocComponent implements OnDestroy, OnInit {
     }
     this.network.init()
 
+    this.subs[this.subs.length] = this.collabs.onChanges.subscribe(() => this.cd.detectChanges())
     this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       this.doc = doc
       this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
@@ -157,8 +159,6 @@ export class DocComponent implements OnDestroy, OnInit {
       })
 
       this.zone.runOutsideAngular(() => {
-        this.richCollaboratorsService.collaboratorsSubject.subscribe(() => this.cd.detectChanges())
-
         this.muteCore = new MuteCore({
           displayName: this.settings.profile.displayName,
           login: this.settings.profile.login,
@@ -175,9 +175,9 @@ export class DocComponent implements OnDestroy, OnInit {
           this.withoutEncryption()
         }
 
-        this.richCollaboratorsService.updateSource = this.muteCore.collaboratorsService.onUpdate
-        this.richCollaboratorsService.joinSource = this.muteCore.collaboratorsService.onJoin
-        this.richCollaboratorsService.leaveSource = this.muteCore.collaboratorsService.onLeave
+        this.collabs.subscribeToUpdateSource(this.muteCore.collaboratorsService.onUpdate)
+        this.collabs.subscribeToJoinSource(this.muteCore.collaboratorsService.onJoin)
+        this.collabs.subscribeToLeaveSource(this.muteCore.collaboratorsService.onLeave)
         this.muteCore.collaboratorsService.joinSource = this.network.onPeerJoin
         this.muteCore.collaboratorsService.leaveSource = this.network.onPeerLeave
         this.muteCore.collaboratorsService.updateSource = this.settings.onChange.pipe(

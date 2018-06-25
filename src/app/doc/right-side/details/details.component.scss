@@ -4,78 +4,69 @@
   width: 100%;
 }
 
-.block {
-  padding: 0 5px;
-  // margin: 0;
-}
-
-.doc-details-block {
+.doc-block {
   margin: 16px 0;
+  padding: 0 5px;
+
+  .title {
+    text-align: left;
+    margin-right: 15px;
+  }
 }
 
-.collaborators-block {
+.chips-block {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 70%;
+
+  .chips {
+    padding-top: 10px;
+
+    .chip {
+      padding-left: 10px;
+      border-left-width: 0px;
+      border-top-width: 0px;
+      border-right-width: thick;
+      border-bottom-width: 0px;
+      border-style: solid;
+      border-radius: 20px;
+      padding: 4px 0 4px 4px;
+      max-width: 130px;
+      min-width: 130px;
+      background-color: var(--theme-bg-card);
+      margin: 0 5px 15px 5px;
+      position: relative;
+
+      .avatar {
+        border-radius: 50%;
+      }
+
+      .displayName {
+        white-space: nowrap;
+        word-wrap: none;
+        overflow-wrap: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        background: none;
+        padding-left: 6px;
+      }
+    }
+  }
 }
 
-.collab-chips {
-  padding-left: 10px;
-  border-left-width: 0px;
-  border-top-width: 0px;
-  border-right-width: thick;
-  border-bottom-width: 0px;
-  border-style: solid;
-  border-radius: 20px;
-  padding: 4px 0 4px 4px;
-  max-width: 130px;
-  min-width: 130px;
-  background-color: var(--theme-bg-background);
-  margin: 0 0 15px 0;
-  position: relative;
-}
-
-.collab {
-  white-space: nowrap;
-  word-wrap: none;
-  overflow-wrap: none;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  background: none;
-  padding-left: 6px;
-}
-
-.meta-title {
-  text-align: left;
-  margin-right: 15px;
-}
-
-.avatar {
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-}
-
-.profile-card {
-  right: 0px;
+.profile-block {
   z-index: 1000;
   margin-bottom: 10px;
   opacity: 0;
-  // display: none;
-}
+  margin: 0 5px 10px 5px;
 
-.profile-card-container {
-  margin-bottom: 10px;
-}
+  .info {
+    margin-top: 0.5em;
+    width: 100%;
+    overflow: auto;
 
-.profile-card-name {
-  white-space: nowrap;
-}
-
-.profile-card-login {
-  white-space: nowrap;
-}
-
-.profile-card-info {
-  margin-top: 0.5em;
+    .prop {
+      overflow: auto;
+    }
+  }
 }
