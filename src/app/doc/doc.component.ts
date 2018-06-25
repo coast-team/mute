@@ -183,7 +183,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.collaboratorsService.updateSource = this.settings.onChange.pipe(
           filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
           map((props) => {
-            if (props[EProperties.profile]) {
+            if (props.includes(EProperties.profile)) {
               return {
                 id: this.network.myId,
                 displayName: this.settings.profile.displayName,
