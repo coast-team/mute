@@ -28,7 +28,7 @@ export class CollaboratorCursor {
   constructor(cm: CodeMirror.Editor, collab: RichCollaborator) {
     this.cm = cm
     this.color = collab.color
-    this.selectionCSS = `opacity: .7; background-color: ${collab.color};`
+    this.selectionCSS = `opacity: .3; background-color: ${collab.color};`
 
     // HTML element for display name
     this.displayName = document.createElement('span')
@@ -79,7 +79,7 @@ export class CollaboratorCursor {
   resetDisplayNameTimeout() {
     if (this.displayName.style.width !== this.displayNameWidth) {
       this.displayName.style.width = this.displayNameWidth
-      this.displayName.style.borderWidth = '0 5px 0 5px'
+      this.displayName.style.borderWidth = '0 thick 0 thick'
     }
     clearTimeout(this.displayNameTimeout)
     this.displayNameTimeout = setTimeout(() => {
@@ -130,28 +130,36 @@ export class CollaboratorCursor {
   }
 
   updateSelection(anchor: CodeMirror.Position, head: CodeMirror.Position) {
+    this.resetDisplayNameTimeout()
     if (this.selection) {
       this.selection.clear()
     }
     let from
     let to
     if (anchor.line < head.line) {
-      from = anchor
-      to = head
+      ;[from, to] = [anchor, head]
     } else if (anchor.line === head.line) {
       if (anchor.ch < head.ch) {
-        from = anchor
-        to = head
+        ;[from, to] = [anchor, head]
       } else {
-        from = head
-        to = anchor
+        ;[from, to] = [head, anchor]
       }
     } else {
-      from = head
-      to = anchor
+      ;[from, to] = [head, anchor]
     }
     this.selection = this.cm.getDoc().markText(from, to, { css: this.selectionCSS })
-    this.updateCursor(head, false)
+    if (this.bookmark) {
+      this.bookmark.clear()
+      this.bookmark = this.cm.getDoc().setBookmark(head, { widget: this.cursorBookmark, insertLeft: true }) as any
+    } else {
+      this.bookmark = this.cm.getDoc().setBookmark(head, { widget: this.cursorBookmark, insertLeft: true }) as any
+      this.setBookmarkCursorProperties()
+    }
+    clearTimeout(this.displayNameTimeout)
+    if (this.displayName.style.width !== this.displayNameWidth) {
+      this.displayName.style.width = this.displayNameWidth
+      this.displayName.style.borderWidth = '0 thick 0 thick'
+    }
   }
 
   removeSelection() {
@@ -189,7 +197,7 @@ export class CollaboratorCursor {
       if (animated) {
         this.cursorTransition.style.transition = 'transform 0.07s linear'
       } else {
-        this.cursorTransition.style.transition = 'transform 0.01s linear'
+        this.cursorTransition.style.transition = 'transform 0 linear'
       }
 
       this.cursorTransition.style.transform = `translate(${newLeft - left}px, ${adjustedNewTop - adjustedTop}px)`
