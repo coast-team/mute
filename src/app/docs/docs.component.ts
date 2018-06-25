@@ -73,7 +73,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.displayedColumnsLocal.push('synchronized')
       this.displayedColumnsRemote.push('synchronized')
     }
-    this.setDisplayedColumns()
+    this.updateDisplayedColumns()
     this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder) || this.localStorage.local)
   }
 
@@ -85,11 +85,11 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {
         this.sideNavMode = 'over'
+      } else {
+        this.sideNavMode = 'side'
       }
       this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
-      if (this.isMobile) {
-        this.displayedColumns = ['title']
-      }
+      this.updateDisplayedColumns()
     })
   }
 
@@ -177,7 +177,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   openFolder(folder: Folder) {
     this.folder = folder
-    this.setDisplayedColumns()
+    this.updateDisplayedColumns()
     this.isFinishOpen = false
     this.localStorage.getDocs(folder).then((docs) => {
       this.docs = docs
@@ -208,11 +208,15 @@ export class DocsComponent implements OnDestroy, OnInit {
     })
   }
 
-  private setDisplayedColumns() {
-    if (this.folder === this.botStorage.remote) {
-      this.displayedColumns = this.displayedColumnsRemote
+  private updateDisplayedColumns() {
+    if (this.isMobile) {
+      this.displayedColumns = ['title']
     } else {
-      this.displayedColumns = this.displayedColumnsLocal
+      if (this.folder === this.botStorage.remote) {
+        this.displayedColumns = this.displayedColumnsRemote
+      } else {
+        this.displayedColumns = this.displayedColumnsLocal
+      }
     }
   }
 }
