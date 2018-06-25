@@ -34,7 +34,7 @@
           <!-- Position Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell class="table-header" fxFlex="40%" *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
+            <mat-cell class="title-cell" fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
 
               <!-- Document name -->
               <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
@@ -92,14 +92,16 @@
 
           <ng-container matColumnDef="location">
             <mat-header-cell class="table-header" fxFlex="100px" *matHeaderCellDef>Location</mat-header-cell>
-            <mat-cell *matCellDef="let doc" fxFlex="100px" fxLayoutAlign="start center" class="col-key">
+            <mat-cell *matCellDef="let doc" fxFlex="100px" fxLayoutAlign="start center">
               <mat-icon aria-label="location" fxFlexOffset="10px">{{getDocLocationIcon(doc)}}</mat-icon>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="key">
             <mat-header-cell class="table-header" fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell *matCellDef="let doc" fxFlex="100px" class="col-key">{{doc.key}}</mat-cell>
+            <mat-cell *matCellDef="let doc" fxFlex="100px">
+              <div class="key">{{doc.key}}</div>
+            </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
