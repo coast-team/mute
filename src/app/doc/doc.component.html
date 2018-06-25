@@ -15,7 +15,7 @@
       <mat-drawer-content>
         <mute-editor [ngClass]="extrasmall" #editorComponent [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
       </mat-drawer-content>
-      <mat-drawer position="end" [mode]="drawerMode | async" [opened]="drawerOpened | async" #infoSidenav class="info-sidenav"
+      <mat-drawer autoFocus="false" position="end" [mode]="drawerMode | async" [opened]="drawerOpened | async" #infoSidenav class="info-sidenav"
         ngClass.lt-sm="info-sidenav-lt-sm">
         <mute-right-side [doc]="doc" class="info-panel"></mute-right-side>
       </mat-drawer>
