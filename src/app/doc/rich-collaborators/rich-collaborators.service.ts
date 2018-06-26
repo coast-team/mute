@@ -83,7 +83,7 @@ export class RichCollaboratorsService {
     source.subscribe((id: number) => {
       const index = this.collaborators.findIndex((c) => c.id === id)
       this.colors.dismiss(this.collaborators[index].color)
-      this.collaborators = this.collaborators.splice(index, 1)
+      this.collaborators.splice(index, 1)
       this.leaveSubject.next(id)
     })
   }

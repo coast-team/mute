@@ -11,5 +11,5 @@ import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 export class RightSideComponent {
   @Input() doc: Doc
 
-  constructor(private collabService: RichCollaboratorsService) {}
+  constructor(public collabService: RichCollaboratorsService) {}
 }
