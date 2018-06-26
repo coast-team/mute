@@ -12,9 +12,9 @@
   position: fixed;
   top: 66px;
   right: 20px;
-  z-index: 1000;
+  // z-index: 1000;
   opacity: 0;
-  display: none;
+  visibility: hidden;
 }
 
 .settings-btn {
@@ -45,5 +45,4 @@
   position: fixed;
   right: 28px;
   top: 58px;
-  z-index: 1000;
 }

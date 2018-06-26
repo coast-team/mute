@@ -1,4 +1,4 @@
-<button mat-icon-button (click)='toggleCard($event)'>
+<button mat-icon-button (mousedown)='toggleCard($event)'>
   <ng-container *ngIf="profile.avatar; else anonymousIcon">
     <img class='avatar-img' src="{{profile.avatar}}" alt="avatar" height="32" width="32" />
   </ng-container>
@@ -7,7 +7,7 @@
   </ng-template>
 </button>
 
-<mat-card class="profile-card mat-elevation-z8" [@cardState]="cardState | async" (click)='clickOnCard($event)'>
+<mat-card class="profile-card mat-elevation-z8" [@cardState]="cardState" (mousedown)='mousedown($event)'>
   <span class="arrow"></span>
   <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
     <ng-container *ngIf="profile.avatar; else anonymousIconBig">

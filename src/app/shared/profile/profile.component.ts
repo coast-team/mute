@@ -1,8 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
-import { Component } from '@angular/core'
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core'
 import { MatDialog, MatSnackBar } from '@angular/material'
 
-import { Subject } from 'rxjs'
+import { Subscription } from 'rxjs'
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'
 import { UiService } from '../../core/ui/ui.service'
@@ -14,37 +14,46 @@ import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
   styleUrls: ['./profile.component.scss'],
   animations: [
     trigger('cardState', [
-      state('void', style({ opacity: '0', display: 'none' })),
-      state('visible', style({ opacity: '1', display: 'block' })),
+      state('void', style({ opacity: '0', visibility: 'hidden' })),
+      state('visible', style({ opacity: '1', visibility: 'visible' })),
       transition('void => visible', animate('150ms ease-out')),
       transition('visible => void', animate('150ms ease-in')),
     ]),
   ],
 })
-export class ProfileComponent {
-  public profile: Profile
-  public cardState: Subject<string>
-  public currentCardState: string
+export class ProfileComponent implements OnDestroy {
+  private subs: Subscription[]
 
-  constructor(private snackBar: MatSnackBar, public settings: SettingsService, private dialog: MatDialog, ui: UiService) {
+  public profile: Profile
+  public cardState: string
+
+  constructor(
+    private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    public settings: SettingsService,
+    ui: UiService,
+    cd: ChangeDetectorRef
+  ) {
     this.profile = settings.profile
-    this.cardState = new Subject()
-    ui.click.subscribe(() => {
-      this.cardState.next('void')
-      this.currentCardState = 'void'
+    this.cardState = 'void'
+    this.subs = []
+    this.subs[this.subs.length] = ui.click.subscribe(() => {
+      this.cardState = 'void'
+      cd.detectChanges()
     })
   }
 
-  clickOnCard(event: Event) {
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe())
+  }
+
+  mousedown(event: Event) {
     event.stopPropagation()
   }
 
   openSettingsDialog() {
     const dialog = this.dialog.open(ConfigDialogComponent)
-    dialog.afterClosed().subscribe(() => {
-      this.currentCardState = 'void'
-      this.cardState.next('void')
-    })
+    dialog.afterClosed().subscribe(() => (this.cardState = 'void'))
   }
 
   signout() {
@@ -53,10 +62,7 @@ export class ProfileComponent {
       const snackBarRef = this.snackBar.open('Signed out', 'close', {
         duration: 3000,
       })
-      snackBarRef.afterDismissed().subscribe(() => {
-        this.currentCardState = 'void'
-        this.cardState.next('void')
-      })
+      snackBarRef.afterDismissed().subscribe(() => (this.cardState = 'void'))
     })
   }
 
@@ -69,15 +75,12 @@ export class ProfileComponent {
         const snackBarRef = this.snackBar.open(`Signed in with ${provider}`, 'close', {
           duration: 3000,
         })
-        snackBarRef.afterDismissed().subscribe(() => {
-          this.currentCardState = 'void'
-          this.cardState.next('void')
-        })
+        snackBarRef.afterDismissed().subscribe(() => (this.cardState = 'void'))
       })
       .catch((err) => {
         log.error('Failed to signin: ', err)
         provider = provider[0].toUpperCase() + provider.substr(1)
-        this.snackBar.open(`FAILED to sign in with ${provider}`, 'close', {
+        this.snackBar.open(`Failed to sign in with ${provider}`, 'close', {
           duration: 5000,
         })
       })
@@ -85,12 +88,6 @@ export class ProfileComponent {
 
   toggleCard(event: Event) {
     event.stopPropagation()
-    if (this.currentCardState === 'visible') {
-      this.currentCardState = 'void'
-      this.cardState.next('void')
-    } else {
-      this.currentCardState = 'visible'
-      this.cardState.next('visible')
-    }
+    this.cardState = this.cardState === 'visible' ? 'void' : 'visible'
   }
 }

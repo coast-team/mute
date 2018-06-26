@@ -21,6 +21,12 @@ export class UiService {
     this.appInstall = new BehaviorSubject(false)
     this.click = new Subject()
     this.docTree = ''
+
+    window.addEventListener('mousedown', (event) => {
+      event.stopPropagation()
+      event.preventDefault()
+      this.click.next()
+    })
   }
 
   get onNavToggle(): Observable<void> {
