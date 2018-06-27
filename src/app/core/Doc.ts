@@ -3,7 +3,8 @@ import { Observable, Subject } from 'rxjs'
 import { File } from './File'
 
 export class Doc extends File {
-  public key: string
+  public signalingKey: string
+  public cryptoKey: string
   public remotes: Array<{
     id: string
     synchronized?: Date
@@ -14,15 +15,22 @@ export class Doc extends File {
   static deserialize(id: string, serialized: any): Doc {
     const doc = new Doc()
     doc.remotes = serialized.remotes || []
-    doc.key = serialized.key
+    if (serialized.key) {
+      doc.signalingKey = serialized.key
+      doc.cryptoKey = serialized.key
+    } else {
+      doc.signalingKey = serialized.signalingKey
+      doc.cryptoKey = serialized.cryptoKey
+    }
     doc.deserialize(id, serialized)
     return doc
   }
 
-  static create(key: string, title: string, parentFolderId?: string): Doc {
+  static create(signalingKey: string, cryptoKey: string, title: string, parentFolderId?: string): Doc {
     const doc = new Doc()
     doc.created = new Date()
-    doc.key = key
+    doc.signalingKey = signalingKey
+    doc.cryptoKey = cryptoKey
     doc.remotes = []
     doc.init(title, parentFolderId)
     return doc
@@ -70,7 +78,7 @@ export class Doc extends File {
           break
         case MetaDataType.FixData:
           this.created = new Date(message.data.creationDate)
-          this.key = message.data.key
+          this.cryptoKey = message.data.key
           this.docChangeSubject.next(message.type)
           break
       }
@@ -95,7 +103,8 @@ export class Doc extends File {
   serialize(): any {
     return Object.assign(super.serialize(), {
       type: 'doc',
-      key: this.key,
+      signalingKey: this.signalingKey,
+      cryptoKey: this.cryptoKey,
       remotes: this.remotes,
     })
   }

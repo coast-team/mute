@@ -209,7 +209,7 @@ export class DocComponent implements OnDestroy, OnInit {
         this.muteCore.metaDataService.onLocalChange = merge(this.doc.onTitleChange)
         this.muteCore.metaDataService.joinSource = this.network.onPeerJoin
         this.muteCore.metaDataService.initTitle(this.doc.title)
-        this.muteCore.metaDataService.initFixMetaData(this.doc.created, this.doc.key)
+        this.muteCore.metaDataService.initFixMetaData(this.doc.created, this.doc.cryptoKey)
         this.doc.onRemoteDocChange = this.muteCore.metaDataService.onChange.pipe(
           filter((metaData: MetaDataMessage) => metaData.type === MetaDataType.Title || metaData.type === MetaDataType.FixData)
         )
@@ -233,7 +233,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   editorReady(): void {
-    this.muteCore.init(this.doc.key)
+    this.muteCore.init(this.doc.signalingKey)
     this.inited = true
 
     this.initLogs()
@@ -244,7 +244,7 @@ export class DocComponent implements OnDestroy, OnInit {
   }
 
   initLogs(): void {
-    this.logs = new LogsService('muteLogs-' + this.doc.key)
+    this.logs = new LogsService('muteLogs-' + this.doc.signalingKey)
     this.logs.setDisplayLogs(this.settings.displayLogs)
     // unsubscribe all subscription if there are some left (in the case you create a document while one is already open)
     if (this.logsSubs.length !== 0) {
@@ -348,7 +348,7 @@ export class DocComponent implements OnDestroy, OnInit {
     // When the encryption key is synchronised
     this.doc.onDocChange.pipe(filter((type: MetaDataType) => type === MetaDataType.FixData)).subscribe((type) => {
       if (environment.encryption) {
-        this.symCrypto.importKey(this.doc.key).then(() => {
+        this.symCrypto.importKey(this.doc.cryptoKey).then(() => {
           this.muteCore.syncMessageService.messageSource = this.network.onMessage.pipe(
             filter(({ service }) => service === 423),
             flatMap((msg) => {

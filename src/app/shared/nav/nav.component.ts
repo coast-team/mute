@@ -106,13 +106,12 @@ export class NavComponent implements OnDestroy {
   }
 
   createDoc(remotely = false) {
-    this.localStorage.generateKey().then((key) => {
-      if (remotely) {
-        this.router.navigate(['/', key, { remote: true }])
-      } else {
-        this.router.navigate(['/', key])
-      }
-    })
+    const key = this.localStorage.generateKey()
+    if (remotely) {
+      this.router.navigate(['/', key, { remote: true }])
+    } else {
+      this.router.navigate(['/', key])
+    }
   }
 
   openFolder(folder: Folder) {

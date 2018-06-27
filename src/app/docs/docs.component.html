@@ -100,7 +100,7 @@
           <ng-container matColumnDef="key">
             <mat-header-cell class="table-header" fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
             <mat-cell *matCellDef="let doc" fxFlex="100px">
-              <div class="key">{{doc.key}}</div>
+              <div class="key">{{doc.signalingKey}}</div>
             </mat-cell>
           </ng-container>
 
@@ -163,7 +163,7 @@
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Key:&nbsp;</span>
-        <span class="mat-body-2 info-values">{{menuDoc?.key}}</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.signalingKey}}</span>
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Created:&nbsp;</span>

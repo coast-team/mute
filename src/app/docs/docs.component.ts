@@ -104,7 +104,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   restore(doc: Doc): Promise<void> {
     return this.localStorage.move(doc, this.localStorage.local).then(() => {
-      this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+      this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
       this.docsSubject.next(this.docs)
     })
   }
@@ -119,7 +119,7 @@ export class DocsComponent implements OnDestroy, OnInit {
         this.moveToTrash(doc)
         break
       case this.localStorage.trash:
-        this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+        this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
         this.docsSubject.next(this.docs)
         this.localStorage.delete(doc).then(() => {
           this.snackBar.open(`"${doc.title}" has been deleted.`, 'close', {
@@ -134,7 +134,7 @@ export class DocsComponent implements OnDestroy, OnInit {
         })
         dialogRef.afterClosed().subscribe((result) => {
           if (result) {
-            this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+            this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
             this.docsSubject.next(this.docs)
             this.botStorage.remove(doc)
             this.snackBar.open(`"${this.settings.profile.login}" has been removed.`, 'Close', {
@@ -149,11 +149,9 @@ export class DocsComponent implements OnDestroy, OnInit {
   open(doc?: Doc) {
     if (this.folder !== this.localStorage.trash) {
       if (doc) {
-        this.router.navigate(['/', doc.key])
+        this.router.navigate(['/', doc.signalingKey])
       } else {
-        this.localStorage.generateKey().then((key) => {
-          this.router.navigate(['/', key])
-        })
+        this.router.navigate(['/', this.localStorage.generateKey()])
       }
     }
   }
@@ -165,7 +163,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   share(doc: Doc) {
     // Workaround, but not pretty
     const aux = document.createElement('input')
-    aux.setAttribute('value', `${window.location.origin}/${doc.key}`)
+    aux.setAttribute('value', `${window.location.origin}/${doc.signalingKey}`)
     document.body.appendChild(aux)
     aux.select()
     document.execCommand('copy')
@@ -191,7 +189,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   private moveToTrash(doc: Doc) {
-    this.docs = this.docs.filter((d: Doc) => d.key !== doc.key)
+    this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
     this.docsSubject.next(this.docs)
     this.localStorage.move(doc, this.localStorage.trash).then(() => {
       this.snackBar

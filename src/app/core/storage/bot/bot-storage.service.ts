@@ -60,7 +60,7 @@ export class BotStorageService extends Storage {
     return (await new Promise((resolve) => {
       this.http
         .post<{ key: string; login: string }>(`${this.httpURL}/remove`, {
-          key: doc.key,
+          key: doc.signalingKey,
           login: this.settings.profile.login,
         })
         .subscribe(() => resolve())

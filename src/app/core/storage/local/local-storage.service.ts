@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
 import { filter } from 'rxjs/operators'
 
-import { environment } from '../../../../environments/environment'
 import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
@@ -16,6 +15,8 @@ import { EIndexedDBState, getIndexedDBState } from './indexedDBCheck'
 const selectListForDoc = [
   'type',
   'key',
+  'signalingKey',
+  'cryptoKey',
   'title',
   'remotes',
   'parentFolderId',
@@ -107,15 +108,14 @@ export class LocalStorageService extends Storage {
       for (const key of remoteKeys) {
         let doc
         for (const d of docs) {
-          if (d.key === key) {
+          if (d.signalingKey === key) {
             doc = d
             break
           }
         }
         if (folder.id === this.local.id) {
           if (!doc && !(await this.isInTrash(key))) {
-            doc = Doc.create(key, '', this.local.id)
-            docs.push(doc)
+            doc = await this.createDoc(key)
           }
           if (doc && doc.addRemote(this.botStorage.remote.id)) {
             this.save(doc)
@@ -133,22 +133,22 @@ export class LocalStorageService extends Storage {
       const remoteKeys = await this.botStorage.fetchDocs()
 
       const resultDocs: Doc[] = []
-      remoteKeys.forEach((key) => {
+      for (const key of remoteKeys) {
         let doc
         for (const d of docs) {
-          if (d.key === key) {
+          if (d.signalingKey === key) {
             doc = d
             break
           }
         }
         if (!doc) {
-          doc = Doc.create(key, '', this.local.id)
+          doc = await this.createDoc(key)
         }
         if (doc.addRemote(this.botStorage.remote.id)) {
           this.save(doc)
         }
         resultDocs.push(doc)
-      })
+      }
       return resultDocs
     }
   }
@@ -158,7 +158,7 @@ export class LocalStorageService extends Storage {
     return await new Promise<Doc[]>((resolve, reject) => {
       this.db
         .allDocs({
-          query: `(type:"doc") AND (key:"${key}")`,
+          query: `(type:"doc") AND (signalingKey:"${key}" OR key:"${key}")`,
           select_list: selectListForDoc,
         })
         .then(
@@ -209,8 +209,8 @@ export class LocalStorageService extends Storage {
     })
   }
 
-  async createDoc(key): Promise<Doc> {
-    const doc = Doc.create(key, '', this.local.id)
+  async createDoc(key = this.generateKey()): Promise<Doc> {
+    const doc = Doc.create(key, await this.symCrypto.generateKey(), '', this.local.id)
     await this.save(doc)
     return doc
   }
@@ -228,27 +228,23 @@ export class LocalStorageService extends Storage {
     }
   }
 
-  async generateKey(): Promise<string> {
-    if (environment.encryption) {
-      return this.symCrypto.generateKey()
-    } else {
-      const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-      const length = 42 // Should be less then MAX_KEY_LENGTH value
-      const values = new Uint32Array(length)
-      window.crypto.getRandomValues(values)
-      let key = ''
-      for (let i = 0; i < length; i++) {
-        key += mask[values[i] % mask.length]
-      }
-      return key
+  generateKey(): string {
+    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const length = 42 // Should be less then MAX_KEY_LENGTH value
+    const values = new Uint32Array(length)
+    window.crypto.getRandomValues(values)
+    let key = ''
+    for (let i = 0; i < length; i++) {
+      key += mask[values[i] % mask.length]
     }
+    return key
   }
 
   private async isInTrash(key: string): Promise<boolean> {
     return (await new Promise((resolve, reject) => {
       this.db
         .allDocs({
-          query: `(key:"${key}") AND (parentFolderId:"${this.trash.id}") AND (type:"doc")`,
+          query: `(signalingKey:"${key}") AND (parentFolderId:"${this.trash.id}") AND (type:"doc")`,
         })
         .then(
           ({ data }: any) => {

@@ -53,6 +53,6 @@ export class ControlsComponent implements OnInit {
   }
 
   showEditor() {
-    this.router.navigate(['/' + this.doc.key])
+    this.router.navigate(['/' + this.doc.signalingKey])
   }
 }
