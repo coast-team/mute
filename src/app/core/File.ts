@@ -2,6 +2,7 @@ export abstract class File {
   private _parentFolderId: string
   private _description: string
   protected _title: string
+  protected _titleLastModification: number
 
   public id: string
   public previousParentFolderId: string
@@ -19,6 +20,7 @@ export abstract class File {
     this.modified = serialized.modified
     this._description = serialized.description
     this._title = serialized.title
+    this._titleLastModification = serialized.titleLastModification || 0
     this._parentFolderId = serialized.parentFolderId
   }
 
@@ -32,6 +34,8 @@ export abstract class File {
 
   abstract get title()
   abstract set title(newTitle: string)
+
+  abstract get titleLastModification()
 
   get parentFolderId() {
     return this._parentFolderId
@@ -53,6 +57,7 @@ export abstract class File {
   serialize(): object {
     return {
       title: this._title,
+      titleLastModification: this._titleLastModification,
       parentFolderId: this.parentFolderId,
       previousParentFolderId: this.previousParentFolderId,
       created: this.created,

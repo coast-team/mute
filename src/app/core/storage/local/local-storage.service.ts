@@ -18,6 +18,7 @@ const selectListForDoc = [
   'signalingKey',
   'cryptoKey',
   'title',
+  'titleLastModification',
   'remotes',
   'parentFolderId',
   'previousParentFolderId',

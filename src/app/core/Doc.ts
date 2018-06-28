@@ -32,6 +32,7 @@ export class Doc extends File {
     doc.signalingKey = signalingKey
     doc.cryptoKey = cryptoKey
     doc.remotes = []
+    doc._titleLastModification = -1
     doc.init(title, parentFolderId)
     return doc
   }
@@ -54,9 +55,14 @@ export class Doc extends File {
     newTitle = newTitle || 'Untitled Document'
     if (this._title !== newTitle) {
       this._title = newTitle
+      this._titleLastModification = this._titleLastModification === -1 ? 0 : (this._titleLastModification = Date.now())
       this.modified = new Date()
-      this.titleSubject.next({ type: MetaDataType.Title, data: this._title })
+      this.titleSubject.next({ type: MetaDataType.Title, data: { title: this._title, titleLastModification: this._titleLastModification } })
     }
+  }
+
+  get titleLastModification() {
+    return this._titleLastModification
   }
 
   get onTitleChange(): Observable<MetaDataMessage> {

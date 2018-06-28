@@ -37,6 +37,10 @@ export class Folder extends File {
     this._title = newTitle || 'Untitled Folder'
   }
 
+  get titleLastModification() {
+    return this._titleLastModification
+  }
+
   serialize(): object {
     return Object.assign(super.serialize(), {
       type: 'folder',
