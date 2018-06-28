@@ -37,7 +37,6 @@ export class DocComponent implements OnDestroy {
 
   constructor(private router: Router, private breakpointObserver: BreakpointObserver, public docService: DocService, public ui: UiService) {
     this.showDevLabel = environment.devLabel
-    this.subs = []
     this.drawerMode = new BehaviorSubject('')
     this.drawerOpened = new BehaviorSubject(false)
     this.extrasmall = ''

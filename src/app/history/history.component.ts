@@ -24,7 +24,7 @@ import 'codemirror/mode/javascript/javascript'
 @Injectable()
 export class HistoryComponent implements OnInit, OnDestroy {
   private operations: Array<IDelete | IInsert>
-  private subs: Subscription[]
+  private subscriptions: Subscription[]
   public docAuthors: Author[]
   private state = false
 
@@ -49,32 +49,38 @@ export class HistoryComponent implements OnInit, OnDestroy {
     public media: ObservableMedia
   ) {
     this.step = 1
-    this.subs = []
+    this.subscriptions = []
   }
 
   ngOnInit() {
     // TODO replace by the specified service which maybe exist
-    this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
-      this.doc = doc
-      this.history.getAuthors(this.doc).then((docAuths: Author[]) => {
-        this.docAuthors = docAuths
-      })
+    this.subscriptions.push(
+      this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+        this.doc = doc
+        this.history.getAuthors(this.doc).then((docAuths: Author[]) => {
+          this.docAuthors = docAuths
+        })
 
-      this.history.getOperations(this.doc).then((ops: Array<IDelete | IInsert>) => {
-        this.operations = ops
-        this.showVersion(this.operations.length)
-      })
+        this.history.getOperations(this.doc).then((ops: Array<IDelete | IInsert>) => {
+          this.operations = ops
+          this.showVersion(this.operations.length)
+        })
 
-      this.ui.onNavToggle.subscribe(() => {
-        this.leftSidenavElm.opened = !this.leftSidenavElm.opened
-      })
+        this.subscriptions.push(
+          this.ui.onNavToggle.subscribe(() => {
+            this.leftSidenavElm.opened = !this.leftSidenavElm.opened
+          })
+        )
 
-      this.ui.onDocNavToggle.subscribe(() => {
-        this.rightSidenavElm.opened = !this.rightSidenavElm.opened
-      })
+        this.subscriptions.push(
+          this.ui.onDocNavToggle.subscribe(() => {
+            this.rightSidenavElm.opened = !this.rightSidenavElm.opened
+          })
+        )
 
-      this.currentOp = 0
-    })
+        this.currentOp = 0
+      })
+    )
 
     // this.operations = OPERATIONS
     // this.currentOp = this.operations.length
@@ -108,7 +114,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subs.forEach((s) => s.unsubscribe())
+    this.subscriptions.forEach((sub) => sub.unsubscribe())
   }
 
   /**

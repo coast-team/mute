@@ -31,18 +31,20 @@ export class RichCollaboratorsService implements OnDestroy {
     let me = this.createMe(settings.profile)
     this.collaborators = [me]
     this.me = Promise.resolve()
-    settings.onChange
-      .pipe(filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)))
-      .subscribe((props) => {
-        const index = this.collaborators.indexOf(me)
-        if (props.includes(EProperties.profile)) {
-          me = this.createMe(settings.profile)
-        } else {
-          me.displayName = settings.profile.displayName
-        }
-        this.collaborators[index] = me
-        this.updateSubject.next(me)
-      })
+    this.subs.push(
+      settings.onChange
+        .pipe(filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)))
+        .subscribe((props) => {
+          const index = this.collaborators.indexOf(me)
+          if (props.includes(EProperties.profile)) {
+            me = this.createMe(settings.profile)
+          } else {
+            me.displayName = settings.profile.displayName
+          }
+          this.collaborators[index] = me
+          this.updateSubject.next(me)
+        })
+    )
 
     this.subs[this.subs.length] = this.onChanges.subscribe(() => cd.detectChanges())
   }
@@ -68,32 +70,38 @@ export class RichCollaboratorsService implements OnDestroy {
   }
 
   subscribeToUpdateSource(source: Observable<ICollaborator>) {
-    source.subscribe((collab: ICollaborator) => {
-      for (const c of this.collaborators) {
-        if (collab.id === c.id) {
-          c.update(collab)
-          this.updateSubject.next(c)
-          break
+    this.subs.push(
+      source.subscribe((collab: ICollaborator) => {
+        for (const c of this.collaborators) {
+          if (collab.id === c.id) {
+            c.update(collab)
+            this.updateSubject.next(c)
+            break
+          }
         }
-      }
-    })
+      })
+    )
   }
 
   subscribeToJoinSource(source: Observable<ICollaborator>) {
-    source.subscribe((collab) => {
-      const rc = new RichCollaborator(collab, this.colors.pick())
-      this.collaborators[this.collaborators.length] = rc
-      this.joinSubject.next(rc)
-    })
+    this.subs.push(
+      source.subscribe((collab) => {
+        const rc = new RichCollaborator(collab, this.colors.pick())
+        this.collaborators[this.collaborators.length] = rc
+        this.joinSubject.next(rc)
+      })
+    )
   }
 
   subscribeToLeaveSource(source: Observable<number>) {
-    source.subscribe((id: number) => {
-      const index = this.collaborators.findIndex((c) => c.id === id)
-      this.colors.dismiss(this.collaborators[index].color)
-      this.collaborators.splice(index, 1)
-      this.leaveSubject.next(id)
-    })
+    this.subs.push(
+      source.subscribe((id: number) => {
+        const index = this.collaborators.findIndex((c) => c.id === id)
+        this.colors.dismiss(this.collaborators[index].color)
+        this.collaborators.splice(index, 1)
+        this.leaveSubject.next(id)
+      })
+    )
   }
 
   private createMe(profile: Profile): RichCollaborator {

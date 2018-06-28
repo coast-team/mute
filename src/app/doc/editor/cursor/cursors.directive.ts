@@ -41,29 +41,35 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.cmDoc = this.cm.getDoc()
 
     // When a new peer joins
-    this.subs[this.subs.length] = this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
-      this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
-      if (this.cm.hasFocus()) {
-        this.sendMyCursorPos()
-      }
-    })
+    this.subs.push(
+      this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
+        this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
+        if (this.cm.hasFocus()) {
+          this.sendMyCursorPos()
+        }
+      })
+    )
 
     // When the peer leaves
-    this.subs[this.subs.length] = this.collabService.onLeave.subscribe((id: number) => {
-      const cursor = this.cursors.get(id)
-      if (cursor !== undefined) {
-        cursor.clean()
-        this.cursors.delete(id)
-      }
-    })
+    this.subs.push(
+      this.collabService.onLeave.subscribe((id: number) => {
+        const cursor = this.cursors.get(id)
+        if (cursor !== undefined) {
+          cursor.clean()
+          this.cursors.delete(id)
+        }
+      })
+    )
 
     // When the peer changes his display name
-    this.subs[this.subs.length] = this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
-      const cursor = this.cursors.get(collab.id)
-      if (cursor !== undefined) {
-        cursor.updateDisplayName(collab.displayName)
-      }
-    })
+    this.subs.push(
+      this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
+        const cursor = this.cursors.get(collab.id)
+        if (cursor !== undefined) {
+          cursor.updateDisplayName(collab.displayName)
+        }
+      })
+    )
 
     let cursorPosBeforeBlur: CodeMirror.Position
     CodeMirror.on(this.cm, 'blur', () => {
@@ -107,16 +113,18 @@ export class CursorsDirective implements OnInit, OnDestroy {
     })
 
     // On remote operation
-    this.docService.doc.remoteContentChanges.subscribe((ops) => {
-      ops.forEach(({ collaborator }) => {
-        if (collaborator) {
-          const cursor = this.cursors.get(collaborator.id)
-          if (cursor) {
-            cursor.resetDisplayNameTimeout()
+    this.subs.push(
+      this.docService.doc.remoteContentChanges.subscribe((ops) => {
+        ops.forEach(({ collaborator }) => {
+          if (collaborator) {
+            const cursor = this.cursors.get(collaborator.id)
+            if (cursor) {
+              cursor.resetDisplayNameTimeout()
+            }
           }
-        }
+        })
       })
-    })
+    )
   }
 
   ngOnDestroy() {

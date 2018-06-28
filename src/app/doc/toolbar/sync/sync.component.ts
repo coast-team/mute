@@ -23,7 +23,7 @@ import { NetworkService } from '../../../doc/network/network.service'
   ],
 })
 export class SyncComponent implements OnInit, OnDestroy {
-  private subs: Subscription[]
+  private subscriptions: Subscription[]
 
   public SYNC = 1
   public SYNC_DISABLED = 2
@@ -34,59 +34,63 @@ export class SyncComponent implements OnInit, OnDestroy {
   public groupDetails: string
 
   constructor(private changeDetectorRef: ChangeDetectorRef, private networkService: NetworkService) {
-    this.subs = []
+    this.subscriptions = []
     this.groupDetails = ''
     this.signalingDetails = ''
   }
 
   ngOnInit() {
-    this.subs[this.subs.length] = this.networkService.onStateChange.subscribe((s: WebGroupState) => {
-      switch (s) {
-        case WebGroupState.JOINING:
-          this.groupDetails = 'Joining the group...'
-          this.syncState = undefined
-          break
-        case WebGroupState.JOINED:
-          this.groupDetails = 'Joined the group'
-          this.syncState = this.SYNC
-          break
-        case WebGroupState.LEFT:
-          this.groupDetails = 'Left the group'
-          this.syncState = this.SYNC_DISABLED
-          break
-        default:
-          this.groupDetails = 'undefined'
-          this.syncState = undefined
-      }
-      this.changeDetectorRef.detectChanges()
-    })
+    this.subscriptions.push(
+      this.networkService.onStateChange.subscribe((s: WebGroupState) => {
+        switch (s) {
+          case WebGroupState.JOINING:
+            this.groupDetails = 'Joining the group...'
+            this.syncState = undefined
+            break
+          case WebGroupState.JOINED:
+            this.groupDetails = 'Joined the group'
+            this.syncState = this.SYNC
+            break
+          case WebGroupState.LEFT:
+            this.groupDetails = 'Left the group'
+            this.syncState = this.SYNC_DISABLED
+            break
+          default:
+            this.groupDetails = 'undefined'
+            this.syncState = undefined
+        }
+        this.changeDetectorRef.detectChanges()
+      })
+    )
 
-    this.subs[this.subs.length] = this.networkService.onSignalingStateChange.subscribe((s: SignalingState) => {
-      switch (s) {
-        case SignalingState.CONNECTING:
-          this.signalingDetails = 'Connecting to the signaling server...'
-          break
-        case SignalingState.OPEN:
-          this.signalingDetails = 'Connected to the signaling server'
-          break
-        case SignalingState.CHECKING:
-          this.signalingDetails = 'Checking group membership'
-          break
-        case SignalingState.CHECKED:
-          this.signalingDetails = 'Signaling checked'
-          break
-        case SignalingState.CLOSED:
-          this.signalingDetails = 'No longer connected to the signaling server'
-          break
-        default:
-          this.signalingDetails = 'undefined'
-      }
-      this.changeDetectorRef.detectChanges()
-    })
+    this.subscriptions.push(
+      this.networkService.onSignalingStateChange.subscribe((s: SignalingState) => {
+        switch (s) {
+          case SignalingState.CONNECTING:
+            this.signalingDetails = 'Connecting to the signaling server...'
+            break
+          case SignalingState.OPEN:
+            this.signalingDetails = 'Connected to the signaling server'
+            break
+          case SignalingState.CHECKING:
+            this.signalingDetails = 'Checking group membership'
+            break
+          case SignalingState.CHECKED:
+            this.signalingDetails = 'Signaling checked'
+            break
+          case SignalingState.CLOSED:
+            this.signalingDetails = 'No longer connected to the signaling server'
+            break
+          default:
+            this.signalingDetails = 'undefined'
+        }
+        this.changeDetectorRef.detectChanges()
+      })
+    )
   }
 
   ngOnDestroy() {
-    this.subs.forEach((s: Subscription) => s.unsubscribe())
+    this.subscriptions.forEach((sub) => sub.unsubscribe())
   }
 
   showCard() {

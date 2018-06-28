@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core'
-import { Observable, Observer } from 'rxjs'
+import { Injectable, OnDestroy } from '@angular/core'
+import { Observable, Observer, Subscription } from 'rxjs'
 import { auditTime } from 'rxjs/operators'
 
 import { Doc } from '../../core/Doc'
@@ -8,44 +8,52 @@ import { LocalStorageService } from '../../core/storage/local/local-storage.serv
 import { RichLogootSOperation, State } from 'mute-core'
 
 @Injectable()
-export class SyncStorageService {
+export class SyncStorageService implements OnDestroy {
   private doc: Doc
 
   private storedStateObservable: Observable<State>
   private storedStateObservers: Array<Observer<State>> = []
+  private subs: Subscription[]
 
   constructor(private storage: LocalStorageService) {
     this.storedStateObservable = Observable.create((observer) => {
       this.storedStateObservers.push(observer)
     })
+    this.subs = []
   }
 
   set initSource(source: Observable<Doc>) {
-    source.subscribe((doc: Doc) => {
-      this.doc = doc
-      this.storage
-        .fetchDocContent(doc)
-        .then((data: any) => {
-          const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
-            .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
-            .filter((richLogootSOp) => richLogootSOp instanceof RichLogootSOperation)
-          this.storedStateObservers.forEach((observer: Observer<State>) => {
-            observer.next(new State(new Map(), richLogootSOps))
+    this.subs.push(
+      source.subscribe((doc: Doc) => {
+        this.doc = doc
+        this.storage
+          .fetchDocContent(doc)
+          .then((data: any) => {
+            const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
+              .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
+              .filter((richLogootSOp) => richLogootSOp instanceof RichLogootSOperation)
+            this.storedStateObservers.forEach((observer: Observer<State>) => {
+              observer.next(new State(new Map(), richLogootSOps))
+            })
           })
-        })
-        .catch(() => {
-          this.storedStateObservers.forEach((observer: Observer<State>) => {
-            observer.next(new State(new Map(), []))
+          .catch(() => {
+            this.storedStateObservers.forEach((observer: Observer<State>) => {
+              observer.next(new State(new Map(), []))
+            })
           })
-        })
-    })
+      })
+    )
   }
 
   set stateSource(source: Observable<State>) {
-    source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocContent(this.doc, state))
+    this.subs.push(source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocContent(this.doc, state)))
   }
 
   get onStoredState(): Observable<State> {
     return this.storedStateObservable
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe())
   }
 }

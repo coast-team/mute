@@ -1,18 +1,22 @@
-import { Injectable } from '@angular/core'
+import { Injectable, OnDestroy } from '@angular/core'
 import { DocService, RichLogootSOperation } from 'mute-core'
 // import { LogootSOperation, TextDelete, TextInsert } from 'mute-structs'
 import { map } from 'rxjs/operators'
 
 import * as diff from 'diff'
-import { from } from 'rxjs'
+import { from, Subscription } from 'rxjs'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { AUTHORS } from './mock-authors'
 
 @Injectable()
-export class HistoryService {
-  constructor(private storage: LocalStorageService) {}
+export class HistoryService implements OnDestroy {
+  private subs: Subscription[]
+
+  constructor(private storage: LocalStorageService) {
+    this.subs = []
+  }
 
   getDiff(strA: string, strB: string): any {
     return diff.diffChars(strA, strB)
@@ -34,18 +38,20 @@ export class HistoryService {
             })
             .map((richLogootSOp: RichLogootSOperation) => richLogootSOp.logootSOp)
           const mcDocService = new DocService(42)
-          mcDocService.onRemoteTextOperations
-            .pipe(
-              map(({ operations }) => {
-                return operations.map((op: any | any) => {
-                  const randAuthor = AUTHORS[Math.floor(Math.random() * AUTHORS.length)]
-                  op.authorId = randAuthor[0]
-                  op.authorName = randAuthor[1]
-                  return op
+          this.subs.push(
+            mcDocService.onRemoteTextOperations
+              .pipe(
+                map(({ operations }) => {
+                  return operations.map((op: any) => {
+                    const randAuthor = AUTHORS[Math.floor(Math.random() * AUTHORS.length)]
+                    op.authorId = randAuthor[0]
+                    op.authorName = randAuthor[1]
+                    return op
+                  })
                 })
-              })
-            )
-            .subscribe((ops) => resolve(ops))
+              )
+              .subscribe((ops) => resolve(ops))
+          )
           mcDocService.remoteLogootSOperationSource = from(
             logootSOp.map((op) => ({
               collaborator: undefined,
@@ -77,6 +83,10 @@ export class HistoryService {
         resolve(docAuthors)
       })
     })
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe())
   }
 }
 
