@@ -156,7 +156,7 @@ export class LocalStorageService extends Storage {
 
   async lookupDoc(key: string): Promise<Doc[]> {
     this.check()
-    return await new Promise<Doc[]>((resolve, reject) => {
+    const docs = await new Promise<Doc[]>((resolve, reject) => {
       this.db
         .allDocs({
           query: `(type:"doc") AND (signalingKey:"${key}" OR key:"${key}")`,
@@ -172,6 +172,15 @@ export class LocalStorageService extends Storage {
           (err) => reject(err)
         )
     })
+
+    // FIXME: remove this code when all clients have updated to the new version
+    for (const doc of docs) {
+      if (doc.signalingKey === doc.cryptoKey) {
+        doc.cryptoKey = await this.symCrypto.generateKey()
+      }
+    }
+
+    return docs
   }
 
   async getDocBody(doc: Doc): Promise<object> {
@@ -268,7 +277,7 @@ export class LocalStorageService extends Storage {
     } else {
       query = `(parentFolderId:"${folders[0].id}") OR (parentFolderId:"${folders[1].id}")`
     }
-    return (await new Promise((resolve, reject) => {
+    const docs = (await new Promise((resolve, reject) => {
       this.db.allDocs({ query: `${query} AND (type:"doc")`, select_list: selectListForDoc }).then(
         ({ data }: any) => {
           if (data !== undefined && data.rows !== undefined && data.rows.length !== 0) {
@@ -280,6 +289,15 @@ export class LocalStorageService extends Storage {
         (err) => reject(err)
       )
     })) as Doc[]
+
+    // FIXME: remove this code when all clients have updated to the new version
+    for (const doc of docs) {
+      if (doc.signalingKey === doc.cryptoKey) {
+        doc.cryptoKey = await this.symCrypto.generateKey()
+      }
+    }
+
+    return docs
   }
 
   private openDB(login) {
