@@ -74,18 +74,19 @@ export class Doc extends File {
   }
 
   set onRemoteDocChange(source: Observable<MetaDataMessage>) {
-    source.subscribe((message: MetaDataMessage) => {
-      switch (message.type) {
+    source.subscribe(({ type, data }) => {
+      switch (type) {
         case MetaDataType.Title:
-          const newTitle = message.data
-          this._title = newTitle
+          const { title, count: titleLastModification } = data
+          this._title = title
+          this._titleLastModification = titleLastModification
           this.modified = new Date()
-          this.docChangeSubject.next(message.type)
+          this.docChangeSubject.next(type)
           break
         case MetaDataType.FixData:
-          this.created = new Date(message.data.creationDate)
-          this.cryptoKey = message.data.key
-          this.docChangeSubject.next(message.type)
+          this.created = new Date(data.creationDate)
+          this.cryptoKey = data.key
+          this.docChangeSubject.next(type)
           break
       }
     })
