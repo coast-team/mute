@@ -1,33 +1,18 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { Subscription } from 'rxjs'
+import { Component } from '@angular/core'
 
-import { MetaDataType } from 'mute-core'
 import { Doc } from '../../core/Doc'
 import { RichCollaboratorsService } from '../../doc/rich-collaborators'
+import { DocService } from '../doc.service'
 
 @Component({
   selector: 'mute-right-side',
   templateUrl: './right-side.component.html',
   styleUrls: ['./right-side.component.scss'],
 })
-export class RightSideComponent implements OnInit, OnDestroy {
-  @Input() doc: Doc
+export class RightSideComponent {
+  public doc: Doc
 
-  private subs: Subscription[]
-
-  constructor(private cd: ChangeDetectorRef, public collabService: RichCollaboratorsService) {
-    this.subs = []
-  }
-
-  ngOnInit() {
-    this.subs[this.subs.length] = this.doc.onDocChange.subscribe((type: MetaDataType) => {
-      if (type === MetaDataType.FixData) {
-        this.cd.detectChanges()
-      }
-    })
-  }
-
-  ngOnDestroy() {
-    this.subs.forEach((sub) => sub.unsubscribe())
+  constructor(docService: DocService, public collabService: RichCollaboratorsService) {
+    this.doc = docService.doc
   }
 }

@@ -1,9 +1,3 @@
-<mat-card
-  [ngClass.lt-sm]="'card-lt-sm'"
-  [ngClass.lt-lg]="'card-lt-lg'"
-  [ngClass.lg]="'card-lg'"
-  [ngClass.gt-lg]="'card-gt-lg'"
-
->
-  <div #editorElt muteCursors [cm]="editor" [mcDocService]="docService"></div>
+<mat-card [ngClass.lt-sm]="'card-lt-sm'" [ngClass.lt-lg]="'card-lt-lg'" [ngClass.lg]="'card-lg'" [ngClass.gt-lg]="'card-gt-lg'">
+  <div #editorElt muteCursors [cm]="editor"></div>
 </mat-card>

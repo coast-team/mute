@@ -1,4 +1,4 @@
-<mute-toolbar [doc]="doc" (menu)="menuSidenav.toggle()" (info)="infoSidenav.toggle()">
+<mute-toolbar (menu)="menuSidenav.toggle()" (info)="infoSidenav.toggle()">
 </mute-toolbar>
 
 <mat-sidenav-container>
@@ -13,11 +13,11 @@
     <mat-drawer-container class="content" hasBackdrop="false">
 
       <mat-drawer-content>
-        <mute-editor [ngClass]="extrasmall" #editorComponent [docService]="muteCore.docService" (isReady)="editorReady()"></mute-editor>
+        <mute-editor [ngClass]="extrasmall" (isReady)="editorReady()"></mute-editor>
       </mat-drawer-content>
       <mat-drawer autoFocus="false" position="end" [mode]="drawerMode | async" [opened]="drawerOpened | async" #infoSidenav class="info-sidenav"
         ngClass.lt-sm="info-sidenav-lt-sm">
-        <mute-right-side [doc]="doc" class="info-panel"></mute-right-side>
+        <mute-right-side class="info-panel"></mute-right-side>
       </mat-drawer>
     </mat-drawer-container>
   </mat-sidenav-content>

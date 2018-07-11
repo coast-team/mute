@@ -29,10 +29,7 @@ export class DocRenameDialogComponent {
     ;(event.target as HTMLInputElement).select()
   }
 
-  save() {
-    if (this.titleControl.value !== '') {
-      this.doc.title = this.titleControl.value
-      this.localStorage.save(this.doc)
-    }
+  updateTitle() {
+    this.doc.title = this.titleControl.value
   }
 }

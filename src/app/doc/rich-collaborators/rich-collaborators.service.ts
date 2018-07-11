@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core'
+import { ChangeDetectorRef, Injectable, OnDestroy } from '@angular/core'
 import { ICollaborator } from 'mute-core'
-import { merge, Observable, Subject } from 'rxjs'
+import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
 import { EProperties } from '../../core/settings/EProperties'
@@ -11,20 +11,22 @@ import { Colors } from './Colors'
 import { RichCollaborator } from './RichCollaborator'
 
 @Injectable()
-export class RichCollaboratorsService {
+export class RichCollaboratorsService implements OnDestroy {
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
   private updateSubject: Subject<RichCollaborator>
   private me: Promise<void>
   private colors: Colors
+  private subs: Subscription[]
 
   public collaborators: RichCollaborator[]
 
-  constructor(settings: SettingsService, network: NetworkService) {
+  constructor(cd: ChangeDetectorRef, settings: SettingsService, network: NetworkService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.updateSubject = new Subject()
     this.colors = new Colors()
+    this.subs = []
 
     let me = this.createMe(settings.profile)
     this.collaborators = [me]
@@ -41,6 +43,12 @@ export class RichCollaboratorsService {
         this.collaborators[index] = me
         this.updateSubject.next(me)
       })
+
+    this.subs[this.subs.length] = this.onChanges.subscribe(() => cd.detectChanges())
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe())
   }
 
   get onUpdate(): Observable<RichCollaborator> {

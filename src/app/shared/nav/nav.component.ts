@@ -59,9 +59,9 @@ export class NavComponent implements OnDestroy {
     this.commit = appData.commit
     this.local = localStorage.local
     this.trash = localStorage.trash
-    this.remote = botStorage.remote
+    this.remote = localStorage.remote
     this.subs = []
-    this.isRemoteExist = this.botStorage.remote !== undefined
+    this.isRemoteExist = this.localStorage.remote !== undefined
     this.subs[this.subs.length] = this.botStorage.onStatus.subscribe((code) => {
       switch (code) {
         case BotStorageService.NOT_RESPONDING:

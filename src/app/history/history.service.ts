@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { DocService, RichLogootSOperation } from 'mute-core'
-import { LogootSOperation, TextDelete, TextInsert } from 'mute-structs'
+// import { LogootSOperation, TextDelete, TextInsert } from 'mute-structs'
 import { map } from 'rxjs/operators'
 
 import * as diff from 'diff'
@@ -21,9 +21,9 @@ export class HistoryService {
   getOperations(doc: Doc): Promise<Array<IDelete | IInsert>> {
     return new Promise((resolve) => {
       this.storage
-        .getDocBody(doc)
+        .fetchDocContent(doc)
         .then((body: any) => {
-          const logootSOp: LogootSOperation[] = body.richLogootSOps
+          const logootSOp = body.richLogootSOps
             .map(
               (richLogootSOp: any): RichLogootSOperation | null => {
                 return RichLogootSOperation.fromPlain(richLogootSOp)
@@ -37,7 +37,7 @@ export class HistoryService {
           mcDocService.onRemoteTextOperations
             .pipe(
               map(({ operations }) => {
-                return operations.map((op: IDelete | IInsert) => {
+                return operations.map((op: any | any) => {
                   const randAuthor = AUTHORS[Math.floor(Math.random() * AUTHORS.length)]
                   op.authorId = randAuthor[0]
                   op.authorName = randAuthor[1]
@@ -80,12 +80,12 @@ export class HistoryService {
   }
 }
 
-export interface IDelete extends TextDelete {
+export interface IDelete {
   authorId: number
   authorName: string
 }
 
-export interface IInsert extends TextInsert {
+export interface IInsert {
   authorId: number
   authorName: string
 }

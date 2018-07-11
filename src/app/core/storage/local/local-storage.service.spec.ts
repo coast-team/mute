@@ -21,7 +21,7 @@ describe('LocalStorageService', () => {
   })
 
   it('Delete doc', () => {
-    localStorage.delete(doc).then(() => {
+    doc.delete().then(() => {
       localStorage.get(doc.id).catch((del) => {
         expect(del === new Error('Cannot find document ' + doc.id)).toBeTruthy()
       })

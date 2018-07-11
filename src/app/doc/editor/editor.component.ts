@@ -1,64 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Injectable,
-  Input,
   NgZone,
-  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
 } from '@angular/core'
-import { DocService } from 'mute-core'
-import { TextDelete, TextInsert, TextOperation } from 'mute-structs'
-import { fromEventPattern, Observable, Subscription } from 'rxjs'
-import { filter, map, share } from 'rxjs/operators'
+import { Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
 import * as Editor from 'tui-editor'
-// import 'tui-editor/dist/tui-editor-extScrollSync.js'
-
-type ChangeEventHandler = (instance: CodeMirror.Editor, change: CodeMirror.EditorChange) => void
-
-class ChangeEvent {
-  instance: CodeMirror.Editor
-  change: CodeMirror.EditorChange
-
-  constructor(instance: CodeMirror.Editor, change: CodeMirror.EditorChange) {
-    this.instance = instance
-    this.change = change
-  }
-
-  toTextOperations(): TextOperation[] {
-    const textOperations: TextOperation[] = []
-    const pos: CodeMirror.Position = this.change.from
-    const index: number = this.instance.getDoc().indexFromPos(pos)
-
-    // Some changes should be translated into both a TextDelete and a TextInsert operations
-    // It's especially the case when the changes replace a character
-    if (this.isDeleteOperation()) {
-      const length: number = this.change.removed.join('\n').length
-      textOperations.push(new TextDelete(index, length))
-    }
-    if (this.isInsertOperation()) {
-      const text: string = this.change.text.join('\n')
-      textOperations.push(new TextInsert(index, text))
-    }
-
-    // log.info('operation:editor', 'generated: ', textOperations)
-    return textOperations
-  }
-
-  isInsertOperation(): boolean {
-    return this.change.text.length > 1 || this.change.text[0].length > 0
-  }
-
-  isDeleteOperation(): boolean {
-    return this.change.removed.length > 1 || this.change.removed[0].length > 0
-  }
-}
+import { Doc } from '../../core/Doc'
+import { DocService } from '../doc.service'
 
 @Component({
   selector: 'mute-editor',
@@ -71,23 +28,24 @@ class ChangeEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable()
-export class EditorComponent implements OnChanges, OnDestroy, OnInit {
-  @Input() docService: DocService
-  @Output() isReady: EventEmitter<any> = new EventEmitter()
-  @ViewChild('editorElt') editorElt
+export class EditorComponent implements OnDestroy, OnInit {
+  @Output() isReady: EventEmitter<void>
+  @ViewChild('editorElt') editorElt: ElementRef
 
   public editor: CodeMirror.Editor
 
-  private isInited: boolean
-  private remoteOperationsSubscription: Subscription
-  public textOperationsObservable: Observable<TextOperation[]>
+  private subs: Subscription[]
+  private doc: Doc
 
-  constructor(private zone: NgZone) {
-    this.isInited = false
+  constructor(docService: DocService, private zone: NgZone) {
+    this.isReady = new EventEmitter()
+    this.subs = []
+    this.doc = docService.doc
   }
 
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
+      // Initialize editor
       const tuiEditor = new Editor({
         el: this.editorElt.nativeElement,
         initialEditType: 'markdown',
@@ -98,101 +56,63 @@ export class EditorComponent implements OnChanges, OnDestroy, OnInit {
       })
       this.editor = tuiEditor.getCodeMirror()
       this.setupGlobalForTests()
+      const cmDoc = this.editor.getDoc()
 
-      const operationStream: Observable<ChangeEvent> = fromEventPattern(
-        (h: ChangeEventHandler) => this.editor.on('change', h),
-        (h: ChangeEventHandler) => this.editor.off('change', h)
-      ).pipe(
-        map(([instance, change]) => new ChangeEvent(instance, change)),
-        filter((changeEvent: ChangeEvent) => {
-          // The change's origin indicates the kind of changes performed
-          // When the application updates the editor programatically, this field remains undefined
-          // Allow to filter the changes performed by our application
-          return changeEvent.change.origin !== 'muteRemoteOp' && changeEvent.change.origin !== 'setValue'
-        })
-      )
+      // Emit LOCAL changes
+      this.editor.on('change', (instance, { origin, from, to, removed, text }) => {
+        if (origin !== 'remote' && origin !== 'setValue') {
+          const offset = cmDoc.indexFromPos(from)
+          const result = []
 
-      const multipleOperationsStream: Observable<ChangeEvent[]> = operationStream.pipe(map((changeEvent) => [changeEvent]))
-      /*
-        .bufferTime(1000)
-        .filter((changeEvents: ChangeEvent[]) => {
-          // From time to time, the buffer returns an empty array
-          // Allow to filter these cases
-          return changeEvents.length > 0
-        })
-      */
+          if (removed.length > 1 || removed[0]) {
+            const length = removed.length - 1 + removed.reduce((accumulator, line) => accumulator + line.length, 0)
+            result[result.length] = { offset, length }
+          }
 
-      this.textOperationsObservable = multipleOperationsStream.pipe(
-        map((changeEvents: ChangeEvent[]) =>
-          changeEvents
-            .map((changeEvent: ChangeEvent) => changeEvent.toTextOperations())
-            .reduce((acc, textOperations) => acc.concat(textOperations), [])
-        ),
-        share()
-      )
+          if (text.length > 1 || text[0]) {
+            result[result.length] = { offset, text: text.join('\n') }
+          }
 
-      this.docService.localTextOperationsSource = this.textOperationsObservable
-
-      this.isReady.next(undefined)
-    })
-  }
-
-  ngOnChanges(): void {
-    this.zone.runOutsideAngular(() => {
-      if (this.isInited) {
-        this.editor.setValue('')
-        this.remoteOperationsSubscription.unsubscribe()
-      }
-
-      // First ngOnChanges is called before ngOnInit
-      // This observable is not ready yet
-      if (this.textOperationsObservable !== undefined) {
-        this.docService.localTextOperationsSource = this.textOperationsObservable
-      }
-
-      this.remoteOperationsSubscription = this.docService.onRemoteTextOperations.subscribe(({ collaborator, operations }) => {
-        const updateDoc: () => void = () => {
-          const doc: CodeMirror.Doc = this.editor.getDoc()
-
-          // log.info('operation:editor', 'applied: ', textOperations)
-          operations.forEach((textOperation: TextOperation) => {
-            const from: CodeMirror.Position = doc.posFromIndex(textOperation.offset)
-            if (textOperation instanceof TextInsert) {
-              doc.replaceRange(textOperation.content, from, undefined, 'muteRemoteOp')
-            } else if (textOperation instanceof TextDelete) {
-              const to: CodeMirror.Position = doc.posFromIndex(textOperation.offset + textOperation.length)
-              doc.replaceRange('', from, to, 'muteRemoteOp')
-            }
-          })
+          this.doc.localContentChanges.next(result)
         }
-
-        this.editor.operation(updateDoc)
       })
 
-      if (this.isInited) {
-        this.isReady.next(undefined)
-      } else {
-        this.isInited = true
-      }
+      // Subscribe to REMOTE changes
+      this.subs[this.subs.length] = this.doc.remoteContentChanges.subscribe((ops) => {
+        const apply = () => {
+          for (const { offset, text, length } of ops) {
+            const from = cmDoc.posFromIndex(offset)
+            if (length) {
+              const to = cmDoc.posFromIndex(offset + length)
+              cmDoc.replaceRange('', from, to, 'remote')
+            } else {
+              cmDoc.replaceRange(text, from, undefined, 'remote')
+            }
+          }
+        }
+        if (ops.length === 0) {
+          apply()
+        } else {
+          this.editor.operation(apply)
+        }
+      })
+
+      this.isReady.next()
     })
   }
 
   ngOnDestroy() {
-    this.remoteOperationsSubscription.unsubscribe()
-  }
-
-  focus() {
-    this.editor.focus()
+    this.subs.forEach((s) => s.unsubscribe())
   }
 
   private setupGlobalForTests() {
-    const doc = this.editor.getDoc() as any
+    const cmDoc = this.editor.getDoc() as any
     window.muteTest = {
       insert: (index: number, text: string) => {
-        doc.replaceRange(text, doc.posFromIndex(index), null, '+input')
+        cmDoc.replaceRange(text, cmDoc.posFromIndex(index), null, '+input')
       },
       delete: (index: number, length: number) => {
-        doc.replaceRange('', doc.posFromIndex(index), doc.posFromIndex(index + length), '+input')
+        cmDoc.replaceRange('', cmDoc.posFromIndex(index), cmDoc.posFromIndex(index + length), '+input')
       },
       getText: (index?: number, length?: number) => {
         if (index) {

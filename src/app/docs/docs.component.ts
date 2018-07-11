@@ -68,8 +68,8 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.docsSource = new DocsSource(this.docsSubject)
     this.title = ''
     this.subs = []
-    if (this.botStorage.remote) {
-      this.remoteId = this.botStorage.remote.id
+    if (this.localStorage.remote) {
+      this.remoteId = this.localStorage.remote.id
       this.displayedColumnsLocal.push('synchronized')
       this.displayedColumnsRemote.push('synchronized')
     }
@@ -103,7 +103,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   restore(doc: Doc): Promise<void> {
-    return this.localStorage.move(doc, this.localStorage.local).then(() => {
+    return doc.move(this.localStorage.local).then(() => {
       this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
       this.docsSubject.next(this.docs)
     })
@@ -121,13 +121,13 @@ export class DocsComponent implements OnDestroy, OnInit {
       case this.localStorage.trash:
         this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
         this.docsSubject.next(this.docs)
-        this.localStorage.delete(doc).then(() => {
+        doc.delete().then(() => {
           this.snackBar.open(`"${doc.title}" has been deleted.`, 'close', {
             duration: 3000,
           })
         })
         break
-      case this.botStorage.remote:
+      case this.localStorage.remote:
         const dialogRef = this.dialog.open(RemoteDeleteDialogComponent, {
           data: doc.title,
           width: '400px',
@@ -177,7 +177,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.folder = folder
     this.updateDisplayedColumns()
     this.isFinishOpen = false
-    this.localStorage.getDocs(folder).then((docs) => {
+    folder.fetchDocs().then((docs) => {
       this.docs = docs
       this.docsSubject.next(this.docs)
       this.isFinishOpen = true
@@ -191,14 +191,14 @@ export class DocsComponent implements OnDestroy, OnInit {
   private moveToTrash(doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
     this.docsSubject.next(this.docs)
-    this.localStorage.move(doc, this.localStorage.trash).then(() => {
+    doc.move(this.localStorage.trash).then(() => {
       this.snackBar
         .open(`"${doc.title}" moved to trash.`, 'Undo', {
           duration: 5000,
         })
         .onAction()
         .subscribe(() => {
-          this.localStorage.move(doc, this.localStorage.local).then(() => {
+          doc.move(this.localStorage.local).then(() => {
             this.docs[this.docs.length] = doc
             this.docsSubject.next(this.docs)
           })
@@ -210,7 +210,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     if (this.isMobile) {
       this.displayedColumns = ['title']
     } else {
-      if (this.folder === this.botStorage.remote) {
+      if (this.folder === this.localStorage.remote) {
         this.displayedColumns = this.displayedColumnsRemote
       } else {
         this.displayedColumns = this.displayedColumnsLocal

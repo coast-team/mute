@@ -1,19 +1,16 @@
-import { Injectable, NgZone } from '@angular/core'
+import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
-import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscription } from 'rxjs'
-import { takeUntil } from 'rxjs/operators'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 
 import { environment } from '../../../environments/environment'
 import { Message } from './message_proto'
 
 @Injectable()
-export class NetworkService {
+export class NetworkService implements OnDestroy {
   public wg: WebGroup
   public key: string
   private botUrls: string[]
-
-  private disposeSubject: Subject<void>
 
   // Subjects related to the current peer
   private joinSubject: Subject<JoinEvent>
@@ -27,6 +24,7 @@ export class NetworkService {
    */
   private peerJoinSubject: Subject<number>
   private peerLeaveSubject: Subject<number>
+  private subs: Subscription[]
 
   private messageToBroadcastSubscription: Subscription
   private messageToSendRandomlySubscription: Subscription
@@ -39,6 +37,7 @@ export class NetworkService {
   constructor(private zone: NgZone) {
     this.botUrls = []
     this.key = ''
+    this.subs = []
 
     // Initialize subjects
     this.peerJoinSubject = new Subject()
@@ -47,7 +46,6 @@ export class NetworkService {
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new Subject()
 
-    this.disposeSubject = new Subject<void>()
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
 
@@ -96,7 +94,7 @@ export class NetworkService {
   }
 
   set initSource(source: Observable<string>) {
-    source.pipe(takeUntil(this.disposeSubject)).subscribe((key: string) => {
+    this.subs[this.subs.length] = source.subscribe((key: string) => {
       this.key = key
       this.join(key)
     })
@@ -168,28 +166,19 @@ export class NetworkService {
     return this.signalingSubject.asObservable()
   }
 
-  clean(): void {
-    if (this.wg !== undefined) {
-      this.wg.leave()
-      this.leaveSubject.next()
+  ngOnDestroy(): void {
+    this.messageToBroadcastSubscription.unsubscribe()
+    this.messageToSendRandomlySubscription.unsubscribe()
+    this.messageToSendToSubscription.unsubscribe()
 
-      this.disposeSubject.complete()
+    if (this.wg !== undefined) {
       this.messageSubject.complete()
       this.joinSubject.complete()
       this.leaveSubject.complete()
       this.peerJoinSubject.complete()
       this.peerLeaveSubject.complete()
 
-      this.disposeSubject = new Subject<void>()
-      this.messageSubject = new ReplaySubject<NetworkMessage>()
-      this.joinSubject = new Subject()
-      this.leaveSubject = new Subject()
-      this.peerJoinSubject = new ReplaySubject<number>()
-      this.peerLeaveSubject = new ReplaySubject<number>()
-
-      this.messageToBroadcastSubscription.unsubscribe()
-      this.messageToSendRandomlySubscription.unsubscribe()
-      this.messageToSendToSubscription.unsubscribe()
+      this.wg.leave()
     }
   }
 

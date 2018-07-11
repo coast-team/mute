@@ -4,10 +4,17 @@ import { filter } from 'rxjs/operators'
 
 import { environment } from '../../../../environments/environment'
 import { Doc } from '../../Doc'
-import { Folder } from '../../Folder'
 import { EProperties } from '../../settings/EProperties'
 import { SettingsService } from '../../settings/settings.service'
 import { Storage } from '../Storage'
+
+export interface IMetadata {
+  signalingKey: string
+  cryptoKey: string
+  title: string
+  titleModified: number
+  created: number
+}
 
 @Injectable()
 export class BotStorageService extends Storage {
@@ -15,7 +22,6 @@ export class BotStorageService extends Storage {
   public static NOT_RESPONDING = 2
 
   public name: string
-  public remote: Folder
 
   private url: string
   private webSocketPath: string
@@ -30,8 +36,6 @@ export class BotStorageService extends Storage {
       this.secure = bs.secure
       this.url = bs.url
       this.webSocketPath = bs.webSocketPath
-      this.remote = Folder.create('Remote storage', 'cloud', true)
-      this.remote.id = this.id
     } else {
       this.name = ''
       this.url = ''
@@ -40,18 +44,18 @@ export class BotStorageService extends Storage {
     settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => this.updateStatus())
   }
 
-  async fetchDocs(): Promise<string[]> {
+  async fetchDocs(): Promise<IMetadata[]> {
     if (this.url && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(`${this.httpURL}/docs/${this.settings.profile.login}`).subscribe(
-          (keys) => resolve(keys),
+          (docs) => resolve(docs),
           (err) => {
             log.warn('Could not retreive documents keys from the bot storage')
             super.setStatus(BotStorageService.NOT_RESPONDING)
             resolve([])
           }
         )
-      })) as string[]
+      })) as IMetadata[]
     }
     return []
   }

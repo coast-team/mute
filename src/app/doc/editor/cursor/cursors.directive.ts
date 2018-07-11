@@ -1,10 +1,9 @@
 import { Directive, Injectable, Input, OnDestroy, OnInit } from '@angular/core'
 import * as CodeMirror from 'codemirror'
-import { DocService, NetworkMessage, Position } from 'mute-core'
-import { Identifier } from 'mute-structs'
 import { Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
+import { DocService } from '../../doc.service'
 import { NetworkService } from '../../network/'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
 import { CollaboratorCursor } from './CollaboratorCursor'
@@ -16,7 +15,6 @@ import * as proto from './cursor_proto'
 @Injectable()
 export class CursorsDirective implements OnInit, OnDestroy {
   @Input() cm: CodeMirror.Editor
-  @Input() mcDocService: DocService
 
   private subs: Subscription[]
 
@@ -30,7 +28,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
   protected id: number
 
-  constructor(private collabService: RichCollaboratorsService, private network: NetworkService) {
+  constructor(private docService: DocService, private collabService: RichCollaboratorsService, private network: NetworkService) {
     this.id = 687
     this.protoCursor = proto.Cursor.create()
     this.protoAnchor = proto.Position.create()
@@ -89,35 +87,35 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.listenEventsForCursorChange()
 
     // On message from the network
-    this.subs[this.subs.length] = this.network.onMessage
-      .pipe(filter((msg: NetworkMessage) => msg.service === this.id))
-      .subscribe((msg: NetworkMessage) => {
-        const protoCursor = proto.Cursor.decode(msg.content)
-        const cursor = this.cursors.get(msg.id)
-        if (cursor) {
-          if (protoCursor.head) {
-            const headPos = this.protoPos2codemirrorPos(protoCursor.head)
-            if (protoCursor.anchor) {
-              const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
-              cursor.updateSelection(anchorPos, headPos)
-            } else {
-              cursor.removeSelection()
-              cursor.updateCursor(headPos)
-            }
+    this.subs[this.subs.length] = this.network.onMessage.pipe(filter((msg) => msg.service === this.id)).subscribe((msg) => {
+      const protoCursor = proto.Cursor.decode(msg.content)
+      const cursor = this.cursors.get(msg.id)
+      if (cursor) {
+        if (protoCursor.head) {
+          const headPos = this.protoPos2codemirrorPos(protoCursor.head)
+          if (protoCursor.anchor) {
+            const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
+            cursor.updateSelection(anchorPos, headPos)
           } else {
-            cursor.removeCursor()
+            cursor.removeSelection()
+            cursor.updateCursor(headPos)
+          }
+        } else {
+          cursor.removeCursor()
+        }
+      }
+    })
+
+    // On remote operation
+    this.docService.doc.remoteContentChanges.subscribe((ops) => {
+      ops.forEach(({ collaborator }) => {
+        if (collaborator) {
+          const cursor = this.cursors.get(collaborator.id)
+          if (cursor) {
+            cursor.resetDisplayNameTimeout()
           }
         }
       })
-
-    // On remote operation
-    this.mcDocService.onRemoteTextOperations.subscribe(({ collaborator }) => {
-      if (collaborator) {
-        const cursor = this.cursors.get(collaborator.id)
-        if (cursor) {
-          cursor.resetDisplayNameTimeout()
-        }
-      }
     })
   }
 
@@ -126,9 +124,8 @@ export class CursorsDirective implements OnInit, OnDestroy {
   }
 
   private protoPos2codemirrorPos(pos: proto.IPosition): CodeMirror.Position {
-    if (pos.id) {
-      const id = Identifier.fromPlain(pos.id)
-      return this.cmDoc.posFromIndex(this.mcDocService.indexFromId(id) + pos.index)
+    if (pos.id && pos.id.tuples) {
+      return this.cmDoc.posFromIndex(this.docService.indexFromId(pos.id as any) + pos.index)
     } else {
       const lastLine = this.cmDoc.lastLine()
       return { line: lastLine, ch: this.cmDoc.getLine(lastLine).length }
@@ -141,7 +138,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
     if (head.line !== anchor.line || head.ch !== anchor.ch) {
       // Update anchor position of the selection
-      const muteCoreAnchor: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(anchor))
+      const muteCoreAnchor = this.docService.positionFromIndex(this.cmDoc.indexFromPos(anchor))
       if (muteCoreAnchor) {
         this.protoAnchor.id = muteCoreAnchor.id
         this.protoAnchor.index = muteCoreAnchor.index
@@ -157,7 +154,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     }
 
     // Update cursor position
-    const muteCoreHead: Position | null = this.mcDocService.positionFromIndex(this.cmDoc.indexFromPos(head))
+    const muteCoreHead = this.docService.positionFromIndex(this.cmDoc.indexFromPos(head))
     if (muteCoreHead) {
       this.protoHead.id = muteCoreHead.id
       this.protoHead.index = muteCoreHead.index

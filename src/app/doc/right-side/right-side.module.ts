@@ -10,6 +10,5 @@ import { RightSideComponent } from './right-side.component'
   declarations: [RightSideComponent, MarkdownCheatsheetComponent, DetailsComponent],
   imports: [SharedModule, RouterModule],
   exports: [RightSideComponent],
-  providers: [],
 })
 export class RightSideModule {}

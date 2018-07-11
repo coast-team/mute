@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core'
 
-import { MetaDataType } from 'mute-core'
 import { Doc } from '../../core/Doc'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
-import { LocalStorageService } from '../../core/storage/local/local-storage.service'
+import { DocService } from '../doc.service'
 import { NetworkService } from '../network'
 
 @Component({
@@ -11,33 +10,20 @@ import { NetworkService } from '../network'
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss'],
 })
-export class ToolbarComponent implements OnInit {
-  @Input() doc: Doc
+export class ToolbarComponent {
   @Output() menu: EventEmitter<void>
   @Output() info: EventEmitter<void>
   @ViewChild('input') input: ElementRef
 
   public botNotAvailable: boolean
+  public doc: Doc
 
-  constructor(
-    private cd: ChangeDetectorRef,
-    private network: NetworkService,
-    private botStorage: BotStorageService,
-    private localStorage: LocalStorageService
-  ) {
+  constructor(docService: DocService, private network: NetworkService, private botStorage: BotStorageService) {
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
+    this.doc = docService.doc
     this.botNotAvailable = true
     botStorage.onStatus.subscribe((code) => (this.botNotAvailable = code !== BotStorageService.AVAILABLE))
-  }
-
-  ngOnInit() {
-    this.doc.onDocChange.subscribe((type) => {
-      if (type === MetaDataType.Title) {
-        this.cd.detectChanges()
-        this.localStorage.save(this.doc)
-      }
-    })
   }
 
   updateTitle(event) {
@@ -49,7 +35,6 @@ export class ToolbarComponent implements OnInit {
       if (newTitle !== this.doc.title) {
         this.input.nativeElement.value = this.doc.title
       }
-      this.localStorage.save(this.doc)
     }
   }
 

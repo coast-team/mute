@@ -40,28 +40,23 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
             dialogRef.afterClosed().subscribe((result) => resolve(result))
           })
           if (isDocReconstituted) {
-            await this.localStorage.move(doc, this.localStorage.local)
+            await doc.move(this.localStorage.local)
           } else {
             this.router.navigateByUrl('', { skipLocationChange: false })
             return
           }
         }
-
-        // Update opened date
-        doc.opened = new Date()
-        this.localStorage.save(doc)
-        return doc
       } else {
         // Create a new document
         doc = await this.localStorage.createDoc(key)
-        doc.opened = new Date()
         if (remote) {
           doc.addRemote(this.botStorage.id)
         }
-        this.localStorage.save(doc)
         this.snackBar.open(`A new document has been created`, 'close', { duration: 3000 })
-        return doc
       }
+
+      doc.opened = new Date()
+      return doc
     } catch (err) {
       this.snackBar.open(`Could not open or create a document: ${err.message}`, 'close', { duration: 3000 })
       this.router.navigateByUrl('', { skipLocationChange: false })
@@ -70,9 +65,10 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
   }
 
   async canDeactivate(docComponent: DocComponent): Promise<boolean> {
-    const doc = docComponent.doc
-    if (doc) {
-      await this.localStorage.saveDocBody(doc, docComponent.getDocState())
+    if (docComponent.docService) {
+      const doc = docComponent.docService.doc
+      await doc.saveMetadata()
+      await doc.saveContent(docComponent.docService.getDocContent())
     }
     return true
   }

@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
+import { MetaDataService } from 'mute-core'
 import { filter } from 'rxjs/operators'
 
+import { environment } from '../../../../environments/environment'
 import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
 import { Folder } from '../../Folder'
 import { EProperties } from '../../settings/EProperties'
 import { SettingsService } from '../../settings/settings.service'
-import { BotStorageService } from '../bot/bot-storage.service'
+import { BotStorageService, IMetadata } from '../bot/bot-storage.service'
+import { IStorage } from '../IStorage'
 import { Storage } from '../Storage'
 import { EIndexedDBState, getIndexedDBState } from './indexedDBCheck'
 
@@ -18,35 +21,43 @@ const selectListForDoc = [
   'signalingKey',
   'cryptoKey',
   'title',
-  'titleLastModification',
+  'titleModified',
   'remotes',
   'parentFolderId',
   'previousParentFolderId',
   'created',
   'opened',
   'modified',
+  'modifiedByOthers',
   'description',
 ]
 
 const DB_NAME_PREFIX = 'documents_v0.4.0_v2 -'
 
 @Injectable()
-export class LocalStorageService extends Storage {
+export class LocalStorageService extends Storage implements IStorage {
   public static NO_ACCESS = 1
   public static NOT_SUPPORTED = 2
 
   public local: Folder
   public trash: Folder
+  public remote: Folder
 
   private db: any
   private dbLogin: string
 
   constructor(private botStorage: BotStorageService, private symCrypto: SymmetricCryptoService) {
     super()
-    this.local = Folder.create('Local storage', 'devices', false)
+    this.local = Folder.create(this, 'Local storage', 'devices', false)
     this.local.id = 'local'
-    this.trash = Folder.create('Trash', 'delete', false)
+    this.trash = Folder.create(this, 'Trash', 'delete', false)
     this.trash.id = 'trash'
+    const bs = environment.botStorage || undefined
+
+    if (bs && 'url' in bs && 'secure' in bs && 'webSocketPath' in bs) {
+      this.remote = Folder.create(this, 'Remote storage', 'cloud', true)
+      this.remote.id = botStorage.id
+    }
   }
 
   async init(settings: SettingsService): Promise<void> {
@@ -100,57 +111,57 @@ export class LocalStorageService extends Storage {
     })
   }
 
-  async getDocs(folder: Folder): Promise<Doc[]> {
-    if (folder.id === this.local.id || folder.id === this.trash.id) {
-      const docs = await this.fetchDocs([folder])
-
-      const remoteKeys = await this.botStorage.fetchDocs()
-
-      for (const key of remoteKeys) {
-        let doc
-        for (const d of docs) {
-          if (d.signalingKey === key) {
-            doc = d
-            break
+  async fetchDocs(folder: Folder): Promise<Doc[]> {
+    switch (folder.id) {
+      case this.local.id: {
+        const [localDocs, botDocs] = [await this.fetchDocsFromFolders([this.local]), await this.botStorage.fetchDocs()]
+        for (const bd of botDocs) {
+          let ld = localDocs.find((d) => d.signalingKey === bd.signalingKey)
+          if (ld) {
+            this.mergeDocs(ld, bd)
+          } else if (!(await this.isInTrash(bd.signalingKey))) {
+            ld = await this.createDoc(bd.signalingKey)
+            ld.title = bd.title
+            ld.titleModified = new Date(bd.titleModified)
+            ld.created = new Date(bd.created)
+            ld.cryptoKey = bd.cryptoKey
+            localDocs.push(ld)
           }
+          ld.addRemote(this.remote.id)
         }
-        if (folder.id === this.local.id) {
-          if (!doc && !(await this.isInTrash(key))) {
-            doc = await this.createDoc(key)
-          }
-          if (doc && doc.addRemote(this.botStorage.remote.id)) {
-            this.save(doc)
-          }
-        } else {
-          if (doc && doc.addRemote(this.botStorage.remote.id)) {
-            this.save(doc)
-          }
-        }
+        return localDocs
       }
-      return docs
-    } else if (folder.id === this.botStorage.remote.id) {
-      const docs = await this.fetchDocs([this.local, this.trash])
-
-      const remoteKeys = await this.botStorage.fetchDocs()
-
-      const resultDocs: Doc[] = []
-      for (const key of remoteKeys) {
-        let doc
-        for (const d of docs) {
-          if (d.signalingKey === key) {
-            doc = d
-            break
+      case this.trash.id: {
+        const [trashDocs, botDocs] = [await this.fetchDocsFromFolders([this.trash]), await this.botStorage.fetchDocs()]
+        for (const bd of botDocs) {
+          const ld = trashDocs.find((d) => d.signalingKey === bd.signalingKey)
+          if (ld) {
+            this.mergeDocs(ld, bd)
+            ld.addRemote(this.remote.id)
           }
         }
-        if (!doc) {
-          doc = await this.createDoc(key)
-        }
-        if (doc.addRemote(this.botStorage.remote.id)) {
-          this.save(doc)
-        }
-        resultDocs.push(doc)
+        return trashDocs
       }
-      return resultDocs
+      case this.remote.id: {
+        const botDocs = await this.botStorage.fetchDocs()
+
+        const resultDocs: Doc[] = []
+        for (const bd of botDocs) {
+          let ld = (await this.lookupDoc(bd.signalingKey))[0]
+          if (ld) {
+            this.mergeDocs(ld, bd)
+          } else {
+            ld = await this.createDoc(bd.signalingKey)
+            ld.title = bd.title
+            ld.titleModified = new Date(bd.titleModified)
+            ld.created = new Date(bd.created)
+            ld.cryptoKey = bd.cryptoKey
+          }
+          ld.addRemote(this.remote.id)
+          resultDocs.push(ld)
+        }
+        return resultDocs
+      }
     }
   }
 
@@ -165,7 +176,7 @@ export class LocalStorageService extends Storage {
         .then(
           ({ data }: any) => {
             if (data !== undefined && data.rows.length !== 0) {
-              resolve(data.rows.map((row: any) => Doc.deserialize(row.id, row.value)))
+              resolve(data.rows.map((row: any) => Doc.deserialize(this, row.id, row.value)))
             }
             resolve([])
           },
@@ -179,11 +190,10 @@ export class LocalStorageService extends Storage {
         doc.cryptoKey = await this.symCrypto.generateKey()
       }
     }
-
     return docs
   }
 
-  async getDocBody(doc: Doc): Promise<object> {
+  async fetchDocContent(doc: Doc): Promise<object> {
     this.check()
     return await new Promise((resolve, reject) => {
       this.db.getAttachment(doc.id, 'body').then(
@@ -211,7 +221,7 @@ export class LocalStorageService extends Storage {
     return await this.db.getAttachment(docs[0].id, 'body')
   }
 
-  async saveDocBody(doc: Doc, body: State): Promise<any> {
+  async saveDocContent(doc: Doc, body: State): Promise<any> {
     doc.modified = new Date()
     await this.save(doc)
     return await new Promise((resolve, reject) => {
@@ -220,7 +230,7 @@ export class LocalStorageService extends Storage {
   }
 
   async createDoc(key = this.generateKey()): Promise<Doc> {
-    const doc = Doc.create(key, await this.symCrypto.generateKey(), '', this.local.id)
+    const doc = Doc.create(this, key, await this.symCrypto.generateKey(), '', this.local.id)
     await this.save(doc)
     return doc
   }
@@ -231,8 +241,8 @@ export class LocalStorageService extends Storage {
         return this.local
       case this.trash.id:
         return this.trash
-      case this.botStorage.remote.id:
-        return this.botStorage.remote
+      case this.remote.id:
+        return this.remote
       default:
         return undefined
     }
@@ -269,7 +279,7 @@ export class LocalStorageService extends Storage {
     })) as boolean
   }
 
-  private async fetchDocs(folders: Folder[]): Promise<Doc[]> {
+  private async fetchDocsFromFolders(folders: Folder[]): Promise<Doc[]> {
     this.check()
     let query
     if (folders.length === 1) {
@@ -281,7 +291,7 @@ export class LocalStorageService extends Storage {
       this.db.allDocs({ query: `${query} AND (type:"doc")`, select_list: selectListForDoc }).then(
         ({ data }: any) => {
           if (data !== undefined && data.rows !== undefined && data.rows.length !== 0) {
-            resolve(data.rows.map((row: any) => Doc.deserialize(row.id, row.value)))
+            resolve(data.rows.map((row: any) => Doc.deserialize(this, row.id, row.value)))
           } else {
             resolve([])
           }
@@ -323,5 +333,21 @@ export class LocalStorageService extends Storage {
     if (!this.isAvailable) {
       throw new Error('Local storage is unabailable')
     }
+  }
+
+  private async mergeDocs(doc: Doc, metadata: IMetadata) {
+    const { title, titleModified } = MetaDataService.mergeTitle(
+      { titleModified: doc.titleModified.getTime(), title: doc.title },
+      { titleModified: metadata.titleModified, title: metadata.title }
+    )
+    doc.title = title
+    doc.titleModified = new Date(titleModified)
+
+    const { docCreated, cryptoKey } = MetaDataService.mergeFixData(
+      { docCreated: doc.created.getTime(), cryptoKey: doc.cryptoKey },
+      { docCreated: metadata.created, cryptoKey: metadata.cryptoKey }
+    )
+    doc.created = new Date(docCreated)
+    doc.cryptoKey = cryptoKey
   }
 }

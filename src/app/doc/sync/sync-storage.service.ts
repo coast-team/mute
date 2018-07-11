@@ -24,7 +24,7 @@ export class SyncStorageService {
     source.subscribe((doc: Doc) => {
       this.doc = doc
       this.storage
-        .getDocBody(doc)
+        .fetchDocContent(doc)
         .then((data: any) => {
           const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
             .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
@@ -42,7 +42,7 @@ export class SyncStorageService {
   }
 
   set stateSource(source: Observable<State>) {
-    source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocBody(this.doc, state))
+    source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocContent(this.doc, state))
   }
 
   get onStoredState(): Observable<State> {

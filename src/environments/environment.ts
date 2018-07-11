@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   devLabel: true,
-  netfluxLog: true,
+  netfluxLog: false,
   rtcConfiguration: {
     iceServers: [
       {

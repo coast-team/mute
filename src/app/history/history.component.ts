@@ -3,7 +3,7 @@ import { ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import * as CodeMirror from 'codemirror'
 import { DocService } from 'mute-core'
-import { TextDelete, TextInsert } from 'mute-structs'
+// import { TextDelete, TextInsert } from 'mute-structs'
 import { Subscription } from 'rxjs'
 
 import { Author } from '../core/Author'
@@ -116,55 +116,51 @@ export class HistoryComponent implements OnInit, OnDestroy {
    * 1 and countOperation().
    */
   showVersion(numOperation: number) {
-    let begin = 0
-    let end = 0
-    let reverse = false
-    // TODO Refactoring to avoid those tests
-    if (this.currentOp === this.countOperations()) {
-      begin = this.operations[this.currentOp - 1].offset
-    } else {
-      begin = this.operations[this.currentOp].offset
-    }
-
-    if (numOperation === this.countOperations()) {
-      end = this.operations[numOperation - 1].offset
-    } else {
-      end = this.operations[numOperation].offset
-    }
-
-    if (this.currentOp > numOperation) {
-      reverse = true
-    }
-
-    if (this.currentOp !== numOperation) {
-      const doc = this.editor.getDoc() as any
-      // Generate string content depending on operations
-      const generatedText = this.generateText(0, numOperation - 1)
-      // just replace the content of editor the generated text.
-      doc.setValue(generatedText)
-      this.currentOp = numOperation
-    }
-
-    if (this.state) {
-      if (begin === end) {
-        end += 1
-      }
-      this.colorizeDifferences(begin, end, reverse)
-    } else {
-      this.colorizeAuthors(begin, end + 1)
-    }
+    // let begin = 0
+    // let end = 0
+    // let reverse = false
+    // // TODO Refactoring to avoid those tests
+    // if (this.currentOp === this.countOperations()) {
+    //   begin = this.operations[this.currentOp - 1].offset
+    // } else {
+    //   begin = this.operations[this.currentOp].offset
+    // }
+    // if (numOperation === this.countOperations()) {
+    //   end = this.operations[numOperation - 1].offset
+    // } else {
+    //   end = this.operations[numOperation].offset
+    // }
+    // if (this.currentOp > numOperation) {
+    //   reverse = true
+    // }
+    // if (this.currentOp !== numOperation) {
+    //   const doc = this.editor.getDoc() as any
+    //   // Generate string content depending on operations
+    //   const generatedText = this.generateText(0, numOperation - 1)
+    //   // just replace the content of editor the generated text.
+    //   doc.setValue(generatedText)
+    //   this.currentOp = numOperation
+    // }
+    // if (this.state) {
+    //   if (begin === end) {
+    //     end += 1
+    //   }
+    //   this.colorizeDifferences(begin, end, reverse)
+    // } else {
+    //   this.colorizeAuthors(begin, end + 1)
+    // }
   }
 
   generateText(beginOp: number, endOp: number): string {
-    let textContent = ''
-    for (let i = beginOp; i <= endOp; i++) {
-      const currentOp = this.operations[i]
-      if (currentOp instanceof TextInsert) {
-        textContent = textContent.slice(0, currentOp.offset) + currentOp.content + textContent.slice(currentOp.offset)
-      } else if (currentOp instanceof TextDelete) {
-        textContent = textContent.slice(0, currentOp.offset) + textContent.slice(currentOp.offset + currentOp.length, textContent.length)
-      }
-    }
+    const textContent = ''
+    // for (let i = beginOp; i <= endOp; i++) {
+    //   const currentOp = this.operations[i]
+    //   if (currentOp instanceof TextInsert) {
+    //     textContent = textContent.slice(0, currentOp.offset) + currentOp.content + textContent.slice(currentOp.offset)
+    //   } else if (currentOp instanceof TextDelete) {
+    //     textContent = textContent.slice(0, currentOp.offset) + textContent.slice(currentOp.offset + currentOp.length, textContent.length)
+    //   }
+    // }
     return textContent
   }
 
