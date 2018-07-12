@@ -2,13 +2,11 @@ import { ICollaborator, MetaDataMessage, MetaDataType, State } from 'mute-core'
 import { FixDataState } from 'mute-core/dist/types/doc/FixDataService'
 import { TitleState } from 'mute-core/dist/types/doc/TitleService'
 import { Observable, Subject } from 'rxjs'
-import { auditTime } from 'rxjs/operators'
 
 import { File } from './File'
 import { IStorage } from './storage/IStorage'
 
 const DEFAULT_TITLE = 'Untitled Document'
-const METADATA_SAVE_INTERVAL = 1000
 
 export interface IDocContentOperation {
   offset: number
@@ -61,7 +59,6 @@ export class Doc extends File {
     this.localContentChanges = new Subject()
     this.remoteContentChanges = new Subject()
     this._title = title || DEFAULT_TITLE
-    this.changes.pipe(auditTime(METADATA_SAVE_INTERVAL)).subscribe(() => this.saveMetadata())
   }
 
   get isDoc() {

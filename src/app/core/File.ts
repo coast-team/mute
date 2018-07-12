@@ -1,7 +1,10 @@
 import { Observable, Subject } from 'rxjs'
+import { auditTime } from 'rxjs/operators'
 
 import { Folder } from './Folder'
 import { IStorage } from './storage/IStorage'
+
+const METADATA_SAVE_INTERVAL = 1000
 
 export abstract class File {
   public static PARENT_FOLDER_ID = 100
@@ -36,7 +39,7 @@ export abstract class File {
     this._parentFolderId = parentFolderId || ''
     this._description = ''
     this.titleModified = new Date(null)
-    this.onMetadataChanges.subscribe(() => this.saveMetadata())
+    this.onMetadataChanges.pipe(auditTime(METADATA_SAVE_INTERVAL)).subscribe(() => this.saveMetadata())
   }
 
   protected deserialize(id: string, serialized: any) {
