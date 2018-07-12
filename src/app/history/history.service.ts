@@ -24,8 +24,8 @@ export class HistoryService implements OnDestroy {
 
   getOperations(doc: Doc): Promise<Array<IDelete | IInsert>> {
     return new Promise((resolve) => {
-      this.storage
-        .fetchDocContent(doc)
+      doc
+        .fetchContent()
         .then((body: any) => {
           const logootSOp = body.richLogootSOps
             .map(

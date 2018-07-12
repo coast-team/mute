@@ -135,8 +135,8 @@ export class Doc extends File {
     await this.storage.saveDocContent(this, content)
   }
 
-  async fetchContent(): Promise<object> {
-    return this.storage.fetchDocContent(this)
+  async fetchContent(blob = false): Promise<State | Blob | undefined> {
+    return this.storage.fetchDocContent(this, blob)
   }
 
   private updateTitle(newTitle: string, isLocal: boolean, titleModified = new Date()) {

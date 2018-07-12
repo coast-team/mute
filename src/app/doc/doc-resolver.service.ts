@@ -24,13 +24,7 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
 
     try {
       // Retreive the document from the local database
-      let doc = await this.localStorage.lookupDoc(key).then((docs: Doc[]) => {
-        if (docs && docs.length === 1) {
-          return docs[0]
-        } else if (docs.length > 1) {
-          log.error('Faild to fetch doc: more then one doc exist with this key: ', key)
-        }
-      })
+      let doc = await this.localStorage.fetchDoc(key)
 
       if (doc) {
         if (doc.parentFolderId === this.localStorage.trash.id) {

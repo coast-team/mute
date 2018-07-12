@@ -13,11 +13,11 @@ export class HistoryResolverService implements Resolve<Doc> {
     try {
       // Looking for a document
       const key = route.params['key']
-      return this.storage.lookupDoc(key).then((docs: Doc[]) => {
+      return this.storage.fetchDoc(key).then((doc) => {
         // FIXME: it's possible here to fetch a Folder with the provided key and thus need to treat this scenario
-        if (docs.length !== 0) {
+        if (doc) {
           // FIXME: maybe found several documents (in the future when folders are implemented)
-          return docs[0]
+          return doc
         } else {
           throw new Error('Document could not be found')
         }

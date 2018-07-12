@@ -8,6 +8,7 @@ export interface IStorage {
   move(file: File, folder: Folder): void
   delete(file: File): void
   saveDocContent(doc: Doc, body: State)
-  fetchDocContent(doc: Doc): Promise<object>
+  fetchDocContent(doc: Doc): Promise<State | undefined>
+  fetchDocContent(doc: Doc, blob: boolean): Promise<State | Blob | undefined>
   fetchDocs(folder: Folder): Promise<Doc[]>
 }

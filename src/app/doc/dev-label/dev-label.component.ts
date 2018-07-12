@@ -5,8 +5,8 @@ import * as mnemonic from '@coast-team/mnemonicjs'
 
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { LocalStorageService } from '../../core/storage/local/local-storage.service'
 import { UiService } from '../../core/ui/ui.service'
+import { DocService } from '../doc.service'
 import { LogsService } from '../logs/logs.service'
 
 @Component({
@@ -45,14 +45,11 @@ export class DevLabelComponent implements DoCheck {
   public digest: Observable<string>
   public objectURL: SafeResourceUrl
   public filename: string
+  public key: string
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    private ui: UiService,
-    private storageService: LocalStorageService,
-    private snackBar: MatSnackBar
-  ) {
+  constructor(private sanitizer: DomSanitizer, private ui: UiService, private docService: DocService, private snackBar: MatSnackBar) {
     this.changes = 0
+    this.key = docService.doc.signalingKey
     this.digest = this.ui.docDigest.pipe(map((digest: number) => mnemonic.encode_int32(digest)))
   }
 
@@ -60,19 +57,12 @@ export class DevLabelComponent implements DoCheck {
     this.changes++
   }
 
-  private updateObjectURL(blob: Blob): void {
-    const objectURL = URL.createObjectURL(blob)
-    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
-  }
-
   async exportMuteLog(): Promise<void> {
-    const urlParts: string[] = window.location.href.split('/')
-    const docID = urlParts[urlParts.length - 1]
     try {
-      const log = new LogsService('muteLogs-' + docID)
+      const log = new LogsService(`muteLogs-${this.key}`)
       const obj = (await log.getLogs()).map((e) => JSON.stringify(e) + '\n')
       const blob: Blob = new Blob(obj)
-      this.filename = `log-${docID}-${this.digest}.json`
+      this.updateFileName('mutelog')
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
     } catch (err) {
@@ -82,13 +72,13 @@ export class DevLabelComponent implements DoCheck {
   }
 
   async exportLog(): Promise<void> {
-    const urlParts: string[] = window.location.href.split('/')
-    const docID = urlParts[urlParts.length - 1]
     try {
-      const blob = await this.storageService.getDocBodyAsBlob(docID)
-      this.filename = `log-${docID}-${this.digest}.json`
-      this.updateObjectURL(blob)
-      this.link.nativeElement.click()
+      const blob = (await this.docService.doc.fetchContent(true)) as Blob | undefined
+      if (blob) {
+        this.updateFileName('log')
+        this.updateObjectURL(blob)
+        this.link.nativeElement.click()
+      }
     } catch (err) {
       log.warn('Unable to get LOG: ', err.message)
       this.snackBar.open('Unable to download Document Log', 'Close')
@@ -97,15 +87,22 @@ export class DevLabelComponent implements DoCheck {
 
   exportTree(): void {
     if (this.ui.docTree) {
-      const urlParts: string[] = window.location.href.split('/')
-      const docID = urlParts[urlParts.length - 1]
       const blob = new Blob([this.ui.docTree], { type: 'text/json' })
-      this.filename = `tree-${docID}-${this.digest}.json`
+      this.updateFileName('tree')
       this.updateObjectURL(blob)
       this.link.nativeElement.click()
     } else {
       log.warn('Tree is empty')
       this.snackBar.open(`Tree is empty. Nothing to download`, 'Close')
     }
+  }
+
+  private updateObjectURL(blob: Blob): void {
+    const objectURL = URL.createObjectURL(blob)
+    this.objectURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
+  }
+
+  private updateFileName(prefix: string) {
+    this.filename = `${prefix}-${this.key}-${this.digest}.json`
   }
 }

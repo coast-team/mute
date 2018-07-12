@@ -26,9 +26,9 @@ export class SyncStorageService implements OnDestroy {
     this.subs.push(
       source.subscribe((doc: Doc) => {
         this.doc = doc
-        this.storage
-          .fetchDocContent(doc)
-          .then((data: any) => {
+        this.doc
+          .fetchContent()
+          .then((data: State) => {
             const richLogootSOps: RichLogootSOperation[] = data.richLogootSOps
               .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
               .filter((richLogootSOp) => richLogootSOp instanceof RichLogootSOperation)

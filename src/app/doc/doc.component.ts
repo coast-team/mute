@@ -40,6 +40,7 @@ export class DocComponent implements OnDestroy {
     this.drawerMode = new BehaviorSubject('')
     this.drawerOpened = new BehaviorSubject(false)
     this.extrasmall = ''
+    this.subs = []
     this.subs[this.subs.length] = merge(
       this.breakpointObserver.observe(['(min-width: 1450px)']).pipe(
         filter((result) => result.matches),

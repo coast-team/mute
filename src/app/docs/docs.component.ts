@@ -74,13 +74,13 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.displayedColumnsRemote.push('synchronized')
     }
     this.updateDisplayedColumns()
-    this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder) || this.localStorage.local)
+    this.openFolder(this.localStorage.getFolder(this.settings.openedFolder) || this.localStorage.local)
   }
 
   ngOnInit() {
     this.remoteName = this.botStorage.id
     this.subs[this.subs.length] = this.settings.onChange.pipe(filter((props) => props.includes(EProperties.openedFolder))).subscribe(() => {
-      this.openFolder(this.localStorage.lookupFolder(this.settings.openedFolder))
+      this.openFolder(this.localStorage.getFolder(this.settings.openedFolder))
     })
     this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
       if (change.mqAlias === 'xs') {
@@ -185,7 +185,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   getDocLocationIcon(doc: Doc) {
-    return this.localStorage.lookupFolder(doc.parentFolderId).icon
+    return this.localStorage.getFolder(doc.parentFolderId).icon
   }
 
   private moveToTrash(doc: Doc) {

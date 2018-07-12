@@ -96,7 +96,7 @@ export class LocalStorageService extends Storage implements IStorage {
     })
   }
 
-  move(file: File, folder: Folder): Promise<void> {
+  async move(file: File, folder: Folder): Promise<void> {
     if (file.parentFolderId !== folder.id) {
       file.parentFolderId = folder.id
       return this.save(file)
@@ -147,7 +147,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
         const resultDocs: Doc[] = []
         for (const bd of botDocs) {
-          let ld = (await this.lookupDoc(bd.signalingKey))[0]
+          let ld = (await this.fetchDoc(bd.signalingKey))[0]
           if (ld) {
             this.mergeDocs(ld, bd)
           } else {
@@ -165,60 +165,61 @@ export class LocalStorageService extends Storage implements IStorage {
     }
   }
 
-  async lookupDoc(key: string): Promise<Doc[]> {
+  async fetchDoc(key: string): Promise<Doc | undefined> {
     this.check()
-    const docs = await new Promise<Doc[]>((resolve, reject) => {
+    const doc = await new Promise<Doc>((resolve, reject) => {
       this.db
         .allDocs({
           query: `(type:"doc") AND (signalingKey:"${key}" OR key:"${key}")`,
           select_list: selectListForDoc,
         })
         .then(
-          ({ data }: any) => {
-            if (data !== undefined && data.rows.length !== 0) {
-              resolve(data.rows.map((row: any) => Doc.deserialize(this, row.id, row.value)))
+          ({ data }) => {
+            if (data) {
+              if (data.rows.length === 0) {
+                resolve()
+              } else if (data.rows.length === 1) {
+                resolve(Doc.deserialize(this, data.rows[0].id, data.rows[0].value))
+              } else {
+                reject(new Error(`Error fetching doc: more than 1 document exists with the following key: ${key}`))
+              }
             }
-            resolve([])
+            resolve()
           },
           (err) => reject(err)
         )
     })
 
     // FIXME: remove this code when all clients have updated to the new version
-    for (const doc of docs) {
+    if (doc) {
       if (doc.signalingKey === doc.cryptoKey) {
         doc.cryptoKey = await this.symCrypto.generateKey()
       }
     }
-    return docs
+    return doc
   }
 
-  async fetchDocContent(doc: Doc): Promise<object> {
+  async fetchDocContent(doc: Doc): Promise<State | undefined>
+
+  async fetchDocContent(doc: Doc, blob = false): Promise<State | Blob | undefined> {
     this.check()
-    return await new Promise((resolve, reject) => {
+    return await new Promise<State | Blob | undefined>((resolve, reject) => {
       this.db.getAttachment(doc.id, 'body').then(
         (body) => {
-          const reader = new FileReader()
-          reader.onload = () => {
-            const json = JSON.parse(reader.result)
-            resolve(json)
+          if (body) {
+            if (!blob) {
+              const reader = new FileReader()
+              reader.onload = () => resolve(JSON.parse(reader.result) as State)
+              reader.readAsText(body)
+            } else {
+              resolve(body)
+            }
           }
-          reader.readAsText(body)
+          resolve()
         },
         (err) => reject(err)
       )
     })
-  }
-
-  async getDocBodyAsBlob(key: string): Promise<Blob> {
-    const docs: Doc[] = await this.lookupDoc(key)
-    if (docs.length === 0) {
-      throw new Error('Document not found')
-    } else if (docs.length > 1) {
-      throw new Error('Too many documents found')
-    }
-    this.check()
-    return await this.db.getAttachment(docs[0].id, 'body')
   }
 
   async saveDocContent(doc: Doc, body: State): Promise<any> {
@@ -235,7 +236,7 @@ export class LocalStorageService extends Storage implements IStorage {
     return doc
   }
 
-  lookupFolder(id: string): Folder | undefined {
+  getFolder(id: string): Folder | undefined {
     switch (id) {
       case this.local.id:
         return this.local
@@ -331,7 +332,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
   private check() {
     if (!this.isAvailable) {
-      throw new Error('Local storage is unabailable')
+      throw new Error('Local storage is unavailable')
     }
   }
 
