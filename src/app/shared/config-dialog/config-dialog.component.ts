@@ -52,4 +52,8 @@ export class ConfigDialogComponent {
     this.displayLogs = event.checked
     this.settings.updateDisplayLogs(event.checked)
   }
+
+  selectAll(event: FocusEvent) {
+    ;(event.target as HTMLInputElement).select()
+  }
 }

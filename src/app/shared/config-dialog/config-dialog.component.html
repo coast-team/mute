@@ -13,7 +13,7 @@
 
     <div fxLayout="column">
       <mat-form-field>
-        <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl">
+        <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl" (focus)="selectAll($event)">
         <mat-hint align="end">{{displayNameControl.value.length}} / 27</mat-hint>
       </mat-form-field>
       <mat-form-field>
