@@ -83,8 +83,12 @@ export class NetworkService implements OnDestroy {
         this.stateSubject.next(state)
       }
       this.wg.onMessage = (id, bytes: Uint8Array) => {
-        const msg = Message.decode(bytes)
-        this.messageSubject.next(new NetworkMessage(msg.service, id, true, msg.content))
+        try {
+          const msg = Message.decode(bytes)
+          this.messageSubject.next(new NetworkMessage(msg.service, id, true, msg.content))
+        } catch (err) {
+          log.warn('Message from network decode error: ', err.message)
+        }
       }
     })
   }

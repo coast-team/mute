@@ -94,21 +94,25 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
     // On message from the network
     this.subs[this.subs.length] = this.network.onMessage.pipe(filter((msg) => msg.service === this.id)).subscribe((msg) => {
-      const protoCursor = proto.Cursor.decode(msg.content)
-      const cursor = this.cursors.get(msg.id)
-      if (cursor) {
-        if (protoCursor.head) {
-          const headPos = this.protoPos2codemirrorPos(protoCursor.head)
-          if (protoCursor.anchor) {
-            const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
-            cursor.updateSelection(anchorPos, headPos)
+      try {
+        const protoCursor = proto.Cursor.decode(msg.content)
+        const cursor = this.cursors.get(msg.id)
+        if (cursor) {
+          if (protoCursor.head) {
+            const headPos = this.protoPos2codemirrorPos(protoCursor.head)
+            if (protoCursor.anchor) {
+              const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
+              cursor.updateSelection(anchorPos, headPos)
+            } else {
+              cursor.removeSelection()
+              cursor.updateCursor(headPos)
+            }
           } else {
-            cursor.removeSelection()
-            cursor.updateCursor(headPos)
+            cursor.removeCursor()
           }
-        } else {
-          cursor.removeCursor()
         }
+      } catch (err) {
+        log.warn('Cursor error: ', err.message)
       }
     })
 
