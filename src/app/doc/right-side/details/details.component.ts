@@ -66,4 +66,8 @@ export class DetailsComponent {
     this.cardState = 'void'
     this.cd.detectChanges()
   }
+
+  updateShareLogs(event) {
+    this.doc.shareLogs = event.checked
+  }
 }

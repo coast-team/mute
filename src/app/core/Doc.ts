@@ -18,17 +18,19 @@ export class Doc extends File {
   public static CRYPTO_KEY = 201
   public static REMOTES = 202
   public static SHARE_LOGS = 203
+  public static SHARE_LOGS_VECTOR = 204
 
   public signalingKey: string
   public cryptoKey: string
-  public shareLogs: boolean
-  public logsStrategy: string
   public remotes: Array<{
     id: string
     synchronized?: Date
   }>
   public localContentChanges: Subject<IDocContentOperation[]>
   public remoteContentChanges: Subject<IDocContentOperation[]>
+
+  private _shareLogs: boolean
+  private _shareLogsVector: Map<number, number>
 
   static deserialize(storage: IStorage, id: string, serialized: any): Doc {
     const doc = new Doc(storage, serialized.title, serialized.parentFolderId)
@@ -42,8 +44,8 @@ export class Doc extends File {
       doc.signalingKey = serialized.signalingKey
       doc.cryptoKey = serialized.cryptoKey
     }
-    doc.shareLogs = serialized.shareLogs
-    doc.logsStrategy = serialized.logsStrategy
+    doc._shareLogs = serialized.shareLogs
+    doc._shareLogsVector = serialized.shareLogsVector
     doc.deserialize(id, serialized)
     return doc
   }
@@ -62,8 +64,8 @@ export class Doc extends File {
     this.localContentChanges = new Subject()
     this.remoteContentChanges = new Subject()
     this._title = title || DEFAULT_TITLE
-    this.shareLogs = false
-    this.logsStrategy = 'sendall'
+    this._shareLogs = false
+    this._shareLogsVector = new Map()
   }
 
   get isDoc() {
@@ -77,6 +79,18 @@ export class Doc extends File {
   set title(newTitle: string) {
     newTitle = newTitle || DEFAULT_TITLE
     this.updateTitle(newTitle, true)
+  }
+
+  get shareLogs() {
+    return this._shareLogs
+  }
+
+  set shareLogs(newShareLogs: boolean) {
+    this.updateShareLogs(newShareLogs, true)
+  }
+
+  get shareLogsVector() {
+    return this._shareLogsVector
   }
 
   get description() {
@@ -104,6 +118,12 @@ export class Doc extends File {
           this.cryptoKey = cryptoKey
           this.changes.next({ isLocal: false, changedProperties: [Doc.CREATED, Doc.CRYPTO_KEY] })
           break
+        case MetaDataType.Logs:
+          const { share, vector } = data as LogState
+          this.updateShareLogs(share, false)
+          this._shareLogsVector = vector
+          this.changes.next({ isLocal: false, changedProperties: [Doc.SHARE_LOGS, Doc.SHARE_LOGS_VECTOR] })
+          break
       }
     })
   }
@@ -124,8 +144,8 @@ export class Doc extends File {
       signalingKey: this.signalingKey,
       cryptoKey: this.cryptoKey,
       remotes: this.remotes,
-      shareLogs: this.shareLogs,
-      logsStrategy: this.logsStrategy,
+      shareLogs: this._shareLogs,
+      shareLogsVector: this._shareLogsVector,
     })
   }
 
@@ -154,6 +174,14 @@ export class Doc extends File {
         this.modifiedByOthers = new Date()
         changedProperties.push(Doc.MODIFIED_BY_OTHERS)
       }
+      this.changes.next({ isLocal, changedProperties })
+    }
+  }
+
+  private updateShareLogs(newShareLogs: boolean, isLocal: boolean) {
+    if (this._shareLogs !== newShareLogs) {
+      const changedProperties = [Doc.SHARE_LOGS]
+      this._shareLogs = newShareLogs
       this.changes.next({ isLocal, changedProperties })
     }
   }

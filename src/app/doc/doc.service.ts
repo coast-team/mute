@@ -105,6 +105,10 @@ export class DocService implements OnDestroy {
         docCreated: this.doc.created.getTime(),
         cryptoKey: this.doc.cryptoKey,
       },
+      metaLogs: {
+        share: this.doc.shareLogs,
+        vector: this.doc.shareLogsVector,
+      },
     })
 
     this.initLogs()
@@ -161,11 +165,19 @@ export class DocService implements OnDestroy {
     )
 
     // Subscribe to Local and Remote Metadata change
-    this.muteCore.localMetadataUpdate$ = this.doc.onMetadataChanges.pipe(
-      filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.TITLE)),
-      map(() => {
-        return { type: MetaDataType.Title, data: { title: this.doc.title, titleModified: this.doc.titleModified.getTime() } }
-      })
+    this.muteCore.localMetadataUpdate$ = merge(
+      this.doc.onMetadataChanges.pipe(
+        filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.TITLE)),
+        map(() => {
+          return { type: MetaDataType.Title, data: { title: this.doc.title, titleModified: this.doc.titleModified.getTime() } }
+        })
+      ),
+      this.doc.onMetadataChanges.pipe(
+        filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.SHARE_LOGS)),
+        map(() => {
+          return { type: MetaDataType.Logs, data: { share: this.doc.shareLogs, vector: this.doc.shareLogsVector } }
+        })
+      )
     )
     this.doc.setRemoteMetadataUpdateSource(this.muteCore.remoteMetadataUpdate$)
 
@@ -226,8 +238,15 @@ export class DocService implements OnDestroy {
     // For displyaing logs in console
 
     this.subs.push(
+      this.doc.onMetadataChanges.pipe(filter(({ changedProperties }) => changedProperties.includes(Doc.SHARE_LOGS))).subscribe(() => {
+        this.logs.setShareLogs(this.doc.shareLogs, this.muteCore.state.vector)
+      })
+    )
+
+    this.subs.push(
       this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED)).subscribe(() => {
-        this.logs.log({ type: 'connection', timestamp: Date.now(), siteId })
+        const obj = { type: 'connection', timestamp: Date.now(), siteId }
+        this.logs.log(obj)
       })
     )
     this.subs.push(
@@ -264,7 +283,7 @@ export class DocService implements OnDestroy {
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
-          neighbours: 'TODO',
+          neighbours: this.network.wg.neighbors,
         })
       })
     )
@@ -275,7 +294,7 @@ export class DocService implements OnDestroy {
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
-          neighbours: 'TODO',
+          neighbours: this.network.wg.neighbors,
         })
       })
     )

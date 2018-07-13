@@ -19,6 +19,15 @@
     </div>
   </div>
 
+  <div class="doc-block">
+    <div fxLayoutAlign="start center">
+      <span class="mat-caption title">Share logs</span>
+      <span class="mat-body-2">
+        <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
+      </span>
+    </div>
+  </div>
+
   <div class="chips-block">
     <div fxLayout="row wrap" fxLayoutAlign="start start" class="chips">
       <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard()" class="chip mat-elevation-z2"

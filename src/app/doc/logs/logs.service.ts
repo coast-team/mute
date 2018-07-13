@@ -23,7 +23,7 @@ export class LogsService implements OnDestroy {
       route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.docKey = doc.signalingKey
         this.shareLogs = doc.shareLogs
-        this.setLogsStrategy(doc.logsStrategy)
+        this.setLogsStrategy('sendall')
       })
     )
   }

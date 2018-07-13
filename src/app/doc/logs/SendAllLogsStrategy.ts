@@ -35,15 +35,15 @@ export class SendAllLogsStrategy extends LogsStrategy {
       } else {
         const sortedLogs = obj.sort((a, b) => a['timestamp'] - b['timestamp'])
         let send = false
-        obj.forEach((value, key) => {
+        sortedLogs.forEach((value, key) => {
           if (send) {
             this.dbDistante.send(value)
           } else {
             if (['localInsertion', 'localDeletion', 'remoteInsertion', 'remoteDeletion'].includes(value['type'])) {
               let sameState = true
-              const vector: Map<number, number> = value['context']
+              const vector = value['context']
               Object.keys(lastState).forEach((siteId) => {
-                const logSiteIdClock = vector.get(parseInt(siteId, 10))
+                const logSiteIdClock = vector[parseInt(siteId, 10)]
                 if (logSiteIdClock !== lastState[siteId]) {
                   sameState = false
                   return
