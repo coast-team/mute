@@ -22,7 +22,9 @@ export class BotStorageService extends Storage {
   public static NOT_RESPONDING = 2
   public static UNAVAILABLE = 3
 
-  public name: string
+  public displayName: string
+  public version: string
+  public avatar: string
 
   private url: string
   private isAnonymousAllowed: boolean
@@ -32,7 +34,9 @@ export class BotStorageService extends Storage {
     const { url, isAnonymousAllowed } = environment.botStorage || undefined
     this.url = url || ''
     this.isAnonymousAllowed = isAnonymousAllowed || false
-    this.name = ''
+    this.version = ''
+    this.avatar = ''
+    this.displayName = ''
     if (!this.url) {
       super.setStatus(BotStorageService.UNAVAILABLE)
     }
@@ -70,7 +74,7 @@ export class BotStorageService extends Storage {
   }
 
   get login() {
-    return this.url ? new URL(this.url).hostname : ''
+    return this.url ? `bot.storage@${new URL(this.url).hostname}` : ''
   }
 
   get httpURL() {
@@ -97,9 +101,11 @@ export class BotStorageService extends Storage {
         super.setStatus(BotStorageService.NOT_AUTHORIZED)
       } else {
         return new Promise((resolve) => {
-          this.http.get(`${this.httpURL}/name`, { responseType: 'text' }).subscribe(
-            (name: string) => {
-              this.name = name
+          this.http.get(`${this.httpURL}/info`).subscribe(
+            (info: { displayName: string; login: string; version: string; avatar: string }) => {
+              this.version = info.version
+              this.avatar = info.avatar
+              this.displayName = info.displayName
               super.setStatus(BotStorageService.AVAILABLE)
               resolve()
             },
