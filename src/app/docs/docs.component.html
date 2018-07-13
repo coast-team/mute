@@ -37,10 +37,17 @@
             <mat-cell class="title-cell" fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
 
               <!-- Document name -->
-              <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
+              <div fxFlex class="doc-in-trash" *ngIf="folder === localStorage.trash; else docTitleButton">
                 <mat-icon class="title-icon ">insert_drive_file</mat-icon>
                 {{doc.title}}
-              </button>
+              </div>
+
+              <ng-template #docTitleButton>
+                <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
+                  <mat-icon class="title-icon ">insert_drive_file</mat-icon>
+                  {{doc.title}}
+                </button>
+              </ng-template>
 
               <!-- Document action buttons -->
               <div *ngIf="isMobile; else desktopActions">
