@@ -22,11 +22,7 @@ export class UiService {
     this.click = new Subject()
     this.docTree = ''
 
-    window.addEventListener('mousedown', (event) => {
-      event.stopPropagation()
-      event.preventDefault()
-      this.click.next()
-    })
+    window.addEventListener('mousedown', () => this.click.next())
   }
 
   get onNavToggle(): Observable<void> {
