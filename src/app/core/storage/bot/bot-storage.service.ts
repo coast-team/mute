@@ -25,19 +25,21 @@ export class BotStorageService extends Storage {
   public displayName: string
   public version: string
   public avatar: string
+  public httpURL: string
+  public wsURL: string
 
-  private url: string
   private isAnonymousAllowed: boolean
 
   constructor(private http: HttpClient, private settings: SettingsService) {
     super()
-    const { url, isAnonymousAllowed } = environment.botStorage || undefined
-    this.url = url || ''
+    const { httpURL, wsURL, isAnonymousAllowed } = environment.botStorage || undefined
+    this.httpURL = httpURL || ''
+    this.wsURL = wsURL || ''
     this.isAnonymousAllowed = isAnonymousAllowed || false
     this.version = ''
     this.avatar = ''
     this.displayName = ''
-    if (!this.url) {
+    if (!this.httpURL) {
       super.setStatus(BotStorageService.UNAVAILABLE)
     }
 
@@ -45,14 +47,12 @@ export class BotStorageService extends Storage {
   }
 
   async fetchDocs(): Promise<IMetadata[]> {
-    if (this.url && this.status !== BotStorageService.NOT_AUTHORIZED) {
+    if (this.httpURL && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(new URL(`docs/${this.settings.profile.login}`, this.httpURL).toString()).subscribe(
-          (docs) => {
-            resolve(docs)
-          },
+          (metadata) => resolve(metadata),
           (err) => {
-            log.warn('Could not retreive documents keys from the bot storage')
+            log.warn('Could not retrieve documents metadat from the bot storage: ', err.message)
             super.setStatus(BotStorageService.NOT_RESPONDING)
             resolve([])
           }
@@ -74,29 +74,15 @@ export class BotStorageService extends Storage {
   }
 
   get login() {
-    return this.url ? `bot.storage@${new URL(this.url).hostname}` : ''
-  }
-
-  get httpURL() {
-    return this.url
-  }
-
-  get wsURL(): string {
-    if (this.url) {
-      const { protocol, host, pathname } = new URL(this.url)
-      let wsURL = protocol === 'http:' ? 'ws://' : 'wss://'
-      wsURL += host + pathname
-      return wsURL
-    }
-    return ''
+    return this.httpURL ? `bot.storage@${new URL(this.httpURL).hostname}` : ''
   }
 
   get id() {
-    return `${this.url}`
+    return `${this.httpURL}`
   }
 
   private updateStatus(): Promise<void> {
-    if (this.url) {
+    if (this.httpURL) {
       if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
         super.setStatus(BotStorageService.NOT_AUTHORIZED)
       } else {
