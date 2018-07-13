@@ -5,7 +5,7 @@ export const environment = {
   rtcConfiguration: {
     iceServers: [
       {
-        urls: ['turn:192.168.0.100:3478?transport=udp'],
+        urls: ['turn:164.132.231.106:5349?transport=udp'],
         username: 'user',
         credential: 'password',
       },
@@ -13,12 +13,7 @@ export const environment = {
   },
   signalingServer: 'ws://cpi2.loria.fr:10000',
   serviceWorker: false,
-  botStorage: {
-    secure: true,
-    url: 'botstorage.coedit.re',
-    webSocketPath: 'ws',
-    isAnonymousAllowed: true,
-  },
+  botStorage: {},
   encryption: false,
   auth: {
     baseUrl: '',

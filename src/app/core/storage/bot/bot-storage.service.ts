@@ -20,25 +20,21 @@ export interface IMetadata {
 export class BotStorageService extends Storage {
   public static NOT_AUTHORIZED = 1
   public static NOT_RESPONDING = 2
+  public static UNAVAILABLE = 3
 
   public name: string
 
   private url: string
-  private webSocketPath: string
-  private secure: boolean
+  private isAnonymousAllowed: boolean
 
   constructor(private http: HttpClient, private settings: SettingsService) {
     super()
-    const botStorage = environment.botStorage || undefined
-
-    if (botStorage && 'url' in botStorage && 'secure' in botStorage && 'webSocketPath' in botStorage) {
-      const bs = botStorage as any
-      this.secure = bs.secure
-      this.url = bs.url
-      this.webSocketPath = bs.webSocketPath
-    } else {
-      this.name = ''
-      this.url = ''
+    const { url, isAnonymousAllowed } = environment.botStorage || undefined
+    this.url = url || ''
+    this.isAnonymousAllowed = isAnonymousAllowed || false
+    this.name = ''
+    if (!this.url) {
+      super.setStatus(BotStorageService.UNAVAILABLE)
     }
 
     settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => this.updateStatus())
@@ -47,8 +43,10 @@ export class BotStorageService extends Storage {
   async fetchDocs(): Promise<IMetadata[]> {
     if (this.url && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
-        this.http.get(`${this.httpURL}/docs/${this.settings.profile.login}`).subscribe(
-          (docs) => resolve(docs),
+        this.http.get(new URL(`docs/${this.settings.profile.login}`, this.httpURL).toString()).subscribe(
+          (docs) => {
+            resolve(docs)
+          },
           (err) => {
             log.warn('Could not retreive documents keys from the bot storage')
             super.setStatus(BotStorageService.NOT_RESPONDING)
@@ -63,7 +61,7 @@ export class BotStorageService extends Storage {
   async remove(doc: Doc): Promise<void> {
     return (await new Promise((resolve) => {
       this.http
-        .post<{ key: string; login: string }>(`${this.httpURL}/remove`, {
+        .post<{ key: string; login: string }>(new URL('remove', this.httpURL).toString(), {
           key: doc.signalingKey,
           login: this.settings.profile.login,
         })
@@ -72,21 +70,21 @@ export class BotStorageService extends Storage {
   }
 
   get login() {
-    return this.extractHostname(this.url)
+    return this.url ? new URL(this.url).hostname : ''
   }
 
   get httpURL() {
-    const scheme = this.secure ? 'https' : 'http'
-    return `${scheme}://${this.url}`
+    return this.url
   }
 
-  get wsURL() {
-    const scheme = this.secure ? 'wss' : 'ws'
-    if (this.webSocketPath && this.webSocketPath !== '') {
-      return `${scheme}://${this.url}/${this.webSocketPath}`
-    } else {
-      return `${scheme}://${this.url}`
+  get wsURL(): string {
+    if (this.url) {
+      const { protocol, host, pathname } = new URL(this.url)
+      let wsURL = protocol === 'http:' ? 'ws://' : 'wss://'
+      wsURL += host + pathname
+      return wsURL
     }
+    return ''
   }
 
   get id() {
@@ -95,7 +93,7 @@ export class BotStorageService extends Storage {
 
   private updateStatus(): Promise<void> {
     if (this.url) {
-      if (!this.settings.isAuthenticated() && !(environment.botStorage as any).isAnonymousAllowed) {
+      if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
         super.setStatus(BotStorageService.NOT_AUTHORIZED)
       } else {
         return new Promise((resolve) => {
@@ -114,23 +112,5 @@ export class BotStorageService extends Storage {
       }
     }
     return Promise.resolve()
-  }
-
-  private extractHostname(url: string) {
-    let hostname
-
-    // find & remove protocol (http, ftp, etc.) and get hostname
-    if (url.indexOf('://') > -1) {
-      hostname = url.split('/')[2]
-    } else {
-      hostname = url.split('/')[0]
-    }
-
-    // find & remove port number
-    hostname = hostname.split(':')[0]
-    // find & remove "?"
-    hostname = hostname.split('?')[0]
-
-    return hostname
   }
 }

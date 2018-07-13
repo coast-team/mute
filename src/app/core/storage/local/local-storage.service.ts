@@ -54,7 +54,7 @@ export class LocalStorageService extends Storage implements IStorage {
     this.trash.id = 'trash'
     const bs = environment.botStorage || undefined
 
-    if (bs && 'url' in bs && 'secure' in bs && 'webSocketPath' in bs) {
+    if (botStorage.status !== BotStorageService.UNAVAILABLE) {
       this.remote = Folder.create(this, 'Remote storage', 'cloud', true)
       this.remote.id = botStorage.id
     }
@@ -147,7 +147,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
         const resultDocs: Doc[] = []
         for (const bd of botDocs) {
-          let ld = (await this.fetchDoc(bd.signalingKey))[0]
+          let ld = await this.fetchDoc(bd.signalingKey)
           if (ld) {
             this.mergeDocs(ld, bd)
           } else {

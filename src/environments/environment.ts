@@ -17,9 +17,7 @@ export const environment = {
   signalingServer: 'ws://localhost:8010',
   serviceWorker: false,
   botStorage: {
-    secure: false,
-    url: 'localhost:20000',
-    webSocketPath: '',
+    url: 'http://localhost:20000',
     isAnonymousAllowed: false,
   },
   encryption: false,
