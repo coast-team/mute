@@ -245,12 +245,7 @@ export class SettingsService {
         },
         select_list: selectList,
       })).data.rows
-      if (rows && rows.length === 1) {
-        return rows[0]
-      } else {
-        log.warn('Settings error: failed to retreive profiles (undefined of more than one entry)', rows)
-        return Promise.resolve(undefined)
-      }
+      return rows && rows.length === 1 ? rows[0] : undefined
     }
   }
 
