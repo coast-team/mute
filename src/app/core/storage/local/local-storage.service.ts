@@ -4,7 +4,6 @@ import { MetaDataService } from 'mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
-import { environment } from '../../../../environments/environment'
 import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
@@ -53,7 +52,6 @@ export class LocalStorageService extends Storage implements IStorage {
     this.local.id = 'local'
     this.trash = Folder.create(this, 'Trash', 'delete', false)
     this.trash.id = 'trash'
-    const bs = environment.botStorage || undefined
 
     if (botStorage.status !== BotStorageService.UNAVAILABLE) {
       this.remote = Folder.create(this, 'Remote storage', 'cloud', true)
