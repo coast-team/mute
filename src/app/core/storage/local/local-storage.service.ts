@@ -33,7 +33,7 @@ const selectListForDoc = [
   'description',
 ]
 
-const DB_NAME_PREFIX = 'documents_v0.4.0_v2 -'
+const DB_NAME_PREFIX = 'docs-'
 
 @Injectable()
 export class LocalStorageService extends Storage implements IStorage {
