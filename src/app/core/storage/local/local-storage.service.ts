@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { State } from 'mute-core'
 import { MetaDataService } from 'mute-core'
 import { filter } from 'rxjs/operators'
+import { v4 as uuidv4 } from 'uuid'
 
 import { environment } from '../../../../environments/environment'
 import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
@@ -231,7 +232,7 @@ export class LocalStorageService extends Storage implements IStorage {
     })
   }
 
-  async createDoc(key = this.generateKey()): Promise<Doc> {
+  async createDoc(key = this.generateSignalingKey()): Promise<Doc> {
     const doc = Doc.create(this, key, await this.symCrypto.generateKey(), '', this.local.id)
     await this.save(doc)
     return doc
@@ -250,16 +251,8 @@ export class LocalStorageService extends Storage implements IStorage {
     }
   }
 
-  generateKey(): string {
-    const mask = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    const length = 42 // Should be less then MAX_KEY_LENGTH value
-    const values = new Uint32Array(length)
-    window.crypto.getRandomValues(values)
-    let key = ''
-    for (let i = 0; i < length; i++) {
-      key += mask[values[i] % mask.length]
-    }
-    return key
+  generateSignalingKey(): string {
+    return uuidv4()
   }
 
   private async isInTrash(key: string): Promise<boolean> {

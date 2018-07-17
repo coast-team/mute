@@ -106,7 +106,7 @@ export class NavComponent implements OnDestroy {
   }
 
   createDoc(remotely = false) {
-    const key = this.localStorage.generateKey()
+    const key = this.localStorage.generateSignalingKey()
     if (remotely) {
       this.router.navigate(['/', key, { remote: true }])
     } else {

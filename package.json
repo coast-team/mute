@@ -60,6 +60,7 @@
     "protobufjs": "^6.8.6",
     "rxjs": "^6.2.2",
     "tui-editor": "^1.2.5",
+    "uuid": "^3.3.2",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
@@ -74,6 +75,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/loglevel": "^1.5.3",
     "@types/node": "^8.10.21",
+    "@types/uuid": "^3.4.3",
     "codelyzer": "^4.4.2",
     "commitizen": "^2.10.0",
     "cz-conventional-changelog": "^2.1.0",

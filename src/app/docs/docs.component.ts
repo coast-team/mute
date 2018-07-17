@@ -151,7 +151,7 @@ export class DocsComponent implements OnDestroy, OnInit {
       if (doc) {
         this.router.navigate(['/', doc.signalingKey])
       } else {
-        this.router.navigate(['/', this.localStorage.generateKey()])
+        this.router.navigate(['/', this.localStorage.generateSignalingKey()])
       }
     }
   }
