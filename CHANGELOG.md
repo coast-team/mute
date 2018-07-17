@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/coast-team/mute/compare/v0.7.1...v0.8.0) (2018-07-17)
+
+
+### Bug Fixes
+
+* **botstorage:** separate http and ws URLs ([e324222](https://github.com/coast-team/mute/commit/e324222))
+* **cursor:** display name was not showing while typing ([cacbf9e](https://github.com/coast-team/mute/commit/cacbf9e))
+* **cursor:** display name was not showing while typing ([1f4bb1a](https://github.com/coast-team/mute/commit/1f4bb1a))
+* **decode:** catch possible error throwed by protobufjs decode function ([5589887](https://github.com/coast-team/mute/commit/5589887))
+* **doc:** disable autofocus on right sidenav ([c55481a](https://github.com/coast-team/mute/commit/c55481a))
+* **doc:** document content not read properly from db ([43b3a3a](https://github.com/coast-team/mute/commit/43b3a3a))
+* **doc:** update title modification date when remote arrives ([40975b3](https://github.com/coast-team/mute/commit/40975b3))
+* **docs:** did not update table headers and sidenav mode on mobile ([07de2f7](https://github.com/coast-team/mute/commit/07de2f7))
+* **events:** fix observables unsubscriptions ([7553476](https://github.com/coast-team/mute/commit/7553476))
+* **localstorage:** make previous doc version be compatibale with new ([a5708c3](https://github.com/coast-team/mute/commit/a5708c3))
+* **logs:** use properly LogsService ([9e9ee79](https://github.com/coast-team/mute/commit/9e9ee79))
+* **metadata:** put encryption key to metadata instead of URL ([4dd6f6e](https://github.com/coast-team/mute/commit/4dd6f6e))
+* **metadata:** subscribed twice to the metadata changes ([30684ad](https://github.com/coast-team/mute/commit/30684ad))
+* **settings:** failed open settings dialog ([b45a43a](https://github.com/coast-team/mute/commit/b45a43a))
+* **settings:** select displayName on focus ([b478296](https://github.com/coast-team/mute/commit/b478296))
+* **trash:** disallow to open a document in trash folder ([1c4911b](https://github.com/coast-team/mute/commit/1c4911b))
+* **ui:** docs table: name and key columns ([318727f](https://github.com/coast-team/mute/commit/318727f))
+* **ui:** one peer left involves others to disappear ([266261c](https://github.com/coast-team/mute/commit/266261c))
+* prevented from mouse selection ([e58e384](https://github.com/coast-team/mute/commit/e58e384))
+* **ui:** profile card show/hide animation ([761df95](https://github.com/coast-team/mute/commit/761df95))
+* **ui:** small issues with collaborators list update ([5045fc4](https://github.com/coast-team/mute/commit/5045fc4))
+* **ui-right-side:** profile card is updated now on signin or signout ([ddc1ced](https://github.com/coast-team/mute/commit/ddc1ced))
+
+
+### Features
+
+* **Doc:** add titleLastModification property in Doc ([6b1ccf0](https://github.com/coast-team/mute/commit/6b1ccf0))
+* **metadata:** add changes for doc's fix metadata ([b62cf95](https://github.com/coast-team/mute/commit/b62cf95))
+* **metadata:** wait for synchronisation of the encryption key ([ae9c269](https://github.com/coast-team/mute/commit/ae9c269))
+* **signaling_key:** the signaling key is now an UUID ([b99ae68](https://github.com/coast-team/mute/commit/b99ae68))
+* **title:** replicate the document's title for all collaborators ([2639341](https://github.com/coast-team/mute/commit/2639341))
+
+
+
 <a name="0.7.1"></a>
 ## [0.7.1](https://github.com/coast-team/mute/compare/v0.7.0...v0.7.1) (2018-06-15)
 

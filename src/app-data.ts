@@ -1,4 +1,4 @@
 export const appData = {
-  version: '0.7.0',
-  commit: '085bd7de70834a2db86d5bcea097fed2054a6b5b',
+  version: '0.7.1',
+  commit: '4fe83154c1c3a4f39c8f8eee785634dc6103d9a7',
 }
