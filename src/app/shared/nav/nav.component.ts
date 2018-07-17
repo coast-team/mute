@@ -38,7 +38,6 @@ export class NavComponent implements OnDestroy {
   public usage: number
 
   public version: string
-  public commit: string
   public isProd: boolean
   public isStandalone: boolean
 
@@ -56,7 +55,6 @@ export class NavComponent implements OnDestroy {
     this.isStandalone = window.matchMedia('(display-mode: standalone)').matches
     this.isProd = environment.production
     this.version = appData.version
-    this.commit = appData.commit
     this.local = localStorage.local
     this.trash = localStorage.trash
     this.remote = localStorage.remote

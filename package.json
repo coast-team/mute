@@ -18,7 +18,6 @@
     "precommit": "lint-staged",
     "commitmsg": "commitlint -e $GIT_PARAMS",
     "cz": "git-cz",
-    "prerelease": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts",
     "release": "standard-version --no-verify --commit-all"
   },
   "keywords": [],
@@ -128,5 +127,10 @@
       ]
     },
     "concurrent": false
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
+    }
   }
 }

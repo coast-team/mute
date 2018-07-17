@@ -7,7 +7,7 @@ export class UiService {
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
 
-  public appUpdate: ReplaySubject<{ version: string; commit: string }>
+  public appUpdate: ReplaySubject<{ version: string }>
   public appInstall: BehaviorSubject<boolean>
   public appInstallEvent: Event
   public click: Subject<void>

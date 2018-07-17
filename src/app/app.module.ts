@@ -50,8 +50,7 @@ export class AppModule {
     // Service worker update
     sw.available.subscribe((event) => {
       const version = (event.available.appData as any).version
-      const commit = (event.available.appData as any).commit
-      ui.appUpdate.next({ version, commit })
+      ui.appUpdate.next({ version })
     })
 
     // App install event
