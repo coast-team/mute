@@ -59,11 +59,7 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
   }
 
   async canDeactivate(docComponent: DocComponent): Promise<boolean> {
-    if (docComponent.docService) {
-      const doc = docComponent.docService.doc
-      await doc.saveMetadata()
-      await doc.saveContent(docComponent.docService.getDocContent())
-    }
+    await docComponent.saveDoc()
     return true
   }
 }

@@ -46,7 +46,7 @@ export class SyncStorageService implements OnDestroy {
   }
 
   set stateSource(source: Observable<State>) {
-    this.subs.push(source.pipe(auditTime(2000)).subscribe((state) => this.storage.saveDocContent(this.doc, state)))
+    this.subs.push(source.pipe(auditTime(2000)).subscribe((state) => this.doc.saveContent(state)))
   }
 
   get onStoredState(): Observable<State> {

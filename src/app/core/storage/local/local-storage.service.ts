@@ -214,8 +214,9 @@ export class LocalStorageService extends Storage implements IStorage {
             } else {
               resolve(body)
             }
+          } else {
+            resolve()
           }
-          resolve()
         },
         (err) => reject(err)
       )

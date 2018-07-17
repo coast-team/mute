@@ -102,4 +102,9 @@ export class DocComponent implements OnDestroy {
   editorReady() {
     this.docService.editorReady()
   }
+
+  async saveDoc() {
+    await this.docService.doc.saveMetadata()
+    await this.docService.doc.saveContent(this.docService.getDocContent())
+  }
 }
