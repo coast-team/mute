@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material'
+import { MAT_DIALOG_DATA } from '@angular/material'
 
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'
@@ -19,11 +19,7 @@ export class ConfigDialogComponent {
 
   public displayNameControl: FormControl
 
-  constructor(
-    public dialogRef: MatDialogRef<ConfigDialogComponent>,
-    public settings: SettingsService,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
+  constructor(public settings: SettingsService, @Inject(MAT_DIALOG_DATA) public data: any) {
     this.profile = settings.profile
     this.initialTheme = this.settings.theme
     this.initialDisplayLogs = this.settings.displayLogs
