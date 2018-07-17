@@ -7,10 +7,13 @@ export class LogsService {
   private db: Database
   private displayLogs: boolean
 
-  constructor(databaseName: string) {
+  constructor() {
     this.db = new IndexdbDatabase()
-    this.db.init(databaseName)
     this.displayLogs = false
+  }
+
+  init(databaseName: string) {
+    this.db.init(databaseName)
   }
 
   log(obj: object) {

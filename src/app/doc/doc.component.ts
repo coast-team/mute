@@ -9,6 +9,7 @@ import { UiService } from '../core/ui/ui.service'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { DocService } from './doc.service'
+import { LogsService } from './logs/logs.service'
 import { NetworkService } from './network'
 
 export enum VIEWPORT {
@@ -22,7 +23,7 @@ export enum VIEWPORT {
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
-  providers: [DocService, NetworkService, RichCollaboratorsService, SyncStorageService],
+  providers: [LogsService, DocService, NetworkService, RichCollaboratorsService, SyncStorageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable()

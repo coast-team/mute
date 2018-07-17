@@ -47,7 +47,13 @@ export class DevLabelComponent implements DoCheck {
   public filename: string
   public key: string
 
-  constructor(private sanitizer: DomSanitizer, private ui: UiService, private docService: DocService, private snackBar: MatSnackBar) {
+  constructor(
+    private sanitizer: DomSanitizer,
+    private ui: UiService,
+    private docService: DocService,
+    private snackBar: MatSnackBar,
+    private logs: LogsService
+  ) {
     this.changes = 0
     this.key = docService.doc.signalingKey
     this.digest = this.ui.docDigest.pipe(map((digest: number) => mnemonic.encode_int32(digest)))
@@ -59,8 +65,7 @@ export class DevLabelComponent implements DoCheck {
 
   async exportMuteLog(): Promise<void> {
     try {
-      const log = new LogsService(`muteLogs-${this.key}`)
-      const obj = (await log.getLogs()).map((e) => JSON.stringify(e) + '\n')
+      const obj = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + '\n')
       const blob: Blob = new Blob(obj)
       this.updateFileName('mutelog')
       this.updateObjectURL(blob)

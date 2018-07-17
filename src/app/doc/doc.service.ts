@@ -34,7 +34,6 @@ export class DocService implements OnDestroy {
   private cryptoReady: Subject<void>
 
   public doc: Doc
-  public logs: LogsService
 
   constructor(
     private zone: NgZone,
@@ -46,7 +45,8 @@ export class DocService implements OnDestroy {
     private botStorage: BotStorageService,
     public ui: UiService,
     private symCrypto: SymmetricCryptoService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private logs: LogsService
   ) {
     this.subs = []
     this.cryptoReady = new Subject()
@@ -194,7 +194,7 @@ export class DocService implements OnDestroy {
 
   private initLogs(): void {
     const siteId = this.muteCore.collaboratorsService.me.muteCoreId
-    this.logs = new LogsService('muteLogs-' + this.doc.signalingKey)
+    this.logs.init(`muteLogs-${this.doc.signalingKey}`)
     this.logs.setDisplayLogs(this.settings.displayLogs)
 
     // For displyaing logs in console

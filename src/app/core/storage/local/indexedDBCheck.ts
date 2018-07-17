@@ -29,7 +29,6 @@ export async function getIndexedDBState(): Promise<EIndexedDBState> {
         //     resolve()
         //   }
         //   deleteRequest.onsuccess = () => {
-        //     log.debug('delete request')
         //     resolve()
         //   }
         // })
