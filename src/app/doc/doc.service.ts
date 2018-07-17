@@ -129,13 +129,13 @@ export class DocService implements OnDestroy {
     )
 
     // Emit REMOTE document content changes
-    this.subs[this.subs.length] = this.muteCore.docService.onRemoteTextOperations.subscribe(({ operations }) => {
+    this.subs[this.subs.length] = this.muteCore.docService.onRemoteTextOperations.subscribe(({ collaborator, operations }) => {
       this.doc.remoteContentChanges.next(
         operations.map((op) => {
           if (op instanceof TextInsert) {
-            return { offset: op.offset, text: op.content }
+            return { collaborator, offset: op.offset, text: op.content }
           } else if (op instanceof TextDelete) {
-            return { offset: op.offset, length: op.length }
+            return { collaborator, offset: op.offset, length: op.length }
           }
         })
       )
