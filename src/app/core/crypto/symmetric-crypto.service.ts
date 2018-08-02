@@ -1,24 +1,26 @@
 import { Injectable } from '@angular/core'
-import { symmetricCrypto } from 'crypto-api-wrapper'
+import { SymmetricCrypto } from '@coast-team/mute-crypto'
 
 @Injectable()
 export class SymmetricCryptoService {
-  private key: CryptoKey
+  private symmetricCrypto: SymmetricCrypto
+  constructor() {
+    this.symmetricCrypto = new SymmetricCrypto()
+  }
 
   async generateKey(): Promise<string> {
-    this.key = await symmetricCrypto.generateEncryptionKey()
-    return symmetricCrypto.toB64(await symmetricCrypto.exportKey(this.key))
+    return this.symmetricCrypto.generateKey()
   }
 
   async importKey(key: string): Promise<void> {
-    this.key = await symmetricCrypto.importKey(symmetricCrypto.fromB64(key))
+    return this.symmetricCrypto.importKey(key)
   }
 
   async encrypt(msg: Uint8Array): Promise<Uint8Array> {
-    return symmetricCrypto.encrypt(msg, this.key)
+    return this.symmetricCrypto.encrypt(msg)
   }
 
   async decrypt(ciphertext: Uint8Array): Promise<Uint8Array> {
-    return symmetricCrypto.decrypt(ciphertext, this.key)
+    return this.symmetricCrypto.decrypt(ciphertext)
   }
 }

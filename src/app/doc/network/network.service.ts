@@ -1,4 +1,5 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
+import { KeyAgreementBD, KeyState, Streams } from '@coast-team/mute-crypto'
 import { BroadcastMessage, JoinEvent, NetworkMessage, SendRandomlyMessage, SendToMessage } from 'mute-core'
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
@@ -34,10 +35,15 @@ export class NetworkService implements OnDestroy {
   private stateSubject: BehaviorSubject<WebGroupState>
   private signalingSubject: BehaviorSubject<SignalingState>
 
+  // Encryption/Decryption
+  private bd: KeyAgreementBD | undefined
+  private cryptoState: Subject<KeyState>
+
   constructor(private zone: NgZone) {
     this.botUrls = []
     this.key = ''
     this.subs = []
+    this.bd = undefined
 
     // Initialize subjects
     this.peerJoinSubject = new Subject()
@@ -45,6 +51,7 @@ export class NetworkService implements OnDestroy {
     this.signalingSubject = new BehaviorSubject(SignalingState.CLOSED)
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new Subject()
+    this.cryptoState = new Subject()
 
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
@@ -71,12 +78,23 @@ export class NetworkService implements OnDestroy {
       })
       window.wg = this.wg
 
+      this.bd = new KeyAgreementBD((msg, streamId) => this.send(streamId, msg))
+      this.bd.onStateChange = (state) => this.cryptoState.next(state)
+
       // Handle network events
-      this.wg.onMemberJoin = (id) => this.peerJoinSubject.next(id)
-      this.wg.onMemberLeave = (id) => this.peerLeaveSubject.next(id)
+      this.wg.onMyId = (myId: number) => this.bd.setMyId(myId)
+      this.wg.onMemberJoin = (id) => {
+        this.bd.addMember(id)
+        this.peerJoinSubject.next(id)
+      }
+      this.wg.onMemberLeave = (id) => {
+        this.bd.removeMember(id)
+        this.peerLeaveSubject.next(id)
+      }
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
       this.wg.onStateChange = (state: WebGroupState) => {
         if (state === WebGroupState.JOINED) {
+          this.bd.setReady()
           const joinEvt = new JoinEvent(this.wg.myId, this.key, this.members.length === 1)
           this.joinSubject.next(joinEvt)
         }
@@ -84,8 +102,21 @@ export class NetworkService implements OnDestroy {
       }
       this.wg.onMessage = (id, bytes: Uint8Array) => {
         try {
-          const msg = Message.decode(bytes)
-          this.messageSubject.next(new NetworkMessage(msg.service, id, true, msg.content))
+          const { service, content } = Message.decode(bytes)
+          if (service === Streams.KEY_AGREEMENT_BD) {
+            this.bd.onMessage(id, content)
+          } else {
+            if (service === 423 && environment.encryption) {
+              this.bd
+                .decrypt(content)
+                .then((decryptedContent) => {
+                  this.messageSubject.next(new NetworkMessage(service, id, true, decryptedContent))
+                })
+                .catch((err) => log.debug('Decryption error: ', err))
+              return
+            }
+            this.messageSubject.next(new NetworkMessage(service, id, true, content))
+          }
         } catch (err) {
           log.warn('Message from network decode error: ', err.message)
         }
@@ -108,8 +139,15 @@ export class NetworkService implements OnDestroy {
     if (this.messageToBroadcastSubscription) {
       this.messageToBroadcastSubscription.unsubscribe()
     }
-    this.messageToBroadcastSubscription = source.subscribe((broadcastMessage: BroadcastMessage) => {
-      this.send(broadcastMessage.service, broadcastMessage.content)
+    this.messageToBroadcastSubscription = source.subscribe(({ service, content }: BroadcastMessage) => {
+      if (service === 423 && environment.encryption && this.bd) {
+        this.bd
+          .encrypt(content)
+          .then((encryptedContent) => this.send(service, encryptedContent))
+          .catch((err) => log.debug('Encryption error: ', err))
+      } else {
+        this.send(service, content)
+      }
     })
   }
 
@@ -117,11 +155,19 @@ export class NetworkService implements OnDestroy {
     if (this.messageToSendRandomlySubscription) {
       this.messageToSendRandomlySubscription.unsubscribe()
     }
-    this.messageToSendRandomlySubscription = source.subscribe((sendRandomlyMessage: SendRandomlyMessage) => {
-      const otherMembers: number[] = this.members.filter((i) => i !== this.wg.myId)
-      const index: number = Math.ceil(Math.random() * otherMembers.length) - 1
-      const id: number = otherMembers[index]
-      this.send(sendRandomlyMessage.service, sendRandomlyMessage.content, id)
+    this.messageToSendRandomlySubscription = source.subscribe(({ service, content }: SendRandomlyMessage) => {
+      const otherMembers = this.members.filter((i) => i !== this.wg.myId)
+      const index = Math.ceil(Math.random() * otherMembers.length) - 1
+      const id = otherMembers[index]
+
+      if (service === 423 && environment.encryption && this.bd) {
+        this.bd
+          .encrypt(content)
+          .then((encryptedContent) => this.send(service, encryptedContent, id))
+          .catch((err) => log.debug('Encryption error: ', err))
+      } else {
+        this.send(service, content, id)
+      }
     })
   }
 
@@ -129,8 +175,15 @@ export class NetworkService implements OnDestroy {
     if (this.messageToSendToSubscription) {
       this.messageToSendToSubscription.unsubscribe()
     }
-    this.messageToSendToSubscription = source.subscribe((sendToMessage: SendToMessage) => {
-      this.send(sendToMessage.service, sendToMessage.content, sendToMessage.id)
+    this.messageToSendToSubscription = source.subscribe(({ service, content, id }: SendToMessage) => {
+      if (service === 423 && environment.encryption && this.bd) {
+        this.bd
+          .encrypt(content)
+          .then((encryptedContent) => this.send(service, encryptedContent, id))
+          .catch((err) => log.debug('Encryption error: ', err))
+      } else {
+        this.send(service, content, id)
+      }
     })
   }
 
@@ -168,6 +221,10 @@ export class NetworkService implements OnDestroy {
 
   get onSignalingStateChange(): Observable<SignalingState> {
     return this.signalingSubject.asObservable()
+  }
+
+  get onCryptoStateChange(): Observable<KeyState> {
+    return this.cryptoState.asObservable()
   }
 
   ngOnDestroy(): void {

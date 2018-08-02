@@ -21,7 +21,7 @@ export const environment = {
   //   wsURL: 'ws://localhost:20000',
   //   isAnonymousAllowed: false,
   // },
-  encryption: false,
+  encryption: true,
   auth: {
     baseUrl: 'http://localhost:4000/',
     providers: {
