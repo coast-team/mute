@@ -1,4 +1,4 @@
-/*eslint-disable block-scoped-var, no-redeclare, no-control-regex, no-prototype-builtins*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 "use strict";
 
 var $protobuf = require("protobufjs/minimal");
@@ -1419,8 +1419,8 @@ $root.sync = (function() {
          * Properties of a DotMsg.
          * @memberof sync
          * @interface IDotMsg
-         * @property {number} replicaNumber DotMsg replicaNumber
-         * @property {number} clock DotMsg clock
+         * @property {number|null} [replicaNumber] DotMsg replicaNumber
+         * @property {number|null} [clock] DotMsg clock
          */
 
         /**
@@ -1478,8 +1478,10 @@ $root.sync = (function() {
         DotMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.replicaNumber);
-            writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
+            if (message.replicaNumber != null && message.hasOwnProperty("replicaNumber"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.replicaNumber);
+            if (message.clock != null && message.hasOwnProperty("clock"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
             return writer;
         };
 
@@ -1512,10 +1514,6 @@ $root.sync = (function() {
                     break;
                 }
             }
-            if (!message.hasOwnProperty("replicaNumber"))
-                throw $util.ProtocolError("missing required 'replicaNumber'", { instance: message });
-            if (!message.hasOwnProperty("clock"))
-                throw $util.ProtocolError("missing required 'clock'", { instance: message });
             return message;
         };
 

@@ -4,8 +4,9 @@ import { Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
 import { DocService } from '../../doc.service'
-import { NetworkService } from '../../network/'
-import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators/'
+import { NetworkService } from '../../network'
+import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators'
+import { Streams } from '../../Streams'
 import { CollaboratorCursor } from './CollaboratorCursor'
 import * as proto from './cursor_proto'
 
@@ -26,10 +27,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
   private protoAnchor: proto.Position
   private protoHead: proto.Position
 
-  protected id: number
-
   constructor(private docService: DocService, private collabService: RichCollaboratorsService, private network: NetworkService) {
-    this.id = 687
     this.protoCursor = proto.Cursor.create()
     this.protoAnchor = proto.Position.create()
     this.protoHead = proto.Position.create()
@@ -75,7 +73,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     CodeMirror.on(this.cm, 'blur', () => {
       this.protoCursor.anchor = undefined
       this.protoCursor.head = undefined
-      this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
+      this.sendMyCursorPosition()
       cursorPosBeforeBlur = this.cmDoc.getCursor('head')
     })
 
@@ -93,28 +91,30 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.listenEventsForCursorChange()
 
     // On message from the network
-    this.subs[this.subs.length] = this.network.onMessage.pipe(filter((msg) => msg.service === this.id)).subscribe((msg) => {
-      try {
-        const protoCursor = proto.Cursor.decode(msg.content)
-        const cursor = this.cursors.get(msg.id)
-        if (cursor) {
-          if (protoCursor.head) {
-            const headPos = this.protoPos2codemirrorPos(protoCursor.head)
-            if (protoCursor.anchor) {
-              const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
-              cursor.updateSelection(anchorPos, headPos)
+    this.subs[this.subs.length] = this.network.messageOut
+      .pipe(filter(({ streamId }) => streamId === Streams.CURSOR))
+      .subscribe(({ senderId, content }) => {
+        try {
+          const protoCursor = proto.Cursor.decode(content)
+          const cursor = this.cursors.get(senderId)
+          if (cursor) {
+            if (protoCursor.head) {
+              const headPos = this.protoPos2codemirrorPos(protoCursor.head)
+              if (protoCursor.anchor) {
+                const anchorPos = this.protoPos2codemirrorPos(protoCursor.anchor)
+                cursor.updateSelection(anchorPos, headPos)
+              } else {
+                cursor.removeSelection()
+                cursor.updateCursor(headPos)
+              }
             } else {
-              cursor.removeSelection()
-              cursor.updateCursor(headPos)
+              cursor.removeCursor()
             }
-          } else {
-            cursor.removeCursor()
           }
+        } catch (err) {
+          log.warn('Cursor error: ', err.message)
         }
-      } catch (err) {
-        log.warn('Cursor error: ', err.message)
-      }
-    })
+      })
 
     // On remote operation
     this.subs.push(
@@ -179,7 +179,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.protoCursor.head = this.protoHead
 
     // Broadcast my cursor/selection position
-    this.network.send(this.id, proto.Cursor.encode(this.protoCursor).finish())
+    this.sendMyCursorPosition()
   }
 
   private listenEventsForCursorChange() {
@@ -209,5 +209,9 @@ export class CursorsDirective implements OnInit, OnDestroy {
         this.sendMyCursorPos()
       }
     })
+  }
+
+  private sendMyCursorPosition() {
+    this.network.send(Streams.CURSOR, proto.Cursor.encode(this.protoCursor).finish())
   }
 }

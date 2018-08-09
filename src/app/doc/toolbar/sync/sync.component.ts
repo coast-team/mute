@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'
 import { SignalingState, WebGroupState } from 'netflux'
 import { Subscription } from 'rxjs'
 
-import { NetworkService } from '../../../doc/network/network.service'
+import { NetworkService } from '../../network/network.service'
 
 @Component({
   selector: 'mute-sync',

@@ -7,7 +7,6 @@ import { filter, map } from 'rxjs/operators'
 import { environment } from '../../environments/environment'
 import { UiService } from '../core/ui/ui.service'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
-import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { DocService } from './doc.service'
 import { LogsService } from './logs/logs.service'
 import { NetworkService } from './network'
@@ -23,7 +22,7 @@ export enum VIEWPORT {
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
-  providers: [LogsService, DocService, NetworkService, RichCollaboratorsService, SyncStorageService],
+  providers: [LogsService, DocService, NetworkService, RichCollaboratorsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable()
@@ -100,7 +99,7 @@ export class DocComponent implements OnDestroy {
   }
 
   editorReady() {
-    this.docService.editorReady()
+    this.docService.joinSession()
   }
 
   async saveDoc() {

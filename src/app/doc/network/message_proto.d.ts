@@ -1,10 +1,9 @@
 import * as $protobuf from "protobufjs";
-
 /** Properties of a Message. */
 export interface IMessage {
 
-    /** Message service */
-    service?: (number|null);
+    /** Message streamId */
+    streamId?: (number|null);
 
     /** Message content */
     content?: (Uint8Array|null);
@@ -19,8 +18,8 @@ export class Message implements IMessage {
      */
     constructor(properties?: IMessage);
 
-    /** Message service. */
-    public service: number;
+    /** Message streamId. */
+    public streamId: number;
 
     /** Message content. */
     public content: Uint8Array;

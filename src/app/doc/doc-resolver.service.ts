@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot, CanDeactivate, Resolve, Router } from '@angular
 import { Doc } from '../core/Doc'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
-import { DocComponent } from './index'
+import { DocComponent } from './doc.component'
 import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.component'
 
 @Injectable()

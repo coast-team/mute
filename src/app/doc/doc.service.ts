@@ -2,35 +2,42 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import {
   ICollaborator,
-  JoinEvent,
   LocalOperation,
   MetaDataType,
   MuteCore,
   Position,
   RemoteOperation,
+  RichLogootSOperation,
   State,
   TextDelete,
   TextInsert,
 } from 'mute-core'
-import { Subscription } from 'rxjs'
-import { filter, map } from 'rxjs/operators'
+import { KeyState } from 'mute-crypto'
+import { WebGroupState } from 'netflux'
+import { merge, Subscription } from 'rxjs'
+import { auditTime, filter, map } from 'rxjs/operators'
 
-import { KeyState } from '@coast-team/mute-crypto'
-import { SymmetricCryptoService } from '../core/crypto/symmetric-crypto.service'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
-import { NetworkService } from '../doc/network'
-import { RichCollaboratorsService } from '../doc/rich-collaborators'
-import { SyncStorageService } from '../doc/sync/sync-storage.service'
 import { LogsService } from './logs/logs.service'
+import { NetworkService } from './network'
+import { RichCollaboratorsService } from './rich-collaborators'
+
+const SAVE_DOC_INTERVAL = 2000
+const SYNC_DOC_INTERVAL = 10000
 
 @Injectable()
 export class DocService implements OnDestroy {
   private subs: Subscription[]
   private muteCore: MuteCore
+
+  // Intervals
+  private saveDocInterval: number | undefined
+  private syncDocContentInterval: number | undefined
+  private docContentChanged: boolean
 
   public doc: Doc
 
@@ -40,20 +47,20 @@ export class DocService implements OnDestroy {
     private collabs: RichCollaboratorsService,
     private settings: SettingsService,
     private network: NetworkService,
-    private syncStorage: SyncStorageService,
     private botStorage: BotStorageService,
     public ui: UiService,
-    private symCrypto: SymmetricCryptoService,
     private cd: ChangeDetectorRef,
     private logs: LogsService
   ) {
     this.subs = []
+    this.docContentChanged = false
+    this.saveDocInterval = undefined
     this.zone.runOutsideAngular(() => {
-      this.subs[this.subs.length] = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+      this.newSub = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
 
-        // Add bot storage if exist
-        this.subs[this.subs.length] = this.collabs.onUpdate.subscribe((collab: ICollaborator) => {
+        // Handle bot storage if exist
+        this.newSub = this.collabs.onUpdate.subscribe((collab: ICollaborator) => {
           if (collab.login === this.botStorage.login) {
             if (this.doc.remotes.length === 0) {
               this.doc.addRemote(this.botStorage.id)
@@ -61,45 +68,21 @@ export class DocService implements OnDestroy {
             this.doc.remotes[0].synchronized = new Date()
           }
         })
-        this.subs[this.subs.length] = this.network.onJoin.subscribe(() => {
-          if (this.doc.remotes.length !== 0) {
+        this.newSub = this.network.onStateChange.subscribe((state) => {
+          if (state === WebGroupState.JOINED && this.doc.remotes.length !== 0) {
             this.network.inviteBot(this.botStorage.wsURL)
           }
         })
 
-        // Initialize Network
-        this.network.init()
-
-        // Initialize MuteCore
-        this.initMuteCore()
-
-        this.subs[this.subs.length] = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
+        this.newSub = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
       })
     })
   }
 
-  ngOnDestroy() {
-    this.subs.forEach((s) => s.unsubscribe())
-    this.doc.dispose()
-  }
-
-  getDocContent(): State {
-    return this.muteCore.syncService.state
-  }
-
-  indexFromId(pos: any): number {
-    return this.muteCore.docService.indexFromId(pos)
-  }
-
-  positionFromIndex(index: number): Position {
-    return this.muteCore.docService.positionFromIndex(index)
-  }
-
-  editorReady() {
-    this.muteCore.init(this.doc.signalingKey)
-  }
-
-  private initMuteCore() {
+  async joinSession() {
+    // Read document content from local database and put into MuteCore model
+    const docContent = await this.readDocContent()
+    // Initialize MuteCore with your profile data, document metadata and content
     this.muteCore = new MuteCore({
       profile: {
         displayName: this.settings.profile.displayName,
@@ -107,6 +90,7 @@ export class DocService implements OnDestroy {
         email: this.settings.profile.email,
         avatar: this.settings.profile.avatar,
       },
+      docContent,
       metaTitle: {
         title: this.doc.title,
         titleModified: this.doc.titleModified.getTime(),
@@ -117,17 +101,21 @@ export class DocService implements OnDestroy {
       },
     })
 
-    // Subscribe to LOCAL document content changes
-    this.muteCore.docService.localTextOperationsSource = this.doc.localContentChanges.pipe(
+    this.initLogs()
+
+    // MuteCore model subscribes to LOCAL operations
+    this.muteCore.localTextOperations$ = this.doc.localContentChanges.pipe(
       map((ops) => {
         return ops.map(({ offset, text, length }) => {
+          this.docContentChanged = true
           return length ? new TextDelete(offset, length) : new TextInsert(offset, text)
         })
       })
     )
 
-    // Emit REMOTE document content changes
-    this.subs[this.subs.length] = this.muteCore.docService.onRemoteTextOperations.subscribe(({ collaborator, operations }) => {
+    // Subscribe to REMOTE operations
+    this.newSub = this.muteCore.remoteTextOperations$.subscribe(({ collaborator, operations }) => {
+      this.docContentChanged = true
       this.doc.remoteContentChanges.next(
         operations.map((op) => {
           if (op instanceof TextInsert) {
@@ -139,19 +127,17 @@ export class DocService implements OnDestroy {
       )
     })
 
-    this.network.initSource = this.muteCore.onInit
+    // Link message stream between Network and MuteCore
+    this.muteCore.messageIn$ = this.network.messageOut
+    this.network.setMessageIn(this.muteCore.messageOut$)
 
-    this.muteCore.messageSource = this.network.onMessage
-    this.network.messageToBroadcastSource = this.muteCore.onMsgToBroadcast
-    this.network.messageToSendRandomlySource = this.muteCore.onMsgToSendRandomly
-    this.network.messageToSendToSource = this.muteCore.onMsgToSendTo
-
-    this.collabs.subscribeToUpdateSource(this.muteCore.collaboratorsService.onUpdate)
-    this.collabs.subscribeToJoinSource(this.muteCore.collaboratorsService.onJoin)
-    this.collabs.subscribeToLeaveSource(this.muteCore.collaboratorsService.onLeave)
-    this.muteCore.collaboratorsService.joinSource = this.network.onPeerJoin
-    this.muteCore.collaboratorsService.leaveSource = this.network.onPeerLeave
-    this.muteCore.collaboratorsService.updateSource = this.settings.onChange.pipe(
+    // Setup collaborators' subscriptions
+    this.collabs.subscribeToUpdateSource(this.muteCore.remoteCollabUpdate$)
+    this.collabs.subscribeToJoinSource(this.muteCore.collabJoin$)
+    this.collabs.subscribeToLeaveSource(this.muteCore.collabLeave$)
+    this.muteCore.memberJoin$ = this.network.onMemberJoin
+    this.muteCore.memberLeave$ = this.network.onMemberLeave
+    this.muteCore.localCollabUpdate$ = this.settings.onChange.pipe(
       filter((props) => props.includes(EProperties.profile) || props.includes(EProperties.profileDisplayName)),
       map((props) => {
         if (props.includes(EProperties.profile)) {
@@ -168,36 +154,59 @@ export class DocService implements OnDestroy {
       })
     )
 
-    this.syncStorage.initSource = this.muteCore.onInit.pipe(map(() => this.doc))
-    this.syncStorage.stateSource = this.muteCore.syncService.onState
-
-    this.muteCore.syncService.setJoinAndStateSources(
-      this.network.onJoin,
-      this.network.onCryptoStateChange.pipe(
-        filter((state) => state === KeyState.READY),
-        map(() => {})
-      ),
-      this.syncStorage.onStoredState
-    )
-    this.muteCore.metaDataService.onLocalChange = this.doc.onMetadataChanges.pipe(
+    // Subscribe to Local and Remote Metadata change
+    this.muteCore.localMetadataUpdate$ = this.doc.onMetadataChanges.pipe(
       filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.TITLE)),
       map(() => {
         return { type: MetaDataType.Title, data: { title: this.doc.title, titleModified: this.doc.titleModified.getTime() } }
       })
     )
-    this.muteCore.metaDataService.joinSource = this.network.onPeerJoin
-    this.doc.setRemoteMetadataUpdateSource(this.muteCore.metaDataService.onChange)
+    this.doc.setRemoteMetadataUpdateSource(this.muteCore.remoteMetadataUpdate$)
 
-    this.subs[this.subs.length] = this.muteCore.docService.onDocDigest.subscribe((digest: number) => {
+    // Subscribe to debugging information
+    this.newSub = this.muteCore.digestUpdate$.subscribe((digest: number) => {
       this.ui.updateDocDigest(digest)
       this.cd.detectChanges()
     })
+    this.newSub = this.muteCore.treeUpdate$.subscribe((tree: string) => this.ui.updateDocTree(tree))
 
-    this.subs[this.subs.length] = this.muteCore.docService.onDocTree.subscribe((tree: string) => this.ui.updateDocTree(tree))
+    // Start interval which saves the document content to the local database
+    this.startSaveDocInterval()
+
+    // Subscribe to events which trigger document content synchronization
+
+    this.newSub = merge(
+      this.network.onCryptoStateChange.pipe(filter((state) => state === KeyState.READY)),
+      this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED))
+    )
+      .pipe(auditTime(1000))
+      .subscribe((v) => this.restartSyncInterval())
+
+    // Start join the collaboration session
+    this.network.join(this.doc.signalingKey)
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe())
+    window.clearInterval(this.saveDocInterval)
+    window.clearInterval(this.syncDocContentInterval)
+    this.doc.dispose()
+  }
+
+  getDocContent(): State {
+    return this.muteCore.state
+  }
+
+  indexFromId(pos: any): number {
+    return this.muteCore.indexFromId(pos)
+  }
+
+  positionFromIndex(index: number): Position {
+    return this.muteCore.positionFromIndex(index)
   }
 
   private initLogs(): void {
-    const siteId = this.muteCore.collaboratorsService.me.muteCoreId
+    const siteId = this.muteCore.myMuteCoreId
     this.logs.init(`muteLogs-${this.doc.signalingKey}`)
     this.logs.setDisplayLogs(this.settings.displayLogs)
 
@@ -209,66 +218,96 @@ export class DocService implements OnDestroy {
     )
 
     this.subs.push(
-      this.network.onJoin.subscribe((event: JoinEvent) => {
-        const obj = { type: 'connection', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
+      this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED)).subscribe(() => {
+        this.logs.log({ type: 'connection', timestamp: Date.now(), siteId })
       })
     )
     this.subs.push(
       this.network.onLeave.subscribe(() => {
-        const obj = { type: 'disconnection', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
+        this.logs.log({ type: 'disconnection', timestamp: Date.now(), siteId })
       })
     )
 
     this.subs.push(
-      this.network.onPeerJoin.subscribe((peer: number) => {
-        const obj = { type: 'peerConnection', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
+      this.network.onMemberJoin.subscribe((peer: number) => {
+        this.logs.log({ type: 'peerConnection', timestamp: Date.now(), siteId })
       })
     )
     this.subs.push(
-      this.network.onPeerLeave.subscribe((peer: number) => {
-        const obj = { type: 'peerDisconnection', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
-      })
-    )
-
-    this.subs.push(
-      this.muteCore.collaboratorsService.onJoin.subscribe((c: ICollaborator) => {
-        const obj = { type: 'collaboratorJoin', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
-      })
-    )
-    this.subs.push(
-      this.muteCore.collaboratorsService.onLeave.subscribe((c: number) => {
-        const obj = { type: 'collaboratorLeave', timestamp: Date.now(), siteId }
-        this.logs.log(obj)
+      this.network.onMemberLeave.subscribe((peer: number) => {
+        this.logs.log({ type: 'peerDisconnection', timestamp: Date.now(), siteId })
       })
     )
 
     this.subs.push(
-      this.muteCore.onLocalOperation.subscribe((operation: LocalOperation) => {
-        const obj = {
+      this.muteCore.collabJoin$.subscribe((c: ICollaborator) => {
+        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId })
+      })
+    )
+    this.subs.push(
+      this.muteCore.collabLeave$.subscribe((c: number) => {
+        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId })
+      })
+    )
+
+    this.subs.push(
+      this.muteCore.localOperationForLog$.subscribe((operation: LocalOperation) => {
+        this.logs.log({
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
           neighbours: 'TODO',
-        }
-        this.logs.log(obj)
+        })
       })
     )
 
     this.subs.push(
-      this.muteCore.onRemoteOperation.subscribe((operation: RemoteOperation) => {
-        const obj = {
+      this.muteCore.remoteOperationForLog.subscribe((operation: RemoteOperation) => {
+        this.logs.log({
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
           neighbours: 'TODO',
-        }
-        this.logs.log(obj)
+        })
       })
     )
+  }
+
+  private restartSyncInterval() {
+    window.clearInterval(this.syncDocContentInterval)
+    this.sync()
+    this.syncDocContentInterval = window.setInterval(() => this.sync(), SYNC_DOC_INTERVAL)
+  }
+
+  private sync() {
+    if (this.network.members.length > 1 && this.network.cryptoState === KeyState.READY) {
+      this.muteCore.synchronize()
+    }
+  }
+
+  private async readDocContent(): Promise<State> {
+    try {
+      const state = (await this.doc.fetchContent()) as State
+      const richLogootSOps = state.richLogootSOps
+        .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
+        .filter((richLogootSOp) => richLogootSOp instanceof RichLogootSOperation)
+      return new State(new Map(), richLogootSOps)
+    } catch {
+      return new State(new Map(), [])
+    }
+  }
+
+  private startSaveDocInterval() {
+    this.saveDocInterval = window.setInterval(() => {
+      if (this.docContentChanged) {
+        this.doc.saveContent(this.muteCore.state).catch((err) => log.warn('Failed save document content to database: ', err))
+      } else {
+        this.docContentChanged = false
+      }
+    }, SAVE_DOC_INTERVAL)
+  }
+
+  private set newSub(s: Subscription) {
+    this.subs[this.subs.length] = s
   }
 }

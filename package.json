@@ -11,7 +11,7 @@
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "builddev": "npm run build -- --env ovhdev",
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
-    "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md",
+    "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md -i 'CHANGELOG.md'",
     "test": "ng test",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
@@ -54,9 +54,9 @@
     "loglevel": "^1.6.1",
     "material-design-icons": "^3.0.1",
     "mute-core": "^6.0.1",
-    "netflux": "^4.1.3",
+    "netflux": "^4.3.0",
     "ng2-ui-auth": "^9.0.0",
-    "protobufjs": "^6.8.6",
+    "protobufjs": "^6.8.8",
     "rxjs": "^6.2.2",
     "tui-editor": "^1.2.5",
     "uuid": "^3.3.2",
@@ -115,7 +115,7 @@
       "*.md": [
         "prettier --write --list-different",
         "git add",
-        "markdownlint"
+        "markdownlint -i 'CHANGELOG.md'"
       ],
       "*.ts": [
         "ng lint mute --type-check --fix",

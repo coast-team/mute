@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
-import { State } from 'mute-core'
-import { MetaDataService } from 'mute-core'
+import { MuteCore, State } from 'mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -329,14 +328,14 @@ export class LocalStorageService extends Storage implements IStorage {
   }
 
   private async mergeDocs(doc: Doc, metadata: IMetadata) {
-    const { title, titleModified } = MetaDataService.mergeTitle(
+    const { title, titleModified } = MuteCore.mergeTitle(
       { titleModified: doc.titleModified.getTime(), title: doc.title },
       { titleModified: metadata.titleModified, title: metadata.title }
     )
     doc.title = title
     doc.titleModified = new Date(titleModified)
 
-    const { docCreated, cryptoKey } = MetaDataService.mergeFixData(
+    const { docCreated, cryptoKey } = MuteCore.mergeFixData(
       { docCreated: doc.created.getTime(), cryptoKey: doc.cryptoKey },
       { docCreated: metadata.created, cryptoKey: metadata.cryptoKey }
     )

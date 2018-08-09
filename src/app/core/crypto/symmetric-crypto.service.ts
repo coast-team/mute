@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { SymmetricCrypto } from '@coast-team/mute-crypto'
+import { SymmetricCrypto } from 'mute-crypto'
 
 @Injectable()
 export class SymmetricCryptoService {

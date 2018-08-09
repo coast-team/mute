@@ -1,8 +1,8 @@
 import { Component } from '@angular/core'
 
 import { Doc } from '../../core/Doc'
-import { RichCollaboratorsService } from '../../doc/rich-collaborators'
 import { DocService } from '../doc.service'
+import { RichCollaboratorsService } from '../rich-collaborators'
 
 @Component({
   selector: 'mute-right-side',

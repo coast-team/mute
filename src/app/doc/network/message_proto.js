@@ -1,4 +1,4 @@
-/*eslint-disable block-scoped-var, no-redeclare, no-control-regex, no-prototype-builtins*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 "use strict";
 
 var $protobuf = require("protobufjs/minimal");
@@ -15,7 +15,7 @@ $root.Message = (function() {
      * Properties of a Message.
      * @exports IMessage
      * @interface IMessage
-     * @property {number|null} [service] Message service
+     * @property {number|null} [streamId] Message streamId
      * @property {Uint8Array|null} [content] Message content
      */
 
@@ -35,12 +35,12 @@ $root.Message = (function() {
     }
 
     /**
-     * Message service.
-     * @member {number} service
+     * Message streamId.
+     * @member {number} streamId
      * @memberof Message
      * @instance
      */
-    Message.prototype.service = 0;
+    Message.prototype.streamId = 0;
 
     /**
      * Message content.
@@ -74,8 +74,8 @@ $root.Message = (function() {
     Message.encode = function encode(message, writer) {
         if (!writer)
             writer = $Writer.create();
-        if (message.service != null && message.hasOwnProperty("service"))
-            writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.service);
+        if (message.streamId != null && message.hasOwnProperty("streamId"))
+            writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.streamId);
         if (message.content != null && message.hasOwnProperty("content"))
             writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.content);
         return writer;
@@ -100,7 +100,7 @@ $root.Message = (function() {
             var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
-                message.service = reader.uint32();
+                message.streamId = reader.uint32();
                 break;
             case 2:
                 message.content = reader.bytes();

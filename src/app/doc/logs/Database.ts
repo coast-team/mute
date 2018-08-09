@@ -1,6 +1,5 @@
-
 export abstract class Database {
-  public abstract init (name: string, address?: string): void
-  public abstract store (obj: object): void
-  public abstract get (): Promise<object>
+  public abstract init(name: string, address?: string)
+  public abstract store(obj: object)
+  public abstract get(): Promise<object>
 }

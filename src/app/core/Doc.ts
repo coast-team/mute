@@ -1,6 +1,4 @@
-import { ICollaborator, MetaDataMessage, MetaDataType, State } from 'mute-core'
-import { FixDataState } from 'mute-core/dist/types/doc/FixDataService'
-import { TitleState } from 'mute-core/dist/types/doc/TitleService'
+import { FixDataState, ICollaborator, MetaDataMessage, MetaDataType, State, TitleState } from 'mute-core'
 import { Observable, Subject } from 'rxjs'
 
 import { File } from './File'

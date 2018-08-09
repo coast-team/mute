@@ -1,9 +1,9 @@
-import { Component, ElementRef, Injectable, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Component, ElementRef, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import * as CodeMirror from 'codemirror'
-import { DocService } from 'mute-core'
-// import { TextDelete, TextInsert } from 'mute-structs'
+import 'codemirror/mode/gfm/gfm'
+import 'codemirror/mode/javascript/javascript'
 import { Subscription } from 'rxjs'
 
 import { Author } from '../core/Author'
@@ -12,9 +12,6 @@ import { UiService } from '../core/ui/ui.service'
 import { CONTROLS } from './controls/controls'
 import { HistoryService, IDelete, IInsert } from './history.service'
 import { TimelineComponent } from './timeline/timeline.component'
-
-import 'codemirror/mode/gfm/gfm'
-import 'codemirror/mode/javascript/javascript'
 
 @Component({
   selector: 'mute-history',
@@ -26,9 +23,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private operations: Array<IDelete | IInsert>
   private subscriptions: Subscription[]
   public docAuthors: Author[]
-  private state = false
 
-  @Input() docService: DocService
   @ViewChild('editorElt') editorElt: ElementRef
   @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
   @ViewChild('sidenavElm') sidenavElm
@@ -256,8 +251,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     }
   }
 
-  onToggle(state: boolean) {
-    this.state = state
+  onToggle() {
     this.showVersion(this.currentOp)
   }
 

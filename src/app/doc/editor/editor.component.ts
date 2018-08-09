@@ -72,7 +72,6 @@ export class EditorComponent implements OnDestroy, OnInit {
           if (text.length > 1 || text[0]) {
             result[result.length] = { offset, text: text.join('\n') }
           }
-
           this.doc.localContentChanges.next(result)
         }
       })

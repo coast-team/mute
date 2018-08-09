@@ -1,9 +1,9 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, Input } from '@angular/core'
-
 import { ICollaborator } from 'mute-core'
+
 import { Doc } from '../../../core/Doc'
-import { RichCollaborator } from '../../../doc/rich-collaborators'
+import { RichCollaborator } from '../../rich-collaborators'
 
 const defaultCollab = { avatar: '', displayName: '', login: '' }
 

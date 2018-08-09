@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core'
 
 import { Doc } from '../../core/Doc'
-import { DateEnhancedPipe } from './date-enhanced.pipe'
+import { DateEnhancedPipe } from './dateEnhanced.pipe'
 
 @Pipe({
   name: 'muteRemote',
