@@ -5,3 +5,6 @@ package-lock.json
 
 // Prittier has bug in these files:
 *_themes.scss
+
+// Markdown
+CHANGELOG.md
