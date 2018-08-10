@@ -1,3 +1,5 @@
+import { EncryptionType } from '../app/core/crypto/EncryptionType'
+
 export const environment = {
   production: true,
   devLabel: false,
@@ -14,7 +16,7 @@ export const environment = {
   signalingServer: 'ws://cpi2.loria.fr:10000',
   serviceWorker: false,
   botStorage: {},
-  encryption: false,
+  encryption: EncryptionType.NONE,
   auth: {
     baseUrl: '',
     providers: {},

@@ -1,10 +1,15 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { Streams as MuteCoreStreams } from 'mute-core'
-import { enableDebug, KeyAgreementBD, KeyState, Streams as MuteCryptoStreams } from 'mute-crypto'
+import { enableDebug, KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from 'mute-crypto'
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 
+import { filter } from 'rxjs/operators'
 import { environment } from '../../../environments/environment'
+import { CryptoService } from '../../core/crypto/crypto.service'
+import { EncryptionType } from '../../core/crypto/EncryptionType'
+import { Doc } from '../../core/Doc'
 import { Message } from './message_proto'
 
 @Injectable()
@@ -28,17 +33,12 @@ export class NetworkService implements OnDestroy {
   private stateSubject: BehaviorSubject<WebGroupState>
   private signalingSubject: BehaviorSubject<SignalingState>
 
-  // Encryption/Decryption
-  private bd: KeyAgreementBD | undefined
-  private cryptoStateSubject: Subject<KeyState>
-
   // Other
   private subs: Subscription[]
 
-  constructor(private zone: NgZone) {
+  constructor(private zone: NgZone, private route: ActivatedRoute, private cryptoService: CryptoService) {
     this.botUrls = []
     this.subs = []
-    this.bd = undefined
 
     // Initialize subjects
     this.memberJoinSubject = new Subject()
@@ -46,7 +46,6 @@ export class NetworkService implements OnDestroy {
     this.signalingSubject = new BehaviorSubject(SignalingState.CLOSED)
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new Subject()
-    this.cryptoStateSubject = new Subject()
 
     this.leaveSubject = new Subject()
 
@@ -63,7 +62,6 @@ export class NetworkService implements OnDestroy {
       )
     }
     enableDebug(true)
-
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
         signalingServer: environment.signalingServer,
@@ -71,46 +69,20 @@ export class NetworkService implements OnDestroy {
       })
       window.wg = this.wg
 
-      this.bd = new KeyAgreementBD((msg, streamId) => this.send(streamId, msg))
-      this.bd.onStateChange = (state) => this.cryptoStateSubject.next(state)
-
-      // Handle network events
-      this.wg.onMyId = (myId: number) => this.bd.setMyId(myId)
-      this.wg.onMemberJoin = (id) => {
-        this.bd.addMember(id)
-        this.memberJoinSubject.next(id)
-      }
-      this.wg.onMemberLeave = (id) => {
-        this.bd.removeMember(id)
-        this.memberLeaveSubject.next(id)
-      }
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
-      this.wg.onStateChange = (state: WebGroupState) => {
-        if (state === WebGroupState.JOINED) {
-          this.bd.setReady()
-        }
-        this.stateSubject.next(state)
-      }
-      this.wg.onMessage = (id, bytes: Uint8Array) => {
-        try {
-          const { streamId, content } = Message.decode(bytes)
-          if (streamId === MuteCryptoStreams.KEY_AGREEMENT_BD) {
-            this.bd.onMessage(id, content)
-          } else {
-            if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.encryption) {
-              this.bd
-                .decrypt(content)
-                .then((decryptedContent) => {
-                  this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
-                })
-                .catch((err) => log.debug('Decryption error: ', err))
-              return
-            }
-            this.messageSubject.next({ streamId, content, senderId: id })
-          }
-        } catch (err) {
-          log.warn('Message from network decode error: ', err.message)
-        }
+
+      switch (environment.encryption) {
+        case EncryptionType.KEY_AGREEMENT_BD:
+          this.configureKeyAgreementBDEncryption()
+          break
+        case EncryptionType.METADATA:
+          this.configureMetaDataEncryption()
+          break
+        case EncryptionType.NONE:
+          this.configureNoEncryption()
+          break
+        default:
+          log.error('Unknown Encryption type: ', environment.encryption)
       }
     })
   }
@@ -122,8 +94,8 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: number; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (this.members.length > 1) {
-        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.encryption && this.bd) {
-          this.bd
+        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.encryption !== EncryptionType.NONE) {
+          this.cryptoService.crypto
             .encrypt(content)
             .then((encryptedContent) => this.send(streamId, encryptedContent, recipientId))
             .catch((err) => log.debug('Encryption error: ', err))
@@ -147,7 +119,7 @@ export class NetworkService implements OnDestroy {
   }
 
   get cryptoState(): KeyState {
-    return this.bd.state
+    return this.cryptoService.crypto.state
   }
 
   get messageOut(): Observable<{ streamId: number; content: Uint8Array; senderId: number }> {
@@ -175,7 +147,7 @@ export class NetworkService implements OnDestroy {
   }
 
   get onCryptoStateChange(): Observable<KeyState> {
-    return this.cryptoStateSubject.asObservable()
+    return this.cryptoService.onStateChange
   }
 
   ngOnDestroy(): void {
@@ -213,5 +185,94 @@ export class NetworkService implements OnDestroy {
   private randomMember(): number {
     const otherMembers = this.members.filter((i) => i !== this.wg.myId)
     return otherMembers[Math.ceil(Math.random() * otherMembers.length) - 1]
+  }
+
+  private configureKeyAgreementBDEncryption() {
+    const bd = this.cryptoService.crypto as KeyAgreementBD
+    bd.onSend = (msg, streamId) => this.send(streamId, msg)
+
+    // Handle network events
+    this.wg.onMyId = (myId: number) => bd.setMyId(myId)
+    this.wg.onMemberJoin = (id) => {
+      bd.addMember(id)
+      this.memberJoinSubject.next(id)
+    }
+    this.wg.onMemberLeave = (id) => {
+      bd.removeMember(id)
+      this.memberLeaveSubject.next(id)
+    }
+    this.wg.onStateChange = (state: WebGroupState) => {
+      if (state === WebGroupState.JOINED) {
+        bd.setReady()
+      }
+      this.stateSubject.next(state)
+    }
+    this.wg.onMessage = (id, bytes: Uint8Array) => {
+      try {
+        const { streamId, content } = Message.decode(bytes)
+        if (streamId === MuteCryptoStreams.KEY_AGREEMENT_BD) {
+          bd.onMessage(id, content)
+        } else {
+          if (streamId === MuteCoreStreams.DOCUMENT_CONTENT) {
+            this.cryptoService.crypto
+              .decrypt(content)
+              .then((decryptedContent) => {
+                this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
+              })
+              .catch((err) => log.debug('Decryption error: ', err))
+            return
+          }
+          this.messageSubject.next({ streamId, content, senderId: id })
+        }
+      } catch (err) {
+        log.warn('Message from network decode error: ', err.message)
+      }
+    }
+  }
+
+  private configureMetaDataEncryption() {
+    this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+      doc.onMetadataChanges
+        .pipe(filter(({ isLocal, changedProperties }) => !isLocal && changedProperties.includes(Doc.CRYPTO_KEY)))
+        .subscribe(() => (this.cryptoService.crypto as Symmetric).importKey(doc.cryptoKey).then(() => log.debug('Key is Imported')))
+    })
+    // Handle network events
+    this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
+    this.wg.onMemberLeave = (id) => this.memberLeaveSubject.next(id)
+    this.wg.onStateChange = (state: WebGroupState) => this.stateSubject.next(state)
+
+    this.wg.onMessage = (id, bytes: Uint8Array) => {
+      try {
+        const { streamId, content } = Message.decode(bytes)
+        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT) {
+          this.cryptoService.crypto
+            .decrypt(content)
+            .then((decryptedContent) => {
+              this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
+            })
+            .catch((err) => log.debug('Decryption error: ', err))
+          return
+        }
+        this.messageSubject.next({ streamId, content, senderId: id })
+      } catch (err) {
+        log.warn('Message from network decode error: ', err.message)
+      }
+    }
+  }
+
+  private configureNoEncryption() {
+    // Handle network events
+    this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
+    this.wg.onMemberLeave = (id) => this.memberLeaveSubject.next(id)
+    this.wg.onStateChange = (state: WebGroupState) => this.stateSubject.next(state)
+
+    this.wg.onMessage = (id, bytes: Uint8Array) => {
+      try {
+        const { streamId, content } = Message.decode(bytes)
+        this.messageSubject.next({ streamId, content, senderId: id })
+      } catch (err) {
+        log.warn('Message from network decode error: ', err.message)
+      }
+    }
   }
 }

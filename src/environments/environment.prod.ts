@@ -1,3 +1,5 @@
+import { EncryptionType } from '../app/core/crypto/EncryptionType'
+
 export const environment = {
   // Production or dev modes
   production: true,
@@ -31,7 +33,7 @@ export const environment = {
   // See https://github.com/coast-team/mute-bot-storage
   botStorage: {},
 
-  encryption: true,
+  encryption: EncryptionType.METADATA,
 
   // Authentication providers
   auth: {

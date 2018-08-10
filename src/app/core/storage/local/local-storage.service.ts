@@ -3,7 +3,7 @@ import { MuteCore, State } from 'mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
-import { SymmetricCryptoService } from '../../crypto/symmetric-crypto.service'
+import { CryptoService } from '../../crypto/crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
 import { Folder } from '../../Folder'
@@ -45,7 +45,7 @@ export class LocalStorageService extends Storage implements IStorage {
   private db: any
   private dbLogin: string
 
-  constructor(private botStorage: BotStorageService, private symCrypto: SymmetricCryptoService) {
+  constructor(private botStorage: BotStorageService) {
     super()
     this.local = Folder.create(this, 'Local storage', 'devices', false)
     this.local.id = 'local'
@@ -191,7 +191,7 @@ export class LocalStorageService extends Storage implements IStorage {
     // FIXME: remove this code when all clients have updated to the new version
     if (doc) {
       if (doc.signalingKey === doc.cryptoKey) {
-        doc.cryptoKey = await this.symCrypto.generateKey()
+        doc.cryptoKey = await CryptoService.generateKey()
       }
     }
     return doc
@@ -230,7 +230,7 @@ export class LocalStorageService extends Storage implements IStorage {
   }
 
   async createDoc(key = this.generateSignalingKey()): Promise<Doc> {
-    const doc = Doc.create(this, key, await this.symCrypto.generateKey(), '', this.local.id)
+    const doc = Doc.create(this, key, await CryptoService.generateKey(), '', this.local.id)
     await this.save(doc)
     return doc
   }
@@ -295,7 +295,7 @@ export class LocalStorageService extends Storage implements IStorage {
     // FIXME: remove this code when all clients have updated to the new version
     for (const doc of docs) {
       if (doc.signalingKey === doc.cryptoKey) {
-        doc.cryptoKey = await this.symCrypto.generateKey()
+        doc.cryptoKey = await CryptoService.generateKey()
       }
     }
 
