@@ -1,11 +1,13 @@
 import { Observable, Subject } from 'rxjs'
 
+import { IKeyPair } from '../crypto/crypto.service'
 import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
 
 export interface ISerialize {
   displayName: string
   logins: string[]
+  signingKeyPair: IKeyPair
 }
 
 export class Profile {
@@ -14,9 +16,11 @@ export class Profile {
   public accounts: IAccount[]
 
   private _displayName: string
+  private _signingKeyPair: IKeyPair | undefined
   private changeSubject: Subject<EProperties[]>
 
   constructor(accounts: IAccount[]) {
+    this._signingKeyPair = undefined
     this._displayName = accounts[0].name
     this.activeAccount = accounts[0]
     this.accounts = accounts
@@ -28,6 +32,7 @@ export class Profile {
     profile._displayName = serialized.displayName
     profile.activeAccount = accounts[0]
     profile.dbId = dbId
+    profile._signingKeyPair = serialized.signingKeyPair
     return profile
   }
 
@@ -46,6 +51,15 @@ export class Profile {
       this._displayName = value
     }
     this.changeSubject.next([EProperties.profileDisplayName])
+  }
+
+  get signingKeyPair(): IKeyPair {
+    return this._signingKeyPair
+  }
+
+  set signingKeyPair(keyPair: IKeyPair) {
+    this._signingKeyPair = keyPair
+    this.changeSubject.next([EProperties.signingKeyPair])
   }
 
   get name(): string {
@@ -71,6 +85,7 @@ export class Profile {
     return {
       displayName: this.displayName,
       logins: this.accounts.map((a: IAccount) => a.login),
+      signingKeyPair: this._signingKeyPair,
     }
   }
 }

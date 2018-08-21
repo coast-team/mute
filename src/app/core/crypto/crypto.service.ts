@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core'
-import { KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
+import { asymmetricCrypto, KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
 import { Observable, Subject } from 'rxjs'
 
 import { environment } from '../../../environments/environment'
 import { EncryptionType } from './EncryptionType'
 
+export interface IKeyPair {
+  publicKey: string
+  privateKey: string
+}
+
 @Injectable()
 export class CryptoService {
   public crypto: Symmetric | KeyAgreementBD
   private stateSubject: Subject<KeyState>
+  private signingKeyPair: CryptoKeyPair
 
   static async generateKey(): Promise<string> {
     return MuteCrypto.generateKey()
@@ -51,5 +57,26 @@ export class CryptoService {
 
   async decrypt(ciphertext: Uint8Array): Promise<Uint8Array> {
     return this.crypto.decrypt(ciphertext)
+  }
+
+  async generateSigningKeyPair(): Promise<void> {
+    this.signingKeyPair = await asymmetricCrypto.generateSigningKey()
+  }
+
+  async importSigningKeyPair(keyPair: IKeyPair) {
+    const publicKey = JSON.parse(keyPair.publicKey)
+    const privateKey = JSON.parse(keyPair.privateKey)
+    this.signingKeyPair = await asymmetricCrypto.importKey({ publicKey, privateKey })
+  }
+
+  async exportSigningKeyPair(): Promise<IKeyPair> {
+    if (this.signingKeyPair === undefined) {
+      throw new Error('Signing key pair is not defined')
+    }
+    const { publicKey, privateKey } = await asymmetricCrypto.exportKey(this.signingKeyPair)
+    return {
+      publicKey: JSON.stringify(publicKey),
+      privateKey: JSON.stringify(privateKey),
+    }
   }
 }

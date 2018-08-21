@@ -4,4 +4,5 @@ export enum EProperties {
   theme,
   displayLogs,
   openedFolder,
+  signingKeyPair,
 }
