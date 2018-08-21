@@ -22,7 +22,7 @@
   </div>
 
   <mat-sidenav #rightSidenavElm class="rightsidenav" align="end" [opened]="!this.media.isActive('xs')" [mode]="rightSideNavMode">
-    <mute-collaborators [docAuthors]="docAuthors" (change)="onToggle($event)"></mute-collaborators>
+    <mute-collaborators [docAuthors]="docAuthors" (change)="onToggle()"></mute-collaborators>
   </mat-sidenav>
 
 </mat-sidenav-container>
