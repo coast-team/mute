@@ -92,7 +92,7 @@ export class SettingsService {
     }
   }
 
-  isAuthenticated() {
+  isAuthenticated(): boolean {
     return this.auth.isAuthenticated()
   }
 
