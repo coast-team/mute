@@ -12,9 +12,12 @@ import { NetworkService } from '../network'
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent implements OnDestroy {
-  @Output() menu: EventEmitter<void>
-  @Output() info: EventEmitter<void>
-  @ViewChild('input') input: ElementRef
+  @Output()
+  menu: EventEmitter<void>
+  @Output()
+  info: EventEmitter<void>
+  @ViewChild('input')
+  input: ElementRef
 
   public botNotAvailable: boolean
   public doc: Doc

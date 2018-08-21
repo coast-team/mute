@@ -1,4 +1,4 @@
-import { ICollaborator } from 'mute-core'
+import { ICollaborator } from '@coast-team/mute-core'
 
 export class RichCollaborator {
   public id: number

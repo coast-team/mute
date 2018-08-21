@@ -13,12 +13,18 @@ import { CONTROLS } from './controls'
 export class ControlsComponent implements OnInit {
   public isPlaying: boolean
   public pausePlayBtn: string
-  @Input() currentOp: number
-  @Input() nbOperations: number
-  @Input() max: number
-  @Input() doc: Doc
-  @Output() controls: EventEmitter<number>
-  @Output() slide: EventEmitter<number>
+  @Input()
+  currentOp: number
+  @Input()
+  nbOperations: number
+  @Input()
+  max: number
+  @Input()
+  doc: Doc
+  @Output()
+  controls: EventEmitter<number>
+  @Output()
+  slide: EventEmitter<number>
 
   constructor(private router: Router, public ui: UiService) {
     this.pausePlayBtn = 'play_arrow'

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Injectable, OnDestroy } from '@angular/core'
-import { ICollaborator } from 'mute-core'
+import { ICollaborator } from '@coast-team/mute-core'
 import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 

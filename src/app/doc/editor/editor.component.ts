@@ -29,8 +29,10 @@ import { DocService } from '../doc.service'
 })
 @Injectable()
 export class EditorComponent implements OnDestroy, OnInit {
-  @Output() isReady: EventEmitter<void>
-  @ViewChild('editorElt') editorElt: ElementRef
+  @Output()
+  isReady: EventEmitter<void>
+  @ViewChild('editorElt')
+  editorElt: ElementRef
 
   public editor: CodeMirror.Editor
 

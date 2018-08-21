@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { MuteCore, State } from 'mute-core'
+import { MuteCore, State } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 

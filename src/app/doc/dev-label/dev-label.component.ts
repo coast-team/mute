@@ -39,7 +39,8 @@ import { LogsService } from '../logs/logs.service'
   ],
 })
 export class DevLabelComponent implements DoCheck {
-  @ViewChild('link') link: ElementRef
+  @ViewChild('link')
+  link: ElementRef
 
   public changes: number
   public digest: Observable<string>

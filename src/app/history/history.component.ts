@@ -24,11 +24,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[]
   public docAuthors: Author[]
 
-  @ViewChild('editorElt') editorElt: ElementRef
-  @ViewChild(TimelineComponent) timelineComponent: TimelineComponent
-  @ViewChild('sidenavElm') sidenavElm
-  @ViewChild('leftSidenavElm') leftSidenavElm
-  @ViewChild('rightSidenavElm') rightSidenavElm
+  @ViewChild('editorElt')
+  editorElt: ElementRef
+  @ViewChild(TimelineComponent)
+  timelineComponent: TimelineComponent
+  @ViewChild('sidenavElm')
+  sidenavElm
+  @ViewChild('leftSidenavElm')
+  leftSidenavElm
+  @ViewChild('rightSidenavElm')
+  rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
   public doc: Doc

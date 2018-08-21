@@ -9,8 +9,10 @@ import { Folder } from '../../core/Folder'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarComponent implements OnChanges {
-  @Input() folder: Folder
-  @Output() menu: EventEmitter<void>
+  @Input()
+  folder: Folder
+  @Output()
+  menu: EventEmitter<void>
 
   public header: string
 

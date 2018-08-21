@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, Input } from '@angular/core'
-import { ICollaborator } from 'mute-core'
+import { ICollaborator } from '@coast-team/mute-core'
 
 import { Doc } from '../../../core/Doc'
 import { RichCollaborator } from '../../rich-collaborators'
@@ -27,8 +27,10 @@ const defaultCollab = { avatar: '', displayName: '', login: '' }
   ],
 })
 export class DetailsComponent {
-  @Input() doc: Doc
-  @Input() collaborators: RichCollaborator[]
+  @Input()
+  doc: Doc
+  @Input()
+  collaborators: RichCollaborator[]
 
   public card: { avatar: string; displayName: string; login: string }
   public cardState: string

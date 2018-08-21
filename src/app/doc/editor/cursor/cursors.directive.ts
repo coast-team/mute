@@ -15,7 +15,8 @@ import * as proto from './cursor_proto'
 })
 @Injectable()
 export class CursorsDirective implements OnInit, OnDestroy {
-  @Input() cm: CodeMirror.Editor
+  @Input()
+  cm: CodeMirror.Editor
 
   private subs: Subscription[]
 

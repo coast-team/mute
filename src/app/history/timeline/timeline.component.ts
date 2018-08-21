@@ -8,12 +8,18 @@ import { Subscription, timer } from 'rxjs'
 })
 @Injectable()
 export class TimelineComponent implements OnInit, OnDestroy {
-  @Input() currentOp: number
-  @Input() delay: number
-  @Input() nbOperations: number
-  @Input() max: number
-  @Input() step: number
-  @Output() slide: EventEmitter<number>
+  @Input()
+  currentOp: number
+  @Input()
+  delay: number
+  @Input()
+  nbOperations: number
+  @Input()
+  max: number
+  @Input()
+  step: number
+  @Output()
+  slide: EventEmitter<number>
 
   player: any
   private subscriptionPlayer: Subscription

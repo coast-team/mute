@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from 'mute-crypto'
+import { KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
 import { Observable, Subject } from 'rxjs'
 
 import { environment } from '../../../environments/environment'

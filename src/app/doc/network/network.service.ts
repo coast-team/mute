@@ -1,7 +1,7 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { Streams as MuteCoreStreams } from 'mute-core'
-import { enableDebug, KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from 'mute-crypto'
+import { Streams as MuteCoreStreams } from '@coast-team/mute-core'
+import { enableDebug, KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
 import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 

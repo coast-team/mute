@@ -32,8 +32,10 @@ class DocsSource extends DataSource<any> {
   styleUrls: ['./docs.component.scss'],
 })
 export class DocsComponent implements OnDestroy, OnInit {
-  @ViewChild('leftSidenav') leftSidenav: MatSidenav
-  @ViewChild('rightSidenav') rightSidenav
+  @ViewChild('leftSidenav')
+  leftSidenav: MatSidenav
+  @ViewChild('rightSidenav')
+  rightSidenav
 
   private subs: Subscription[]
   private displayedColumnsLocal = ['title', 'key', 'created', 'opened', 'modified']

@@ -6,8 +6,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
   styleUrls: ['./toolbar.component.scss'],
 })
 export class ToolbarComponent {
-  @Input() title: string
-  @Output() menu: EventEmitter<void>
+  @Input()
+  title: string
+  @Output()
+  menu: EventEmitter<void>
 
   constructor() {
     this.menu = new EventEmitter()

@@ -7,8 +7,10 @@ import { Author } from '../../core/Author'
   styleUrls: ['./collaborators.component.scss'],
 })
 export class CollaboratorsComponent implements OnInit {
-  @Input() docAuthors: Author[]
-  @Output() change = new EventEmitter<boolean>()
+  @Input()
+  docAuthors: Author[]
+  @Output()
+  change = new EventEmitter<boolean>()
 
   constructor() {}
 

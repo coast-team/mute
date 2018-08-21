@@ -1,4 +1,4 @@
-import { State } from 'mute-core'
+import { State } from '@coast-team/mute-core'
 
 import { Doc } from '../Doc'
 import { File } from '../File'

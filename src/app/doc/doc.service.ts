@@ -11,8 +11,8 @@ import {
   State,
   TextDelete,
   TextInsert,
-} from 'mute-core'
-import { KeyState } from 'mute-crypto'
+} from '@coast-team/mute-core'
+import { KeyState } from '@coast-team/mute-crypto'
 import { WebGroupState } from 'netflux'
 import { merge, Subscription } from 'rxjs'
 import { auditTime, filter, map } from 'rxjs/operators'
