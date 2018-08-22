@@ -11,6 +11,13 @@ export interface ISerialize {
 }
 
 export class Profile {
+  public static anonymous: IAccount = {
+    provider: window.location.hostname,
+    login: `anonymous`,
+    name: 'Anonymous',
+    avatar: 'assets/images/icons/account-circle.svg',
+  }
+
   public dbId: string
   public activeAccount: IAccount
   public accounts: IAccount[]

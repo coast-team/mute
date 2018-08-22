@@ -25,7 +25,7 @@ export const environment = {
   // },
   encryption: EncryptionType.KEY_AGREEMENT_BD,
   coniksClient: {
-    url: '', // Coniks clinet URL (must be a localhost)
+    url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
     binaries: {
       linux: '',
       windows: '',

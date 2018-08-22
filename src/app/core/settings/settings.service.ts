@@ -2,8 +2,6 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core'
 import { AuthService } from 'ng2-ui-auth'
 import { Observable, Subject, Subscription } from 'rxjs'
 
-import { environment } from '../../../environments/environment'
-import { CryptoService } from '../crypto/crypto.service'
 import { Folder } from '../Folder'
 import { EIndexedDBState, getIndexedDBState } from '../storage/local/indexedDBCheck'
 import { EProperties } from './EProperties'
@@ -34,7 +32,7 @@ export class SettingsService {
   private profileChangeSub: Subscription
   private isDBAvailable: boolean
 
-  constructor(rendererFactory: RendererFactory2, private auth: AuthService, private crypto: CryptoService) {
+  constructor(rendererFactory: RendererFactory2, private auth: AuthService) {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
@@ -60,7 +58,7 @@ export class SettingsService {
     }
 
     // Get authenticated or anonymous account(s)
-    const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [this.anonymous]
+    const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [Profile.anonymous]
     // Retrieve profile from database
     await this.setProfile(accounts)
   }
@@ -100,7 +98,7 @@ export class SettingsService {
 
   async signout(): Promise<void> {
     await this.auth.logout().toPromise()
-    await this.setProfile([this.anonymous])
+    await this.setProfile([Profile.anonymous])
   }
 
   async signin(provider: string): Promise<void> {
@@ -111,15 +109,6 @@ export class SettingsService {
   resendNotification() {
     // FIXME: rid of this method
     this.changeSubject.next([EProperties.profile])
-  }
-
-  get anonymous(): IAccount {
-    return {
-      provider: window.location.hostname,
-      login: `anonymous`,
-      name: 'Anonymous',
-      avatar: 'assets/images/icons/account-circle.svg',
-    }
   }
 
   private async setProfile(accounts: IAccount[]): Promise<void> {
@@ -143,17 +132,6 @@ export class SettingsService {
     } else {
       this._profile = new Profile(accounts)
       await this.saveToDB(true)
-    }
-
-    // Generate/Import signing key pair
-    if ('coniksClient' in environment && this.isAuthenticated()) {
-      if (!this._profile.signingKeyPair) {
-        await this.crypto.generateSigningKeyPair()
-        this._profile.signingKeyPair = await this.crypto.exportSigningKeyPair()
-        this.saveToDB()
-      } else {
-        await this.crypto.importSigningKeyPair(this._profile.signingKeyPair)
-      }
     }
 
     this.profileChangeSub = this._profile.onChange.subscribe((props) => {

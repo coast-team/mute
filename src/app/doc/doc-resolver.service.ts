@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { MatDialog, MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, CanDeactivate, Resolve, Router } from '@angular/router'
 
-import { environment } from '../../environments/environment'
+import { CryptoService } from '../core/crypto/crypto.service'
 import { Doc } from '../core/Doc'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
@@ -18,7 +18,8 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     private dialog: MatDialog,
     private localStorage: LocalStorageService,
     private botStorage: BotStorageService,
-    private settings: SettingsService
+    private settings: SettingsService,
+    private crypto: CryptoService
   ) {}
 
   async resolve(route: ActivatedRouteSnapshot): Promise<Doc> {
@@ -26,9 +27,8 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     const remote = route.paramMap.get('remote')
 
     try {
-      if ('coniksClient' in environment && !this.settings.isAuthenticated()) {
-        throw new Error('You must be authenticated.')
-      }
+      // Vefify my signging key pair to sign outcoming messages for key agreement crypto cycles
+      await this.crypto.checkMySigningKeyPair(this.settings.profile)
 
       // Retreive the document from the local database
       let doc = await this.localStorage.fetchDoc(key)

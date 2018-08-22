@@ -234,7 +234,7 @@ export class NetworkService implements OnDestroy {
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       doc.onMetadataChanges
         .pipe(filter(({ isLocal, changedProperties }) => !isLocal && changedProperties.includes(Doc.CRYPTO_KEY)))
-        .subscribe(() => (this.cryptoService.crypto as Symmetric).importKey(doc.cryptoKey).then(() => log.debug('Key is Imported')))
+        .subscribe(() => (this.cryptoService.crypto as Symmetric).importKey(doc.cryptoKey))
     })
     // Handle network events
     this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
