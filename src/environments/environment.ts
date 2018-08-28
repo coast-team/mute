@@ -24,14 +24,14 @@ export const environment = {
   //   isAnonymousAllowed: false,
   // },
   encryption: EncryptionType.KEY_AGREEMENT_BD,
-  // coniksClient: {
-  //   url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
-  //   binaries: {
-  //     linux: '',
-  //     windows: '',
-  //     macOS: '',
-  //   },
-  // },
+  coniksClient: {
+    url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
+    binaries: {
+      linux: '',
+      windows: '',
+      macOS: '',
+    },
+  },
   auth: {
     baseUrl: 'http://localhost:4000/',
     providers: {

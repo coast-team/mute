@@ -6,7 +6,6 @@ import { filter, map } from 'rxjs/operators'
 import { EProperties } from '../../core/settings/EProperties'
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'
-import { NetworkService } from '../network'
 import { Colors } from './Colors'
 import { RichCollaborator } from './RichCollaborator'
 
@@ -21,7 +20,7 @@ export class RichCollaboratorsService implements OnDestroy {
 
   public collaborators: RichCollaborator[]
 
-  constructor(cd: ChangeDetectorRef, settings: SettingsService, network: NetworkService) {
+  constructor(cd: ChangeDetectorRef, settings: SettingsService) {
     this.joinSubject = new Subject()
     this.leaveSubject = new Subject()
     this.updateSubject = new Subject()

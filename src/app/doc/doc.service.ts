@@ -17,6 +17,7 @@ import { WebGroupState } from 'netflux'
 import { merge, Subscription } from 'rxjs'
 import { auditTime, filter, map } from 'rxjs/operators'
 
+import { CryptoService } from '../core/crypto/crypto.service'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
@@ -50,7 +51,8 @@ export class DocService implements OnDestroy {
     private botStorage: BotStorageService,
     public ui: UiService,
     private cd: ChangeDetectorRef,
-    private logs: LogsService
+    private logs: LogsService,
+    private crypto: CryptoService
   ) {
     this.subs = []
     this.docContentChanged = false
@@ -181,6 +183,11 @@ export class DocService implements OnDestroy {
     )
       .pipe(auditTime(1000))
       .subscribe((v) => this.restartSyncInterval())
+
+    // Config assymetric cryptography
+    this.collabs.onJoin.subscribe(({ id, login }) => {
+      this.crypto.verifyLoginPK(id, login)
+    })
 
     // Start join the collaboration session
     this.network.join(this.doc.signalingKey)

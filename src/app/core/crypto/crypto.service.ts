@@ -24,6 +24,7 @@ export class CryptoService implements OnDestroy {
   private signingKeyPair: CryptoKeyPair
   private pkRequests: PkRequests
   private login: string
+  private joinedMembers: Map<number, CryptoKey>
 
   private subs: Subscription[]
 
@@ -34,6 +35,7 @@ export class CryptoService implements OnDestroy {
   constructor(http: HttpClient, settings: SettingsService) {
     this.stateSubject = new Subject()
     this.subs = []
+    this.joinedMembers = new Map()
     switch (environment.encryption) {
       case EncryptionType.METADATA:
         this.crypto = new Symmetric()
@@ -92,35 +94,50 @@ export class CryptoService implements OnDestroy {
         profile.signingKeyPair = await this.exportSigningKeyPair()
       }
       try {
+        log.debug('Lookup my PK...', { login: profile.login, key: profile.signingKeyPair.publicKey })
         const pk = await this.pkRequests.lookup(profile.login)
         if (pk !== profile.signingKeyPair.publicKey) {
           throw new Error('Public key in local database and in Coniks server are different')
         }
       } catch (err) {
+        log.debug('Register my PK...', { login: profile.login, key: profile.signingKeyPair.publicKey })
         await this.pkRequests.register(profile.signingKeyPair.publicKey, profile.login)
       }
       this.login = profile.login
     }
   }
 
-  private async generateSigningKeyPair(): Promise<void> {
-    this.signingKeyPair = await asymmetricCrypto.generateSigningKey()
+  async verifyLoginPK(id: number, login: string) {
+    const publicKey = JSON.parse(await this.pkRequests.lookup(login))
+    const cryptoKey = await asymmetricCrypto.importKey(publicKey)
+    log.debug('Verified new member signature: ', { id, publicKey })
+    this.joinedMembers.set(id, cryptoKey)
   }
 
-  private async importSigningKeyPair(keyPair: IKeyPair) {
-    const publicKey = JSON.parse(keyPair.publicKey)
-    const privateKey = JSON.parse(keyPair.privateKey)
-    this.signingKeyPair = await asymmetricCrypto.importKey({ publicKey, privateKey })
+  async sign() {}
+
+  set onVerifiedMessage(handler: (msg: Uint8Array) => void) {}
+
+  set onSignatureVerificationError(handlers: (id: number) => void) {}
+
+  private async generateSigningKeyPair(): Promise<void> {
+    this.signingKeyPair = await asymmetricCrypto.generateSigningKeyPair()
+  }
+
+  private async importSigningKeyPair({ publicKey, privateKey }: IKeyPair) {
+    this.signingKeyPair = {
+      publicKey: await asymmetricCrypto.importKey(JSON.parse(publicKey)),
+      privateKey: await asymmetricCrypto.importKey(JSON.parse(privateKey)),
+    }
   }
 
   private async exportSigningKeyPair(): Promise<IKeyPair> {
     if (this.signingKeyPair === undefined) {
       throw new Error('Signing key pair is not defined')
     }
-    const { publicKey, privateKey } = await asymmetricCrypto.exportKey(this.signingKeyPair)
     return {
-      publicKey: JSON.stringify(publicKey),
-      privateKey: JSON.stringify(privateKey),
+      publicKey: JSON.stringify(await asymmetricCrypto.exportKey(this.signingKeyPair.publicKey)),
+      privateKey: JSON.stringify(await asymmetricCrypto.exportKey(this.signingKeyPair.privateKey)),
     }
   }
 }
