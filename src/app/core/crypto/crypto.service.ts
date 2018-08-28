@@ -19,14 +19,15 @@ export interface IKeyPair {
 @Injectable()
 export class CryptoService implements OnDestroy {
   public crypto: Symmetric | KeyAgreementBD
+  public signingKeyPair: CryptoKeyPair
 
   private stateSubject: Subject<KeyState>
-  private signingKeyPair: CryptoKeyPair
   private pkRequests: PkRequests
   private login: string
-  private joinedMembers: Map<number, CryptoKey>
+  private members: Map<number, { key?: CryptoKey; buffer: Uint8Array[] }>
 
   private subs: Subscription[]
+  private signatureErrorHandler: (id: number) => void
 
   static async generateKey(): Promise<string> {
     return MuteCrypto.generateKey()
@@ -35,7 +36,8 @@ export class CryptoService implements OnDestroy {
   constructor(http: HttpClient, settings: SettingsService) {
     this.stateSubject = new Subject()
     this.subs = []
-    this.joinedMembers = new Map()
+    this.signatureErrorHandler = () => {}
+    this.members = new Map()
     switch (environment.encryption) {
       case EncryptionType.METADATA:
         this.crypto = new Symmetric()
@@ -54,12 +56,11 @@ export class CryptoService implements OnDestroy {
           },
         } as any
     }
-    this.crypto.onStateChange = (state) => this.stateSubject.next(state)
-
     this.pkRequests = new PkRequests(http)
     this.subs[this.subs.length] = settings.onChange.pipe(filter((props) => props.includes(EProperties.profile))).subscribe(() => {
       this.login = ''
     })
+    this.crypto.onStateChange = (state) => this.stateSubject.next(state)
   }
 
   ngOnDestroy() {
@@ -111,14 +112,42 @@ export class CryptoService implements OnDestroy {
     const publicKey = JSON.parse(await this.pkRequests.lookup(login))
     const cryptoKey = await asymmetricCrypto.importKey(publicKey)
     log.debug('Verified new member signature: ', { id, publicKey })
-    this.joinedMembers.set(id, cryptoKey)
+    const member = this.members.get(id)
+    if (member) {
+      member.key = cryptoKey
+      for (const m of member.buffer) {
+        ;(this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
+          this.signatureErrorHandler(id)
+        })
+      }
+      member.buffer = []
+    } else {
+      this.members.set(id, { key: cryptoKey, buffer: [] })
+    }
   }
 
-  async sign() {}
+  set onSignatureError(handler: (id: number) => void) {
+    this.signatureErrorHandler = handler
+  }
 
-  set onVerifiedMessage(handler: (msg: Uint8Array) => void) {}
-
-  set onSignatureVerificationError(handlers: (id: number) => void) {}
+  onBDMessage(id: number, content: Uint8Array) {
+    if ('coniksClient' in environment) {
+      const member = this.members.get(id)
+      if (member) {
+        if (member.key) {
+          ;(this.crypto as KeyAgreementBD).onMessage(id, content, member.key).catch(() => {
+            this.signatureErrorHandler(id)
+          })
+        } else {
+          member.buffer.push(content)
+        }
+      } else {
+        this.members.set(id, { buffer: [content] })
+      }
+    } else {
+      ;(this.crypto as KeyAgreementBD).onMessage(id, content)
+    }
+  }
 
   private async generateSigningKeyPair(): Promise<void> {
     this.signingKeyPair = await asymmetricCrypto.generateSigningKeyPair()

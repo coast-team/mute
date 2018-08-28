@@ -17,7 +17,9 @@ import { WebGroupState } from 'netflux'
 import { merge, Subscription } from 'rxjs'
 import { auditTime, filter, map } from 'rxjs/operators'
 
+import { environment } from '../../environments/environment'
 import { CryptoService } from '../core/crypto/crypto.service'
+import { EncryptionType } from '../core/crypto/EncryptionType'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
@@ -185,9 +187,11 @@ export class DocService implements OnDestroy {
       .subscribe((v) => this.restartSyncInterval())
 
     // Config assymetric cryptography
-    this.collabs.onJoin.subscribe(({ id, login }) => {
-      this.crypto.verifyLoginPK(id, login)
-    })
+    if ('coniksClient' in environment) {
+      this.collabs.onJoin.subscribe(({ id, login }) => {
+        this.crypto.verifyLoginPK(id, login)
+      })
+    }
 
     // Start join the collaboration session
     this.network.join(this.doc.signalingKey)

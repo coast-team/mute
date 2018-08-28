@@ -189,6 +189,10 @@ export class NetworkService implements OnDestroy {
 
   private configureKeyAgreementBDEncryption() {
     const bd = this.cryptoService.crypto as KeyAgreementBD
+    if ('coniksClient' in environment) {
+      bd.signingKey = this.cryptoService.signingKeyPair.privateKey
+      this.cryptoService.onSignatureError = (id) => log.error('Signature verification error for ', id)
+    }
     bd.onSend = (msg, streamId) => this.send(streamId, msg)
 
     // Handle network events
@@ -211,7 +215,7 @@ export class NetworkService implements OnDestroy {
       try {
         const { streamId, content } = Message.decode(bytes)
         if (streamId === MuteCryptoStreams.KEY_AGREEMENT_BD) {
-          bd.onMessage(id, content)
+          this.cryptoService.onBDMessage(id, content)
         } else {
           if (streamId === MuteCoreStreams.DOCUMENT_CONTENT) {
             this.cryptoService.crypto
