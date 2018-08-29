@@ -1,8 +1,8 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Streams as MuteCoreStreams } from '@coast-team/mute-core'
-import { enableDebug, KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
-import { LogLevel, setLogLevel, SignalingState, WebGroup, WebGroupState } from 'netflux'
+import { KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
+import { SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 
 import { filter } from 'rxjs/operators'
@@ -49,19 +49,6 @@ export class NetworkService implements OnDestroy {
 
     this.leaveSubject = new Subject()
 
-    // Configure Netflux logs
-    if (environment.debug.log.netflux) {
-      setLogLevel(
-        LogLevel.DEBUG,
-        LogLevel.CHANNEL,
-        LogLevel.SIGNALING,
-        LogLevel.WEB_GROUP,
-        LogLevel.WEBRTC,
-        LogLevel.CHANNEL_BUILDER,
-        LogLevel.TOPOLOGY
-      )
-    }
-    enableDebug(true)
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
         signalingServer: environment.p2p.signalingServer,

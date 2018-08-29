@@ -6,7 +6,7 @@ export const environment: IEnvironment = {
   debug: {
     visible: true,
     log: {
-      netflux: false,
+      netflux: [],
       crypto: false,
       doc: false,
     },

@@ -1,3 +1,4 @@
+import { LogLevel } from 'netflux'
 import { EncryptionType } from '../app/core/crypto/EncryptionType'
 
 export interface IEnvironment {
@@ -5,7 +6,7 @@ export interface IEnvironment {
   debug: {
     visible: boolean
     log: {
-      netflux: boolean
+      netflux: LogLevel[]
       crypto: boolean
       doc: boolean
     }

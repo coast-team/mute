@@ -1,3 +1,4 @@
+import { LogLevel } from 'netflux'
 import { EncryptionType } from '../app/core/crypto/EncryptionType'
 import { IEnvironment } from './IEnvironment'
 
@@ -6,7 +7,7 @@ export const environment: IEnvironment = {
   debug: {
     visible: true,
     log: {
-      netflux: false,
+      netflux: [LogLevel.DEBUG],
       crypto: false,
       doc: false,
     },

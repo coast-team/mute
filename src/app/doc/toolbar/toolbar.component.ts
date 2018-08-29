@@ -3,6 +3,8 @@ import { MatSnackBar } from '@angular/material'
 import { DomSanitizer } from '@angular/platform-browser'
 import { Subscription } from 'rxjs'
 
+import { enableDebug } from '@coast-team/mute-crypto'
+import { LogLevel, setLogLevel } from 'netflux'
 import { environment } from '../../../environments/environment'
 import { Doc } from '../../core/Doc'
 import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
@@ -29,6 +31,10 @@ export class ToolbarComponent implements OnDestroy {
   public botNotAvailable: boolean
   public doc: Doc
   public debug: boolean
+  public netfluxLog: LogLevel[]
+  public cryptoLog: boolean
+  public docLog: boolean
+  public LogLevel = LogLevel
 
   private subs: Subscription[]
   private digest: string
@@ -43,7 +49,9 @@ export class ToolbarComponent implements OnDestroy {
     private logs: LogsService
   ) {
     this.debug = environment.debug.visible
-    log.debug('is debug: ', this.debug)
+    this.netfluxLog = environment.debug.log.netflux
+    this.cryptoLog = environment.debug.log.crypto
+    this.docLog = environment.debug.log.doc
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
     this.doc = docService.doc
@@ -51,6 +59,10 @@ export class ToolbarComponent implements OnDestroy {
     this.subs = []
     this.subs.push(botStorage.onStatus.subscribe((code) => (this.botNotAvailable = code !== BotStorageService.AVAILABLE)))
     this.subs.push(this.ui.docDigest.subscribe((digest) => (this.digest = digest)))
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach((sub) => sub.unsubscribe())
   }
 
   updateTitle(event) {
@@ -73,24 +85,21 @@ export class ToolbarComponent implements OnDestroy {
     this.network.inviteBot(this.botStorage.wsURL)
   }
 
-  ngOnDestroy(): void {
-    this.subs.forEach((sub) => sub.unsubscribe())
+  updateNetfluxLog() {
+    setLogLevel(...this.netfluxLog)
   }
 
-  netfluxLog(event: Event) {
+  updateCryptoLog() {
+    enableDebug(this.cryptoLog)
+  }
+
+  updateDocLog() {}
+
+  stopPropagation(event: Event) {
     event.stopPropagation()
   }
 
-  cryptoLog(event: Event) {
-    event.stopPropagation()
-  }
-
-  docLog(event: Event) {
-    event.stopPropagation()
-  }
-
-  async downloadMuteLog(event: Event) {
-    event.stopPropagation()
+  async downloadMuteLog() {
     try {
       const lines = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + '\n')
       this.download('mutelog', new Blob(lines))
@@ -100,8 +109,7 @@ export class ToolbarComponent implements OnDestroy {
     }
   }
 
-  async downloadDocLog(event: Event) {
-    event.stopPropagation()
+  async downloadDocLog() {
     try {
       const blob = (await this.docService.doc.fetchContent(true)) as Blob | undefined
       if (blob) {
@@ -113,8 +121,7 @@ export class ToolbarComponent implements OnDestroy {
     }
   }
 
-  downloadDocTree(event: Event) {
-    event.stopPropagation()
+  downloadDocTree() {
     if (this.ui.docTree) {
       this.download('doctree', new Blob([this.ui.docTree], { type: 'text/json' }))
     } else {

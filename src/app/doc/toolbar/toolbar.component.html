@@ -44,13 +44,29 @@
 </mat-menu>
 
 <mat-menu #debug="matMenu">
-  <button mat-menu-item (click)="downloadMuteLog($event)">Download MUTE logs</button>
-  <button mat-menu-item (click)="downloadDocLog($event)">Download doc logs</button>
-  <button mat-menu-item (click)="downloadDocTree($event)">Download doc tree</button>
-  <mat-divider></mat-divider>
-  <mat-slide-toggle (click)="netfluxLog($event)" class="log-slider">Netflux logs</mat-slide-toggle><br/>
-  <mat-slide-toggle (click)="cryptoLog($event)" class="log-slider">Cryptography logs</mat-slide-toggle><br/>
-  <mat-slide-toggle (click)="docLog($event)" class="log-slider">Document logs</mat-slide-toggle><br/>
+  <div (click)="stopPropagation($event)">
+    <button mat-menu-item (click)="downloadMuteLog($event)">Download MUTE logs</button>
+    <button mat-menu-item (click)="downloadDocLog($event)">Download doc logs</button>
+    <button mat-menu-item (click)="downloadDocTree($event)">Download doc tree</button>
+    <mat-divider></mat-divider>
+    <div class="logs">
+      <mat-form-field class="log-slider netflux-log">
+        <mat-select (selectionChange)="updateNetfluxLog()" [(value)]="netfluxLog" placeholder="Netflux log levels" multiple>
+          <mat-option [value]="LogLevel.DEBUG">Debug</mat-option>
+          <mat-option [value]="LogLevel.CHANNEL">Channel</mat-option>
+          <mat-option [value]="LogLevel.SIGNALING">Signaling</mat-option>
+          <mat-option [value]="LogLevel.WEB_GROUP">Web Group</mat-option>
+          <mat-option [value]="LogLevel.WEBRTC">WebRTC</mat-option>
+          <mat-option [value]="LogLevel.CHANNEL_BUILDER">Channel Builder</mat-option>
+          <mat-option [value]="LogLevel.TOPOLOGY">Topology</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle (change)="updateCryptoLog($event)" [(ngModel)]="cryptoLog" class="log-slider">Cryptography logs
+      </mat-slide-toggle><br/>
+      <mat-slide-toggle (change)="updateDocLog($event)" [(ngModel)]="docLog" class="log-slider">Document logs
+      </mat-slide-toggle><br/>
+    </div>
+  </div>
 </mat-menu>
 
 <a #debugDownload class="debug-download"></a>
