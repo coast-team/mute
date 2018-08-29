@@ -32,12 +32,11 @@ export class BotStorageService extends Storage {
 
   constructor(private http: HttpClient, private settings: SettingsService) {
     super()
-    if ('botStorage' in environment && 'httpURL' in (environment as any).botStorage && 'wsURL' in (environment as any).botStorage) {
-      const { httpURL, wsURL } = (environment as any).botStorage
+    if (environment.botStorage) {
+      const { httpURL, wsURL, isAnonymousAllowed } = environment.botStorage
       this.httpURL = httpURL
       this.wsURL = wsURL
-      this.isAnonymousAllowed =
-        'isAnonymousAllowed' in (environment as any).botStorage ? (environment as any).botStorage.isAnonymousAllowed : false
+      this.isAnonymousAllowed = isAnonymousAllowed
     } else {
       this.httpURL = ''
       this.wsURL = ''

@@ -11,7 +11,7 @@ import { LocalStorageService } from './storage/local/local-storage.service'
 import { UiService } from './ui/ui.service'
 
 @NgModule({
-  imports: [CommonModule, HttpClientModule, Ng2UiAuthModule.forRoot(environment.auth)],
+  imports: [CommonModule, HttpClientModule, Ng2UiAuthModule.forRoot(environment.authentication)],
   exports: [],
   declarations: [],
   providers: [

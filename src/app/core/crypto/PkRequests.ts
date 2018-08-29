@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment'
 export class PkRequests {
   private url: string
   constructor(private http: HttpClient) {
-    this.url = 'coniksClient' in environment ? (environment as any).coniksClient.url : ''
+    this.url = environment.cryptography.coniksClient ? environment.cryptography.coniksClient.url : ''
   }
 
   async register(pk: string, login: string) {

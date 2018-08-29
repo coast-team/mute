@@ -1,38 +1,43 @@
 import { EncryptionType } from '../app/core/crypto/EncryptionType'
+import { IEnvironment } from './IEnvironment'
 
-// The file contents for the current environment will overwrite these during build.
-// The build system defaults to the dev environment which uses `environment.ts`, but if you do
-// `ng build --env=prod` then `environment.prod.ts` will be used instead.
-// The list of which env maps to which file can be found in `angular-cli.json`.
-
-export const environment = {
+export const environment: IEnvironment = {
   production: false,
-  devLabel: true,
-  netfluxLog: false,
-  rtcConfiguration: {
-    iceServers: [
-      {
-        urls: ['stun:stun.l.google.com:19302'],
-      },
-    ],
-  },
-  signalingServer: 'ws://localhost:8010',
-  serviceWorker: false,
-  // botStorage: {
-  //   httpURL: 'http://localhost:20000',
-  //   wsURL: 'ws://localhost:20000',
-  //   isAnonymousAllowed: false,
-  // },
-  encryption: EncryptionType.KEY_AGREEMENT_BD,
-  coniksClient: {
-    url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
-    binaries: {
-      linux: '',
-      windows: '',
-      macOS: '',
+  debug: {
+    visible: true,
+    log: {
+      netflux: false,
+      crypto: false,
+      doc: false,
     },
   },
-  auth: {
+  p2p: {
+    rtcConfiguration: {
+      iceServers: [
+        {
+          urls: ['stun:stun.l.google.com:19302'],
+        },
+      ],
+    },
+    signalingServer: 'ws://localhost:8010',
+  },
+  cryptography: {
+    type: EncryptionType.KEY_AGREEMENT_BD,
+    // coniksClient: {
+    //   url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
+    //   binaries: {
+    //     linux: '',
+    //     windows: '',
+    //     macOS: '',
+    //   },
+    // },
+  },
+  // botStorage: {
+  //     httpURL: 'http://localhost:20000',
+  //     wsURL: 'ws://localhost:20000',
+  //     isAnonymousAllowed: false,
+  // },
+  authentication: {
     baseUrl: 'http://localhost:4000/',
     providers: {
       github: { clientId: 'f936a2022e9e03ae004a', scope: ['user:email'] },

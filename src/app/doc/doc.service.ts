@@ -187,10 +187,8 @@ export class DocService implements OnDestroy {
       .subscribe((v) => this.restartSyncInterval())
 
     // Config assymetric cryptography
-    if ('coniksClient' in environment) {
-      this.collabs.onJoin.subscribe(({ id, login }) => {
-        this.crypto.verifyLoginPK(id, login)
-      })
+    if (environment.cryptography.coniksClient) {
+      this.collabs.onJoin.subscribe(({ id, login }) => this.crypto.verifyLoginPK(id, login))
     }
 
     // Start join the collaboration session

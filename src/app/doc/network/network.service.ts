@@ -50,7 +50,7 @@ export class NetworkService implements OnDestroy {
     this.leaveSubject = new Subject()
 
     // Configure Netflux logs
-    if (environment.netfluxLog) {
+    if (environment.debug.log.netflux) {
       setLogLevel(
         LogLevel.DEBUG,
         LogLevel.CHANNEL,
@@ -64,14 +64,14 @@ export class NetworkService implements OnDestroy {
     enableDebug(true)
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
-        signalingServer: environment.signalingServer,
-        rtcConfiguration: environment.rtcConfiguration,
+        signalingServer: environment.p2p.signalingServer,
+        rtcConfiguration: environment.p2p.rtcConfiguration,
       })
       window.wg = this.wg
 
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
 
-      switch (environment.encryption) {
+      switch (environment.cryptography.type) {
         case EncryptionType.KEY_AGREEMENT_BD:
           this.configureKeyAgreementBDEncryption()
           break
@@ -82,7 +82,7 @@ export class NetworkService implements OnDestroy {
           this.configureNoEncryption()
           break
         default:
-          log.error('Unknown Encryption type: ', environment.encryption)
+          log.error('Unknown Encryption type: ', environment.cryptography.type)
       }
     })
   }
@@ -94,7 +94,7 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: number; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (this.members.length > 1) {
-        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.encryption !== EncryptionType.NONE) {
+        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
           this.cryptoService.crypto
             .encrypt(content)
             .then((encryptedContent) => this.send(streamId, encryptedContent, recipientId))
@@ -189,7 +189,7 @@ export class NetworkService implements OnDestroy {
 
   private configureKeyAgreementBDEncryption() {
     const bd = this.cryptoService.crypto as KeyAgreementBD
-    if ('coniksClient' in environment) {
+    if (environment.cryptography.coniksClient) {
       bd.signingKey = this.cryptoService.signingKeyPair.privateKey
       this.cryptoService.onSignatureError = (id) => log.error('Signature verification error for ', id)
     }

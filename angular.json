@@ -25,39 +25,21 @@
               "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/bragi-browser/dist/bragi.min.js",
               "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
-              "node_modules/jio/dist/jio-latest.min.js"
+              "node_modules/jio/dist/jio-v3.32.1.js"
             ]
           },
           "configurations": {
-            "production": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "serviceWorker": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
-            },
             "ovhdev": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
+              "extractLicenses": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
-              "serviceWorker": true,
+              "serviceWorker": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -93,19 +75,11 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
-              "serviceWorker": true,
+              "serviceWorker": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.demo.ts"
-                }
-              ]
-            },
-            "ghpages": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.ghpages.ts"
                 }
               ]
             }
@@ -117,9 +91,6 @@
             "browserTarget": "mute:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "mute:build:production"
-            },
             "ovhdev": {
               "browserTarget": "mute:build:ovhdev"
             },
@@ -128,9 +99,6 @@
             },
             "demo": {
               "browserTarget": "mute:build:demo"
-            },
-            "ghpages": {
-              "browserTarget": "mute:build:ghpages"
             }
           }
         },

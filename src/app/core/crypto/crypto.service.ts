@@ -38,7 +38,7 @@ export class CryptoService implements OnDestroy {
     this.subs = []
     this.signatureErrorHandler = () => {}
     this.members = new Map()
-    switch (environment.encryption) {
+    switch (environment.cryptography.type) {
       case EncryptionType.METADATA:
         this.crypto = new Symmetric()
         break
@@ -84,7 +84,7 @@ export class CryptoService implements OnDestroy {
   }
 
   async checkMySigningKeyPair(profile: Profile) {
-    if ('coniksClient' in environment && profile.login !== this.login) {
+    if ('coniksClient' in environment.cryptography && profile.login !== this.login) {
       if (profile.login === Profile.anonymous.login) {
         throw new Error('You must be authenticated')
       }
@@ -131,7 +131,7 @@ export class CryptoService implements OnDestroy {
   }
 
   onBDMessage(id: number, content: Uint8Array) {
-    if ('coniksClient' in environment) {
+    if ('coniksClient' in environment.cryptography) {
       const member = this.members.get(id)
       if (member) {
         if (member.key) {
