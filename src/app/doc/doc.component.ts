@@ -4,7 +4,6 @@ import { NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { environment } from '../../environments/environment'
 import { UiService } from '../core/ui/ui.service'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { DocService } from './doc.service'
@@ -31,12 +30,10 @@ export class DocComponent implements OnDestroy {
   public drawerMode: BehaviorSubject<string>
   public drawerOpened: BehaviorSubject<boolean>
   public extrasmall: string
-  public showDevLabel: boolean
 
   private subs: Subscription[]
 
   constructor(private router: Router, private breakpointObserver: BreakpointObserver, public docService: DocService, public ui: UiService) {
-    this.showDevLabel = environment.debug.visible
     this.drawerMode = new BehaviorSubject('')
     this.drawerOpened = new BehaviorSubject(false)
     this.extrasmall = ''
