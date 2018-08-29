@@ -5,6 +5,10 @@
       <span class="mat-caption title">Created</span>
       <span class="mat-body-2">{{doc.created | date:'longDate'}}</span>
     </div>
+    <div fxLayoutAlign="start center">
+      <span class="mat-caption title">Digest</span>
+      <span class="mat-body-2">{{ui.docDigest | async}}</span>
+    </div>
   </div>
 
   <div class="chips-block">

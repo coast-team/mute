@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, Input } from '@angular/core'
 import { ICollaborator } from '@coast-team/mute-core'
 
 import { Doc } from '../../../core/Doc'
+import { UiService } from '../../../core/ui/ui.service'
 import { RichCollaborator } from '../../rich-collaborators'
 
 const defaultCollab = { avatar: '', displayName: '', login: '' }
@@ -35,7 +36,7 @@ export class DetailsComponent {
   public card: { avatar: string; displayName: string; login: string }
   public cardState: string
 
-  constructor(private cd: ChangeDetectorRef) {
+  constructor(private cd: ChangeDetectorRef, public ui: UiService) {
     this.card = defaultCollab
   }
 

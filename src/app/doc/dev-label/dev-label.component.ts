@@ -67,7 +67,7 @@ export class DevLabelComponent implements DoCheck {
   async exportMuteLog(): Promise<void> {
     try {
       const obj = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + '\n')
-      const blob: Blob = new Blob(obj)
+      const blob = new Blob(obj)
       this.updateFileName('mutelog')
       this.updateObjectURL(blob)
       this.link.nativeElement.click()

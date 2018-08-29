@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core'
+import * as mnemonic from '@coast-team/mnemonicjs'
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs'
 
 @Injectable()
 export class UiService {
-  private docDigestSubject: Subject<number>
+  private docDigestSubject: BehaviorSubject<string>
   private docNavToggleSubject: Subject<void>
   private navToggleSubject: Subject<void>
 
@@ -14,7 +15,7 @@ export class UiService {
   public docTree: string
 
   constructor() {
-    this.docDigestSubject = new Subject()
+    this.docDigestSubject = new BehaviorSubject('')
     this.navToggleSubject = new Subject()
     this.docNavToggleSubject = new Subject()
     this.appUpdate = new ReplaySubject()
@@ -37,12 +38,12 @@ export class UiService {
     return this.docNavToggleSubject.asObservable()
   }
 
-  get docDigest(): Observable<number> {
+  get docDigest(): Observable<string> {
     return this.docDigestSubject.asObservable()
   }
 
   updateDocDigest(digest: number) {
-    this.docDigestSubject.next(digest)
+    this.docDigestSubject.next(mnemonic.encode_int32(digest))
   }
 
   updateDocTree(value: string) {
