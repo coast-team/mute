@@ -188,7 +188,11 @@ export class DocService implements OnDestroy {
 
     // Config assymetric cryptography
     if (environment.cryptography.coniksClient) {
-      this.collabs.onJoin.subscribe(({ id, login }) => this.crypto.verifyLoginPK(id, login))
+      this.collabs.onJoin.subscribe(({ id, login }) =>
+        this.crypto.verifyLoginPK(id, login).catch((err) => {
+          log.info('Failed to retreive Public Key of ' + login)
+        })
+      )
     }
 
     // Start join the collaboration session
