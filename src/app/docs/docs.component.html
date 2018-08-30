@@ -38,13 +38,13 @@
 
               <!-- Document name -->
               <div fxFlex class="doc-in-trash" *ngIf="folder === localStorage.trash; else docTitleButton">
-                <mat-icon class="title-icon ">insert_drive_file</mat-icon>
+                <mat-icon class="title-icon ">description</mat-icon>
                 {{doc.title}}
               </div>
 
               <ng-template #docTitleButton>
                 <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
-                  <mat-icon class="title-icon ">insert_drive_file</mat-icon>
+                  <mat-icon class="title-icon ">description</mat-icon>
                   {{doc.title}}
                 </button>
               </ng-template>
