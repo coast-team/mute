@@ -85,7 +85,7 @@ export class NetworkService implements OnDestroy {
           this.cryptoService.crypto
             .encrypt(content)
             .then((encryptedContent) => this.send(streamId, encryptedContent, recipientId))
-            .catch((err) => log.debug('Encryption error: ', err))
+            .catch((err) => {})
         } else {
           this.send(streamId, content, recipientId)
         }
@@ -210,7 +210,7 @@ export class NetworkService implements OnDestroy {
               .then((decryptedContent) => {
                 this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
               })
-              .catch((err) => log.debug('Decryption error: ', err))
+              .catch((err) => {})
             return
           }
           this.messageSubject.next({ streamId, content, senderId: id })
@@ -241,7 +241,7 @@ export class NetworkService implements OnDestroy {
             .then((decryptedContent) => {
               this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
             })
-            .catch((err) => log.debug('Decryption error: ', err))
+            .catch((err) => {})
           return
         }
         this.messageSubject.next({ streamId, content, senderId: id })

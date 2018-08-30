@@ -84,7 +84,7 @@ export class CryptoService implements OnDestroy {
   }
 
   async checkMySigningKeyPair(profile: Profile) {
-    if ('coniksClient' in environment.cryptography && profile.login !== this.login) {
+    if (environment.cryptography.coniksClient && profile.login !== this.login) {
       if (profile.login === Profile.anonymous.login) {
         throw new Error('You must be authenticated')
       }
@@ -95,13 +95,11 @@ export class CryptoService implements OnDestroy {
         profile.signingKeyPair = await this.exportSigningKeyPair()
       }
       try {
-        log.debug('Lookup my PK...', { login: profile.login, key: profile.signingKeyPair.publicKey })
         const pk = await this.pkRequests.lookup(profile.login)
         if (pk !== profile.signingKeyPair.publicKey) {
           throw new Error('Public key in local database and in Coniks server are different')
         }
       } catch (err) {
-        log.debug('Register my PK...', { login: profile.login, key: profile.signingKeyPair.publicKey })
         await this.pkRequests.register(profile.signingKeyPair.publicKey, profile.login)
       }
       this.login = profile.login
@@ -111,7 +109,6 @@ export class CryptoService implements OnDestroy {
   async verifyLoginPK(id: number, login: string) {
     const publicKey = JSON.parse(await this.pkRequests.lookup(login))
     const cryptoKey = await asymmetricCrypto.importKey(publicKey)
-    log.debug('Verified new member signature: ', { id, publicKey })
     const member = this.members.get(id)
     if (member) {
       member.key = cryptoKey
@@ -131,7 +128,7 @@ export class CryptoService implements OnDestroy {
   }
 
   onBDMessage(id: number, content: Uint8Array) {
-    if ('coniksClient' in environment.cryptography) {
+    if (environment.cryptography.coniksClient) {
       const member = this.members.get(id)
       if (member) {
         if (member.key) {

@@ -50,8 +50,11 @@ export class ToolbarComponent implements OnDestroy {
   ) {
     this.debug = environment.debug.visible
     this.netfluxLog = environment.debug.log.netflux
+    this.updateNetfluxLog()
     this.cryptoLog = environment.debug.log.crypto
+    this.updateCryptoLog()
     this.docLog = environment.debug.log.doc
+    this.updateDocLog()
     this.menu = new EventEmitter()
     this.info = new EventEmitter()
     this.doc = docService.doc
