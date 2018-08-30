@@ -3,7 +3,7 @@
   <div class="doc-block" fxLayout="column" fxLayoutAlign="start stretch">
     <div fxLayoutAlign="start center" class="line">
       <span class="mat-caption title">Created</span>
-      <span class="mat-body-2">{{doc.created | date:'longDate'}}</span>
+      <span class="mat-body-2">{{doc.created | date:'MMMM d, y, HH:mm'}}</span>
     </div>
     <div fxLayoutAlign="start center" class="line">
       <span class="mat-caption title">Digest</span>
@@ -12,6 +12,10 @@
     <div fxLayoutAlign="start center" class="line" [matTooltip]="crypto[1]">
       <span class="mat-caption title">Encryption</span>
       <span class="mat-body-2">{{crypto[0]}}</span>
+    </div>
+    <div *ngIf="coniks" fxLayoutAlign="start center" class="line">
+      <span class="mat-caption title">Coniks</span>
+      <span class="mat-body-2">Yes</span>
     </div>
   </div>
 

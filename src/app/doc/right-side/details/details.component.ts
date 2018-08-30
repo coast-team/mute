@@ -38,6 +38,7 @@ export class DetailsComponent {
   public card: { avatar: string; displayName: string; login: string }
   public cardState: string
   public crypto: [string, string]
+  public coniks: boolean
 
   constructor(private cd: ChangeDetectorRef, public ui: UiService) {
     this.card = defaultCollab
@@ -52,6 +53,7 @@ export class DetailsComponent {
         this.crypto = ['Key agreement protocol', 'All members participate in group key creation']
         break
     }
+    this.coniks = !!environment.cryptography.coniksClient
   }
 
   showCard(collab: ICollaborator) {
