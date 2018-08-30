@@ -23,7 +23,7 @@ export const environment: IEnvironment = {
     signalingServer: 'ws://localhost:8010',
   },
   cryptography: {
-    type: EncryptionType.KEY_AGREEMENT_BD,
+    type: EncryptionType.NONE,
     // coniksClient: {
     //   url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
     //   binaries: {
