@@ -8,21 +8,19 @@ import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
 import { ISerialize as ISerializeProfile, Profile } from './Profile'
 
-const selectList = ['profile', 'theme', 'displayLogs', 'openedFolder']
+const selectList = ['profile', 'theme', 'openedFolder']
 
 const DB_NAME = 'settings_v2'
 
 interface ISerialize {
   profile: ISerializeProfile
   theme: string
-  displayLogs: boolean
   openedFolder: string
 }
 
 @Injectable()
 export class SettingsService {
   public theme: string
-  public displayLogs: boolean
   public openedFolder: string
   public changeSubject: Subject<EProperties[]>
 
@@ -36,7 +34,6 @@ export class SettingsService {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'
-    this.displayLogs = false
     this.openedFolder = 'local'
   }
 
@@ -78,13 +75,6 @@ export class SettingsService {
     }
   }
 
-  async updateDisplayLogs(display: boolean) {
-    if (this.setDisplayLogs(display)) {
-      this.changeSubject.next([EProperties.displayLogs])
-      await this.saveToDB()
-    }
-  }
-
   async updateOpenedFolder(folder: Folder): Promise<void> {
     if (this.setOpenedFolder(folder.id)) {
       this.changeSubject.next([EProperties.openedFolder])
@@ -122,9 +112,6 @@ export class SettingsService {
       this._profile = Profile.deserialize(accounts, data.id, data.value.profile)
       if (this.setTheme(data.value.theme)) {
         changedProperties.push(EProperties.theme)
-      }
-      if (this.setDisplayLogs(data.value.displayLogs)) {
-        changedProperties.push(EProperties.displayLogs)
       }
       if (this.setOpenedFolder(data.value.openedFolder)) {
         changedProperties.push(EProperties.openedFolder)
@@ -190,14 +177,6 @@ export class SettingsService {
     return false
   }
 
-  private setDisplayLogs(value: boolean) {
-    if (typeof value === 'boolean') {
-      this.displayLogs = value
-      return true
-    }
-    return false
-  }
-
   private setOpenedFolder(id: string) {
     if (id) {
       this.openedFolder = id
@@ -245,7 +224,6 @@ export class SettingsService {
     return {
       profile: this._profile.serialize(),
       theme: this.theme,
-      displayLogs: this.displayLogs,
       openedFolder: this.openedFolder,
     }
   }

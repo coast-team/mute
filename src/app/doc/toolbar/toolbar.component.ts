@@ -96,7 +96,9 @@ export class ToolbarComponent implements OnDestroy {
     enableDebug(this.cryptoLog)
   }
 
-  updateDocLog() {}
+  updateDocLog() {
+    this.logs.setDisplayLogs(this.docLog)
+  }
 
   stopPropagation(event: Event) {
     event.stopPropagation()

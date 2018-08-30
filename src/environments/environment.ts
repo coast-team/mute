@@ -8,7 +8,7 @@ export const environment: IEnvironment = {
     visible: true,
     log: {
       netflux: [],
-      crypto: true,
+      crypto: false,
       doc: false,
     },
   },

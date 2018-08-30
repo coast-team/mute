@@ -27,7 +27,7 @@ export class LogsService {
     }
     this.db.store(obj)
     if (this.displayLogs) {
-      console.log('[LOGS]', obj)
+      log.info('DOC LOGS', obj)
     }
   }
 

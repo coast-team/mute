@@ -217,14 +217,8 @@ export class DocService implements OnDestroy {
   private initLogs(): void {
     const siteId = this.muteCore.myMuteCoreId
     this.logs.init(`muteLogs-${this.doc.signalingKey}`)
-    this.logs.setDisplayLogs(this.settings.displayLogs)
 
     // For displyaing logs in console
-    this.subs.push(
-      this.settings.onChange.pipe(filter((properties) => properties.includes(EProperties.displayLogs))).subscribe(() => {
-        this.logs.setDisplayLogs(this.settings.displayLogs)
-      })
-    )
 
     this.subs.push(
       this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED)).subscribe(() => {

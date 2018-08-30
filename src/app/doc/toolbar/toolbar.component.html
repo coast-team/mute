@@ -45,9 +45,9 @@
 
 <mat-menu #debug="matMenu">
   <div (click)="stopPropagation($event)">
-    <button mat-menu-item (click)="downloadMuteLog($event)">Download MUTE logs</button>
-    <button mat-menu-item (click)="downloadDocLog($event)">Download doc logs</button>
-    <button mat-menu-item (click)="downloadDocTree($event)">Download doc tree</button>
+    <button mat-menu-item (click)="downloadMuteLog()">Download MUTE logs</button>
+    <button mat-menu-item (click)="downloadDocLog()">Download doc logs</button>
+    <button mat-menu-item (click)="downloadDocTree()">Download doc tree</button>
     <mat-divider></mat-divider>
     <div class="logs">
       <mat-form-field class="log-slider netflux-log">
@@ -61,9 +61,9 @@
           <mat-option [value]="LogLevel.TOPOLOGY">Topology</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-slide-toggle (change)="updateCryptoLog($event)" [(ngModel)]="cryptoLog" class="log-slider">Cryptography logs
+      <mat-slide-toggle (change)="updateCryptoLog()" [(ngModel)]="cryptoLog" class="log-slider">Cryptography logs
       </mat-slide-toggle><br/>
-      <mat-slide-toggle (change)="updateDocLog($event)" [(ngModel)]="docLog" class="log-slider">Document logs
+      <mat-slide-toggle (change)="updateDocLog()" [(ngModel)]="docLog" class="log-slider">Document logs
       </mat-slide-toggle><br/>
     </div>
   </div>
