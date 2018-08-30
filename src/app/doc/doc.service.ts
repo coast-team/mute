@@ -59,6 +59,9 @@ export class DocService implements OnDestroy {
     this.subs = []
     this.docContentChanged = false
     this.saveDocInterval = undefined
+    this.subs[this.subs.length] = this.settings.onChange
+      .pipe(filter((props) => props.includes(EProperties.profile)))
+      .subscribe(() => window.location.reload())
     this.zone.runOutsideAngular(() => {
       this.newSub = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
