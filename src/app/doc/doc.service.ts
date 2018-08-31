@@ -19,7 +19,6 @@ import { auditTime, filter, map } from 'rxjs/operators'
 
 import { environment } from '../../environments/environment'
 import { CryptoService } from '../core/crypto/crypto.service'
-import { EncryptionType } from '../core/crypto/EncryptionType'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'

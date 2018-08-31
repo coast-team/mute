@@ -1,10 +1,10 @@
-import { DataSource } from '@angular/cdk/collections'
+import { DataSource } from '@angular/cdk/table'
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { MediaChange, ObservableMedia } from '@angular/flex-layout'
-import { MatDialog, MatSidenav, MatSnackBar } from '@angular/material'
+import { MatDialog, MatSidenav, MatSnackBar, Sort } from '@angular/material'
 import { Router } from '@angular/router'
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
-import { filter } from 'rxjs/operators'
+import { BehaviorSubject, Observable, Subscription } from 'rxjs'
+import { filter, map } from 'rxjs/operators'
 
 import { Doc } from '../core/Doc'
 import { Folder } from '../core/Folder'
@@ -16,14 +16,60 @@ import { UiService } from '../core/ui/ui.service'
 import { DocRenameDialogComponent } from '../shared/doc-rename-dialog/doc-rename-dialog.component'
 import { RemoteDeleteDialogComponent } from '../shared/remote-delete-dialog/remote-delete-dialog.component'
 
-class DocsSource extends DataSource<any> {
-  constructor(private docs: Subject<Doc[]>) {
+class DocsSource extends DataSource<Doc> {
+  public sort: Sort
+
+  private docs: Doc[]
+  private docs$: BehaviorSubject<Doc[]>
+  private sub: Subscription
+  constructor(docs$: BehaviorSubject<Doc[]>, sort: Sort) {
     super()
+    this.docs$ = docs$
+    this.sort = sort
+    this.sub = docs$.subscribe((docs) => (this.docs = docs))
   }
+
   connect(): Observable<Doc[]> {
-    return this.docs
+    return this.docs$.pipe(map((docs) => this.getSortedDocs(docs, this.sort)))
   }
-  disconnect() {}
+
+  disconnect() {
+    this.sub.unsubscribe()
+  }
+
+  sortDocs(sort: Sort) {
+    this.sort = sort
+    this.docs$.next(this.getSortedDocs(this.docs, sort))
+  }
+
+  private getSortedDocs(docs: Doc[], sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      return docs
+    }
+
+    docs.sort((a, b) => {
+      const isAsc = sort.direction === 'asc'
+      switch (sort.active) {
+        case 'title':
+          return this.compare(a.title, b.title, isAsc)
+        case 'signalingKey':
+          return this.compare(a.signalingKey, b.signalingKey, isAsc)
+        case 'created':
+          return this.compare(a.created, b.created, isAsc)
+        case 'opened':
+          return this.compare(a.opened, b.opened, isAsc)
+        case 'modified':
+          return this.compare(a.modified, b.modified, isAsc)
+        default:
+          return 0
+      }
+    })
+    return docs
+  }
+
+  private compare(a, b, isAsc) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1)
+  }
 }
 
 @Component({
@@ -36,10 +82,6 @@ export class DocsComponent implements OnDestroy, OnInit {
   leftSidenav: MatSidenav
   @ViewChild('rightSidenav')
   rightSidenav
-
-  private subs: Subscription[]
-  private displayedColumnsLocal = ['title', 'key', 'created', 'opened', 'modified']
-  private displayedColumnsRemote = ['title', 'location', 'key', 'created', 'opened', 'modified']
   public folder: Folder
   public title: string
   public displayedColumns: string[]
@@ -53,8 +95,13 @@ export class DocsComponent implements OnDestroy, OnInit {
   public menuDoc: Doc
   public remoteName: string
   public remoteId: string
+  public sortDefault: Sort = { active: 'title', direction: 'asc' }
 
   public actions
+
+  private subs: Subscription[]
+  private displayedColumnsLocal = ['title', 'signalingKey', 'created', 'opened', 'modified']
+  private displayedColumnsRemote = ['title', 'location', 'signalingKey', 'created', 'opened', 'modified']
 
   constructor(
     private router: Router,
@@ -67,7 +114,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     public dialog: MatDialog
   ) {
     this.docsSubject = new BehaviorSubject([])
-    this.docsSource = new DocsSource(this.docsSubject)
+    this.docsSource = new DocsSource(this.docsSubject, this.sortDefault)
     this.title = ''
     this.subs = []
     if (this.localStorage.remote) {
@@ -98,6 +145,10 @@ export class DocsComponent implements OnDestroy, OnInit {
   ngOnDestroy() {
     this.docsSubject.complete()
     this.subs.forEach((s) => s.unsubscribe())
+  }
+
+  sortDocs(sort: Sort) {
+    this.docsSource.sortDocs(sort)
   }
 
   setMenuDoc(doc: Doc) {
@@ -159,7 +210,8 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   rename(doc: Doc) {
-    this.dialog.open(DocRenameDialogComponent, { data: doc })
+    const dialog = this.dialog.open(DocRenameDialogComponent, { data: doc })
+    this.subs[this.subs.length] = dialog.afterClosed().subscribe(() => this.docsSource.sortDocs(this.docsSource.sort))
   }
 
   share(doc: Doc) {

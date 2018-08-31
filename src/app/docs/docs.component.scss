@@ -2,32 +2,53 @@
   flex: 1;
   overflow: auto;
 }
+.mat-table {
+  overflow: auto;
 
-mat-cell {
-  &.title-cell {
-    padding-left: 0;
-  }
-
-  .doc-in-trash {
-    padding: 0 16px;
-  }
-
-  .key {
-    width: 90px;
-    word-wrap: none;
-    white-space: nowrap;
-    overflow: hidden;
+  .mat-cell {
     text-overflow: ellipsis;
-  }
-}
+    overflow: hidden;
 
-.mat-row {
-  padding-left: 5px;
-
-  &:hover {
-    .desktop-actions {
-      visibility: visible;
+    &.title-cell {
+      padding-left: 0;
     }
+
+    .doc-in-trash {
+      padding: 0 16px;
+    }
+
+    .key {
+      width: 90px;
+      word-wrap: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .mat-row {
+    padding-left: 5px;
+
+    &:hover {
+      .desktop-actions {
+        visibility: visible;
+      }
+    }
+  }
+
+  .title-icon {
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  .desktop-actions {
+    visibility: hidden;
+    margin-right: 16px;
+  }
+
+  .synchronized-icon {
+    vertical-align: bottom;
+    margin-right: 5px;
   }
 }
 
@@ -37,18 +58,8 @@ mat-cell {
   }
 }
 
-.desktop-actions {
-  visibility: hidden;
-  margin-right: 16px;
-}
-
 .nav {
   border-right: 1px solid var(--theme-fg-divider);
-}
-
-.synchronized-icon {
-  vertical-align: bottom;
-  margin-right: 5px;
 }
 
 .contenteditable {
@@ -61,22 +72,8 @@ mat-cell {
   }
 }
 
-.mat-table {
-  overflow: auto;
-}
-
-.title-icon {
-  margin-right: 5px;
-  vertical-align: middle;
-}
-
 .table-container {
   height: 100%;
-}
-
-.mat-cell {
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 
 .info-values {
@@ -85,10 +82,6 @@ mat-cell {
 
 .table-container-mobile {
   height: 100%;
-}
-
-.table-header {
-  font-weight: 700;
 }
 
 .title-button {
