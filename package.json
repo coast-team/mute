@@ -7,7 +7,7 @@
     "ng": "ng",
     "prestart": "pm2 startOrReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
-    "build": "ng build --prod",
+    "build": "ng build",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "builddev": "ng build --configuration ovhdev",
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
