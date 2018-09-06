@@ -8,7 +8,7 @@ export const environment: IEnvironment = {
     visible: true,
     log: {
       netflux: [LogLevel.DEBUG],
-      crypto: false,
+      crypto: true,
       doc: false,
     },
   },
@@ -33,11 +33,11 @@ export const environment: IEnvironment = {
     //   },
     // },
   },
-  // botStorage: {
-  //     httpURL: 'http://localhost:20000',
-  //     wsURL: 'ws://localhost:20000',
-  //     isAnonymousAllowed: false,
-  // },
+  botStorage: {
+    httpURL: 'http://localhost:20000',
+    wsURL: 'ws://localhost:20000',
+    isAnonymousAllowed: false,
+  },
   authentication: {
     baseUrl: 'http://localhost:4000/',
     providers: {

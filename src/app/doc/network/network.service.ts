@@ -183,7 +183,7 @@ export class NetworkService implements OnDestroy {
     bd.onSend = (msg, streamId) => this.send(streamId, msg)
 
     // Handle network events
-    this.wg.onMyId = (myId: number) => bd.setMyId(myId)
+    this.wg.onMyId = (myId) => bd.setMyId(myId)
     this.wg.onMemberJoin = (id) => {
       bd.addMember(id)
       this.memberJoinSubject.next(id)
