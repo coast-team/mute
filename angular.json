@@ -25,7 +25,7 @@
               "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/bragi-browser/dist/bragi.min.js",
               "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
-              "node_modules/jio/dist/jio-v3.32.1.js"
+              "node_modules/@nexedi/jio/dist/jio-latest.js"
             ]
           },
           "configurations": {
