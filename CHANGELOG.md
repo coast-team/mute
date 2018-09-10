@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.9.0"></a>
+# [0.9.0](https://github.com/coast-team/mute/compare/v0.8.1...v0.9.0) (2018-09-10)
+
+
+### Bug Fixes
+
+* **coniks:** should work without coniksClient env parameter ([87f9b3f](https://github.com/coast-team/mute/commit/87f9b3f))
+* **coniks:** uncaught Promise rejection ([4ff9f2f](https://github.com/coast-team/mute/commit/4ff9f2f))
+* **coniks:** verify signature on message from key agreement protocol ([d5e5d40](https://github.com/coast-team/mute/commit/d5e5d40))
+* **date:** show the format correctly ([48184bb](https://github.com/coast-team/mute/commit/48184bb))
+* **details:** add padding between details' lines ([47474c1](https://github.com/coast-team/mute/commit/47474c1))
+* **doc:** reload page when change profile ([80c5a83](https://github.com/coast-team/mute/commit/80c5a83))
+* **history:** build correctly ([db54bab](https://github.com/coast-team/mute/commit/db54bab))
+
+
+### Features
+
+* **coniks:** don't allow to open a document for non authenticated users ([d5e780a](https://github.com/coast-team/mute/commit/d5e780a))
+* **coniks:** show is coniks is used ([4aa2e1f](https://github.com/coast-team/mute/commit/4aa2e1f))
+* **coniks:** verify my signing public key with the one on Coniks ([70f32ab](https://github.com/coast-team/mute/commit/70f32ab))
+* **crypto:** define cryptographic mechanism during a build ([3831da5](https://github.com/coast-team/mute/commit/3831da5))
+* **crypto:** lookup new member's public key from coniks server ([af164d1](https://github.com/coast-team/mute/commit/af164d1))
+* **crypto:** use keyagreement BD protocol instead of a key in metadata ([6a0fe1d](https://github.com/coast-team/mute/commit/6a0fe1d))
+* **details:** show encryption type in details ([311e653](https://github.com/coast-team/mute/commit/311e653))
+* **doc:** show digest in details ([e72653c](https://github.com/coast-team/mute/commit/e72653c))
+* **docs:** sort by name, key or any date ([3c69a3f](https://github.com/coast-team/mute/commit/3c69a3f))
+* **logs:** enable/disable Netflux and Crypto logs ([6830f89](https://github.com/coast-team/mute/commit/6830f89))
+* **signingkey:** generate private and public key if not exist ([6c214a5](https://github.com/coast-team/mute/commit/6c214a5))
+
+
+
 <a name="0.8.1"></a>
 ## [0.8.1](https://github.com/coast-team/mute/compare/v0.8.0...v0.8.1) (2018-07-17)
 
