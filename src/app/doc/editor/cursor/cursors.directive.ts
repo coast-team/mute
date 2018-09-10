@@ -10,6 +10,7 @@ import { Streams } from '../../Streams'
 import { CollaboratorCursor } from './CollaboratorCursor'
 import * as proto from './cursor_proto'
 
+const cursorMoveKeys = ['ArrowLeft', 'ArrowDown', 'ArrowUp', 'ArrorRight', 'PageDown', 'PageUp', 'Home', 'End']
 @Directive({
   selector: '[muteCursors]',
 })
@@ -194,7 +195,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
     CodeMirror.on(this.cm, 'keydown', (instance, event: KeyboardEvent) => {
       // Cursor should be sent if the key is one that moves the cursor (arrow keys for example)
-      cursorShouldBeSent = 33 <= event.keyCode && event.keyCode <= 40
+      cursorShouldBeSent = cursorMoveKeys.includes(event.key)
     })
     CodeMirror.on(this.cm, 'mousedown', () => (cursorShouldBeSent = true))
 
