@@ -1,8 +1,8 @@
 {
   "name": "Multi User Text Editor",
   "short_name": "Mute",
-  "background_color": "white",
   "theme_color": "#2196F3",
+  "background_color": "#fafafa",
   "description": "A P2P collaborative text editor.",
   "display": "standalone",
   "scope": "/",

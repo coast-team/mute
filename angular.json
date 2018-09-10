@@ -160,7 +160,7 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "mute",
-      "styleext": "css"
+      "styleext": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "mute"
