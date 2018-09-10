@@ -8,7 +8,7 @@ export abstract class LogsStrategy {
 
   protected docKey: string
 
-  constructor (docKey: string) {
+  constructor(docKey: string) {
     this.docKey = docKey
 
     this.dbLocal = new IndexdbDatabase()
@@ -17,7 +17,7 @@ export abstract class LogsStrategy {
     this.dbDistante = new RabbitMq(this.docKey)
   }
 
-  public setShareLogs (share: boolean, state: Map<number, number>) {
+  public setShareLogs(share: boolean, state: Map<number, number>) {
     const stateVector = {}
     state.forEach((v, k) => {
       stateVector[k] = v
@@ -29,13 +29,16 @@ export abstract class LogsStrategy {
     }
   }
 
-  public getLocalLogs (): Promise<object[]> {
+  public getLocalLogs(): Promise<object[]> {
     return new Promise((resolve, reject) => {
-      this.dbLocal.get().then((obj: object) => {
-        resolve(obj as object[])
-      }).catch((err) => reject(err))
+      this.dbLocal
+        .get()
+        .then((obj: object) => {
+          resolve(obj as object[])
+        })
+        .catch((err) => reject(err))
     })
   }
 
-  abstract sendLogs (obj: object, share: boolean): void
+  abstract sendLogs(obj: object, share: boolean): void
 }

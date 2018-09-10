@@ -3,6 +3,7 @@ import { MuteCore, State } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
+import { IndexdbDatabase } from '../../../doc/logs/IndexdbDatabase'
 import { CryptoService } from '../../crypto/crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'
@@ -107,6 +108,11 @@ export class LocalStorageService extends Storage implements IStorage {
   async delete(file: File): Promise<void> {
     this.check()
     await new Promise((resolve, reject) => {
+      console.log('destroy', file)
+      if (file.isDoc) {
+        const doc = file as Doc
+        IndexdbDatabase.destroy('muteLogs-' + doc.signalingKey)
+      }
       this.db.remove(file.id).then(() => resolve(), (err: Error) => reject(err))
     })
   }

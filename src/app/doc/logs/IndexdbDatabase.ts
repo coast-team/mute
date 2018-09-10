@@ -3,6 +3,13 @@ import { Database } from './Database'
 export class IndexdbDatabase extends Database {
   private db: any
 
+  static destroy(name) {
+    const deleteRequest = window.indexedDB.deleteDatabase('jio:' + name)
+    deleteRequest.onerror = (event) => {
+      console.error('An error as occured while deleting the indexedDB : ' + name)
+    }
+  }
+
   public init(name: string): void {
     this.db = jIO.createJIO({
       type: 'uuid',
