@@ -14,8 +14,8 @@ BRAGI.transports.get('console').property('showMeta', false)
 export class Log {
   /**
    * Colored 'Debug' group log.
-   * @param {string} msg message
-   * @param {any}    obj any javascript object
+   * @param msg message
+   * @param obj any javascript object
    */
   debug(msg: string, obj?: any): void {
     BRAGI.log('DEBUG:' + this.getTimestamp(), msg, obj)
@@ -23,9 +23,9 @@ export class Log {
 
   /**
    * Colored log. Each group name has different color.
-   * @param {string} group group name
-   * @param {string} msg   message
-   * @param {any}    obj   any javascript object
+   * @param group group name
+   * @param msg   message
+   * @param obj   any javascript object
    */
   info(group: string, msg: string, obj?: any): void {
     BRAGI.log(group + ':' + this.getTimestamp(), msg, obj)
@@ -37,8 +37,8 @@ export class Log {
 
   /**
    * Browser native console.trace. Works in Chrome, but maybe not in other browsers.
-   * @param {string} msg   message
-   * @param {any}    obj   any javascript object
+   * @param msg   message
+   * @param obj   any javascript object
    */
   trace(msg: string, obj?: any): void {
     loglevel.trace(this.prefix('TRACE') + msg, obj)
@@ -47,8 +47,8 @@ export class Log {
   /**
    * Browser native console.warn (shows stack trace). Works in Chrome, but maybe
    * not well in other browsers.
-   * @param {string} msg   message
-   * @param {any}    obj   any javascript object
+   * @param msg   message
+   * @param obj   any javascript object
    */
   warn(msg: string, obj?: any): void {
     loglevel.warn(this.prefix('WARN') + msg, obj)
@@ -57,8 +57,8 @@ export class Log {
   /**
    * Browser native console.error (shows stack trace). Works in Chrome, but maybe
    * not well in other browsers.
-   * @param {string} msg   message
-   * @param {any}    obj   any javascript object
+   * @param msg   message
+   * @param obj   any javascript object
    */
   error(msg: string, obj?: any): void {
     loglevel.error(this.prefix('ERROR') + msg, obj)

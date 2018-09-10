@@ -186,7 +186,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
   private listenEventsForCursorChange() {
     let cursorShouldBeSent = false
 
-    CodeMirror.on(this.cm, 'cursorActivity', (instance: CodeMirror.Editor) => {
+    CodeMirror.on(this.cm, 'cursorActivity', () => {
       if (cursorShouldBeSent) {
         this.sendMyCursorPos()
       }

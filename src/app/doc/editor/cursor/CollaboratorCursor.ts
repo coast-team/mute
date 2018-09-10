@@ -72,7 +72,7 @@ export class CollaboratorCursor {
     this.cm.getWrapperElement().appendChild(this.cursorTransition)
     if (!lineHeight) {
       const lineHeightPx = window.getComputedStyle(this.cm.getWrapperElement(), null).getPropertyValue('line-height')
-      lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2))
+      lineHeight = Number.parseInt(lineHeightPx.substr(0, lineHeightPx.length - 2), 10)
     }
   }
 
@@ -219,7 +219,7 @@ export class CollaboratorCursor {
     } else {
       return
     }
-    const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2))
+    const fontSizeNumber = Number.parseInt(fontSize.substr(0, fontSize.length - 2), 10)
     const cursorHeight = fontSizeNumber + 5
     return {
       height: `${cursorHeight}px`,
