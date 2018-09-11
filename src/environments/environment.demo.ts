@@ -26,6 +26,10 @@ export const environment: IEnvironment = {
   cryptography: {
     type: EncryptionType.NONE,
   },
+  logSystem: {
+    logCollectorUrl: 'ws://localhost:15674/ws',
+    stompjsDebugLog: false,
+  },
   // botStorage: {}
   // authentication: {
   //   baseUrl: '',

@@ -33,6 +33,10 @@ export const environment: IEnvironment = {
     //   },
     // },
   },
+  logSystem: {
+    logCollectorUrl: 'ws://localhost:15674/ws',
+    stompjsDebugLog: true,
+  },
   botStorage: {
     httpURL: 'http://localhost:20000',
     wsURL: 'ws://localhost:20000',

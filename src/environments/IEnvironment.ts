@@ -26,6 +26,10 @@ export interface IEnvironment {
       }
     }
   }
+  logSystem: {
+    logCollectorUrl: string
+    stompjsDebugLog: boolean
+  }
   botStorage?: {
     httpURL: string
     wsURL: string

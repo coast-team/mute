@@ -1,5 +1,7 @@
 import { StompConfig, StompService } from '@stomp/ng2-stompjs'
 
+import { environment } from '../../../environments/environment'
+
 export class RabbitMq extends StompService {
   private queue: string
   private key: string
@@ -9,9 +11,9 @@ export class RabbitMq extends StompService {
 
   constructor(docKey: string) {
     const config = new StompConfig()
-    config.url = 'ws://localhost:15674/ws'
+    config.url = environment.logSystem.logCollectorUrl
     config.headers = { login: 'guest', passcode: 'guest' }
-    config.debug = true
+    config.debug = environment.logSystem.stompjsDebugLog
     config.heartbeat_in = 0
     config.heartbeat_out = 20000
     config.reconnect_delay = 5000
