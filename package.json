@@ -59,7 +59,7 @@
     "rxjs": "^6.3.2",
     "tui-editor": "^1.2.6",
     "uuid": "^3.3.2",
-    "@stomp/ng2-stompjs": "^4.0.1",
+    "@stomp/ng2-stompjs": "^6.0.1",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

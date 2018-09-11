@@ -18,6 +18,7 @@ export class LogsService implements OnDestroy {
 
   constructor(route: ActivatedRoute) {
     this.displayLogs = false
+    this.subs = []
 
     this.subs.push(
       route.data.subscribe(({ doc }: { doc: Doc }) => {
@@ -30,7 +31,7 @@ export class LogsService implements OnDestroy {
 
   log(obj: object) {
     if (this.displayLogs) {
-      log.info('DOC LOGS', obj)
+      log.info('DOC LOGS', obj['type'], obj)
     }
     // context is a Map, so it can't be stringify -> we have to convert it
     if (obj['context']) {
