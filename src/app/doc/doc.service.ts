@@ -257,23 +257,23 @@ export class DocService implements OnDestroy {
 
     this.subs.push(
       this.network.onMemberJoin.subscribe((peer: number) => {
-        this.logs.log({ type: 'peerConnection', timestamp: Date.now(), siteId })
+        this.logs.log({ type: 'peerConnection', timestamp: Date.now(), siteId, remoteSiteId: peer })
       })
     )
     this.subs.push(
       this.network.onMemberLeave.subscribe((peer: number) => {
-        this.logs.log({ type: 'peerDisconnection', timestamp: Date.now(), siteId })
+        this.logs.log({ type: 'peerDisconnection', timestamp: Date.now(), siteId, remoteSiteId: peer })
       })
     )
 
     this.subs.push(
       this.muteCore.collabJoin$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId })
+        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.id })
       })
     )
     this.subs.push(
       this.muteCore.collabLeave$.subscribe((c: number) => {
-        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId })
+        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c })
       })
     )
 
@@ -283,7 +283,10 @@ export class DocService implements OnDestroy {
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
-          neighbours: this.network.wg.neighbors,
+          neighbours: {
+            downstream: this.network.wg.neighbors,
+            upstream: this.network.wg.neighbors,
+          },
         })
       })
     )
@@ -294,7 +297,10 @@ export class DocService implements OnDestroy {
           ...operation,
           timestamp: Date.now(),
           collaborators: this.network.members,
-          neighbours: this.network.wg.neighbors,
+          neighbours: {
+            downstream: this.network.wg.neighbors,
+            upstream: this.network.wg.neighbors,
+          },
         })
       })
     )
