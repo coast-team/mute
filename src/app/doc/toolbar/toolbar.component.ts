@@ -107,7 +107,7 @@ export class ToolbarComponent implements OnDestroy {
   async downloadMuteLog() {
     try {
       const lines = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + '\n')
-      this.download('mutelog', new Blob(lines))
+      this.download('mutelog', new Blob(lines, { type: 'text/json' }))
     } catch (err) {
       log.warn('Unable to download MuteLog: ', err.message)
       this.snackBar.open('Unable to download MuteLog', 'Close')
@@ -138,8 +138,10 @@ export class ToolbarComponent implements OnDestroy {
   private download(name: string, file: Blob) {
     const objectURL = URL.createObjectURL(file)
     const fileName = `${this.doc.signalingKey}_${name.toUpperCase()}_${this.digest}.json`
-    this.debugDownload.nativeElement.setAttribute('download', fileName)
-    this.debugDownload.nativeElement.setAttribute('href', this.sanitizer.bypassSecurityTrustResourceUrl(objectURL))
+
+    // this.debugDownload.nativeElement.href = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL)
+    this.debugDownload.nativeElement.href = objectURL
+    this.debugDownload.nativeElement.download = fileName
     this.debugDownload.nativeElement.click()
   }
 }
