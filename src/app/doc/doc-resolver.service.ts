@@ -8,10 +8,12 @@ import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { DocComponent } from './doc.component'
+import { DocService } from './doc.service'
 import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.component'
 
 @Injectable()
 export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocComponent> {
+  private create: boolean
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
@@ -20,7 +22,9 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     private botStorage: BotStorageService,
     private settings: SettingsService,
     private crypto: CryptoService
-  ) {}
+  ) {
+    this.create = null
+  }
 
   async resolve(route: ActivatedRouteSnapshot): Promise<Doc> {
     const key = route.params['key']
@@ -32,8 +36,8 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
 
       // Retreive the document from the local database
       let doc = await this.localStorage.fetchDoc(key)
-
       if (doc) {
+        this.create = false
         if (doc.parentFolderId === this.localStorage.trash.id) {
           // Whether to restore the document from the trash
           const isDocReconstituted = await new Promise((resolve) => {
@@ -49,6 +53,7 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
         }
       } else {
         // Create a new document
+        this.create = true
         doc = await this.localStorage.createDoc(key)
         if (remote) {
           doc.addRemote(this.botStorage.id)
@@ -68,5 +73,9 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
   async canDeactivate(docComponent: DocComponent): Promise<boolean> {
     await docComponent.saveDoc()
     return true
+  }
+
+  get isCreate(): boolean {
+    return this.create
   }
 }

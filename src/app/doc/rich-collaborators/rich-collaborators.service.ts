@@ -92,13 +92,13 @@ export class RichCollaboratorsService implements OnDestroy {
     )
   }
 
-  subscribeToLeaveSource(source: Observable<number>) {
+  subscribeToLeaveSource(source: Observable<ICollaborator>) {
     this.subs.push(
-      source.subscribe((id: number) => {
-        const index = this.collaborators.findIndex((c) => c.id === id)
+      source.subscribe((collaborator: ICollaborator) => {
+        const index = this.collaborators.findIndex((c) => c.id === collaborator.id)
         this.colors.dismiss(this.collaborators[index].color)
         this.collaborators.splice(index, 1)
-        this.leaveSubject.next(id)
+        this.leaveSubject.next(collaborator.id)
       })
     )
   }

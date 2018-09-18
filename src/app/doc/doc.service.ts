@@ -24,6 +24,7 @@ import { EProperties } from '../core/settings/EProperties'
 import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { UiService } from '../core/ui/ui.service'
+import { DocResolverService } from './doc-resolver.service'
 import { LogsService } from './logs/logs.service'
 import { NetworkService } from './network'
 import { RichCollaboratorsService } from './rich-collaborators'
@@ -53,7 +54,8 @@ export class DocService implements OnDestroy {
     public ui: UiService,
     private cd: ChangeDetectorRef,
     private logs: LogsService,
-    private crypto: CryptoService
+    private crypto: CryptoService,
+    private docResolver: DocResolverService
   ) {
     this.subs = []
     this.docContentChanged = false
@@ -243,37 +245,61 @@ export class DocService implements OnDestroy {
       })
     )
 
+    if (this.docResolver.isCreate) {
+      this.logs.log({ type: 'creation', timestamp: Date.now(), siteId, documentId: this.doc.signalingKey })
+    } else {
+      this.logs.log({ type: 'opening', timestamp: Date.now(), siteId, documentId: this.doc.signalingKey })
+    }
+
     this.subs.push(
       this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED)).subscribe(() => {
-        const obj = { type: 'connection', timestamp: Date.now(), siteId }
+        const obj = {
+          type: 'connection',
+          timestamp: Date.now(),
+          siteId,
+          networkId: this.network.myId,
+          neighbours: {
+            downstream: this.network.wg.neighbors,
+            upstream: this.network.wg.neighbors,
+          },
+        }
         this.logs.log(obj)
       })
     )
     this.subs.push(
       this.network.onLeave.subscribe(() => {
-        this.logs.log({ type: 'disconnection', timestamp: Date.now(), siteId })
+        this.logs.log({
+          type: 'disconnection',
+          timestamp: Date.now(),
+          siteId,
+          networkId: this.network.myId,
+          neighbours: {
+            downstream: this.network.wg.neighbors,
+            upstream: this.network.wg.neighbors,
+          },
+        })
       })
     )
 
     this.subs.push(
       this.network.onMemberJoin.subscribe((peer: number) => {
-        this.logs.log({ type: 'peerConnection', timestamp: Date.now(), siteId, remoteSiteId: peer })
+        this.logs.log({ type: 'peerConnection', timestamp: Date.now(), siteId, remoteNetworkId: peer })
       })
     )
     this.subs.push(
       this.network.onMemberLeave.subscribe((peer: number) => {
-        this.logs.log({ type: 'peerDisconnection', timestamp: Date.now(), siteId, remoteSiteId: peer })
+        this.logs.log({ type: 'peerDisconnection', timestamp: Date.now(), siteId, remoteNetworkId: peer })
       })
     )
 
     this.subs.push(
       this.muteCore.collabJoin$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.id })
+        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId, remoteNetworkId: c.id })
       })
     )
     this.subs.push(
-      this.muteCore.collabLeave$.subscribe((c: number) => {
-        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c })
+      this.muteCore.collabLeave$.subscribe((c: ICollaborator) => {
+        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId, remoteNetworkId: c.id })
       })
     )
 
@@ -293,6 +319,18 @@ export class DocService implements OnDestroy {
 
     this.subs.push(
       this.muteCore.remoteOperationForLog.subscribe((operation: RemoteOperation) => {
+        const opes = []
+        operation.textOperation.forEach((ope) => {
+          if (ope instanceof TextInsert) {
+            const o = ope as TextInsert
+            opes.push({ position: o.offset, content: o.content, length: o.content.length })
+          } else if (ope instanceof TextDelete) {
+            const o = ope as TextDelete
+            opes.push({ position: o.offset, length: o.length })
+          }
+        })
+        const reworkOpe = { ...operation }
+        reworkOpe.textOperation = opes
         this.logs.log({
           ...operation,
           timestamp: Date.now(),

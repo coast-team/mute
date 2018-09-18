@@ -215,7 +215,7 @@ export class LocalStorageService extends Storage implements IStorage {
           if (body) {
             if (!blob) {
               const reader = new FileReader()
-              reader.onload = () => resolve(JSON.parse(reader.result) as State)
+              reader.onload = () => resolve(JSON.parse(reader.result as string) as State)
               reader.readAsText(body)
             } else {
               resolve(body)
