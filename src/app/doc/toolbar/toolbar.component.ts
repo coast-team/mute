@@ -106,8 +106,9 @@ export class ToolbarComponent implements OnDestroy {
 
   async downloadMuteLog() {
     try {
-      const lines = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + '\n')
-      this.download('mutelog', new Blob(lines, { type: 'text/json' }))
+      const lines = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + ',\n')
+      lines[lines.length - 1] = lines[lines.length - 1].slice(0, lines[lines.length - 1].length - 2) + ']' // replace ",\n" athe end of the last line in order to obtain a correct JSON file
+      this.download('mutelog', new Blob(['[', ...lines], { type: 'text/json' }))
     } catch (err) {
       log.warn('Unable to download MuteLog: ', err.message)
       this.snackBar.open('Unable to download MuteLog', 'Close')
