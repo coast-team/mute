@@ -332,7 +332,7 @@ export class DocService implements OnDestroy {
         const reworkOpe = { ...operation }
         reworkOpe.textOperation = opes
         this.logs.log({
-          ...operation,
+          ...reworkOpe,
           timestamp: Date.now(),
           collaborators: this.network.members,
           neighbours: {

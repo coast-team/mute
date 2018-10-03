@@ -29,6 +29,7 @@ export interface IEnvironment {
   logSystem: {
     logCollectorUrl: string
     stompjsDebugLog: boolean
+    anonimyze: boolean
   }
   botStorage?: {
     httpURL: string

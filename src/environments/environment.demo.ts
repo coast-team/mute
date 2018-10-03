@@ -29,6 +29,7 @@ export const environment: IEnvironment = {
   logSystem: {
     logCollectorUrl: 'ws://localhost:15674/ws',
     stompjsDebugLog: false,
+    anonimyze: false,
   },
   // botStorage: {}
   // authentication: {

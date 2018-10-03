@@ -23,7 +23,7 @@ export const environment: IEnvironment = {
     signalingServer: 'ws://localhost:8010',
   },
   cryptography: {
-    type: EncryptionType.KEY_AGREEMENT_BD,
+    type: EncryptionType.METADATA,
     // coniksClient: {
     //   url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
     //   binaries: {
@@ -34,13 +34,14 @@ export const environment: IEnvironment = {
     // },
   },
   logSystem: {
-    logCollectorUrl: 'ws://localhost:15674/ws',
-    stompjsDebugLog: true,
+    logCollectorUrl: 'ws://localhost:13000/ws', // 'wss://logs.dev.coedit.re',
+    stompjsDebugLog: false,
+    anonimyze: false,
   },
   botStorage: {
     httpURL: 'http://localhost:20000',
     wsURL: 'ws://localhost:20000',
-    isAnonymousAllowed: false,
+    isAnonymousAllowed: true,
   },
   authentication: {
     baseUrl: 'http://localhost:4000/',
