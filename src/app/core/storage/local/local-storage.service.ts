@@ -132,8 +132,8 @@ export class LocalStorageService extends Storage implements IStorage {
             ld.created = new Date(bd.created)
             ld.cryptoKey = bd.cryptoKey
             localDocs.push(ld)
+            ld.addRemote(this.remote.id)
           }
-          ld.addRemote(this.remote.id)
         }
         return localDocs
       }
