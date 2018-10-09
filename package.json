@@ -46,7 +46,7 @@
     "@angular/router": "^6.1.7",
     "@angular/service-worker": "^6.1.7",
     "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "^7.0.2",
+    "@coast-team/mute-core": "^7.1.0",
     "@coast-team/mute-crypto": "^0.4.1",
     "@nexedi/jio": "^3.33.0",
     "bragi-browser": "0.0.12",
