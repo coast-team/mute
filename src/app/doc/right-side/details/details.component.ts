@@ -39,6 +39,7 @@ export class DetailsComponent {
   public cardState: string
   public crypto: [string, string]
   public coniks: boolean
+  public logsTooltip: string
 
   constructor(private cd: ChangeDetectorRef, public ui: UiService) {
     this.card = defaultCollab
@@ -54,6 +55,14 @@ export class DetailsComponent {
         break
     }
     this.coniks = !!environment.cryptography.coniksClient
+
+    this.logsTooltip =
+      'By activating this button, you agree to share all the operations performed on the document.' +
+      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.'
+    if (environment.logSystem.anonimyze) {
+      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.'
+    }
+    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.'
   }
 
   showCard(collab: ICollaborator) {

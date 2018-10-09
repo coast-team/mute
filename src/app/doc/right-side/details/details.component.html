@@ -25,6 +25,7 @@
       <span class="mat-body-2">
         <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
       </span>
+      <mat-icon class="icon mat-primary" [matTooltip]="logsTooltip">info</mat-icon>
     </div>
   </div>
 
