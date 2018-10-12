@@ -13,6 +13,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
   }
 
   public sendLogs(obj: object, share: boolean) {
+    obj['logid'] = this.useLogId()
     this.dbLocal.store(obj)
     if (share) {
       this.dbDistante.send(obj)

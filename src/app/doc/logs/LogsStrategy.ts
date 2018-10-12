@@ -7,9 +7,15 @@ export abstract class LogsStrategy {
   protected dbLocal: Database
 
   protected docKey: string
+  protected logId: number
 
   constructor(docKey: string) {
     this.docKey = docKey
+    this.logId = parseInt(window.localStorage.getItem('logid-' + this.docKey), 10)
+    if (isNaN(this.logId)) {
+      this.logId = 0
+      window.localStorage.setItem('logid-' + this.docKey, '0')
+    }
 
     this.dbLocal = new IndexdbDatabase()
     this.dbLocal.init('muteLogs-' + this.docKey)
@@ -38,6 +44,12 @@ export abstract class LogsStrategy {
         })
         .catch((err) => reject(err))
     })
+  }
+
+  protected useLogId(): number {
+    this.logId++
+    window.localStorage.setItem('logid-' + this.docKey, this.logId + '')
+    return this.logId - 1
   }
 
   abstract sendLogs(obj: object, share: boolean): void
