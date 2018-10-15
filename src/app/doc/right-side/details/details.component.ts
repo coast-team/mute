@@ -57,12 +57,12 @@ export class DetailsComponent {
     this.coniks = !!environment.cryptography.coniksClient
 
     this.logsTooltip =
-      'By activating this button, you agree to share all the operations performed on the document.' +
-      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.'
+      'By activating this button, you agree to share all the operations performed on the document.\n' +
+      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.\n'
     if (environment.logSystem.anonimyze) {
-      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.'
+      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
     }
-    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.'
+    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
   }
 
   showCard(collab: ICollaborator) {
