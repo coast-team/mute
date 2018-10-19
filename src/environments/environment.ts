@@ -8,7 +8,7 @@ export const environment: IEnvironment = {
     visible: true,
     log: {
       netflux: [LogLevel.DEBUG],
-      crypto: true,
+      crypto: false,
       doc: false,
     },
   },
@@ -34,14 +34,14 @@ export const environment: IEnvironment = {
     // },
   },
   logSystem: {
-    logCollectorUrl: 'ws://localhost:13000/ws', // 'wss://logs.dev.coedit.re',
+    logCollectorUrl: 'ws://localhost:24000/ws', // 'wss://logs.dev.coedit.re',
     stompjsDebugLog: false,
-    anonimyze: false,
+    anonimyze: true,
   },
   botStorage: {
     httpURL: 'http://localhost:20000',
     wsURL: 'ws://localhost:20000',
-    isAnonymousAllowed: true,
+    isAnonymousAllowed: false,
   },
   authentication: {
     baseUrl: 'http://localhost:4000/',
