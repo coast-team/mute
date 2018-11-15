@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/coast-team/mute/compare/v0.9.0...v0.10.0) (2018-11-15)
+
+
+### Bug Fixes
+
+* **cursor.proto:** change the import path for sync.proto ([dc4da6b](https://github.com/coast-team/mute/commit/dc4da6b))
+* **docslist:** fix a bug when a doc was in trash and in remote storage ([d193552](https://github.com/coast-team/mute/commit/d193552))
+* **download:** fix Logs file download function ([7ff13ef](https://github.com/coast-team/mute/commit/7ff13ef))
+* **download:** muteLogs generated file is now a correct JSON file ([72b2952](https://github.com/coast-team/mute/commit/72b2952))
+* **localOperation:** Logs now subscribe first, in order to read clock and state before the operation ([4ad46b7](https://github.com/coast-team/mute/commit/4ad46b7))
+* **logs:** context is convert to object before being stringify ([17079c0](https://github.com/coast-team/mute/commit/17079c0))
+* **logs:** fix duplicate console logs, reload issues for logs properties ([71c830f](https://github.com/coast-team/mute/commit/71c830f))
+* **logs:** fix ng2-stomp version and logs display in console ([a9eade1](https://github.com/coast-team/mute/commit/a9eade1))
+
+
+### Features
+
+* **environment:** add logSystem properties into environment object ([721ee34](https://github.com/coast-team/mute/commit/721ee34))
+* **indexeddb:** delete logs db when a document is removed ([e8c6066](https://github.com/coast-team/mute/commit/e8c6066))
+* **logs:** add anonymization for logs ([feeec78](https://github.com/coast-team/mute/commit/feeec78))
+* **logs:** Add event when change shareLogs and logsStrategy parameters ([e93fe82](https://github.com/coast-team/mute/commit/e93fe82))
+* **logs:** add logid into the logged object ([96a138d](https://github.com/coast-team/mute/commit/96a138d))
+* **logs:** Add RabitMq class for sending logs to a message queue ([662a5a4](https://github.com/coast-team/mute/commit/662a5a4))
+* **logs:** add remoteSiteId, and change neighbours logs ([931533f](https://github.com/coast-team/mute/commit/931533f))
+* **logs:** add tooltip for explaining the log collection ([a0d3a9c](https://github.com/coast-team/mute/commit/a0d3a9c))
+* **logs:** Adding shareLogs in metadata, polish rebase with master ([ea2ace1](https://github.com/coast-team/mute/commit/ea2ace1))
+* **logs:** Change how we observe local and remote operations ([0e3411c](https://github.com/coast-team/mute/commit/0e3411c))
+* **logs:** refactor logs content and add creation/opening log ([b974815](https://github.com/coast-team/mute/commit/b974815))
+* **logsStrategy:** Refactor strategy pattern, and implements sendall strategy ([193509b](https://github.com/coast-team/mute/commit/193509b))
+* **rabbitmq:** Send offline-logs which are stored in the local storage when offline ([9cd58e7](https://github.com/coast-team/mute/commit/9cd58e7))
+* **shareLogs:** Add a property into Doc class, add a toggle button in order to change that property ([efc55c0](https://github.com/coast-team/mute/commit/efc55c0))
+* **tooltip:** change share logs information style ([fb6f0a3](https://github.com/coast-team/mute/commit/fb6f0a3))
+
+
+
 <a name="0.9.0"></a>
 # [0.9.0](https://github.com/coast-team/mute/compare/v0.8.1...v0.9.0) (2018-09-10)
 
