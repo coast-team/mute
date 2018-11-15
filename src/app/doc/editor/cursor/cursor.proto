@@ -1,5 +1,5 @@
 syntax = "proto3";
-import "../../../../../node_modules/mute-core/dist/proto/sync.proto";
+import "../../../../../node_modules/@coast-team/mute-core/dist/proto/sync.proto";
 
 message Cursor {
   Position anchor = 1;
