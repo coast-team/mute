@@ -215,7 +215,7 @@ export class LocalStorageService extends Storage implements IStorage {
           if (body) {
             if (!blob) {
               const reader = new FileReader()
-              reader.onload = () => resolve(JSON.parse(reader.result as string) as State)
+              reader.onload = () => resolve(State.fromPlainText(JSON.parse(reader.result as string)))
               reader.readAsText(body)
             } else {
               resolve(body)
@@ -233,7 +233,7 @@ export class LocalStorageService extends Storage implements IStorage {
     doc.modified = new Date()
     await this.save(doc)
     return await new Promise((resolve, reject) => {
-      this.db.putAttachment(doc.id, 'body', JSON.stringify(body)).then(() => resolve(), (err) => reject(err))
+      this.db.putAttachment(doc.id, 'body', body.toJSON()).then(() => resolve(), (err) => reject(err))
     })
   }
 

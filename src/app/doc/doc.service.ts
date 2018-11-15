@@ -14,7 +14,7 @@ import {
 } from '@coast-team/mute-core'
 import { KeyState } from '@coast-team/mute-crypto'
 import { WebGroupState } from 'netflux'
-import { merge, Subscription } from 'rxjs'
+import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { auditTime, filter, map } from 'rxjs/operators'
 
 import { environment } from '../../environments/environment'
@@ -41,6 +41,7 @@ export class DocService implements OnDestroy {
   private saveDocInterval: number | undefined
   private syncDocContentInterval: number | undefined
   private docContentChanged: boolean
+  private initSubject$: Subject<string>
 
   public doc: Doc
 
@@ -60,6 +61,7 @@ export class DocService implements OnDestroy {
     this.subs = []
     this.docContentChanged = false
     this.saveDocInterval = undefined
+    this.initSubject$ = new Subject()
     this.subs[this.subs.length] = this.settings.onChange
       .pipe(filter((props) => props.includes(EProperties.profile)))
       .subscribe(() => window.location.reload())
@@ -358,13 +360,13 @@ export class DocService implements OnDestroy {
 
   private async readDocContent(): Promise<State> {
     try {
-      const state = (await this.doc.fetchContent()) as State
-      const richLogootSOps = state.richLogootSOps
-        .map((richLogootSOp) => RichLogootSOperation.fromPlain(richLogootSOp))
-        .filter((richLogootSOp) => richLogootSOp instanceof RichLogootSOperation)
-      return new State(new Map(), richLogootSOps)
+      const state = await this.doc.fetchContent()
+      if (state instanceof State) {
+        this.initSubject$.next(state.logootsRopes.str)
+        return state
+      }
     } catch {
-      return new State(new Map(), [])
+      return State.emptyState()
     }
   }
 
@@ -380,5 +382,9 @@ export class DocService implements OnDestroy {
 
   private set newSub(s: Subscription) {
     this.subs[this.subs.length] = s
+  }
+
+  public get initSubject(): Observable<string> {
+    return this.initSubject$.asObservable()
   }
 }

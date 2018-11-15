@@ -32,6 +32,11 @@ export class EditorComponent implements OnDestroy, OnInit {
     this.isReady = new EventEmitter()
     this.subs = []
     this.doc = docService.doc
+    this.subs.push(
+      docService.initSubject.subscribe((str) => {
+        this.editor.getDoc().setValue(str)
+      })
+    )
   }
 
   ngOnInit() {
