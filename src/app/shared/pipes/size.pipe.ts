@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core'
  * Example:
  *   {{ 1024 |  size}}
  *   formats to: 1 KB
-*/
+ */
 @Pipe({ name: 'muteSize' })
 export class SizePipe implements PipeTransform {
   private units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB']
