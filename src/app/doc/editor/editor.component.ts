@@ -57,16 +57,16 @@ export class EditorComponent implements OnDestroy, OnInit {
       // Emit LOCAL changes
       this.editor.on('change', (instance, { origin, from, to, removed, text }) => {
         if (origin !== 'remote' && origin !== 'setValue') {
-          const offset = cmDoc.indexFromPos(from)
+          const index = cmDoc.indexFromPos(from)
           const result = []
 
           if (removed.length > 1 || removed[0]) {
             const length = removed.length - 1 + removed.reduce((accumulator, line) => accumulator + line.length, 0)
-            result[result.length] = { offset, length }
+            result[result.length] = { index, length }
           }
 
           if (text.length > 1 || text[0]) {
-            result[result.length] = { offset, text: text.join('\n') }
+            result[result.length] = { index, text: text.join('\n') }
           }
           this.doc.localContentChanges.next(result)
         }
@@ -75,10 +75,10 @@ export class EditorComponent implements OnDestroy, OnInit {
       // Subscribe to REMOTE changes
       this.subs[this.subs.length] = this.doc.remoteContentChanges.subscribe((ops) => {
         const apply = () => {
-          for (const { offset, text, length } of ops) {
-            const from = cmDoc.posFromIndex(offset)
+          for (const { index, text, length } of ops) {
+            const from = cmDoc.posFromIndex(index)
             if (length) {
-              const to = cmDoc.posFromIndex(offset + length)
+              const to = cmDoc.posFromIndex(index + length)
               cmDoc.replaceRange('', from, to, 'remote')
             } else {
               cmDoc.replaceRange(text, from, undefined, 'remote')
