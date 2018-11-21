@@ -120,9 +120,11 @@ export class DocService implements OnDestroy {
     // MuteCore model subscribes to LOCAL operations
     this.muteCore.localTextOperations$ = this.doc.localContentChanges.pipe(
       map((ops) => {
-        return ops.map(({ offset, text, length }) => {
+        return ops.map(({ index, text, length }) => {
           this.docContentChanged = true
-          return length ? new TextDelete(offset, length) : new TextInsert(offset, text)
+          return length
+            ? new TextDelete(index, length, this.muteCore.myMuteCoreId)
+            : new TextInsert(index, text, this.muteCore.myMuteCoreId)
         })
       })
     )
@@ -133,9 +135,9 @@ export class DocService implements OnDestroy {
       this.doc.remoteContentChanges.next(
         operations.map((op) => {
           if (op instanceof TextInsert) {
-            return { collaborator, offset: op.offset, text: op.content }
+            return { collaborator, index: op.index, text: op.content }
           } else if (op instanceof TextDelete) {
-            return { collaborator, offset: op.offset, length: op.length }
+            return { collaborator, index: op.index, length: op.length }
           }
         })
       )
@@ -325,10 +327,10 @@ export class DocService implements OnDestroy {
         operation.textOperation.forEach((ope) => {
           if (ope instanceof TextInsert) {
             const o = ope as TextInsert
-            opes.push({ position: o.offset, content: o.content, length: o.content.length })
+            opes.push({ position: o.index, content: o.content, length: o.content.length })
           } else if (ope instanceof TextDelete) {
             const o = ope as TextDelete
-            opes.push({ position: o.offset, length: o.length })
+            opes.push({ position: o.index, length: o.length })
           }
         })
         const reworkOpe = { ...operation }
