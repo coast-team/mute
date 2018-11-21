@@ -46,7 +46,7 @@
     "@angular/router": "^6.1.7",
     "@angular/service-worker": "^6.1.7",
     "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "^7.1.0",
+    "@coast-team/mute-core": "^8.0.1",
     "@coast-team/mute-crypto": "^0.4.1",
     "@stomp/ng2-stompjs": "^6.0.1",
     "bragi-browser": "0.0.12",
