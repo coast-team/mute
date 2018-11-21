@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/coast-team/mute/compare/v0.10.0...v0.11.0) (2018-11-21)
+
+
+### Features
+
+* **state:** load document with the stored state ([647bc94](https://github.com/coast-team/mute/commit/647bc94))
+
+
+
 <a name="0.10.0"></a>
 # [0.10.0](https://github.com/coast-team/mute/compare/v0.9.0...v0.10.0) (2018-11-15)
 

@@ -1,6 +1,6 @@
 {
   "name": "mute",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "QuickStart package.json from the documentation, supplemented with testing support",
   "scripts": {
     "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute build script'",
