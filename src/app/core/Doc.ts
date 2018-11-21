@@ -8,7 +8,7 @@ import { IStorage } from './storage/IStorage'
 const DEFAULT_TITLE = 'Untitled Document'
 
 export interface IDocContentOperation {
-  offset: number
+  index: number
   text?: string // Present only when it is an Insert operation
   length?: number // Present only when it is a Delete operation
   collaborator?: ICollaborator
