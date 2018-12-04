@@ -1,9 +1,11 @@
+import { Strategy } from '@coast-team/mute-core'
 import { LogLevel } from 'netflux'
 import { EncryptionType } from '../app/core/crypto/EncryptionType'
 import { IEnvironment } from './IEnvironment'
 
 export const environment: IEnvironment = {
   production: false,
+  crdtStrategy: Strategy.LOGOOTSPLIT,
   debug: {
     visible: true,
     log: {
