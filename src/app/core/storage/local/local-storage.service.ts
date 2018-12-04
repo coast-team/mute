@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
-import { MuteCore, State } from '@coast-team/mute-core'
+import { MuteCore, StateStrategy, StateTypes } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
+import { environment } from 'src/environments/environment'
 import { IndexdbDatabase } from '../../../doc/logs/IndexdbDatabase'
 import { CryptoService } from '../../crypto/crypto.service'
 import { Doc } from '../../Doc'
@@ -205,17 +206,24 @@ export class LocalStorageService extends Storage implements IStorage {
     return doc
   }
 
-  async fetchDocContent(doc: Doc): Promise<State | undefined>
+  async fetchDocContent(doc: Doc): Promise<StateTypes | undefined>
 
-  async fetchDocContent(doc: Doc, blob = false): Promise<State | Blob | undefined> {
+  async fetchDocContent(doc: Doc, blob = false): Promise<StateTypes | Blob | undefined> {
     this.check()
-    return await new Promise<State | Blob | undefined>((resolve, reject) => {
+    return await new Promise<StateTypes | Blob | undefined>((resolve, reject) => {
       this.db.getAttachment(doc.id, 'body').then(
         (body) => {
           if (body) {
             if (!blob) {
               const reader = new FileReader()
-              reader.onload = () => resolve(State.fromPlainText(JSON.parse(reader.result as string)))
+              reader.onload = () => {
+                const a = JSON.parse(reader.result.toString())
+                a.remoteOperations = a.remoteOperations.map((rop) => {
+                  return JSON.parse(rop)
+                })
+                const state = StateStrategy.fromPlain(environment.crdtStrategy, a)
+                resolve(state)
+              }
               reader.readAsText(body)
             } else {
               resolve(body)
@@ -229,7 +237,7 @@ export class LocalStorageService extends Storage implements IStorage {
     })
   }
 
-  async saveDocContent(doc: Doc, body: State): Promise<any> {
+  async saveDocContent(doc: Doc, body: StateTypes): Promise<any> {
     doc.modified = new Date()
     await this.save(doc)
     return await new Promise((resolve, reject) => {

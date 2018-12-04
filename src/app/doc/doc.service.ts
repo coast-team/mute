@@ -2,13 +2,12 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import {
   ICollaborator,
-  LocalOperation,
   MetaDataType,
-  MuteCore,
+  MuteCoreFactory,
+  MuteCoreTypes,
   Position,
-  RemoteOperation,
-  RichLogootSOperation,
-  State,
+  StateStrategy,
+  StateTypes,
   TextDelete,
   TextInsert,
 } from '@coast-team/mute-core'
@@ -35,7 +34,7 @@ const SYNC_DOC_INTERVAL = 10000
 @Injectable()
 export class DocService implements OnDestroy {
   private subs: Subscription[]
-  private muteCore: MuteCore
+  private muteCore: MuteCoreTypes
 
   // Intervals
   private saveDocInterval: number | undefined
@@ -93,7 +92,8 @@ export class DocService implements OnDestroy {
     // Read document content from local database and put into MuteCore model
     const docContent = await this.readDocContent()
     // Initialize MuteCore with your profile data, document metadata and content
-    this.muteCore = new MuteCore({
+    this.muteCore = MuteCoreFactory.createMuteCore({
+      strategy: environment.crdtStrategy,
       profile: {
         displayName: this.settings.profile.displayName,
         login: this.settings.profile.login,
@@ -192,7 +192,6 @@ export class DocService implements OnDestroy {
       this.ui.updateDocDigest(digest)
       this.cd.detectChanges()
     })
-    this.newSub = this.muteCore.treeUpdate$.subscribe((tree: string) => this.ui.updateDocTree(tree))
 
     // Start interval which saves the document content to the local database
     this.startSaveDocInterval()
@@ -226,7 +225,7 @@ export class DocService implements OnDestroy {
     this.doc.dispose()
   }
 
-  getDocContent(): State {
+  getDocContent(): StateTypes {
     return this.muteCore.state
   }
 
@@ -308,7 +307,7 @@ export class DocService implements OnDestroy {
     )
 
     this.subs.push(
-      this.muteCore.localOperationForLog$.subscribe((operation: LocalOperation) => {
+      this.muteCore.localOperationForLog$.subscribe((operation) => {
         this.logs.log({
           ...operation,
           timestamp: Date.now(),
@@ -322,7 +321,7 @@ export class DocService implements OnDestroy {
     )
 
     this.subs.push(
-      this.muteCore.remoteOperationForLog.subscribe((operation: RemoteOperation) => {
+      this.muteCore.remoteOperationForLog.subscribe((operation) => {
         const opes = []
         operation.textOperation.forEach((ope) => {
           if (ope instanceof TextInsert) {
@@ -360,15 +359,18 @@ export class DocService implements OnDestroy {
     }
   }
 
-  private async readDocContent(): Promise<State> {
+  private async readDocContent(): Promise<StateTypes> {
     try {
       const state = await this.doc.fetchContent()
-      if (state instanceof State) {
-        this.initSubject$.next(state.logootsRopes.str)
-        return state
+      if (!(state instanceof Blob)) {
+        const str = StateStrategy.getStr(state)
+        if (str !== undefined) {
+          this.initSubject$.next(str)
+          return state
+        }
       }
     } catch {
-      return State.emptyState()
+      return StateStrategy.emptyState(environment.crdtStrategy)
     }
   }
 

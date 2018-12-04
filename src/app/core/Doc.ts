@@ -1,7 +1,7 @@
-import { FixDataState, ICollaborator, MetaDataMessage, MetaDataType, State, TitleState } from '@coast-team/mute-core'
+import { FixDataState, ICollaborator, MetaDataMessage, MetaDataType, State, StateTypes, TitleState } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
 
-import { LogState } from '@coast-team/mute-core/dist/types/src/doc'
+import { LogState } from '@coast-team/mute-core'
 import { File } from './File'
 import { IStorage } from './storage/IStorage'
 
@@ -156,11 +156,11 @@ export class Doc extends File {
     this.remoteContentChanges.complete()
   }
 
-  async saveContent(content: State) {
+  async saveContent(content: StateTypes) {
     await this.storage.saveDocContent(this, content)
   }
 
-  async fetchContent(blob = false): Promise<State | Blob | undefined> {
+  async fetchContent(blob = false): Promise<StateTypes | Blob | undefined> {
     return this.storage.fetchDocContent(this, blob)
   }
 
