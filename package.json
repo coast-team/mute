@@ -15,15 +15,14 @@
     "test": "ng test",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
-    "precommit": "lint-staged",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
-    "cz": "git-cz",
+    "cz": "npx git-cz",
     "release": "standard-version --no-verify --commit-all"
   },
   "keywords": [],
   "contributors": [
     "Philippe Kalitine <philippe.kalitine@gmail.com> (https://philippe.kalitine.name/)",
     "Matthieu Nicolas <matthieu.nicolas@inria.fr>",
+    "Cédric Enclos <cedric.enclos@loria.fr",
     "Quentin Tardivon",
     "Camille Menou",
     "Yann Prono"
@@ -75,9 +74,9 @@
     "@types/node": "^8.10.29",
     "@types/uuid": "^3.4.4",
     "codelyzer": "^4.4.4",
-    "commitizen": "^2.10.0",
+    "commitizen": "^3.0.5",
     "cz-conventional-changelog": "^2.1.0",
-    "husky": "^0.14.3",
+    "husky": "^1.2.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~3.0.0",
@@ -130,6 +129,12 @@
   "standard-version": {
     "scripts": {
       "postbump": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
     }
   }
 }
