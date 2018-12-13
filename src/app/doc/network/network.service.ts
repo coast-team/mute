@@ -176,12 +176,11 @@ export class NetworkService implements OnDestroy {
 
   private configureKeyAgreementBDEncryption() {
     const bd = this.cryptoService.crypto as KeyAgreementBD
-    if (environment.cryptography.coniksClient) {
+    if (environment.cryptography.coniksClient || environment.cryptography.keyserver) {
       bd.signingKey = this.cryptoService.signingKeyPair.privateKey
       this.cryptoService.onSignatureError = (id) => log.error('Signature verification error for ', id)
     }
     bd.onSend = (msg, streamId) => this.send(streamId, msg)
-
     // Handle network events
     this.wg.onMyId = (myId) => bd.setMyId(myId)
     this.wg.onMemberJoin = (id) => {

@@ -9,7 +9,8 @@ import { EProperties } from '../settings/EProperties'
 import { Profile } from '../settings/Profile'
 import { SettingsService } from '../settings/settings.service'
 import { EncryptionType } from './EncryptionType'
-import { PkRequests } from './PkRequests'
+import { PKRequest } from './PKRequest'
+import { PKRequestConiks } from './PKRequestConiks'
 
 export interface IKeyPair {
   publicKey: string
@@ -22,7 +23,8 @@ export class CryptoService implements OnDestroy {
   public signingKeyPair: CryptoKeyPair
 
   private stateSubject: Subject<KeyState>
-  private pkRequests: PkRequests
+  private pkRequestConiks: PKRequestConiks
+  private pkRequest: PKRequest
   private login: string
   private members: Map<number, { key?: CryptoKey; buffer: Uint8Array[] }>
 
@@ -56,7 +58,11 @@ export class CryptoService implements OnDestroy {
           },
         } as any
     }
-    this.pkRequests = new PkRequests(http)
+    if (environment.cryptography.coniksClient) {
+      this.pkRequestConiks = new PKRequestConiks(http)
+    } else if (environment.cryptography.keyserver) {
+      this.pkRequest = new PKRequest(http)
+    }
     this.subs[this.subs.length] = settings.onChange.pipe(filter((props) => props.includes(EProperties.profile))).subscribe(() => {
       this.login = ''
     })
@@ -83,7 +89,7 @@ export class CryptoService implements OnDestroy {
     return this.crypto.decrypt(ciphertext)
   }
 
-  async checkMySigningKeyPair(profile: Profile) {
+  async checkMySigningKeyPairConiks(profile: Profile) {
     if (environment.cryptography.coniksClient && profile.login !== this.login) {
       if (profile.login === Profile.anonymous.login) {
         throw new Error('You must be authenticated')
@@ -95,19 +101,58 @@ export class CryptoService implements OnDestroy {
         profile.signingKeyPair = await this.exportSigningKeyPair()
       }
       try {
-        const pk = await this.pkRequests.lookup(profile.login)
+        const pk = await this.pkRequestConiks.lookup(profile.login)
         if (pk !== profile.signingKeyPair.publicKey) {
           throw new Error('Public key in local database and in Coniks server are different')
         }
       } catch (err) {
-        await this.pkRequests.register(profile.signingKeyPair.publicKey, profile.login)
+        await this.pkRequestConiks.register(profile.signingKeyPair.publicKey, profile.login)
       }
       this.login = profile.login
     }
   }
 
-  async verifyLoginPK(id: number, login: string) {
-    const publicKey = JSON.parse(await this.pkRequests.lookup(login))
+  async checkMySigningKeyPair(profile: Profile) {
+    if (environment.cryptography.keyserver && profile.login !== this.login) {
+      if (profile.login === Profile.anonymous.login) {
+        throw new Error('You must be authenticated')
+      }
+      if (profile.signingKeyPair) {
+        await this.importSigningKeyPair(profile.signingKeyPair)
+      } else {
+        await this.generateSigningKeyPair()
+        profile.signingKeyPair = await this.exportSigningKeyPair()
+      }
+      const pk = await this.pkRequest.lookup(profile.login, profile.deviceID)
+      log.info('Signing KeyPair', `Check my PK, ${profile.login}:${profile.deviceID}`, pk)
+      if (pk === '') {
+        await this.pkRequest.register(profile.login, profile.deviceID, profile.signingKeyPair.publicKey)
+      } else if (pk !== profile.signingKeyPair.publicKey) {
+        await this.pkRequest.update(profile.login, profile.deviceID, profile.signingKeyPair.publicKey)
+      }
+      this.login = profile.login
+    }
+  }
+
+  async verifyLoginPK(id: number, login: string, deviceID: string) {
+    const publicKey = JSON.parse(await this.pkRequest.lookup(login, deviceID))
+    const cryptoKey = await asymmetricCrypto.importKey(publicKey)
+    const member = this.members.get(id)
+    if (member) {
+      member.key = cryptoKey
+      for (const m of member.buffer) {
+        ;(this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
+          this.signatureErrorHandler(id)
+        })
+      }
+      member.buffer = []
+    } else {
+      this.members.set(id, { key: cryptoKey, buffer: [] })
+    }
+  }
+
+  async verifyLoginPKConiks(id: number, login: string) {
+    const publicKey = JSON.parse(await this.pkRequestConiks.lookup(login))
     const cryptoKey = await asymmetricCrypto.importKey(publicKey)
     const member = this.members.get(id)
     if (member) {
@@ -128,7 +173,7 @@ export class CryptoService implements OnDestroy {
   }
 
   onBDMessage(id: number, content: Uint8Array) {
-    if (environment.cryptography.coniksClient) {
+    if (environment.cryptography.coniksClient || environment.cryptography.keyserver) {
       const member = this.members.get(id)
       if (member) {
         if (member.key) {

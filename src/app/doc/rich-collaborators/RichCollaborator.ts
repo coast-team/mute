@@ -7,6 +7,7 @@ export class RichCollaborator {
   public email: string
   public avatar: string
   public color: string
+  public deviceID: string
 
   constructor(collab: ICollaborator, color: string) {
     this.id = collab.id
@@ -16,6 +17,7 @@ export class RichCollaborator {
 
   update(collab: ICollaborator) {
     this.displayName = collab.displayName || this.displayName || ''
+    this.deviceID = collab.deviceID || this.deviceID || ''
     this.login = collab.login || this.login || ''
     this.email = collab.email || this.email || ''
     this.avatar = collab.avatar || this.avatar || ''

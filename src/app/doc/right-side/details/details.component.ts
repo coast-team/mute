@@ -8,7 +8,7 @@ import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui/ui.service'
 import { RichCollaborator } from '../../rich-collaborators'
 
-const defaultCollab = { avatar: '', displayName: '', login: '' }
+const defaultCollab = { avatar: '', displayName: '', login: '', deviceID: '' }
 
 @Component({
   selector: 'mute-details',
@@ -35,10 +35,11 @@ export class DetailsComponent {
   @Input()
   collaborators: RichCollaborator[]
 
-  public card: { avatar: string; displayName: string; login: string }
+  public card: { avatar: string; displayName: string; login: string; deviceID: string }
   public cardState: string
   public crypto: [string, string]
   public coniks: boolean
+  public keyserver: boolean
   public logsTooltip: string
 
   constructor(private cd: ChangeDetectorRef, public ui: UiService) {
@@ -55,6 +56,7 @@ export class DetailsComponent {
         break
     }
     this.coniks = !!environment.cryptography.coniksClient
+    this.keyserver = !!environment.cryptography.keyserver
 
     this.logsTooltip =
       'By activating this button, you agree to share all the operations performed on the document.\n' +

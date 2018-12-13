@@ -18,8 +18,9 @@
     </ng-template>
 
     <div fxLayout="column">
-      <span class="mat-body-2 name">{{profile.displayName}}</span>
-      <span class="mat-caption secondary-text">{{profile.login}}</span>
+      <span class="mat-body-2 name">{{ profile.displayName }}</span>
+      <span class="mat-caption secondary-text">{{ profile.login }}</span>
+      <span class="mat-caption secondary-text">{{ profile.deviceID }}</span>
       <button mat-raised-button color="accent" class="my-account" (click)="openSettingsDialog()">
         <mat-icon aria-label="open settings dialog" class="settings-btn">settings</mat-icon>Settings
       </button>

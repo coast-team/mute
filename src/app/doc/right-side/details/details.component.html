@@ -1,5 +1,4 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
-
   <div class="doc-block" fxLayout="column" fxLayoutAlign="start stretch">
     <div fxLayoutAlign="start center" class="line">
       <span class="mat-caption title">Created</span>
@@ -17,6 +16,9 @@
       <span class="mat-caption title">Coniks</span>
       <span class="mat-body-2">Yes</span>
     </div>
+    <div *ngIf="keyserver" fxLayoutAlign="start center" class="line">
+      <span class="mat-caption title">Keyserver</span>
+      <span class="mat-body-2">Yes</span></div>
   </div>
 
   <div class="doc-block">
@@ -48,8 +50,9 @@
       </ng-container>
 
       <div class="info" fxLayout="column">
-        <span class="mat-body-2 prop">{{card.displayName}}</span>
-        <span class="mat-caption prop">{{card.login}}</span>
+        <span class="mat-body-2 prop">{{ card.displayName }}</span>
+        <span class="mat-caption prop">{{ card.login }}</span>
+        <span class="mat-caption prop">{{ card.deviceID }}</span>
       </div>
     </div>
   </mat-card>

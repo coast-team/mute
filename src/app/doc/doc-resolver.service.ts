@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { MatDialog, MatSnackBar } from '@angular/material'
 import { ActivatedRouteSnapshot, CanDeactivate, Resolve, Router } from '@angular/router'
 
+import { environment } from '../../environments/environment'
 import { CryptoService } from '../core/crypto/crypto.service'
 import { Doc } from '../core/Doc'
 import { SettingsService } from '../core/settings/settings.service'
@@ -31,9 +32,12 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     const remote = route.paramMap.get('remote')
 
     try {
-      // Vefify my signging key pair to sign outcoming messages for key agreement crypto cycles
-      await this.crypto.checkMySigningKeyPair(this.settings.profile)
-
+      // Vefify my signging key pair to sign outcoming messages for key agreement cry`pto cycles
+      if (environment.cryptography.coniksClient) {
+        await this.crypto.checkMySigningKeyPairConiks(this.settings.profile)
+      } else if (environment.cryptography.keyserver) {
+        await this.crypto.checkMySigningKeyPair(this.settings.profile)
+      }
       // Retreive the document from the local database
       let doc = await this.localStorage.fetchDoc(key)
       if (doc) {

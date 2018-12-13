@@ -34,6 +34,9 @@ export const environment: IEnvironment = {
     //     macOS: '',
     //   },
     // },
+    // keyserver: {
+    //   urlPrefix: 'http://localhost:4000/public-key',
+    // },
   },
   logSystem: {
     logCollectorUrl: 'ws://localhost:24000/ws', // 'wss://logs.dev.coedit.re',

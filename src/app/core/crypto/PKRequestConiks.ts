@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { environment } from '../../../environments/environment'
 
-export class PkRequests {
+export class PKRequestConiks {
   private url: string
   constructor(private http: HttpClient) {
     this.url = environment.cryptography.coniksClient ? environment.cryptography.coniksClient.url : ''
