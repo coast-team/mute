@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/coast-team/mute/compare/v0.11.0...v0.12.0) (2018-12-13)
+
+
+### Features
+
+* **doc:** change offset by index in IDocContentOperation ([60321d8](https://github.com/coast-team/mute/commit/60321d8))
+* **docservice:** update with the new IDocContentOperation ([776b7ec](https://github.com/coast-team/mute/commit/776b7ec))
+* **editorcomponent:** update with the new IDocContentOperation ([261682a](https://github.com/coast-team/mute/commit/261682a))
+* **environment:** add the mute-core strategy ([af231df](https://github.com/coast-team/mute/commit/af231df))
+* **logs:** updated code with the new logs name in mute-core ([bdb0bf2](https://github.com/coast-team/mute/commit/bdb0bf2))
+* **mutecore:** adapting code with the new mute-core api ([2e240c3](https://github.com/coast-team/mute/commit/2e240c3))
+* **package.json:** update mute-core to v9.1.0 ([cfc8c53](https://github.com/coast-team/mute/commit/cfc8c53))
+* **pki:** add new pki (for Key Agreement) ([fab1d38](https://github.com/coast-team/mute/commit/fab1d38))
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/coast-team/mute/compare/v0.10.0...v0.11.0) (2018-11-21)
 
