@@ -21,7 +21,7 @@ export class RabbitMq extends StompService {
 
     this.queue = '/queue/muteLogs'
     this.key = docKey
-    this.queueLength = this.queuedMessages.length
+    this.queueLength = this._queuedMessages.length
     this.localName = 'offline-logs-' + this.key
 
     if (window.localStorage.getItem(this.localName) === null) {
@@ -31,7 +31,7 @@ export class RabbitMq extends StompService {
       // The localstorage have some logs, we add them into the queue
       const oldLogs = JSON.parse(window.localStorage.getItem(this.localName)) as string[]
       oldLogs.forEach((log, key) => {
-        this.queuedMessages.push({ queueName: this.queue, message: log, headers: this.client.ws.headers })
+        this._queuedMessages.push({ destination: this.queue, body: log, headers: this.client.connectHeaders })
       })
     }
   }
@@ -40,25 +40,25 @@ export class RabbitMq extends StompService {
     const obj = JSON.stringify({ collection: this.key, data })
     this.publish(this.queue, obj)
 
-    if (this.queuedMessages.length > this.queueLength) {
+    if (this._queuedMessages.length > this.queueLength) {
       const oldLogs = JSON.parse(window.localStorage.getItem(this.localName)) as string[]
       oldLogs.push(obj)
       window.localStorage.setItem(this.localName, JSON.stringify(oldLogs))
-      this.queueLength = this.queuedMessages.length
+      this.queueLength = this._queuedMessages.length
     }
   }
 
   protected sendQueuedMessages(): void {
-    const queuedMessages = this.queuedMessages
-    this.queuedMessages = []
+    const queuedMessages = this._queuedMessages
+    this._queuedMessages = []
     this.queueLength = 0
     window.localStorage.setItem(this.localName, JSON.stringify([]))
 
-    this.debug(`Will try sending queued messages ${queuedMessages}`)
+    this._debug(`Will try sending queued messages ${queuedMessages}`)
 
     for (const queuedMessage of queuedMessages) {
-      this.debug(`Attempting to send ${queuedMessage}`)
-      this.publish(queuedMessage.queueName, queuedMessage.message, queuedMessage.headers)
+      this._debug(`Attempting to send ${queuedMessage}`)
+      this.publish(queuedMessage)
     }
   }
 }
