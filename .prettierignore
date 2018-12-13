@@ -2,6 +2,7 @@ package.json
 package-lock.json
 *_proto.{ts,js}
 *_proto.d.ts
+*.html
 
 // Prittier has bug in these files:
 *_themes.scss
