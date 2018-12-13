@@ -109,6 +109,7 @@ export class RichCollaboratorsService implements OnDestroy {
         id: -1,
         login: profile.login,
         displayName: profile.displayName,
+        deviceID: profile.deviceID,
         email: profile.email,
         avatar: profile.avatar,
       },

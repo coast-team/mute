@@ -99,6 +99,7 @@ export class DocService implements OnDestroy {
         login: this.settings.profile.login,
         email: this.settings.profile.email,
         avatar: this.settings.profile.avatar,
+        deviceID: this.settings.profile.deviceID,
       },
       docContent,
       metaTitle: {
@@ -208,10 +209,16 @@ export class DocService implements OnDestroy {
     // Config assymetric cryptography
     if (environment.cryptography.coniksClient) {
       this.collabs.onJoin.subscribe(({ id, login }) =>
-        this.crypto.verifyLoginPK(id, login).catch((err) => {
+        this.crypto.verifyLoginPKConiks(id, login).catch((err) => {
           log.info('Failed to retreive Public Key of ' + login)
         })
       )
+    } else if (environment.cryptography.keyserver) {
+      this.collabs.onJoin.subscribe(({ id, login, deviceID }) => {
+        return this.crypto.verifyLoginPK(id, login, deviceID).catch((err) => {
+          log.info('Failed to retreive Public Key of ' + login)
+        })
+      })
     }
 
     // Start join the collaboration session

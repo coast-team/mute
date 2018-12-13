@@ -27,6 +27,9 @@ export interface IEnvironment {
         macOS: string
       }
     }
+    keyserver?: {
+      urlPrefix: string
+    }
   }
   logSystem: {
     logCollectorUrl: string

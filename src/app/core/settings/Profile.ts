@@ -1,5 +1,6 @@
 import { Observable, Subject } from 'rxjs'
 
+import { v4 as uuidv4 } from 'uuid'
 import { IKeyPair } from '../crypto/crypto.service'
 import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
@@ -15,6 +16,7 @@ export class Profile {
     provider: window.location.hostname,
     login: `anonymous`,
     name: 'Anonymous',
+    deviceID: '-1',
     avatar: 'assets/images/icons/account-circle.svg',
   }
 
@@ -24,11 +26,13 @@ export class Profile {
 
   private _displayName: string
   private _signingKeyPair: IKeyPair | undefined
+  private _deviceID: string
   private changeSubject: Subject<EProperties[]>
 
   constructor(accounts: IAccount[]) {
     this._signingKeyPair = undefined
     this._displayName = accounts[0].name
+    this._deviceID = accounts[0].deviceID
     this.activeAccount = accounts[0]
     this.accounts = accounts
     this.changeSubject = new Subject()
@@ -37,6 +41,12 @@ export class Profile {
   static deserialize(accounts: IAccount[], dbId: string, serialized: ISerialize) {
     const profile = new Profile(accounts)
     profile._displayName = serialized.displayName
+    let storedDeviceID = window.localStorage.getItem('deviceID')
+    if (storedDeviceID === null) {
+      storedDeviceID = uuidv4()
+      window.localStorage.setItem('deviceID', storedDeviceID)
+    }
+    profile._deviceID = storedDeviceID
     profile.activeAccount = accounts[0]
     profile.dbId = dbId
     profile._signingKeyPair = serialized.signingKeyPair
@@ -86,6 +96,9 @@ export class Profile {
   }
   get provider(): string {
     return this.activeAccount.provider
+  }
+  get deviceID(): string {
+    return this._deviceID
   }
 
   serialize(): ISerialize {

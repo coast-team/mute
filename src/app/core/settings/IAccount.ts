@@ -4,4 +4,5 @@ export interface IAccount {
   name: string
   email?: string
   avatar?: string
+  deviceID: string
 }
