@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { MuteCore, StateStrategy, StateTypes } from '@coast-team/mute-core'
+import { MuteCore, RichOperationStrategy, StateStrategy, StateTypes } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -218,11 +218,21 @@ export class LocalStorageService extends Storage implements IStorage {
               const reader = new FileReader()
               reader.onload = () => {
                 const a = JSON.parse(reader.result.toString())
-                a.remoteOperations = a.remoteOperations.map((rop) => {
-                  return JSON.parse(rop)
-                })
-                const state = StateStrategy.fromPlain(environment.crdtStrategy, a)
-                resolve(state)
+                if (a.richLogootSOps) {
+                  const state = StateStrategy.emptyState(environment.crdtStrategy)
+                  state.remoteOperations = a.richLogootSOps
+                  resolve(state)
+                } else {
+                  a.remoteOperations = a.remoteOperations.map((rop) => {
+                    if (typeof rop === 'string') {
+                      return JSON.parse(rop)
+                    } else {
+                      return rop
+                    }
+                  })
+                  const state = StateStrategy.fromPlain(environment.crdtStrategy, a)
+                  resolve(state)
+                }
               }
               reader.readAsText(body)
             } else {
