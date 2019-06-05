@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Injectable, NgZone, O
 import { Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
-import * as Editor from 'tui-editor'
+import Editor from 'tui-editor'
 import { Doc } from '../../core/Doc'
 import { DocService } from '../doc.service'
 
