@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
-import { environment } from '../../../environments/environment.ovhdev'
+import { environment } from '../../../environments/environment'
 import { Doc } from '../../core/Doc'
 import { LogsStrategy } from './LogsStrategy'
 import { SendAllLogsStrategy } from './SendAllLogsStrategy'
