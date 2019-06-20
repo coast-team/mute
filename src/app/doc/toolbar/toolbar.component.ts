@@ -23,9 +23,9 @@ export class ToolbarComponent implements OnDestroy {
   menu: EventEmitter<void>
   @Output()
   info: EventEmitter<void>
-  @ViewChild('input')
+  @ViewChild('input', { static: true })
   input: ElementRef
-  @ViewChild('debugDownload')
+  @ViewChild('debugDownload', { static: true })
   debugDownload: ElementRef
 
   public botNotAvailable: boolean

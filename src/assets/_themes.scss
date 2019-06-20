@@ -59,11 +59,11 @@
     --#{$prefix}-fg-disabled-button: #{map-get($fg, disabled-button)};
 
     // icons
-    --#{$prefix}-fg-icons:#{map-get($fg, hint-icons)};
+    //--#{$prefix}-fg-icons:#{map-get($fg, hint-icons)};
 
     // slider
-    --#{$prefix}-fg-slider-min:#{map-get($fg, hint-slider-min)};
-    --#{$prefix}-fg-slider-off:#{map-get($fg, hint-slider-off)};
+    //--#{$prefix}-fg-slider-min:#{map-get($fg, hint-slider-min)};
+    //--#{$prefix}-fg-slider-off:#{map-get($fg, hint-slider-off)};
   }
 }
 

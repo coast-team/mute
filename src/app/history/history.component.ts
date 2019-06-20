@@ -1,11 +1,11 @@
 import { Component, ElementRef, Injectable, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { ObservableMedia } from '@angular/flex-layout'
 import { ActivatedRoute } from '@angular/router'
 import * as CodeMirror from 'codemirror'
 import 'codemirror/mode/gfm/gfm'
 import 'codemirror/mode/javascript/javascript'
 import { Subscription } from 'rxjs'
 
+import { MediaObserver } from '@angular/flex-layout'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
 import { UiService } from '../core/ui/ui.service'
@@ -24,15 +24,15 @@ export class HistoryComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[]
   public docAuthors: Author[]
 
-  @ViewChild('editorElt')
+  @ViewChild('editorElt', { static: true })
   editorElt: ElementRef
-  @ViewChild(TimelineComponent)
+  @ViewChild(TimelineComponent, { static: true })
   timelineComponent: TimelineComponent
-  @ViewChild('sidenavElm')
+  @ViewChild('sidenavElm', { static: true })
   sidenavElm
-  @ViewChild('leftSidenavElm')
+  @ViewChild('leftSidenavElm', { static: true })
   leftSidenavElm
-  @ViewChild('rightSidenavElm')
+  @ViewChild('rightSidenavElm', { static: true })
   rightSidenavElm
   public editor: CodeMirror.Editor
   public currentOp: number
@@ -46,7 +46,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private history: HistoryService,
     public ui: UiService,
-    public media: ObservableMedia
+    public media: MediaObserver
   ) {
     this.step = 1
     this.subscriptions = []

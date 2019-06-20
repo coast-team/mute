@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/table'
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { MediaChange, ObservableMedia } from '@angular/flex-layout'
+import { MediaChange, MediaObserver } from '@angular/flex-layout'
 import { MatDialog, MatSidenav, MatSnackBar, Sort } from '@angular/material'
 import { Router } from '@angular/router'
 import { BehaviorSubject, Observable, Subscription } from 'rxjs'
@@ -78,9 +78,9 @@ class DocsSource extends DataSource<Doc> {
   styleUrls: ['./docs.component.scss'],
 })
 export class DocsComponent implements OnDestroy, OnInit {
-  @ViewChild('leftSidenav')
+  @ViewChild('leftSidenav', { static: true })
   leftSidenav: MatSidenav
-  @ViewChild('rightSidenav')
+  @ViewChild('rightSidenav', { static: true })
   rightSidenav
   public folder: Folder
   public title: string
@@ -110,7 +110,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private settings: SettingsService,
     public localStorage: LocalStorageService,
     public ui: UiService,
-    public media: ObservableMedia,
+    public media: MediaObserver,
     public dialog: MatDialog
   ) {
     this.docsSubject = new BehaviorSubject([])
@@ -131,13 +131,15 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.settings.onChange.pipe(filter((props) => props.includes(EProperties.openedFolder))).subscribe(() => {
       this.openFolder(this.localStorage.getFolder(this.settings.openedFolder))
     })
-    this.subs[this.subs.length] = this.media.asObservable().subscribe((change: MediaChange) => {
-      if (change.mqAlias === 'xs') {
-        this.sideNavMode = 'over'
-      } else {
-        this.sideNavMode = 'side'
-      }
-      this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
+    this.subs[this.subs.length] = this.media.asObservable().subscribe((changes: MediaChange[]) => {
+      changes.forEach((change) => {
+        if (change.mqAlias === 'xs') {
+          this.sideNavMode = 'over'
+        } else {
+          this.sideNavMode = 'side'
+        }
+        this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
+      })
       this.updateDisplayedColumns()
     })
   }

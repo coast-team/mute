@@ -56,7 +56,7 @@ export class BotStorageService extends Storage {
     if (this.httpURL && this.status !== BotStorageService.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(new URL(`docs/${this.settings.profile.login}`, this.httpURL).toString()).subscribe(
-          (metadata) => resolve(metadata),
+          (metadata: IMetadata[]) => resolve(metadata),
           (err) => {
             log.warn('Could not retrieve documents metadat from the bot storage: ', err.message)
             super.setStatus(BotStorageService.NOT_RESPONDING)
@@ -69,14 +69,14 @@ export class BotStorageService extends Storage {
   }
 
   async remove(doc: Doc): Promise<void> {
-    return (await new Promise((resolve) => {
+    return await new Promise((resolve) => {
       this.http
         .post<{ key: string; login: string }>(new URL('remove', this.httpURL).toString(), {
           key: doc.signalingKey,
           login: this.settings.profile.login,
         })
         .subscribe(() => resolve())
-    })) as Promise<void>
+    })
   }
 
   get login() {

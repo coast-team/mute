@@ -20,7 +20,7 @@ import { DocService } from '../doc.service'
 export class EditorComponent implements OnDestroy, OnInit {
   @Output()
   isReady: EventEmitter<any>
-  @ViewChild('editorElt')
+  @ViewChild('editorElt', { static: true })
   editorElt
 
   public editor: CodeMirror.Editor
