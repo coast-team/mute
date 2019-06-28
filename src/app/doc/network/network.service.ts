@@ -11,6 +11,7 @@ import { CryptoService } from '../../core/crypto/crypto.service'
 import { EncryptionType } from '../../core/crypto/EncryptionType'
 import { Doc } from '../../core/Doc'
 import { Message } from './message_proto'
+import { PulsarService } from './pulsar.service'
 
 @Injectable()
 export class NetworkService implements OnDestroy {
@@ -36,7 +37,12 @@ export class NetworkService implements OnDestroy {
   // Other
   private subs: Subscription[]
 
-  constructor(private zone: NgZone, private route: ActivatedRoute, private cryptoService: CryptoService) {
+  constructor(
+    private zone: NgZone,
+    private route: ActivatedRoute,
+    private cryptoService: CryptoService,
+    private pulsarService: PulsarService
+  ) {
     this.botUrls = []
     this.subs = []
 
@@ -84,10 +90,14 @@ export class NetworkService implements OnDestroy {
         if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
           this.cryptoService.crypto
             .encrypt(content)
-            .then((encryptedContent) => this.send(streamId, encryptedContent, recipientId))
+            .then((encryptedContent) => {
+              this.send(streamId, encryptedContent, recipientId)
+              this.pulsarService.sendMessageToPulsar(streamId, encryptedContent, this.wg.key)
+            })
             .catch((err) => {})
         } else {
           this.send(streamId, content, recipientId)
+          this.pulsarService.sendMessageToPulsar(streamId, content, this.wg.key)
         }
       }
     })
