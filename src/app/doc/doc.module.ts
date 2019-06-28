@@ -6,6 +6,7 @@ import { DocResolverService } from './doc-resolver.service'
 import { DocComponent } from './doc.component'
 import { CursorsDirective } from './editor/cursor/cursors.directive'
 import { EditorComponent } from './editor/editor.component'
+import { PulsarService } from './network/pulsar.service'
 import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.component'
 import { RightSideModule } from './right-side'
 import { SyncComponent } from './toolbar/sync/sync.component'
@@ -15,6 +16,6 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
   imports: [SharedModule, RightSideModule, RouterModule],
   declarations: [DocComponent, EditorComponent, CursorsDirective, ToolbarComponent, SyncComponent, ResolverDialogComponent],
   entryComponents: [ResolverDialogComponent],
-  providers: [DocResolverService],
+  providers: [DocResolverService, PulsarService],
 })
 export class DocModule {}
