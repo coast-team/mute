@@ -86,18 +86,21 @@ export class NetworkService implements OnDestroy {
 
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
-      if (this.members.length > 1) {
-        if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-          this.cryptoService.crypto
-            .encrypt(content)
-            .then((encryptedContent) => {
-              this.send(streamId, encryptedContent, recipientId)
-              this.pulsarService.sendMessageToPulsar(streamId, encryptedContent, this.wg.key)
-            })
-            .catch((err) => {})
-        } else {
-          this.send(streamId, content, recipientId)
-          this.pulsarService.sendMessageToPulsar(streamId, content, this.wg.key)
+      if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
+        this.cryptoService.crypto
+          .encrypt(content)
+          .then((encryptedContent) => {
+            if (!recipientId) {
+              this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, encryptedContent)
+            }
+
+            this.send(streamId, encryptedContent, recipientId)
+          })
+          .catch((err) => {})
+      } else {
+        this.send(streamId, content, recipientId)
+        if (!recipientId) {
+          this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
       }
     })
@@ -160,6 +163,37 @@ export class NetworkService implements OnDestroy {
 
   join(key: string) {
     this.wg.join(key)
+    this.pulsarConnect(this.wg.id)
+  }
+
+  pulsarConnect(id: number) {
+    this.pulsarService.sockets = this.wg.key
+    this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
+      try {
+        if (messagePulsar.streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
+          this.cryptoService.crypto
+            .decrypt(messagePulsar.content)
+            .then((decryptedContent) => {
+              this.messageSubject.next({
+                streamId: { type: messagePulsar.streamId, subtype: StreamsSubtype.METADATA_PULSAR },
+                content: decryptedContent,
+                senderId: id,
+              })
+            })
+            .catch((err) => {
+              console.log('decrypt err', err)
+            })
+          return
+        }
+        this.messageSubject.next({
+          streamId: { type: messagePulsar.streamId, subtype: StreamsSubtype.METADATA_PULSAR },
+          content: messagePulsar.content,
+          senderId: id,
+        })
+      } catch (err) {
+        log.warn('Message from network decode error: ', err.message)
+      }
+    })
   }
 
   inviteBot(url: string): void {
@@ -170,12 +204,15 @@ export class NetworkService implements OnDestroy {
   }
 
   send(streamId: StreamId, content: Uint8Array, id?: number): void {
-    const msg = Message.create({ type: streamId.type, subtype: streamId.subtype, content })
-    if (id === undefined) {
-      this.wg.send(Message.encode(msg).finish())
-    } else {
-      id = id === 0 ? this.randomMember() : id
-      this.wg.sendTo(id, Message.encode(msg).finish())
+    if (this.members.length > 1) {
+      const msg = Message.create({ type: streamId.type, subtype: streamId.subtype, content })
+
+      if (id === undefined) {
+        this.wg.send(Message.encode(msg).finish())
+      } else {
+        id = id === 0 ? this.randomMember() : id
+        this.wg.sendTo(id, Message.encode(msg).finish())
+      }
     }
   }
 
