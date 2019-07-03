@@ -361,7 +361,8 @@ export class DocService implements OnDestroy {
   }
 
   private sync() {
-    if (this.network.members.length > 1 && this.network.cryptoState === KeyState.READY) {
+    if (this.network.cryptoState === KeyState.READY) {
+      // if (this.network.members.length > 1 && this.network.cryptoState === KeyState.READY) {
       this.muteCore.synchronize()
     }
   }
