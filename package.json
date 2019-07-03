@@ -52,6 +52,7 @@
     "core-js": "^3.1.4",
     "hammerjs": "^2.0.8",
     "loglevel": "^1.6.1",
+    "mute-structs": "^1.1.0",
     "netflux": "^4.3.1",
     "ng2-ui-auth": "^9.2.1",
     "protobufjs": "^6.8.8",

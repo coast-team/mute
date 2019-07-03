@@ -39,10 +39,9 @@ export class PulsarService implements OnDestroy {
 
       sockEcoute.onmessage = (messageSent: MessageEvent) => {
         const receiveMsg = JSON.parse(messageSent.data)
-        const streamId = receiveMsg.properties.stream
+        const streamId = Number(receiveMsg.properties.stream)
 
         const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
-        console.log('RECEIVED', content)
         this.pulsarMessageSubject.next({ streamId, content })
       }
       this._sockets.push(sockPost)

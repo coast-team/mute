@@ -64,11 +64,14 @@ export class NetworkService implements OnDestroy {
 
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
 
+      this.pulsarConnect(this.wg.id)
+      console.log('pulsar connecté')
       switch (environment.cryptography.type) {
         case EncryptionType.KEY_AGREEMENT_BD:
           this.configureKeyAgreementBDEncryption()
           break
         case EncryptionType.METADATA:
+          console.log('METADATA')
           this.configureMetaDataEncryption()
           break
         case EncryptionType.NONE:
@@ -87,19 +90,20 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
+        if (!recipientId) {
+          console.log('setMessageIn NOW PULSAR')
+          this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
+        }
         this.cryptoService.crypto
           .encrypt(content)
           .then((encryptedContent) => {
-            if (!recipientId) {
-              this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, encryptedContent)
-            }
-
             this.send(streamId, encryptedContent, recipientId)
           })
           .catch((err) => {})
       } else {
         this.send(streamId, content, recipientId)
         if (!recipientId) {
+          console.log('setMessageIn NOW PULSAR')
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
       }
@@ -163,28 +167,27 @@ export class NetworkService implements OnDestroy {
 
   join(key: string) {
     this.wg.join(key)
-    this.pulsarConnect(this.wg.id)
+    this.pulsarService.sockets = this.wg.key
+    console.log('WEBSOCKET CREEES')
   }
 
   pulsarConnect(id: number) {
-    this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
+      console.log('OK')
       try {
-        if (messagePulsar.streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-          this.cryptoService.crypto
-            .decrypt(messagePulsar.content)
-            .then((decryptedContent) => {
-              this.messageSubject.next({
-                streamId: { type: messagePulsar.streamId, subtype: StreamsSubtype.METADATA_PULSAR },
-                content: decryptedContent,
-                senderId: id,
-              })
-            })
-            .catch((err) => {
-              console.log('decrypt err', err)
-            })
-          return
-        }
+        // if (messagePulsar.streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
+        //   console.log('OUIIII11111111111111111')
+        //   this.cryptoService.crypto
+        //     .decrypt(messagePulsar.content)
+        //     .then((decryptedContent) => {
+        //       console.log('DECRYPT PULSAR', decryptedContent)
+        // this.messageSubject.next({ streamId: {type : messagePulsar.streamId, subtype : StreamsSubtype.METADATA_PULSAR}, content: decryptedContent, senderId: id })
+        //     })
+        //     .catch((err) => {
+        //       console.log('decrypt err', err)
+        //     })
+        //   return
+        // }
         this.messageSubject.next({
           streamId: { type: messagePulsar.streamId, subtype: StreamsSubtype.METADATA_PULSAR },
           content: messagePulsar.content,
@@ -254,6 +257,7 @@ export class NetworkService implements OnDestroy {
             this.cryptoService.crypto
               .decrypt(content)
               .then((decryptedContent) => {
+                console.log('DECRYPT', decryptedContent)
                 this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
               })
               .catch((err) => {})
@@ -270,8 +274,14 @@ export class NetworkService implements OnDestroy {
   private configureMetaDataEncryption() {
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       doc.onMetadataChanges
-        .pipe(filter(({ isLocal, changedProperties }) => !isLocal && changedProperties.includes(Doc.CRYPTO_KEY)))
-        .subscribe(() => (this.cryptoService.crypto as Symmetric).importKey(doc.cryptoKey))
+        .pipe(
+          filter(({ isLocal, changedProperties }) => {
+            return !isLocal && changedProperties.includes(Doc.CRYPTO_KEY)
+          })
+        )
+        .subscribe(() => {
+          ;(this.cryptoService.crypto as Symmetric).importKey(doc.cryptoKey)
+        })
     })
     // Handle network events
     this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
@@ -285,6 +295,8 @@ export class NetworkService implements OnDestroy {
           this.cryptoService.crypto
             .decrypt(content)
             .then((decryptedContent) => {
+              console.log('DECRYPT', decryptedContent)
+
               this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
             })
             .catch((err) => {})
@@ -306,6 +318,7 @@ export class NetworkService implements OnDestroy {
     this.wg.onMessage = (id, bytes: Uint8Array) => {
       try {
         const { type, subtype, content } = Message.decode(bytes)
+        console.log('CONTENT', content)
         this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
