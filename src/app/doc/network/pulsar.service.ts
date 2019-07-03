@@ -4,7 +4,10 @@ import { Observable, Subject } from 'rxjs'
 import { Stream } from 'stream'
 @Injectable()
 export class PulsarService implements OnDestroy {
-  private messageArray = []
+  private messageArray0 = []
+  private messageArray2 = []
+  private messageArray4 = []
+
   public _sockets: WebSocket[] = []
   public pulsarMessageSubject: Subject<{ streamId: Streams; content: Uint8Array }>
   constructor() {
@@ -22,9 +25,21 @@ export class PulsarService implements OnDestroy {
     const encoder = new TextEncoder()
     for (let i = 0; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
-      const sockEcoute = new WebSocket(
-        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
-      )
+
+      let sockEcoute
+      const msgIdFromStorage = window.localStorage.getItem('messageId-' + topic)
+      console.log('GET STORAGE', msgIdFromStorage)
+      // if (true) {
+      if (msgIdFromStorage === null) {
+        sockEcoute = new WebSocket(
+          'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
+        )
+      } else {
+        sockEcoute = new WebSocket(
+          'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=' + msgIdFromStorage
+        )
+      }
+
       sockPost.onerror = (err) => {
         console.log('Erreur socket producer Pulsar', err)
       }
@@ -33,6 +48,19 @@ export class PulsarService implements OnDestroy {
       sockPost.onmessage = (messageSent: MessageEvent) => {
         console.log('ack received : ', messageSent.data)
       }
+
+      sockPost.onopen = () => {
+        for (const message of this.messageArray0) {
+          this._sockets[0].send(JSON.stringify(message))
+        }
+        for (const message of this.messageArray2) {
+          this._sockets[2].send(JSON.stringify(message))
+        }
+        for (const message of this.messageArray4) {
+          this._sockets[4].send(JSON.stringify(message))
+        }
+      }
+
       sockEcoute.onerror = (err) => {
         console.log('Erreur socket producer Pulsar', err)
       }
@@ -40,7 +68,8 @@ export class PulsarService implements OnDestroy {
       sockEcoute.onmessage = (messageSent: MessageEvent) => {
         const receiveMsg = JSON.parse(messageSent.data)
         const streamId = Number(receiveMsg.properties.stream)
-
+        console.log(receiveMsg)
+        window.localStorage.setItem('messageId-' + topic, receiveMsg.messageId)
         const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
         this.pulsarMessageSubject.next({ streamId, content })
       }
@@ -81,19 +110,32 @@ export class PulsarService implements OnDestroy {
     }
     console.log('SENT', content)
 
-    this.messageArray.push(message)
     switch (streamId) {
       case Streams.COLLABORATORS:
-        this._sockets[0].send(JSON.stringify(message))
+        if (this._sockets[0].readyState === 1) {
+          this._sockets[0].send(JSON.stringify(message))
+        } else {
+          this.messageArray0.push(message)
+        }
         break
       case Streams.METADATA:
-        this._sockets[2].send(JSON.stringify(message))
+        if (this._sockets[2].readyState === 1) {
+          this._sockets[2].send(JSON.stringify(message))
+        } else {
+          this.messageArray2.push(message)
+        }
         break
       case Streams.DOCUMENT_CONTENT:
-        this._sockets[4].send(JSON.stringify(message))
+        if (this._sockets[4].readyState === 1) {
+          this._sockets[4].send(JSON.stringify(message))
+        } else {
+          this.messageArray4.push(message)
+        }
         break
       default:
         break
     }
   }
+
+  waitForSocketConnection(socket, callback) {}
 }
