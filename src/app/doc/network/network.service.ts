@@ -5,6 +5,7 @@ import { KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } fro
 import { SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 
+import { keyAgreementCrypto } from '@coast-team/mute-crypto-helper'
 import { filter } from 'rxjs/operators'
 import { environment } from '../../../environments/environment'
 import { CryptoService } from '../../core/crypto/crypto.service'
@@ -12,6 +13,7 @@ import { EncryptionType } from '../../core/crypto/EncryptionType'
 import { Doc } from '../../core/Doc'
 import { Message } from './message_proto'
 import { PulsarService } from './pulsar.service'
+import { NavComponent } from '/home/ishara/Documents/mutePulsar/src/app/shared/nav/nav.component'
 
 @Injectable()
 export class NetworkService implements OnDestroy {
@@ -37,12 +39,20 @@ export class NetworkService implements OnDestroy {
   // Other
   private subs: Subscription[]
 
+  public pulsarOn: boolean
+
   constructor(
     private zone: NgZone,
     private route: ActivatedRoute,
     private cryptoService: CryptoService,
     private pulsarService: PulsarService
   ) {
+    this.route.paramMap.subscribe((params) => {
+      this.pulsarOn = params.get('pulsar') === 'true' ? true : false
+      console.log('BOOOOOOOOOOOOOOOOOOOL', this.pulsarOn)
+      console.log('PARAAAAAAAAAAAAAAAAAAAAAAAAAM', params.get('pulsar'))
+    })
+
     this.botUrls = []
     this.subs = []
 
@@ -64,14 +74,11 @@ export class NetworkService implements OnDestroy {
 
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
 
-      this.pulsarConnect(this.wg.id)
-      console.log('pulsar connecté')
       switch (environment.cryptography.type) {
         case EncryptionType.KEY_AGREEMENT_BD:
           this.configureKeyAgreementBDEncryption()
           break
         case EncryptionType.METADATA:
-          console.log('METADATA')
           this.configureMetaDataEncryption()
           break
         case EncryptionType.NONE:
@@ -90,7 +97,7 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-        if (!recipientId) {
+        if (!recipientId && this.pulsarOn) {
           console.log('setMessageIn NOW PULSAR')
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
@@ -102,7 +109,7 @@ export class NetworkService implements OnDestroy {
           .catch((err) => {})
       } else {
         this.send(streamId, content, recipientId)
-        if (!recipientId) {
+        if (!recipientId && this.pulsarOn) {
           console.log('setMessageIn NOW PULSAR')
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
@@ -167,16 +174,17 @@ export class NetworkService implements OnDestroy {
 
   join(key: string) {
     this.wg.join(key)
-    this.pulsarService.sockets = this.wg.key
-    console.log('WEBSOCKET CREEES')
+    if (this.pulsarOn) {
+      this.pulsarConnect(this.wg.id)
+    }
   }
 
   pulsarConnect(id: number) {
+    console.log('PULSSAAAAAAAAAAAAAAAAAAAAR ONNNNNNNNNNNNNNNNNNNNNNNNNNNNn')
+    this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
-      console.log('OK')
       try {
         // if (messagePulsar.streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-        //   console.log('OUIIII11111111111111111')
         //   this.cryptoService.crypto
         //     .decrypt(messagePulsar.content)
         //     .then((decryptedContent) => {
@@ -295,8 +303,6 @@ export class NetworkService implements OnDestroy {
           this.cryptoService.crypto
             .decrypt(content)
             .then((decryptedContent) => {
-              console.log('DECRYPT', decryptedContent)
-
               this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
             })
             .catch((err) => {})

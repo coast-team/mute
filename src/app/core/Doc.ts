@@ -2,6 +2,7 @@ import { FixDataState, ICollaborator, MetaDataMessage, MetaDataType, State, Stat
 import { Observable, Subject } from 'rxjs'
 
 import { LogState } from '@coast-team/mute-core'
+import { MetaDataService } from '@coast-team/mute-core/dist/types/src/doc'
 import { File } from './File'
 import { IStorage } from './storage/IStorage'
 
@@ -20,6 +21,7 @@ export class Doc extends File {
   public static REMOTES = 202
   public static SHARE_LOGS = 203
   public static SHARE_LOGS_VECTOR = 204
+  public static PULSAR_ON = 205
 
   public signalingKey: string
   public cryptoKey: string
@@ -32,6 +34,8 @@ export class Doc extends File {
 
   private _shareLogs: boolean
   private _shareLogsVector: Map<number, number>
+
+  private _pulsarOn: boolean
 
   static deserialize(storage: IStorage, id: string, serialized: any): Doc {
     const doc = new Doc(storage, serialized.title, serialized.parentFolderId)
@@ -47,6 +51,7 @@ export class Doc extends File {
     }
     doc._shareLogs = serialized.shareLogs
     doc._shareLogsVector = serialized.shareLogsVector
+    doc._pulsarOn = serialized.pulsarOn
     doc.deserialize(id, serialized)
     return doc
   }
@@ -67,6 +72,7 @@ export class Doc extends File {
     this._title = title || DEFAULT_TITLE
     this._shareLogs = false
     this._shareLogsVector = new Map()
+    this._pulsarOn = true
   }
 
   get isDoc() {
@@ -92,6 +98,14 @@ export class Doc extends File {
 
   get shareLogsVector() {
     return this._shareLogsVector
+  }
+
+  get pulsarOn() {
+    return this.pulsarOn
+  }
+
+  set pulsarOn(newPulsarOn: boolean) {
+    this.updatePulsarOn(newPulsarOn, true)
   }
 
   get description() {
@@ -125,6 +139,8 @@ export class Doc extends File {
           this._shareLogsVector = vector
           this.changes.next({ isLocal: false, changedProperties: [Doc.SHARE_LOGS, Doc.SHARE_LOGS_VECTOR] })
           break
+        case MetaDataType.Pulsar:
+          break
       }
     })
   }
@@ -147,6 +163,7 @@ export class Doc extends File {
       remotes: this.remotes,
       shareLogs: this._shareLogs,
       shareLogsVector: this._shareLogsVector,
+      pulsarOn: this._pulsarOn,
     })
   }
 
@@ -183,6 +200,14 @@ export class Doc extends File {
     if (this._shareLogs !== newShareLogs) {
       const changedProperties = [Doc.SHARE_LOGS]
       this._shareLogs = newShareLogs
+      this.changes.next({ isLocal, changedProperties })
+    }
+  }
+
+  private updatePulsarOn(newPulsarOn: boolean, isLocal: boolean) {
+    if (this._pulsarOn !== newPulsarOn) {
+      const changedProperties = [Doc.PULSAR_ON]
+      this._pulsarOn = newPulsarOn
       this.changes.next({ isLocal, changedProperties })
     }
   }

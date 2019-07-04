@@ -14,6 +14,12 @@
         </span>
         <span>Without bot storage</span>
       </button>
+      <button mat-menu-item (click)="createDocPulsar(true)">
+        <span class="new-doc-icons">
+          <mat-icon>devices</mat-icon>
+        </span>
+        <span>With Pulsar</span>
+      </button>
       <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>

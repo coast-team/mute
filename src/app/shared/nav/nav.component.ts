@@ -44,6 +44,8 @@ export class NavComponent implements OnDestroy {
 
   private subs: Subscription[]
 
+  public _pulsarOn: boolean
+
   constructor(
     private router: Router,
     private cd: ChangeDetectorRef,
@@ -113,6 +115,15 @@ export class NavComponent implements OnDestroy {
     }
   }
 
+  createDocPulsar(pulsar = false) {
+    const key = this.localStorage.generateSignalingKey()
+    if (pulsar) {
+      this.router.navigate(['/', key, { pulsar: true }])
+    } else {
+      this.router.navigate(['/', key])
+    }
+  }
+
   openFolder(folder: Folder) {
     this.settings.updateOpenedFolder(folder)
     this.selected = folder
@@ -141,5 +152,8 @@ export class NavComponent implements OnDestroy {
       this.ui.appInstall.next(false)
       this.ui.appInstallEvent = undefined
     })
+  }
+  get pulsarOn() {
+    return this.pulsarOn
   }
 }
