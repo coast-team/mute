@@ -28,8 +28,8 @@ export class PulsarService implements OnDestroy {
       let sockEcoute
       const msgIdFromStorage = window.localStorage.getItem('messageId-' + topic)
       console.log('GET STORAGE', msgIdFromStorage)
-      // if (true) {
-      if (msgIdFromStorage === null) {
+      if (true) {
+        // if (msgIdFromStorage === null) {
         sockEcoute = new WebSocket(
           'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
         )
