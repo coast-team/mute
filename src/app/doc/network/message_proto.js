@@ -15,7 +15,8 @@ $root.Message = (function() {
      * Properties of a Message.
      * @exports IMessage
      * @interface IMessage
-     * @property {number|null} [streamId] Message streamId
+     * @property {number|null} [type] Message type
+     * @property {number|null} [subtype] Message subtype
      * @property {Uint8Array|null} [content] Message content
      */
 
@@ -35,12 +36,20 @@ $root.Message = (function() {
     }
 
     /**
-     * Message streamId.
-     * @member {number} streamId
+     * Message type.
+     * @member {number} type
      * @memberof Message
      * @instance
      */
-    Message.prototype.streamId = 0;
+    Message.prototype.type = 0;
+
+    /**
+     * Message subtype.
+     * @member {number} subtype
+     * @memberof Message
+     * @instance
+     */
+    Message.prototype.subtype = 0;
 
     /**
      * Message content.
@@ -74,10 +83,12 @@ $root.Message = (function() {
     Message.encode = function encode(message, writer) {
         if (!writer)
             writer = $Writer.create();
-        if (message.streamId != null && message.hasOwnProperty("streamId"))
-            writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.streamId);
+        if (message.type != null && message.hasOwnProperty("type"))
+            writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.type);
+        if (message.subtype != null && message.hasOwnProperty("subtype"))
+            writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.subtype);
         if (message.content != null && message.hasOwnProperty("content"))
-            writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.content);
+            writer.uint32(/* id 3, wireType 2 =*/26).bytes(message.content);
         return writer;
     };
 
@@ -100,9 +111,12 @@ $root.Message = (function() {
             var tag = reader.uint32();
             switch (tag >>> 3) {
             case 1:
-                message.streamId = reader.uint32();
+                message.type = reader.uint32();
                 break;
             case 2:
+                message.subtype = reader.uint32();
+                break;
+            case 3:
                 message.content = reader.bytes();
                 break;
             default:

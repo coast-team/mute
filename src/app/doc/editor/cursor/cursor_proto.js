@@ -232,13 +232,134 @@ $root.sync = (function() {
      */
     var sync = {};
 
+    sync.RichOperationMsg = (function() {
+
+        /**
+         * Properties of a RichOperationMsg.
+         * @memberof sync
+         * @interface IRichOperationMsg
+         * @property {sync.IRichLogootSOperationMsg|null} [richLogootSOpsMsg] RichOperationMsg richLogootSOpsMsg
+         * @property {sync.IRichDottedLogootSOperationMsg|null} [richDottedLogootsOpsMsg] RichOperationMsg richDottedLogootsOpsMsg
+         */
+
+        /**
+         * Constructs a new RichOperationMsg.
+         * @memberof sync
+         * @classdesc Represents a RichOperationMsg.
+         * @implements IRichOperationMsg
+         * @constructor
+         * @param {sync.IRichOperationMsg=} [properties] Properties to set
+         */
+        function RichOperationMsg(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * RichOperationMsg richLogootSOpsMsg.
+         * @member {sync.IRichLogootSOperationMsg|null|undefined} richLogootSOpsMsg
+         * @memberof sync.RichOperationMsg
+         * @instance
+         */
+        RichOperationMsg.prototype.richLogootSOpsMsg = null;
+
+        /**
+         * RichOperationMsg richDottedLogootsOpsMsg.
+         * @member {sync.IRichDottedLogootSOperationMsg|null|undefined} richDottedLogootsOpsMsg
+         * @memberof sync.RichOperationMsg
+         * @instance
+         */
+        RichOperationMsg.prototype.richDottedLogootsOpsMsg = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        /**
+         * RichOperationMsg type.
+         * @member {"richLogootSOpsMsg"|"richDottedLogootsOpsMsg"|undefined} type
+         * @memberof sync.RichOperationMsg
+         * @instance
+         */
+        Object.defineProperty(RichOperationMsg.prototype, "type", {
+            get: $util.oneOfGetter($oneOfFields = ["richLogootSOpsMsg", "richDottedLogootsOpsMsg"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new RichOperationMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.RichOperationMsg
+         * @static
+         * @param {sync.IRichOperationMsg=} [properties] Properties to set
+         * @returns {sync.RichOperationMsg} RichOperationMsg instance
+         */
+        RichOperationMsg.create = function create(properties) {
+            return new RichOperationMsg(properties);
+        };
+
+        /**
+         * Encodes the specified RichOperationMsg message. Does not implicitly {@link sync.RichOperationMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.RichOperationMsg
+         * @static
+         * @param {sync.IRichOperationMsg} message RichOperationMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        RichOperationMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.richLogootSOpsMsg != null && message.hasOwnProperty("richLogootSOpsMsg"))
+                $root.sync.RichLogootSOperationMsg.encode(message.richLogootSOpsMsg, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.richDottedLogootsOpsMsg != null && message.hasOwnProperty("richDottedLogootsOpsMsg"))
+                $root.sync.RichDottedLogootSOperationMsg.encode(message.richDottedLogootsOpsMsg, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Decodes a RichOperationMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.RichOperationMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.RichOperationMsg} RichOperationMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        RichOperationMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.RichOperationMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.richLogootSOpsMsg = $root.sync.RichLogootSOperationMsg.decode(reader, reader.uint32());
+                    break;
+                case 2:
+                    message.richDottedLogootsOpsMsg = $root.sync.RichDottedLogootSOperationMsg.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return RichOperationMsg;
+    })();
+
     sync.SyncMsg = (function() {
 
         /**
          * Properties of a SyncMsg.
          * @memberof sync
          * @interface ISyncMsg
-         * @property {sync.IRichLogootSOperationMsg|null} [richLogootSOpMsg] SyncMsg richLogootSOpMsg
+         * @property {sync.IRichOperationMsg|null} [richOpMsg] SyncMsg richOpMsg
          * @property {sync.IQuerySyncMsg|null} [querySync] SyncMsg querySync
          * @property {sync.IReplySyncMsg|null} [replySync] SyncMsg replySync
          */
@@ -259,12 +380,12 @@ $root.sync = (function() {
         }
 
         /**
-         * SyncMsg richLogootSOpMsg.
-         * @member {sync.IRichLogootSOperationMsg|null|undefined} richLogootSOpMsg
+         * SyncMsg richOpMsg.
+         * @member {sync.IRichOperationMsg|null|undefined} richOpMsg
          * @memberof sync.SyncMsg
          * @instance
          */
-        SyncMsg.prototype.richLogootSOpMsg = null;
+        SyncMsg.prototype.richOpMsg = null;
 
         /**
          * SyncMsg querySync.
@@ -287,12 +408,12 @@ $root.sync = (function() {
 
         /**
          * SyncMsg type.
-         * @member {"richLogootSOpMsg"|"querySync"|"replySync"|undefined} type
+         * @member {"richOpMsg"|"querySync"|"replySync"|undefined} type
          * @memberof sync.SyncMsg
          * @instance
          */
         Object.defineProperty(SyncMsg.prototype, "type", {
-            get: $util.oneOfGetter($oneOfFields = ["richLogootSOpMsg", "querySync", "replySync"]),
+            get: $util.oneOfGetter($oneOfFields = ["richOpMsg", "querySync", "replySync"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -320,8 +441,8 @@ $root.sync = (function() {
         SyncMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.richLogootSOpMsg != null && message.hasOwnProperty("richLogootSOpMsg"))
-                $root.sync.RichLogootSOperationMsg.encode(message.richLogootSOpMsg, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.richOpMsg != null && message.hasOwnProperty("richOpMsg"))
+                $root.sync.RichOperationMsg.encode(message.richOpMsg, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
             if (message.querySync != null && message.hasOwnProperty("querySync"))
                 $root.sync.QuerySyncMsg.encode(message.querySync, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             if (message.replySync != null && message.hasOwnProperty("replySync"))
@@ -348,7 +469,7 @@ $root.sync = (function() {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.richLogootSOpMsg = $root.sync.RichLogootSOperationMsg.decode(reader, reader.uint32());
+                    message.richOpMsg = $root.sync.RichOperationMsg.decode(reader, reader.uint32());
                     break;
                 case 2:
                     message.querySync = $root.sync.QuerySyncMsg.decode(reader, reader.uint32());
@@ -367,29 +488,25 @@ $root.sync = (function() {
         return SyncMsg;
     })();
 
-    sync.RichLogootSOperationMsg = (function() {
+    sync.QuerySyncMsg = (function() {
 
         /**
-         * Properties of a RichLogootSOperationMsg.
+         * Properties of a QuerySyncMsg.
          * @memberof sync
-         * @interface IRichLogootSOperationMsg
-         * @property {number|null} [id] RichLogootSOperationMsg id
-         * @property {number|null} [clock] RichLogootSOperationMsg clock
-         * @property {sync.ILogootSAddMsg|null} [logootSAddMsg] RichLogootSOperationMsg logootSAddMsg
-         * @property {sync.ILogootSDelMsg|null} [logootSDelMsg] RichLogootSOperationMsg logootSDelMsg
-         * @property {Array.<sync.IDotMsg>|null} [dependencies] RichLogootSOperationMsg dependencies
+         * @interface IQuerySyncMsg
+         * @property {Object.<string,number>|null} [vector] QuerySyncMsg vector
          */
 
         /**
-         * Constructs a new RichLogootSOperationMsg.
+         * Constructs a new QuerySyncMsg.
          * @memberof sync
-         * @classdesc Represents a RichLogootSOperationMsg.
-         * @implements IRichLogootSOperationMsg
+         * @classdesc Represents a QuerySyncMsg.
+         * @implements IQuerySyncMsg
          * @constructor
-         * @param {sync.IRichLogootSOperationMsg=} [properties] Properties to set
+         * @param {sync.IQuerySyncMsg=} [properties] Properties to set
          */
-        function RichLogootSOperationMsg(properties) {
-            this.dependencies = [];
+        function QuerySyncMsg(properties) {
+            this.vector = {};
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -397,131 +514,68 @@ $root.sync = (function() {
         }
 
         /**
-         * RichLogootSOperationMsg id.
-         * @member {number} id
-         * @memberof sync.RichLogootSOperationMsg
+         * QuerySyncMsg vector.
+         * @member {Object.<string,number>} vector
+         * @memberof sync.QuerySyncMsg
          * @instance
          */
-        RichLogootSOperationMsg.prototype.id = 0;
+        QuerySyncMsg.prototype.vector = $util.emptyObject;
 
         /**
-         * RichLogootSOperationMsg clock.
-         * @member {number} clock
-         * @memberof sync.RichLogootSOperationMsg
-         * @instance
-         */
-        RichLogootSOperationMsg.prototype.clock = 0;
-
-        /**
-         * RichLogootSOperationMsg logootSAddMsg.
-         * @member {sync.ILogootSAddMsg|null|undefined} logootSAddMsg
-         * @memberof sync.RichLogootSOperationMsg
-         * @instance
-         */
-        RichLogootSOperationMsg.prototype.logootSAddMsg = null;
-
-        /**
-         * RichLogootSOperationMsg logootSDelMsg.
-         * @member {sync.ILogootSDelMsg|null|undefined} logootSDelMsg
-         * @memberof sync.RichLogootSOperationMsg
-         * @instance
-         */
-        RichLogootSOperationMsg.prototype.logootSDelMsg = null;
-
-        /**
-         * RichLogootSOperationMsg dependencies.
-         * @member {Array.<sync.IDotMsg>} dependencies
-         * @memberof sync.RichLogootSOperationMsg
-         * @instance
-         */
-        RichLogootSOperationMsg.prototype.dependencies = $util.emptyArray;
-
-        // OneOf field names bound to virtual getters and setters
-        var $oneOfFields;
-
-        /**
-         * RichLogootSOperationMsg type.
-         * @member {"logootSAddMsg"|"logootSDelMsg"|undefined} type
-         * @memberof sync.RichLogootSOperationMsg
-         * @instance
-         */
-        Object.defineProperty(RichLogootSOperationMsg.prototype, "type", {
-            get: $util.oneOfGetter($oneOfFields = ["logootSAddMsg", "logootSDelMsg"]),
-            set: $util.oneOfSetter($oneOfFields)
-        });
-
-        /**
-         * Creates a new RichLogootSOperationMsg instance using the specified properties.
+         * Creates a new QuerySyncMsg instance using the specified properties.
          * @function create
-         * @memberof sync.RichLogootSOperationMsg
+         * @memberof sync.QuerySyncMsg
          * @static
-         * @param {sync.IRichLogootSOperationMsg=} [properties] Properties to set
-         * @returns {sync.RichLogootSOperationMsg} RichLogootSOperationMsg instance
+         * @param {sync.IQuerySyncMsg=} [properties] Properties to set
+         * @returns {sync.QuerySyncMsg} QuerySyncMsg instance
          */
-        RichLogootSOperationMsg.create = function create(properties) {
-            return new RichLogootSOperationMsg(properties);
+        QuerySyncMsg.create = function create(properties) {
+            return new QuerySyncMsg(properties);
         };
 
         /**
-         * Encodes the specified RichLogootSOperationMsg message. Does not implicitly {@link sync.RichLogootSOperationMsg.verify|verify} messages.
+         * Encodes the specified QuerySyncMsg message. Does not implicitly {@link sync.QuerySyncMsg.verify|verify} messages.
          * @function encode
-         * @memberof sync.RichLogootSOperationMsg
+         * @memberof sync.QuerySyncMsg
          * @static
-         * @param {sync.IRichLogootSOperationMsg} message RichLogootSOperationMsg message or plain object to encode
+         * @param {sync.IQuerySyncMsg} message QuerySyncMsg message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        RichLogootSOperationMsg.encode = function encode(message, writer) {
+        QuerySyncMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.id != null && message.hasOwnProperty("id"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
-            if (message.clock != null && message.hasOwnProperty("clock"))
-                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
-            if (message.logootSAddMsg != null && message.hasOwnProperty("logootSAddMsg"))
-                $root.sync.LogootSAddMsg.encode(message.logootSAddMsg, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
-            if (message.logootSDelMsg != null && message.hasOwnProperty("logootSDelMsg"))
-                $root.sync.LogootSDelMsg.encode(message.logootSDelMsg, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-            if (message.dependencies != null && message.dependencies.length)
-                for (var i = 0; i < message.dependencies.length; ++i)
-                    $root.sync.DotMsg.encode(message.dependencies[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.vector != null && message.hasOwnProperty("vector"))
+                for (var keys = Object.keys(message.vector), i = 0; i < keys.length; ++i)
+                    writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.vector[keys[i]]).ldelim();
             return writer;
         };
 
         /**
-         * Decodes a RichLogootSOperationMsg message from the specified reader or buffer.
+         * Decodes a QuerySyncMsg message from the specified reader or buffer.
          * @function decode
-         * @memberof sync.RichLogootSOperationMsg
+         * @memberof sync.QuerySyncMsg
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {sync.RichLogootSOperationMsg} RichLogootSOperationMsg
+         * @returns {sync.QuerySyncMsg} QuerySyncMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        RichLogootSOperationMsg.decode = function decode(reader, length) {
+        QuerySyncMsg.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.RichLogootSOperationMsg();
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.QuerySyncMsg(), key;
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.id = reader.int32();
-                    break;
-                case 2:
-                    message.clock = reader.int32();
-                    break;
-                case 3:
-                    message.logootSAddMsg = $root.sync.LogootSAddMsg.decode(reader, reader.uint32());
-                    break;
-                case 4:
-                    message.logootSDelMsg = $root.sync.LogootSDelMsg.decode(reader, reader.uint32());
-                    break;
-                case 5:
-                    if (!(message.dependencies && message.dependencies.length))
-                        message.dependencies = [];
-                    message.dependencies.push($root.sync.DotMsg.decode(reader, reader.uint32()));
+                    reader.skip().pos++;
+                    if (message.vector === $util.emptyObject)
+                        message.vector = {};
+                    key = reader.int32();
+                    reader.pos++;
+                    message.vector[key] = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -531,28 +585,30 @@ $root.sync = (function() {
             return message;
         };
 
-        return RichLogootSOperationMsg;
+        return QuerySyncMsg;
     })();
 
-    sync.LogootSAddMsg = (function() {
+    sync.ReplySyncMsg = (function() {
 
         /**
-         * Properties of a LogootSAddMsg.
+         * Properties of a ReplySyncMsg.
          * @memberof sync
-         * @interface ILogootSAddMsg
-         * @property {sync.IIdentifierMsg|null} [id] LogootSAddMsg id
-         * @property {string|null} [content] LogootSAddMsg content
+         * @interface IReplySyncMsg
+         * @property {Array.<sync.IRichOperationMsg>|null} [richOpsMsg] ReplySyncMsg richOpsMsg
+         * @property {Array.<sync.IIntervalMsg>|null} [intervals] ReplySyncMsg intervals
          */
 
         /**
-         * Constructs a new LogootSAddMsg.
+         * Constructs a new ReplySyncMsg.
          * @memberof sync
-         * @classdesc Represents a LogootSAddMsg.
-         * @implements ILogootSAddMsg
+         * @classdesc Represents a ReplySyncMsg.
+         * @implements IReplySyncMsg
          * @constructor
-         * @param {sync.ILogootSAddMsg=} [properties] Properties to set
+         * @param {sync.IReplySyncMsg=} [properties] Properties to set
          */
-        function LogootSAddMsg(properties) {
+        function ReplySyncMsg(properties) {
+            this.richOpsMsg = [];
+            this.intervals = [];
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -560,75 +616,81 @@ $root.sync = (function() {
         }
 
         /**
-         * LogootSAddMsg id.
-         * @member {sync.IIdentifierMsg|null|undefined} id
-         * @memberof sync.LogootSAddMsg
+         * ReplySyncMsg richOpsMsg.
+         * @member {Array.<sync.IRichOperationMsg>} richOpsMsg
+         * @memberof sync.ReplySyncMsg
          * @instance
          */
-        LogootSAddMsg.prototype.id = null;
+        ReplySyncMsg.prototype.richOpsMsg = $util.emptyArray;
 
         /**
-         * LogootSAddMsg content.
-         * @member {string} content
-         * @memberof sync.LogootSAddMsg
+         * ReplySyncMsg intervals.
+         * @member {Array.<sync.IIntervalMsg>} intervals
+         * @memberof sync.ReplySyncMsg
          * @instance
          */
-        LogootSAddMsg.prototype.content = "";
+        ReplySyncMsg.prototype.intervals = $util.emptyArray;
 
         /**
-         * Creates a new LogootSAddMsg instance using the specified properties.
+         * Creates a new ReplySyncMsg instance using the specified properties.
          * @function create
-         * @memberof sync.LogootSAddMsg
+         * @memberof sync.ReplySyncMsg
          * @static
-         * @param {sync.ILogootSAddMsg=} [properties] Properties to set
-         * @returns {sync.LogootSAddMsg} LogootSAddMsg instance
+         * @param {sync.IReplySyncMsg=} [properties] Properties to set
+         * @returns {sync.ReplySyncMsg} ReplySyncMsg instance
          */
-        LogootSAddMsg.create = function create(properties) {
-            return new LogootSAddMsg(properties);
+        ReplySyncMsg.create = function create(properties) {
+            return new ReplySyncMsg(properties);
         };
 
         /**
-         * Encodes the specified LogootSAddMsg message. Does not implicitly {@link sync.LogootSAddMsg.verify|verify} messages.
+         * Encodes the specified ReplySyncMsg message. Does not implicitly {@link sync.ReplySyncMsg.verify|verify} messages.
          * @function encode
-         * @memberof sync.LogootSAddMsg
+         * @memberof sync.ReplySyncMsg
          * @static
-         * @param {sync.ILogootSAddMsg} message LogootSAddMsg message or plain object to encode
+         * @param {sync.IReplySyncMsg} message ReplySyncMsg message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        LogootSAddMsg.encode = function encode(message, writer) {
+        ReplySyncMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.id != null && message.hasOwnProperty("id"))
-                $root.sync.IdentifierMsg.encode(message.id, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.content != null && message.hasOwnProperty("content"))
-                writer.uint32(/* id 2, wireType 2 =*/18).string(message.content);
+            if (message.richOpsMsg != null && message.richOpsMsg.length)
+                for (var i = 0; i < message.richOpsMsg.length; ++i)
+                    $root.sync.RichOperationMsg.encode(message.richOpsMsg[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.intervals != null && message.intervals.length)
+                for (var i = 0; i < message.intervals.length; ++i)
+                    $root.sync.IntervalMsg.encode(message.intervals[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
             return writer;
         };
 
         /**
-         * Decodes a LogootSAddMsg message from the specified reader or buffer.
+         * Decodes a ReplySyncMsg message from the specified reader or buffer.
          * @function decode
-         * @memberof sync.LogootSAddMsg
+         * @memberof sync.ReplySyncMsg
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {sync.LogootSAddMsg} LogootSAddMsg
+         * @returns {sync.ReplySyncMsg} ReplySyncMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        LogootSAddMsg.decode = function decode(reader, length) {
+        ReplySyncMsg.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.LogootSAddMsg();
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.ReplySyncMsg();
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.id = $root.sync.IdentifierMsg.decode(reader, reader.uint32());
+                    if (!(message.richOpsMsg && message.richOpsMsg.length))
+                        message.richOpsMsg = [];
+                    message.richOpsMsg.push($root.sync.RichOperationMsg.decode(reader, reader.uint32()));
                     break;
                 case 2:
-                    message.content = reader.string();
+                    if (!(message.intervals && message.intervals.length))
+                        message.intervals = [];
+                    message.intervals.push($root.sync.IntervalMsg.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -638,7 +700,7 @@ $root.sync = (function() {
             return message;
         };
 
-        return LogootSAddMsg;
+        return ReplySyncMsg;
     })();
 
     sync.IdentifierMsg = (function() {
@@ -873,103 +935,6 @@ $root.sync = (function() {
         return IdentifierTupleMsg;
     })();
 
-    sync.LogootSDelMsg = (function() {
-
-        /**
-         * Properties of a LogootSDelMsg.
-         * @memberof sync
-         * @interface ILogootSDelMsg
-         * @property {Array.<sync.IIdentifierIntervalMsg>|null} [lid] LogootSDelMsg lid
-         */
-
-        /**
-         * Constructs a new LogootSDelMsg.
-         * @memberof sync
-         * @classdesc Represents a LogootSDelMsg.
-         * @implements ILogootSDelMsg
-         * @constructor
-         * @param {sync.ILogootSDelMsg=} [properties] Properties to set
-         */
-        function LogootSDelMsg(properties) {
-            this.lid = [];
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * LogootSDelMsg lid.
-         * @member {Array.<sync.IIdentifierIntervalMsg>} lid
-         * @memberof sync.LogootSDelMsg
-         * @instance
-         */
-        LogootSDelMsg.prototype.lid = $util.emptyArray;
-
-        /**
-         * Creates a new LogootSDelMsg instance using the specified properties.
-         * @function create
-         * @memberof sync.LogootSDelMsg
-         * @static
-         * @param {sync.ILogootSDelMsg=} [properties] Properties to set
-         * @returns {sync.LogootSDelMsg} LogootSDelMsg instance
-         */
-        LogootSDelMsg.create = function create(properties) {
-            return new LogootSDelMsg(properties);
-        };
-
-        /**
-         * Encodes the specified LogootSDelMsg message. Does not implicitly {@link sync.LogootSDelMsg.verify|verify} messages.
-         * @function encode
-         * @memberof sync.LogootSDelMsg
-         * @static
-         * @param {sync.ILogootSDelMsg} message LogootSDelMsg message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        LogootSDelMsg.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.lid != null && message.lid.length)
-                for (var i = 0; i < message.lid.length; ++i)
-                    $root.sync.IdentifierIntervalMsg.encode(message.lid[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Decodes a LogootSDelMsg message from the specified reader or buffer.
-         * @function decode
-         * @memberof sync.LogootSDelMsg
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {sync.LogootSDelMsg} LogootSDelMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        LogootSDelMsg.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.LogootSDelMsg();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    if (!(message.lid && message.lid.length))
-                        message.lid = [];
-                    message.lid.push($root.sync.IdentifierIntervalMsg.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        return LogootSDelMsg;
-    })();
-
     sync.IdentifierIntervalMsg = (function() {
 
         /**
@@ -1075,221 +1040,6 @@ $root.sync = (function() {
         };
 
         return IdentifierIntervalMsg;
-    })();
-
-    sync.QuerySyncMsg = (function() {
-
-        /**
-         * Properties of a QuerySyncMsg.
-         * @memberof sync
-         * @interface IQuerySyncMsg
-         * @property {Object.<string,number>|null} [vector] QuerySyncMsg vector
-         */
-
-        /**
-         * Constructs a new QuerySyncMsg.
-         * @memberof sync
-         * @classdesc Represents a QuerySyncMsg.
-         * @implements IQuerySyncMsg
-         * @constructor
-         * @param {sync.IQuerySyncMsg=} [properties] Properties to set
-         */
-        function QuerySyncMsg(properties) {
-            this.vector = {};
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * QuerySyncMsg vector.
-         * @member {Object.<string,number>} vector
-         * @memberof sync.QuerySyncMsg
-         * @instance
-         */
-        QuerySyncMsg.prototype.vector = $util.emptyObject;
-
-        /**
-         * Creates a new QuerySyncMsg instance using the specified properties.
-         * @function create
-         * @memberof sync.QuerySyncMsg
-         * @static
-         * @param {sync.IQuerySyncMsg=} [properties] Properties to set
-         * @returns {sync.QuerySyncMsg} QuerySyncMsg instance
-         */
-        QuerySyncMsg.create = function create(properties) {
-            return new QuerySyncMsg(properties);
-        };
-
-        /**
-         * Encodes the specified QuerySyncMsg message. Does not implicitly {@link sync.QuerySyncMsg.verify|verify} messages.
-         * @function encode
-         * @memberof sync.QuerySyncMsg
-         * @static
-         * @param {sync.IQuerySyncMsg} message QuerySyncMsg message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        QuerySyncMsg.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.vector != null && message.hasOwnProperty("vector"))
-                for (var keys = Object.keys(message.vector), i = 0; i < keys.length; ++i)
-                    writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.vector[keys[i]]).ldelim();
-            return writer;
-        };
-
-        /**
-         * Decodes a QuerySyncMsg message from the specified reader or buffer.
-         * @function decode
-         * @memberof sync.QuerySyncMsg
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {sync.QuerySyncMsg} QuerySyncMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        QuerySyncMsg.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.QuerySyncMsg(), key;
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    reader.skip().pos++;
-                    if (message.vector === $util.emptyObject)
-                        message.vector = {};
-                    key = reader.int32();
-                    reader.pos++;
-                    message.vector[key] = reader.int32();
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        return QuerySyncMsg;
-    })();
-
-    sync.ReplySyncMsg = (function() {
-
-        /**
-         * Properties of a ReplySyncMsg.
-         * @memberof sync
-         * @interface IReplySyncMsg
-         * @property {Array.<sync.IRichLogootSOperationMsg>|null} [richLogootSOpsMsg] ReplySyncMsg richLogootSOpsMsg
-         * @property {Array.<sync.IIntervalMsg>|null} [intervals] ReplySyncMsg intervals
-         */
-
-        /**
-         * Constructs a new ReplySyncMsg.
-         * @memberof sync
-         * @classdesc Represents a ReplySyncMsg.
-         * @implements IReplySyncMsg
-         * @constructor
-         * @param {sync.IReplySyncMsg=} [properties] Properties to set
-         */
-        function ReplySyncMsg(properties) {
-            this.richLogootSOpsMsg = [];
-            this.intervals = [];
-            if (properties)
-                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * ReplySyncMsg richLogootSOpsMsg.
-         * @member {Array.<sync.IRichLogootSOperationMsg>} richLogootSOpsMsg
-         * @memberof sync.ReplySyncMsg
-         * @instance
-         */
-        ReplySyncMsg.prototype.richLogootSOpsMsg = $util.emptyArray;
-
-        /**
-         * ReplySyncMsg intervals.
-         * @member {Array.<sync.IIntervalMsg>} intervals
-         * @memberof sync.ReplySyncMsg
-         * @instance
-         */
-        ReplySyncMsg.prototype.intervals = $util.emptyArray;
-
-        /**
-         * Creates a new ReplySyncMsg instance using the specified properties.
-         * @function create
-         * @memberof sync.ReplySyncMsg
-         * @static
-         * @param {sync.IReplySyncMsg=} [properties] Properties to set
-         * @returns {sync.ReplySyncMsg} ReplySyncMsg instance
-         */
-        ReplySyncMsg.create = function create(properties) {
-            return new ReplySyncMsg(properties);
-        };
-
-        /**
-         * Encodes the specified ReplySyncMsg message. Does not implicitly {@link sync.ReplySyncMsg.verify|verify} messages.
-         * @function encode
-         * @memberof sync.ReplySyncMsg
-         * @static
-         * @param {sync.IReplySyncMsg} message ReplySyncMsg message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ReplySyncMsg.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            if (message.richLogootSOpsMsg != null && message.richLogootSOpsMsg.length)
-                for (var i = 0; i < message.richLogootSOpsMsg.length; ++i)
-                    $root.sync.RichLogootSOperationMsg.encode(message.richLogootSOpsMsg[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-            if (message.intervals != null && message.intervals.length)
-                for (var i = 0; i < message.intervals.length; ++i)
-                    $root.sync.IntervalMsg.encode(message.intervals[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
-            return writer;
-        };
-
-        /**
-         * Decodes a ReplySyncMsg message from the specified reader or buffer.
-         * @function decode
-         * @memberof sync.ReplySyncMsg
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {sync.ReplySyncMsg} ReplySyncMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ReplySyncMsg.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.ReplySyncMsg();
-            while (reader.pos < end) {
-                var tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1:
-                    if (!(message.richLogootSOpsMsg && message.richLogootSOpsMsg.length))
-                        message.richLogootSOpsMsg = [];
-                    message.richLogootSOpsMsg.push($root.sync.RichLogootSOperationMsg.decode(reader, reader.uint32()));
-                    break;
-                case 2:
-                    if (!(message.intervals && message.intervals.length))
-                        message.intervals = [];
-                    message.intervals.push($root.sync.IntervalMsg.decode(reader, reader.uint32()));
-                    break;
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            return message;
-        };
-
-        return ReplySyncMsg;
     })();
 
     sync.IntervalMsg = (function() {
@@ -1413,25 +1163,29 @@ $root.sync = (function() {
         return IntervalMsg;
     })();
 
-    sync.DotMsg = (function() {
+    sync.RichLogootSOperationMsg = (function() {
 
         /**
-         * Properties of a DotMsg.
+         * Properties of a RichLogootSOperationMsg.
          * @memberof sync
-         * @interface IDotMsg
-         * @property {number|null} [replicaNumber] DotMsg replicaNumber
-         * @property {number|null} [clock] DotMsg clock
+         * @interface IRichLogootSOperationMsg
+         * @property {number|null} [id] RichLogootSOperationMsg id
+         * @property {number|null} [clock] RichLogootSOperationMsg clock
+         * @property {sync.ILogootSAddMsg|null} [logootSAddMsg] RichLogootSOperationMsg logootSAddMsg
+         * @property {sync.ILogootSDelMsg|null} [logootSDelMsg] RichLogootSOperationMsg logootSDelMsg
+         * @property {Object.<string,number>|null} [dependencies] RichLogootSOperationMsg dependencies
          */
 
         /**
-         * Constructs a new DotMsg.
+         * Constructs a new RichLogootSOperationMsg.
          * @memberof sync
-         * @classdesc Represents a DotMsg.
-         * @implements IDotMsg
+         * @classdesc Represents a RichLogootSOperationMsg.
+         * @implements IRichLogootSOperationMsg
          * @constructor
-         * @param {sync.IDotMsg=} [properties] Properties to set
+         * @param {sync.IRichLogootSOperationMsg=} [properties] Properties to set
          */
-        function DotMsg(properties) {
+        function RichLogootSOperationMsg(properties) {
+            this.dependencies = {};
             if (properties)
                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -1439,75 +1193,134 @@ $root.sync = (function() {
         }
 
         /**
-         * DotMsg replicaNumber.
-         * @member {number} replicaNumber
-         * @memberof sync.DotMsg
+         * RichLogootSOperationMsg id.
+         * @member {number} id
+         * @memberof sync.RichLogootSOperationMsg
          * @instance
          */
-        DotMsg.prototype.replicaNumber = 0;
+        RichLogootSOperationMsg.prototype.id = 0;
 
         /**
-         * DotMsg clock.
+         * RichLogootSOperationMsg clock.
          * @member {number} clock
-         * @memberof sync.DotMsg
+         * @memberof sync.RichLogootSOperationMsg
          * @instance
          */
-        DotMsg.prototype.clock = 0;
+        RichLogootSOperationMsg.prototype.clock = 0;
 
         /**
-         * Creates a new DotMsg instance using the specified properties.
-         * @function create
-         * @memberof sync.DotMsg
-         * @static
-         * @param {sync.IDotMsg=} [properties] Properties to set
-         * @returns {sync.DotMsg} DotMsg instance
+         * RichLogootSOperationMsg logootSAddMsg.
+         * @member {sync.ILogootSAddMsg|null|undefined} logootSAddMsg
+         * @memberof sync.RichLogootSOperationMsg
+         * @instance
          */
-        DotMsg.create = function create(properties) {
-            return new DotMsg(properties);
+        RichLogootSOperationMsg.prototype.logootSAddMsg = null;
+
+        /**
+         * RichLogootSOperationMsg logootSDelMsg.
+         * @member {sync.ILogootSDelMsg|null|undefined} logootSDelMsg
+         * @memberof sync.RichLogootSOperationMsg
+         * @instance
+         */
+        RichLogootSOperationMsg.prototype.logootSDelMsg = null;
+
+        /**
+         * RichLogootSOperationMsg dependencies.
+         * @member {Object.<string,number>} dependencies
+         * @memberof sync.RichLogootSOperationMsg
+         * @instance
+         */
+        RichLogootSOperationMsg.prototype.dependencies = $util.emptyObject;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        /**
+         * RichLogootSOperationMsg type.
+         * @member {"logootSAddMsg"|"logootSDelMsg"|undefined} type
+         * @memberof sync.RichLogootSOperationMsg
+         * @instance
+         */
+        Object.defineProperty(RichLogootSOperationMsg.prototype, "type", {
+            get: $util.oneOfGetter($oneOfFields = ["logootSAddMsg", "logootSDelMsg"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new RichLogootSOperationMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.RichLogootSOperationMsg
+         * @static
+         * @param {sync.IRichLogootSOperationMsg=} [properties] Properties to set
+         * @returns {sync.RichLogootSOperationMsg} RichLogootSOperationMsg instance
+         */
+        RichLogootSOperationMsg.create = function create(properties) {
+            return new RichLogootSOperationMsg(properties);
         };
 
         /**
-         * Encodes the specified DotMsg message. Does not implicitly {@link sync.DotMsg.verify|verify} messages.
+         * Encodes the specified RichLogootSOperationMsg message. Does not implicitly {@link sync.RichLogootSOperationMsg.verify|verify} messages.
          * @function encode
-         * @memberof sync.DotMsg
+         * @memberof sync.RichLogootSOperationMsg
          * @static
-         * @param {sync.IDotMsg} message DotMsg message or plain object to encode
+         * @param {sync.IRichLogootSOperationMsg} message RichLogootSOperationMsg message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        DotMsg.encode = function encode(message, writer) {
+        RichLogootSOperationMsg.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.replicaNumber != null && message.hasOwnProperty("replicaNumber"))
-                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.replicaNumber);
+            if (message.id != null && message.hasOwnProperty("id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
             if (message.clock != null && message.hasOwnProperty("clock"))
                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
+            if (message.logootSAddMsg != null && message.hasOwnProperty("logootSAddMsg"))
+                $root.sync.LogootSAddMsg.encode(message.logootSAddMsg, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.logootSDelMsg != null && message.hasOwnProperty("logootSDelMsg"))
+                $root.sync.LogootSDelMsg.encode(message.logootSDelMsg, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+            if (message.dependencies != null && message.hasOwnProperty("dependencies"))
+                for (var keys = Object.keys(message.dependencies), i = 0; i < keys.length; ++i)
+                    writer.uint32(/* id 5, wireType 2 =*/42).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.dependencies[keys[i]]).ldelim();
             return writer;
         };
 
         /**
-         * Decodes a DotMsg message from the specified reader or buffer.
+         * Decodes a RichLogootSOperationMsg message from the specified reader or buffer.
          * @function decode
-         * @memberof sync.DotMsg
+         * @memberof sync.RichLogootSOperationMsg
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {sync.DotMsg} DotMsg
+         * @returns {sync.RichLogootSOperationMsg} RichLogootSOperationMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        DotMsg.decode = function decode(reader, length) {
+        RichLogootSOperationMsg.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.DotMsg();
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.RichLogootSOperationMsg(), key;
             while (reader.pos < end) {
                 var tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1:
-                    message.replicaNumber = reader.int32();
+                    message.id = reader.int32();
                     break;
                 case 2:
                     message.clock = reader.int32();
+                    break;
+                case 3:
+                    message.logootSAddMsg = $root.sync.LogootSAddMsg.decode(reader, reader.uint32());
+                    break;
+                case 4:
+                    message.logootSDelMsg = $root.sync.LogootSDelMsg.decode(reader, reader.uint32());
+                    break;
+                case 5:
+                    reader.skip().pos++;
+                    if (message.dependencies === $util.emptyObject)
+                        message.dependencies = {};
+                    key = reader.int32();
+                    reader.pos++;
+                    message.dependencies[key] = reader.int32();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -1517,7 +1330,813 @@ $root.sync = (function() {
             return message;
         };
 
-        return DotMsg;
+        return RichLogootSOperationMsg;
+    })();
+
+    sync.LogootSAddMsg = (function() {
+
+        /**
+         * Properties of a LogootSAddMsg.
+         * @memberof sync
+         * @interface ILogootSAddMsg
+         * @property {sync.IIdentifierMsg|null} [id] LogootSAddMsg id
+         * @property {string|null} [content] LogootSAddMsg content
+         */
+
+        /**
+         * Constructs a new LogootSAddMsg.
+         * @memberof sync
+         * @classdesc Represents a LogootSAddMsg.
+         * @implements ILogootSAddMsg
+         * @constructor
+         * @param {sync.ILogootSAddMsg=} [properties] Properties to set
+         */
+        function LogootSAddMsg(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LogootSAddMsg id.
+         * @member {sync.IIdentifierMsg|null|undefined} id
+         * @memberof sync.LogootSAddMsg
+         * @instance
+         */
+        LogootSAddMsg.prototype.id = null;
+
+        /**
+         * LogootSAddMsg content.
+         * @member {string} content
+         * @memberof sync.LogootSAddMsg
+         * @instance
+         */
+        LogootSAddMsg.prototype.content = "";
+
+        /**
+         * Creates a new LogootSAddMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.LogootSAddMsg
+         * @static
+         * @param {sync.ILogootSAddMsg=} [properties] Properties to set
+         * @returns {sync.LogootSAddMsg} LogootSAddMsg instance
+         */
+        LogootSAddMsg.create = function create(properties) {
+            return new LogootSAddMsg(properties);
+        };
+
+        /**
+         * Encodes the specified LogootSAddMsg message. Does not implicitly {@link sync.LogootSAddMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.LogootSAddMsg
+         * @static
+         * @param {sync.ILogootSAddMsg} message LogootSAddMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LogootSAddMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && message.hasOwnProperty("id"))
+                $root.sync.IdentifierMsg.encode(message.id, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.content != null && message.hasOwnProperty("content"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.content);
+            return writer;
+        };
+
+        /**
+         * Decodes a LogootSAddMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.LogootSAddMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.LogootSAddMsg} LogootSAddMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LogootSAddMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.LogootSAddMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.id = $root.sync.IdentifierMsg.decode(reader, reader.uint32());
+                    break;
+                case 2:
+                    message.content = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return LogootSAddMsg;
+    })();
+
+    sync.LogootSDelMsg = (function() {
+
+        /**
+         * Properties of a LogootSDelMsg.
+         * @memberof sync
+         * @interface ILogootSDelMsg
+         * @property {Array.<sync.IIdentifierIntervalMsg>|null} [lid] LogootSDelMsg lid
+         * @property {number|null} [author] LogootSDelMsg author
+         */
+
+        /**
+         * Constructs a new LogootSDelMsg.
+         * @memberof sync
+         * @classdesc Represents a LogootSDelMsg.
+         * @implements ILogootSDelMsg
+         * @constructor
+         * @param {sync.ILogootSDelMsg=} [properties] Properties to set
+         */
+        function LogootSDelMsg(properties) {
+            this.lid = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * LogootSDelMsg lid.
+         * @member {Array.<sync.IIdentifierIntervalMsg>} lid
+         * @memberof sync.LogootSDelMsg
+         * @instance
+         */
+        LogootSDelMsg.prototype.lid = $util.emptyArray;
+
+        /**
+         * LogootSDelMsg author.
+         * @member {number} author
+         * @memberof sync.LogootSDelMsg
+         * @instance
+         */
+        LogootSDelMsg.prototype.author = 0;
+
+        /**
+         * Creates a new LogootSDelMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.LogootSDelMsg
+         * @static
+         * @param {sync.ILogootSDelMsg=} [properties] Properties to set
+         * @returns {sync.LogootSDelMsg} LogootSDelMsg instance
+         */
+        LogootSDelMsg.create = function create(properties) {
+            return new LogootSDelMsg(properties);
+        };
+
+        /**
+         * Encodes the specified LogootSDelMsg message. Does not implicitly {@link sync.LogootSDelMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.LogootSDelMsg
+         * @static
+         * @param {sync.ILogootSDelMsg} message LogootSDelMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        LogootSDelMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.lid != null && message.lid.length)
+                for (var i = 0; i < message.lid.length; ++i)
+                    $root.sync.IdentifierIntervalMsg.encode(message.lid[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.author != null && message.hasOwnProperty("author"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.author);
+            return writer;
+        };
+
+        /**
+         * Decodes a LogootSDelMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.LogootSDelMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.LogootSDelMsg} LogootSDelMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        LogootSDelMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.LogootSDelMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.lid && message.lid.length))
+                        message.lid = [];
+                    message.lid.push($root.sync.IdentifierIntervalMsg.decode(reader, reader.uint32()));
+                    break;
+                case 2:
+                    message.author = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return LogootSDelMsg;
+    })();
+
+    sync.RichDottedLogootSOperationMsg = (function() {
+
+        /**
+         * Properties of a RichDottedLogootSOperationMsg.
+         * @memberof sync
+         * @interface IRichDottedLogootSOperationMsg
+         * @property {number|null} [id] RichDottedLogootSOperationMsg id
+         * @property {number|null} [clock] RichDottedLogootSOperationMsg clock
+         * @property {sync.IDottedLogootSBlockMsg|null} [blockOperationMsg] RichDottedLogootSOperationMsg blockOperationMsg
+         * @property {Object.<string,number>|null} [dependencies] RichDottedLogootSOperationMsg dependencies
+         */
+
+        /**
+         * Constructs a new RichDottedLogootSOperationMsg.
+         * @memberof sync
+         * @classdesc Represents a RichDottedLogootSOperationMsg.
+         * @implements IRichDottedLogootSOperationMsg
+         * @constructor
+         * @param {sync.IRichDottedLogootSOperationMsg=} [properties] Properties to set
+         */
+        function RichDottedLogootSOperationMsg(properties) {
+            this.dependencies = {};
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * RichDottedLogootSOperationMsg id.
+         * @member {number} id
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @instance
+         */
+        RichDottedLogootSOperationMsg.prototype.id = 0;
+
+        /**
+         * RichDottedLogootSOperationMsg clock.
+         * @member {number} clock
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @instance
+         */
+        RichDottedLogootSOperationMsg.prototype.clock = 0;
+
+        /**
+         * RichDottedLogootSOperationMsg blockOperationMsg.
+         * @member {sync.IDottedLogootSBlockMsg|null|undefined} blockOperationMsg
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @instance
+         */
+        RichDottedLogootSOperationMsg.prototype.blockOperationMsg = null;
+
+        /**
+         * RichDottedLogootSOperationMsg dependencies.
+         * @member {Object.<string,number>} dependencies
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @instance
+         */
+        RichDottedLogootSOperationMsg.prototype.dependencies = $util.emptyObject;
+
+        /**
+         * Creates a new RichDottedLogootSOperationMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @static
+         * @param {sync.IRichDottedLogootSOperationMsg=} [properties] Properties to set
+         * @returns {sync.RichDottedLogootSOperationMsg} RichDottedLogootSOperationMsg instance
+         */
+        RichDottedLogootSOperationMsg.create = function create(properties) {
+            return new RichDottedLogootSOperationMsg(properties);
+        };
+
+        /**
+         * Encodes the specified RichDottedLogootSOperationMsg message. Does not implicitly {@link sync.RichDottedLogootSOperationMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @static
+         * @param {sync.IRichDottedLogootSOperationMsg} message RichDottedLogootSOperationMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        RichDottedLogootSOperationMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.id != null && message.hasOwnProperty("id"))
+                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.id);
+            if (message.clock != null && message.hasOwnProperty("clock"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.clock);
+            if (message.blockOperationMsg != null && message.hasOwnProperty("blockOperationMsg"))
+                $root.sync.DottedLogootSBlockMsg.encode(message.blockOperationMsg, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            if (message.dependencies != null && message.hasOwnProperty("dependencies"))
+                for (var keys = Object.keys(message.dependencies), i = 0; i < keys.length; ++i)
+                    writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 0 =*/8).int32(keys[i]).uint32(/* id 2, wireType 0 =*/16).int32(message.dependencies[keys[i]]).ldelim();
+            return writer;
+        };
+
+        /**
+         * Decodes a RichDottedLogootSOperationMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.RichDottedLogootSOperationMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.RichDottedLogootSOperationMsg} RichDottedLogootSOperationMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        RichDottedLogootSOperationMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.RichDottedLogootSOperationMsg(), key;
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.id = reader.int32();
+                    break;
+                case 2:
+                    message.clock = reader.int32();
+                    break;
+                case 3:
+                    message.blockOperationMsg = $root.sync.DottedLogootSBlockMsg.decode(reader, reader.uint32());
+                    break;
+                case 4:
+                    reader.skip().pos++;
+                    if (message.dependencies === $util.emptyObject)
+                        message.dependencies = {};
+                    key = reader.int32();
+                    reader.pos++;
+                    message.dependencies[key] = reader.int32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return RichDottedLogootSOperationMsg;
+    })();
+
+    sync.DottedLogootSBlockMsg = (function() {
+
+        /**
+         * Properties of a DottedLogootSBlockMsg.
+         * @memberof sync
+         * @interface IDottedLogootSBlockMsg
+         * @property {sync.ISimpleDotPos|null} [lowerPos] DottedLogootSBlockMsg lowerPos
+         * @property {string|null} [content] DottedLogootSBlockMsg content
+         * @property {sync.IConcatLength|null} [concatLength] DottedLogootSBlockMsg concatLength
+         */
+
+        /**
+         * Constructs a new DottedLogootSBlockMsg.
+         * @memberof sync
+         * @classdesc Represents a DottedLogootSBlockMsg.
+         * @implements IDottedLogootSBlockMsg
+         * @constructor
+         * @param {sync.IDottedLogootSBlockMsg=} [properties] Properties to set
+         */
+        function DottedLogootSBlockMsg(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * DottedLogootSBlockMsg lowerPos.
+         * @member {sync.ISimpleDotPos|null|undefined} lowerPos
+         * @memberof sync.DottedLogootSBlockMsg
+         * @instance
+         */
+        DottedLogootSBlockMsg.prototype.lowerPos = null;
+
+        /**
+         * DottedLogootSBlockMsg content.
+         * @member {string} content
+         * @memberof sync.DottedLogootSBlockMsg
+         * @instance
+         */
+        DottedLogootSBlockMsg.prototype.content = "";
+
+        /**
+         * DottedLogootSBlockMsg concatLength.
+         * @member {sync.IConcatLength|null|undefined} concatLength
+         * @memberof sync.DottedLogootSBlockMsg
+         * @instance
+         */
+        DottedLogootSBlockMsg.prototype.concatLength = null;
+
+        // OneOf field names bound to virtual getters and setters
+        var $oneOfFields;
+
+        /**
+         * DottedLogootSBlockMsg type.
+         * @member {"content"|"concatLength"|undefined} type
+         * @memberof sync.DottedLogootSBlockMsg
+         * @instance
+         */
+        Object.defineProperty(DottedLogootSBlockMsg.prototype, "type", {
+            get: $util.oneOfGetter($oneOfFields = ["content", "concatLength"]),
+            set: $util.oneOfSetter($oneOfFields)
+        });
+
+        /**
+         * Creates a new DottedLogootSBlockMsg instance using the specified properties.
+         * @function create
+         * @memberof sync.DottedLogootSBlockMsg
+         * @static
+         * @param {sync.IDottedLogootSBlockMsg=} [properties] Properties to set
+         * @returns {sync.DottedLogootSBlockMsg} DottedLogootSBlockMsg instance
+         */
+        DottedLogootSBlockMsg.create = function create(properties) {
+            return new DottedLogootSBlockMsg(properties);
+        };
+
+        /**
+         * Encodes the specified DottedLogootSBlockMsg message. Does not implicitly {@link sync.DottedLogootSBlockMsg.verify|verify} messages.
+         * @function encode
+         * @memberof sync.DottedLogootSBlockMsg
+         * @static
+         * @param {sync.IDottedLogootSBlockMsg} message DottedLogootSBlockMsg message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        DottedLogootSBlockMsg.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.lowerPos != null && message.hasOwnProperty("lowerPos"))
+                $root.sync.SimpleDotPos.encode(message.lowerPos, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            if (message.content != null && message.hasOwnProperty("content"))
+                writer.uint32(/* id 2, wireType 2 =*/18).string(message.content);
+            if (message.concatLength != null && message.hasOwnProperty("concatLength"))
+                $root.sync.ConcatLength.encode(message.concatLength, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Decodes a DottedLogootSBlockMsg message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.DottedLogootSBlockMsg
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.DottedLogootSBlockMsg} DottedLogootSBlockMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        DottedLogootSBlockMsg.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.DottedLogootSBlockMsg();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.lowerPos = $root.sync.SimpleDotPos.decode(reader, reader.uint32());
+                    break;
+                case 2:
+                    message.content = reader.string();
+                    break;
+                case 3:
+                    message.concatLength = $root.sync.ConcatLength.decode(reader, reader.uint32());
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return DottedLogootSBlockMsg;
+    })();
+
+    sync.ConcatLength = (function() {
+
+        /**
+         * Properties of a ConcatLength.
+         * @memberof sync
+         * @interface IConcatLength
+         * @property {number|null} [length] ConcatLength length
+         */
+
+        /**
+         * Constructs a new ConcatLength.
+         * @memberof sync
+         * @classdesc Represents a ConcatLength.
+         * @implements IConcatLength
+         * @constructor
+         * @param {sync.IConcatLength=} [properties] Properties to set
+         */
+        function ConcatLength(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * ConcatLength length.
+         * @member {number} length
+         * @memberof sync.ConcatLength
+         * @instance
+         */
+        ConcatLength.prototype.length = 0;
+
+        /**
+         * Creates a new ConcatLength instance using the specified properties.
+         * @function create
+         * @memberof sync.ConcatLength
+         * @static
+         * @param {sync.IConcatLength=} [properties] Properties to set
+         * @returns {sync.ConcatLength} ConcatLength instance
+         */
+        ConcatLength.create = function create(properties) {
+            return new ConcatLength(properties);
+        };
+
+        /**
+         * Encodes the specified ConcatLength message. Does not implicitly {@link sync.ConcatLength.verify|verify} messages.
+         * @function encode
+         * @memberof sync.ConcatLength
+         * @static
+         * @param {sync.IConcatLength} message ConcatLength message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        ConcatLength.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.length != null && message.hasOwnProperty("length"))
+                writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.length);
+            return writer;
+        };
+
+        /**
+         * Decodes a ConcatLength message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.ConcatLength
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.ConcatLength} ConcatLength
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        ConcatLength.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.ConcatLength();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.length = reader.uint32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return ConcatLength;
+    })();
+
+    sync.SimpleDotPosPart = (function() {
+
+        /**
+         * Properties of a SimpleDotPosPart.
+         * @memberof sync
+         * @interface ISimpleDotPosPart
+         * @property {number|null} [priority] SimpleDotPosPart priority
+         * @property {number|null} [replica] SimpleDotPosPart replica
+         * @property {number|null} [seq] SimpleDotPosPart seq
+         */
+
+        /**
+         * Constructs a new SimpleDotPosPart.
+         * @memberof sync
+         * @classdesc Represents a SimpleDotPosPart.
+         * @implements ISimpleDotPosPart
+         * @constructor
+         * @param {sync.ISimpleDotPosPart=} [properties] Properties to set
+         */
+        function SimpleDotPosPart(properties) {
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SimpleDotPosPart priority.
+         * @member {number} priority
+         * @memberof sync.SimpleDotPosPart
+         * @instance
+         */
+        SimpleDotPosPart.prototype.priority = 0;
+
+        /**
+         * SimpleDotPosPart replica.
+         * @member {number} replica
+         * @memberof sync.SimpleDotPosPart
+         * @instance
+         */
+        SimpleDotPosPart.prototype.replica = 0;
+
+        /**
+         * SimpleDotPosPart seq.
+         * @member {number} seq
+         * @memberof sync.SimpleDotPosPart
+         * @instance
+         */
+        SimpleDotPosPart.prototype.seq = 0;
+
+        /**
+         * Creates a new SimpleDotPosPart instance using the specified properties.
+         * @function create
+         * @memberof sync.SimpleDotPosPart
+         * @static
+         * @param {sync.ISimpleDotPosPart=} [properties] Properties to set
+         * @returns {sync.SimpleDotPosPart} SimpleDotPosPart instance
+         */
+        SimpleDotPosPart.create = function create(properties) {
+            return new SimpleDotPosPart(properties);
+        };
+
+        /**
+         * Encodes the specified SimpleDotPosPart message. Does not implicitly {@link sync.SimpleDotPosPart.verify|verify} messages.
+         * @function encode
+         * @memberof sync.SimpleDotPosPart
+         * @static
+         * @param {sync.ISimpleDotPosPart} message SimpleDotPosPart message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimpleDotPosPart.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.priority != null && message.hasOwnProperty("priority"))
+                writer.uint32(/* id 1, wireType 0 =*/8).uint32(message.priority);
+            if (message.replica != null && message.hasOwnProperty("replica"))
+                writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.replica);
+            if (message.seq != null && message.hasOwnProperty("seq"))
+                writer.uint32(/* id 3, wireType 0 =*/24).uint32(message.seq);
+            return writer;
+        };
+
+        /**
+         * Decodes a SimpleDotPosPart message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.SimpleDotPosPart
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.SimpleDotPosPart} SimpleDotPosPart
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimpleDotPosPart.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.SimpleDotPosPart();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.priority = reader.uint32();
+                    break;
+                case 2:
+                    message.replica = reader.uint32();
+                    break;
+                case 3:
+                    message.seq = reader.uint32();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return SimpleDotPosPart;
+    })();
+
+    sync.SimpleDotPos = (function() {
+
+        /**
+         * Properties of a SimpleDotPos.
+         * @memberof sync
+         * @interface ISimpleDotPos
+         * @property {Array.<sync.ISimpleDotPosPart>|null} [parts] SimpleDotPos parts
+         */
+
+        /**
+         * Constructs a new SimpleDotPos.
+         * @memberof sync
+         * @classdesc Represents a SimpleDotPos.
+         * @implements ISimpleDotPos
+         * @constructor
+         * @param {sync.ISimpleDotPos=} [properties] Properties to set
+         */
+        function SimpleDotPos(properties) {
+            this.parts = [];
+            if (properties)
+                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * SimpleDotPos parts.
+         * @member {Array.<sync.ISimpleDotPosPart>} parts
+         * @memberof sync.SimpleDotPos
+         * @instance
+         */
+        SimpleDotPos.prototype.parts = $util.emptyArray;
+
+        /**
+         * Creates a new SimpleDotPos instance using the specified properties.
+         * @function create
+         * @memberof sync.SimpleDotPos
+         * @static
+         * @param {sync.ISimpleDotPos=} [properties] Properties to set
+         * @returns {sync.SimpleDotPos} SimpleDotPos instance
+         */
+        SimpleDotPos.create = function create(properties) {
+            return new SimpleDotPos(properties);
+        };
+
+        /**
+         * Encodes the specified SimpleDotPos message. Does not implicitly {@link sync.SimpleDotPos.verify|verify} messages.
+         * @function encode
+         * @memberof sync.SimpleDotPos
+         * @static
+         * @param {sync.ISimpleDotPos} message SimpleDotPos message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        SimpleDotPos.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.parts != null && message.parts.length)
+                for (var i = 0; i < message.parts.length; ++i)
+                    $root.sync.SimpleDotPosPart.encode(message.parts[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+            return writer;
+        };
+
+        /**
+         * Decodes a SimpleDotPos message from the specified reader or buffer.
+         * @function decode
+         * @memberof sync.SimpleDotPos
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {sync.SimpleDotPos} SimpleDotPos
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        SimpleDotPos.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.sync.SimpleDotPos();
+            while (reader.pos < end) {
+                var tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    if (!(message.parts && message.parts.length))
+                        message.parts = [];
+                    message.parts.push($root.sync.SimpleDotPosPart.decode(reader, reader.uint32()));
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        return SimpleDotPos;
     })();
 
     return sync;

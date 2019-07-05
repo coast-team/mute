@@ -3,10 +3,10 @@ import * as CodeMirror from 'codemirror'
 import { Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
+import { Streams, StreamsSubtype } from '@coast-team/mute-core'
 import { DocService } from '../../doc.service'
 import { NetworkService } from '../../network'
 import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators'
-import { Streams } from '../../Streams'
 import { CollaboratorCursor } from './CollaboratorCursor'
 import * as proto from './cursor_proto'
 
@@ -94,7 +94,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
     // On message from the network
     this.subs[this.subs.length] = this.network.messageOut
-      .pipe(filter(({ streamId }) => streamId === Streams.CURSOR))
+      .pipe(filter(({ streamId }) => streamId.type === Streams.CURSOR))
       .subscribe(({ senderId, content }) => {
         try {
           const protoCursor = proto.Cursor.decode(content)
@@ -214,6 +214,6 @@ export class CursorsDirective implements OnInit, OnDestroy {
   }
 
   private sendMyCursorPosition() {
-    this.network.send(Streams.CURSOR, proto.Cursor.encode(this.protoCursor).finish())
+    this.network.send({ type: Streams.CURSOR, subtype: StreamsSubtype.CURSOR }, proto.Cursor.encode(this.protoCursor).finish())
   }
 }
