@@ -45,7 +45,7 @@
     "@angular/router": "^8.0.1",
     "@angular/service-worker": "^8.0.1",
     "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "^10.0.0-2.0",
+    "@coast-team/mute-core": "file:../mute-core/coast-team-mute-core-10.0.0-2.0.tgz",
     "@coast-team/mute-crypto": "^0.4.1",
     "@stomp/ng2-stompjs": "^7.2.0",
     "bragi-browser": "0.0.12",

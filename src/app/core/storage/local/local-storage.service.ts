@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { MuteCore, RichOperationStrategy, StateStrategy, StateTypes } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { v4 as uuidv4 } from 'uuid'
@@ -33,6 +34,7 @@ const selectListForDoc = [
   'description',
   'shareLogs',
   'shareLogsVector',
+  'pulsar',
 ]
 
 const DB_NAME_PREFIX = 'docs-'
@@ -45,12 +47,14 @@ export class LocalStorageService extends Storage implements IStorage {
   public local: Folder
   public trash: Folder
   public remote: Folder
+  private _route: ActivatedRoute
 
   private db: any
   private dbLogin: string
 
   constructor(private botStorage: BotStorageService) {
     super()
+
     this.local = Folder.create(this, 'Local storage', 'devices', false)
     this.local.id = 'local'
     this.trash = Folder.create(this, 'Trash', 'delete', false)
@@ -60,6 +64,10 @@ export class LocalStorageService extends Storage implements IStorage {
       this.remote = Folder.create(this, 'Remote storage', 'cloud', true)
       this.remote.id = botStorage.id
     }
+  }
+
+  get route() {
+    return this._route
   }
 
   async init(settings: SettingsService): Promise<void> {
@@ -134,6 +142,11 @@ export class LocalStorageService extends Storage implements IStorage {
             ld.cryptoKey = bd.cryptoKey
             localDocs.push(ld)
             ld.addRemote(this.remote.id)
+            console.log('HEREEEEEEEEEE')
+            this.route.paramMap.subscribe((params) => {
+              ld.pulsar = params.get('pulsar') === 'true' ? true : false
+              console.log('pulsar is ... . ?', ld.pulsar)
+            })
           }
         }
         return localDocs
@@ -163,6 +176,12 @@ export class LocalStorageService extends Storage implements IStorage {
             ld.titleModified = new Date(bd.titleModified)
             ld.created = new Date(bd.created)
             ld.cryptoKey = bd.cryptoKey
+            console.log('HEREEEEEEEEEE')
+
+            this.route.paramMap.subscribe((params) => {
+              ld.pulsar = params.get('pulsar') === 'true' ? true : false
+              console.log('pulsar is ... . ?', ld.pulsar)
+            })
           }
           ld.addRemote(this.remote.id)
           resultDocs.push(ld)

@@ -67,7 +67,7 @@ export class DocService implements OnDestroy {
     this.zone.runOutsideAngular(() => {
       this.newSub = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
-
+        console.log('Le doc au début du log Service', this.doc)
         // Handle bot storage if exist
         this.newSub = this.collabs.onUpdate.subscribe((collab: ICollaborator) => {
           if (collab.login === this.botStorage.login) {
@@ -91,6 +91,11 @@ export class DocService implements OnDestroy {
   async joinSession() {
     // Read document content from local database and put into MuteCore model
     const docContent = await this.readDocContent()
+    this.route.paramMap.subscribe((params) => {
+      this.doc.pulsar = params.get('pulsar') === 'true' ? true : false
+      console.log('Le doc au joinSession', this.doc)
+    })
+
     // Initialize MuteCore with your profile data, document metadata and content
     this.muteCore = MuteCoreFactory.createMuteCore({
       strategy: environment.crdtStrategy,
@@ -113,6 +118,9 @@ export class DocService implements OnDestroy {
       metaLogs: {
         share: this.doc.shareLogs,
         vector: this.doc.shareLogsVector,
+      },
+      metaPulsar: {
+        activatePulsar: this.doc.pulsar,
       },
     })
 
@@ -183,6 +191,12 @@ export class DocService implements OnDestroy {
         filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.SHARE_LOGS)),
         map(() => {
           return { type: MetaDataType.Logs, data: { share: this.doc.shareLogs, vector: this.doc.shareLogsVector } }
+        })
+      ),
+      this.doc.onMetadataChanges.pipe(
+        filter(({ isLocal, changedProperties }) => isLocal && changedProperties.includes(Doc.PULSAR)),
+        map(() => {
+          return { type: MetaDataType.Logs, data: { activatePulsar: this.doc.pulsar } }
         })
       )
     )

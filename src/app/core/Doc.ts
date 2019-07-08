@@ -23,7 +23,6 @@ export class Doc extends File {
   public static SHARE_LOGS = 203
   public static SHARE_LOGS_VECTOR = 204
   public static PULSAR = 205
-  public static PULSAR_VECTOR = 206
 
   public signalingKey: string
   public cryptoKey: string
@@ -38,7 +37,6 @@ export class Doc extends File {
   private _shareLogsVector: Map<number, number>
 
   private _pulsar: boolean
-  private _pulsarVector: Map<number, number>
 
   static deserialize(storage: IStorage, id: string, serialized: any): Doc {
     const doc = new Doc(storage, serialized.title, serialized.parentFolderId)
@@ -55,7 +53,6 @@ export class Doc extends File {
     doc._shareLogs = serialized.shareLogs
     doc._shareLogsVector = serialized.shareLogsVector
     doc._pulsar = serialized.pulsar
-    doc._pulsarVector = serialized.pulsarVector
 
     doc.deserialize(id, serialized)
     return doc
@@ -78,7 +75,6 @@ export class Doc extends File {
     this._shareLogs = false
     this._shareLogsVector = new Map()
     this._pulsar = false
-    this._pulsarVector = new Map()
   }
 
   get isDoc() {
@@ -107,15 +103,11 @@ export class Doc extends File {
   }
 
   get pulsar() {
-    return this.pulsar
+    return this._pulsar
   }
 
   set pulsar(newPulsar: boolean) {
     this.updatePulsar(newPulsar, true)
-  }
-
-  get pulsarVector() {
-    return this._pulsarVector
   }
 
   get description() {
@@ -150,10 +142,9 @@ export class Doc extends File {
           this.changes.next({ isLocal: false, changedProperties: [Doc.SHARE_LOGS, Doc.SHARE_LOGS_VECTOR] })
           break
         case MetaDataType.Pulsar:
-          const { activatePulsar, vector } = data as PulsarState // il veut pas que je mette vector parce qu'il y en a un au dessus
+          const { activatePulsar } = data as PulsarState
           this.updatePulsar(activatePulsar, false)
-          this._pulsarVector = vectorPulsar
-          this.changes.next({ isLocal: false, changedProperties: [Doc.PULSAR, Doc.PULSAR_VECTOR] })
+          this.changes.next({ isLocal: false, changedProperties: [Doc.PULSAR] })
           break
       }
     })
@@ -178,7 +169,6 @@ export class Doc extends File {
       shareLogs: this._shareLogs,
       shareLogsVector: this._shareLogsVector,
       pulsar: this._pulsar,
-      pulsarVector: this._pulsarVector,
     })
   }
 

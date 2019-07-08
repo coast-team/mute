@@ -38,8 +38,7 @@ export class NetworkService implements OnDestroy {
 
   // Other
   private subs: Subscription[]
-
-  public pulsarOn: boolean
+  private _pulsarOn: boolean
 
   constructor(
     private zone: NgZone,
@@ -47,11 +46,13 @@ export class NetworkService implements OnDestroy {
     private cryptoService: CryptoService,
     private pulsarService: PulsarService
   ) {
-    this.route.paramMap.subscribe((params) => {
-      this.pulsarOn = params.get('pulsar') === 'true' ? true : false
-      console.log('BOOOOOOOOOOOOOOOOOOOL', this.pulsarOn)
-      console.log('PARAAAAAAAAAAAAAAAAAAAAAAAAAM', params.get('pulsar'))
-    })
+    // this.route.paramMap.subscribe((params) => {
+    //   const pulsarbool = params.get('pulsar') === 'true' ? true : false
+    //   console.log('BOOOOOOOOOOOOOOOOOOOL', this.pulsarbool)
+    //   console.log('PARAAAAAAAAAAAAAAAAAAAAAAAAAM', params.get('pulsar'))
+    // })
+
+    // recupérer pulsar booleen dans metadata
 
     this.botUrls = []
     this.subs = []
@@ -97,7 +98,7 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-        if (!recipientId && this.pulsarOn) {
+        if (!recipientId && this._pulsarOn) {
           console.log('setMessageIn NOW PULSAR')
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
@@ -109,7 +110,7 @@ export class NetworkService implements OnDestroy {
           .catch((err) => {})
       } else {
         this.send(streamId, content, recipientId)
-        if (!recipientId && this.pulsarOn) {
+        if (!recipientId && this._pulsarOn) {
           console.log('setMessageIn NOW PULSAR')
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
@@ -161,6 +162,14 @@ export class NetworkService implements OnDestroy {
     return this.cryptoService.onStateChange
   }
 
+  get pulsarOn() {
+    return this._pulsarOn
+  }
+
+  set pulsarOn(newPulsar: boolean) {
+    this._pulsarOn = newPulsar
+  }
+
   ngOnDestroy(): void {
     if (this.wg !== undefined) {
       this.messageSubject.complete()
@@ -174,9 +183,32 @@ export class NetworkService implements OnDestroy {
 
   join(key: string) {
     this.wg.join(key)
-    if (this.pulsarOn) {
-      this.pulsarConnect(this.wg.id)
-    }
+    this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+      console.log('Le doc au sein de network service : ', doc)
+
+      doc.onMetadataChanges
+        .pipe(
+          filter(({ isLocal, changedProperties }) => {
+            console.log(changedProperties.includes(Doc.PULSAR))
+            return changedProperties.includes(Doc.PULSAR)
+          })
+        )
+        .subscribe(() => {
+          console.log('Le doc au sein de network service : ', doc)
+          console.log('Le bool au sein de network service :', doc.pulsar)
+          this._pulsarOn = doc.pulsar
+          if (doc.pulsar) {
+            this.pulsarConnect(this.wg.id)
+          }
+        })
+
+      // console.log('Le doc au sein de network service : ', doc)
+      // this._pulsarOn = doc.pulsar
+      // console.log('Le bool au sein de network service :', this._pulsarOn)
+      // if (this._pulsarOn) {
+      //   this.pulsarConnect(this.wg.id)
+      // }
+    })
   }
 
   pulsarConnect(id: number) {

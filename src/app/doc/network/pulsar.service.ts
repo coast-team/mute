@@ -29,8 +29,8 @@ export class PulsarService implements OnDestroy {
       let sockEcoute
       const msgIdFromStorage = window.localStorage.getItem('messageId-' + topic)
       console.log('GET STORAGE', msgIdFromStorage)
-      if (true) {
-        // if (msgIdFromStorage === null) {
+      // if (true) {
+      if (msgIdFromStorage === null) {
         sockEcoute = new WebSocket(
           'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
         )
@@ -99,7 +99,6 @@ export class PulsarService implements OnDestroy {
   }
 
   sendMessageToPulsar(streamId: Streams, keyTopic: string, content: Uint8Array) {
-    console.log('StreamId : ', streamId)
     const content64 = this.arrayBufferToBase64(content)
     const message = {
       payload: btoa(content64), // required
@@ -108,28 +107,33 @@ export class PulsarService implements OnDestroy {
         stream: streamId,
       },
     }
-    console.log('SENT', content)
 
     switch (streamId) {
       case Streams.COLLABORATORS:
         if (this._sockets[0].readyState === 1) {
           this._sockets[0].send(JSON.stringify(message))
+          console.log('SENT', content)
         } else {
           this.messageArray0.push(message)
+          console.log('put')
         }
         break
       case Streams.METADATA:
         if (this._sockets[2].readyState === 1) {
           this._sockets[2].send(JSON.stringify(message))
+          console.log('SENT', content)
         } else {
           this.messageArray2.push(message)
+          console.log('put')
         }
         break
       case Streams.DOCUMENT_CONTENT:
         if (this._sockets[4].readyState === 1) {
           this._sockets[4].send(JSON.stringify(message))
+          console.log('SENT', content)
         } else {
           this.messageArray4.push(message)
+          console.log('put')
         }
         break
       default:
@@ -137,5 +141,5 @@ export class PulsarService implements OnDestroy {
     }
   }
 
-  waitForSocketConnection(socket, callback) {}
+  // waitForSocketConnection(socket, callback) {}
 }
