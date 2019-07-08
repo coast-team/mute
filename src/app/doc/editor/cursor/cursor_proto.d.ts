@@ -104,11 +104,65 @@ export class Position implements IPosition {
 /** Namespace sync. */
 export namespace sync {
 
+    /** Properties of a RichOperationMsg. */
+    interface IRichOperationMsg {
+
+        /** RichOperationMsg richLogootSOpsMsg */
+        richLogootSOpsMsg?: (sync.IRichLogootSOperationMsg|null);
+
+        /** RichOperationMsg richDottedLogootsOpsMsg */
+        richDottedLogootsOpsMsg?: (sync.IRichDottedLogootSOperationMsg|null);
+    }
+
+    /** Represents a RichOperationMsg. */
+    class RichOperationMsg implements IRichOperationMsg {
+
+        /**
+         * Constructs a new RichOperationMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IRichOperationMsg);
+
+        /** RichOperationMsg richLogootSOpsMsg. */
+        public richLogootSOpsMsg?: (sync.IRichLogootSOperationMsg|null);
+
+        /** RichOperationMsg richDottedLogootsOpsMsg. */
+        public richDottedLogootsOpsMsg?: (sync.IRichDottedLogootSOperationMsg|null);
+
+        /** RichOperationMsg type. */
+        public type?: ("richLogootSOpsMsg"|"richDottedLogootsOpsMsg");
+
+        /**
+         * Creates a new RichOperationMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RichOperationMsg instance
+         */
+        public static create(properties?: sync.IRichOperationMsg): sync.RichOperationMsg;
+
+        /**
+         * Encodes the specified RichOperationMsg message. Does not implicitly {@link sync.RichOperationMsg.verify|verify} messages.
+         * @param message RichOperationMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IRichOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RichOperationMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RichOperationMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichOperationMsg;
+    }
+
     /** Properties of a SyncMsg. */
     interface ISyncMsg {
 
-        /** SyncMsg richLogootSOpMsg */
-        richLogootSOpMsg?: (sync.IRichLogootSOperationMsg|null);
+        /** SyncMsg richOpMsg */
+        richOpMsg?: (sync.IRichOperationMsg|null);
 
         /** SyncMsg querySync */
         querySync?: (sync.IQuerySyncMsg|null);
@@ -126,8 +180,8 @@ export namespace sync {
          */
         constructor(properties?: sync.ISyncMsg);
 
-        /** SyncMsg richLogootSOpMsg. */
-        public richLogootSOpMsg?: (sync.IRichLogootSOperationMsg|null);
+        /** SyncMsg richOpMsg. */
+        public richOpMsg?: (sync.IRichOperationMsg|null);
 
         /** SyncMsg querySync. */
         public querySync?: (sync.IQuerySyncMsg|null);
@@ -136,7 +190,7 @@ export namespace sync {
         public replySync?: (sync.IReplySyncMsg|null);
 
         /** SyncMsg type. */
-        public type?: ("richLogootSOpMsg"|"querySync"|"replySync");
+        public type?: ("richOpMsg"|"querySync"|"replySync");
 
         /**
          * Creates a new SyncMsg instance using the specified properties.
@@ -164,127 +218,100 @@ export namespace sync {
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.SyncMsg;
     }
 
-    /** Properties of a RichLogootSOperationMsg. */
-    interface IRichLogootSOperationMsg {
+    /** Properties of a QuerySyncMsg. */
+    interface IQuerySyncMsg {
 
-        /** RichLogootSOperationMsg id */
-        id?: (number|null);
-
-        /** RichLogootSOperationMsg clock */
-        clock?: (number|null);
-
-        /** RichLogootSOperationMsg logootSAddMsg */
-        logootSAddMsg?: (sync.ILogootSAddMsg|null);
-
-        /** RichLogootSOperationMsg logootSDelMsg */
-        logootSDelMsg?: (sync.ILogootSDelMsg|null);
-
-        /** RichLogootSOperationMsg dependencies */
-        dependencies?: (sync.IDotMsg[]|null);
+        /** QuerySyncMsg vector */
+        vector?: ({ [k: string]: number }|null);
     }
 
-    /** Represents a RichLogootSOperationMsg. */
-    class RichLogootSOperationMsg implements IRichLogootSOperationMsg {
+    /** Represents a QuerySyncMsg. */
+    class QuerySyncMsg implements IQuerySyncMsg {
 
         /**
-         * Constructs a new RichLogootSOperationMsg.
+         * Constructs a new QuerySyncMsg.
          * @param [properties] Properties to set
          */
-        constructor(properties?: sync.IRichLogootSOperationMsg);
+        constructor(properties?: sync.IQuerySyncMsg);
 
-        /** RichLogootSOperationMsg id. */
-        public id: number;
-
-        /** RichLogootSOperationMsg clock. */
-        public clock: number;
-
-        /** RichLogootSOperationMsg logootSAddMsg. */
-        public logootSAddMsg?: (sync.ILogootSAddMsg|null);
-
-        /** RichLogootSOperationMsg logootSDelMsg. */
-        public logootSDelMsg?: (sync.ILogootSDelMsg|null);
-
-        /** RichLogootSOperationMsg dependencies. */
-        public dependencies: sync.IDotMsg[];
-
-        /** RichLogootSOperationMsg type. */
-        public type?: ("logootSAddMsg"|"logootSDelMsg");
+        /** QuerySyncMsg vector. */
+        public vector: { [k: string]: number };
 
         /**
-         * Creates a new RichLogootSOperationMsg instance using the specified properties.
+         * Creates a new QuerySyncMsg instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns RichLogootSOperationMsg instance
+         * @returns QuerySyncMsg instance
          */
-        public static create(properties?: sync.IRichLogootSOperationMsg): sync.RichLogootSOperationMsg;
+        public static create(properties?: sync.IQuerySyncMsg): sync.QuerySyncMsg;
 
         /**
-         * Encodes the specified RichLogootSOperationMsg message. Does not implicitly {@link sync.RichLogootSOperationMsg.verify|verify} messages.
-         * @param message RichLogootSOperationMsg message or plain object to encode
+         * Encodes the specified QuerySyncMsg message. Does not implicitly {@link sync.QuerySyncMsg.verify|verify} messages.
+         * @param message QuerySyncMsg message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: sync.IRichLogootSOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: sync.IQuerySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a RichLogootSOperationMsg message from the specified reader or buffer.
+         * Decodes a QuerySyncMsg message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns RichLogootSOperationMsg
+         * @returns QuerySyncMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichLogootSOperationMsg;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.QuerySyncMsg;
     }
 
-    /** Properties of a LogootSAddMsg. */
-    interface ILogootSAddMsg {
+    /** Properties of a ReplySyncMsg. */
+    interface IReplySyncMsg {
 
-        /** LogootSAddMsg id */
-        id?: (sync.IIdentifierMsg|null);
+        /** ReplySyncMsg richOpsMsg */
+        richOpsMsg?: (sync.IRichOperationMsg[]|null);
 
-        /** LogootSAddMsg content */
-        content?: (string|null);
+        /** ReplySyncMsg intervals */
+        intervals?: (sync.IIntervalMsg[]|null);
     }
 
-    /** Represents a LogootSAddMsg. */
-    class LogootSAddMsg implements ILogootSAddMsg {
+    /** Represents a ReplySyncMsg. */
+    class ReplySyncMsg implements IReplySyncMsg {
 
         /**
-         * Constructs a new LogootSAddMsg.
+         * Constructs a new ReplySyncMsg.
          * @param [properties] Properties to set
          */
-        constructor(properties?: sync.ILogootSAddMsg);
+        constructor(properties?: sync.IReplySyncMsg);
 
-        /** LogootSAddMsg id. */
-        public id?: (sync.IIdentifierMsg|null);
+        /** ReplySyncMsg richOpsMsg. */
+        public richOpsMsg: sync.IRichOperationMsg[];
 
-        /** LogootSAddMsg content. */
-        public content: string;
+        /** ReplySyncMsg intervals. */
+        public intervals: sync.IIntervalMsg[];
 
         /**
-         * Creates a new LogootSAddMsg instance using the specified properties.
+         * Creates a new ReplySyncMsg instance using the specified properties.
          * @param [properties] Properties to set
-         * @returns LogootSAddMsg instance
+         * @returns ReplySyncMsg instance
          */
-        public static create(properties?: sync.ILogootSAddMsg): sync.LogootSAddMsg;
+        public static create(properties?: sync.IReplySyncMsg): sync.ReplySyncMsg;
 
         /**
-         * Encodes the specified LogootSAddMsg message. Does not implicitly {@link sync.LogootSAddMsg.verify|verify} messages.
-         * @param message LogootSAddMsg message or plain object to encode
+         * Encodes the specified ReplySyncMsg message. Does not implicitly {@link sync.ReplySyncMsg.verify|verify} messages.
+         * @param message ReplySyncMsg message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: sync.ILogootSAddMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: sync.IReplySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a LogootSAddMsg message from the specified reader or buffer.
+         * Decodes a ReplySyncMsg message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns LogootSAddMsg
+         * @returns ReplySyncMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSAddMsg;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.ReplySyncMsg;
     }
 
     /** Properties of an IdentifierMsg. */
@@ -395,51 +422,6 @@ export namespace sync {
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierTupleMsg;
     }
 
-    /** Properties of a LogootSDelMsg. */
-    interface ILogootSDelMsg {
-
-        /** LogootSDelMsg lid */
-        lid?: (sync.IIdentifierIntervalMsg[]|null);
-    }
-
-    /** Represents a LogootSDelMsg. */
-    class LogootSDelMsg implements ILogootSDelMsg {
-
-        /**
-         * Constructs a new LogootSDelMsg.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: sync.ILogootSDelMsg);
-
-        /** LogootSDelMsg lid. */
-        public lid: sync.IIdentifierIntervalMsg[];
-
-        /**
-         * Creates a new LogootSDelMsg instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns LogootSDelMsg instance
-         */
-        public static create(properties?: sync.ILogootSDelMsg): sync.LogootSDelMsg;
-
-        /**
-         * Encodes the specified LogootSDelMsg message. Does not implicitly {@link sync.LogootSDelMsg.verify|verify} messages.
-         * @param message LogootSDelMsg message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: sync.ILogootSDelMsg, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a LogootSDelMsg message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns LogootSDelMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSDelMsg;
-    }
-
     /** Properties of an IdentifierIntervalMsg. */
     interface IIdentifierIntervalMsg {
 
@@ -489,102 +471,6 @@ export namespace sync {
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IdentifierIntervalMsg;
-    }
-
-    /** Properties of a QuerySyncMsg. */
-    interface IQuerySyncMsg {
-
-        /** QuerySyncMsg vector */
-        vector?: ({ [k: string]: number }|null);
-    }
-
-    /** Represents a QuerySyncMsg. */
-    class QuerySyncMsg implements IQuerySyncMsg {
-
-        /**
-         * Constructs a new QuerySyncMsg.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: sync.IQuerySyncMsg);
-
-        /** QuerySyncMsg vector. */
-        public vector: { [k: string]: number };
-
-        /**
-         * Creates a new QuerySyncMsg instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns QuerySyncMsg instance
-         */
-        public static create(properties?: sync.IQuerySyncMsg): sync.QuerySyncMsg;
-
-        /**
-         * Encodes the specified QuerySyncMsg message. Does not implicitly {@link sync.QuerySyncMsg.verify|verify} messages.
-         * @param message QuerySyncMsg message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: sync.IQuerySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a QuerySyncMsg message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns QuerySyncMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.QuerySyncMsg;
-    }
-
-    /** Properties of a ReplySyncMsg. */
-    interface IReplySyncMsg {
-
-        /** ReplySyncMsg richLogootSOpsMsg */
-        richLogootSOpsMsg?: (sync.IRichLogootSOperationMsg[]|null);
-
-        /** ReplySyncMsg intervals */
-        intervals?: (sync.IIntervalMsg[]|null);
-    }
-
-    /** Represents a ReplySyncMsg. */
-    class ReplySyncMsg implements IReplySyncMsg {
-
-        /**
-         * Constructs a new ReplySyncMsg.
-         * @param [properties] Properties to set
-         */
-        constructor(properties?: sync.IReplySyncMsg);
-
-        /** ReplySyncMsg richLogootSOpsMsg. */
-        public richLogootSOpsMsg: sync.IRichLogootSOperationMsg[];
-
-        /** ReplySyncMsg intervals. */
-        public intervals: sync.IIntervalMsg[];
-
-        /**
-         * Creates a new ReplySyncMsg instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns ReplySyncMsg instance
-         */
-        public static create(properties?: sync.IReplySyncMsg): sync.ReplySyncMsg;
-
-        /**
-         * Encodes the specified ReplySyncMsg message. Does not implicitly {@link sync.ReplySyncMsg.verify|verify} messages.
-         * @param message ReplySyncMsg message or plain object to encode
-         * @param [writer] Writer to encode to
-         * @returns Writer
-         */
-        public static encode(message: sync.IReplySyncMsg, writer?: $protobuf.Writer): $protobuf.Writer;
-
-        /**
-         * Decodes a ReplySyncMsg message from the specified reader or buffer.
-         * @param reader Reader or buffer to decode from
-         * @param [length] Message length if known beforehand
-         * @returns ReplySyncMsg
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.ReplySyncMsg;
     }
 
     /** Properties of an IntervalMsg. */
@@ -644,54 +530,447 @@ export namespace sync {
         public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.IntervalMsg;
     }
 
-    /** Properties of a DotMsg. */
-    interface IDotMsg {
+    /** Properties of a RichLogootSOperationMsg. */
+    interface IRichLogootSOperationMsg {
 
-        /** DotMsg replicaNumber */
-        replicaNumber?: (number|null);
+        /** RichLogootSOperationMsg id */
+        id?: (number|null);
 
-        /** DotMsg clock */
+        /** RichLogootSOperationMsg clock */
         clock?: (number|null);
+
+        /** RichLogootSOperationMsg logootSAddMsg */
+        logootSAddMsg?: (sync.ILogootSAddMsg|null);
+
+        /** RichLogootSOperationMsg logootSDelMsg */
+        logootSDelMsg?: (sync.ILogootSDelMsg|null);
+
+        /** RichLogootSOperationMsg dependencies */
+        dependencies?: ({ [k: string]: number }|null);
     }
 
-    /** Represents a DotMsg. */
-    class DotMsg implements IDotMsg {
+    /** Represents a RichLogootSOperationMsg. */
+    class RichLogootSOperationMsg implements IRichLogootSOperationMsg {
 
         /**
-         * Constructs a new DotMsg.
+         * Constructs a new RichLogootSOperationMsg.
          * @param [properties] Properties to set
          */
-        constructor(properties?: sync.IDotMsg);
+        constructor(properties?: sync.IRichLogootSOperationMsg);
 
-        /** DotMsg replicaNumber. */
-        public replicaNumber: number;
+        /** RichLogootSOperationMsg id. */
+        public id: number;
 
-        /** DotMsg clock. */
+        /** RichLogootSOperationMsg clock. */
         public clock: number;
 
-        /**
-         * Creates a new DotMsg instance using the specified properties.
-         * @param [properties] Properties to set
-         * @returns DotMsg instance
-         */
-        public static create(properties?: sync.IDotMsg): sync.DotMsg;
+        /** RichLogootSOperationMsg logootSAddMsg. */
+        public logootSAddMsg?: (sync.ILogootSAddMsg|null);
+
+        /** RichLogootSOperationMsg logootSDelMsg. */
+        public logootSDelMsg?: (sync.ILogootSDelMsg|null);
+
+        /** RichLogootSOperationMsg dependencies. */
+        public dependencies: { [k: string]: number };
+
+        /** RichLogootSOperationMsg type. */
+        public type?: ("logootSAddMsg"|"logootSDelMsg");
 
         /**
-         * Encodes the specified DotMsg message. Does not implicitly {@link sync.DotMsg.verify|verify} messages.
-         * @param message DotMsg message or plain object to encode
+         * Creates a new RichLogootSOperationMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RichLogootSOperationMsg instance
+         */
+        public static create(properties?: sync.IRichLogootSOperationMsg): sync.RichLogootSOperationMsg;
+
+        /**
+         * Encodes the specified RichLogootSOperationMsg message. Does not implicitly {@link sync.RichLogootSOperationMsg.verify|verify} messages.
+         * @param message RichLogootSOperationMsg message or plain object to encode
          * @param [writer] Writer to encode to
          * @returns Writer
          */
-        public static encode(message: sync.IDotMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+        public static encode(message: sync.IRichLogootSOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer;
 
         /**
-         * Decodes a DotMsg message from the specified reader or buffer.
+         * Decodes a RichLogootSOperationMsg message from the specified reader or buffer.
          * @param reader Reader or buffer to decode from
          * @param [length] Message length if known beforehand
-         * @returns DotMsg
+         * @returns RichLogootSOperationMsg
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.DotMsg;
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichLogootSOperationMsg;
+    }
+
+    /** Properties of a LogootSAddMsg. */
+    interface ILogootSAddMsg {
+
+        /** LogootSAddMsg id */
+        id?: (sync.IIdentifierMsg|null);
+
+        /** LogootSAddMsg content */
+        content?: (string|null);
+    }
+
+    /** Represents a LogootSAddMsg. */
+    class LogootSAddMsg implements ILogootSAddMsg {
+
+        /**
+         * Constructs a new LogootSAddMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.ILogootSAddMsg);
+
+        /** LogootSAddMsg id. */
+        public id?: (sync.IIdentifierMsg|null);
+
+        /** LogootSAddMsg content. */
+        public content: string;
+
+        /**
+         * Creates a new LogootSAddMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LogootSAddMsg instance
+         */
+        public static create(properties?: sync.ILogootSAddMsg): sync.LogootSAddMsg;
+
+        /**
+         * Encodes the specified LogootSAddMsg message. Does not implicitly {@link sync.LogootSAddMsg.verify|verify} messages.
+         * @param message LogootSAddMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.ILogootSAddMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LogootSAddMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LogootSAddMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSAddMsg;
+    }
+
+    /** Properties of a LogootSDelMsg. */
+    interface ILogootSDelMsg {
+
+        /** LogootSDelMsg lid */
+        lid?: (sync.IIdentifierIntervalMsg[]|null);
+
+        /** LogootSDelMsg author */
+        author?: (number|null);
+    }
+
+    /** Represents a LogootSDelMsg. */
+    class LogootSDelMsg implements ILogootSDelMsg {
+
+        /**
+         * Constructs a new LogootSDelMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.ILogootSDelMsg);
+
+        /** LogootSDelMsg lid. */
+        public lid: sync.IIdentifierIntervalMsg[];
+
+        /** LogootSDelMsg author. */
+        public author: number;
+
+        /**
+         * Creates a new LogootSDelMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns LogootSDelMsg instance
+         */
+        public static create(properties?: sync.ILogootSDelMsg): sync.LogootSDelMsg;
+
+        /**
+         * Encodes the specified LogootSDelMsg message. Does not implicitly {@link sync.LogootSDelMsg.verify|verify} messages.
+         * @param message LogootSDelMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.ILogootSDelMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a LogootSDelMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns LogootSDelMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.LogootSDelMsg;
+    }
+
+    /** Properties of a RichDottedLogootSOperationMsg. */
+    interface IRichDottedLogootSOperationMsg {
+
+        /** RichDottedLogootSOperationMsg id */
+        id?: (number|null);
+
+        /** RichDottedLogootSOperationMsg clock */
+        clock?: (number|null);
+
+        /** RichDottedLogootSOperationMsg blockOperationMsg */
+        blockOperationMsg?: (sync.IDottedLogootSBlockMsg|null);
+
+        /** RichDottedLogootSOperationMsg dependencies */
+        dependencies?: ({ [k: string]: number }|null);
+    }
+
+    /** Represents a RichDottedLogootSOperationMsg. */
+    class RichDottedLogootSOperationMsg implements IRichDottedLogootSOperationMsg {
+
+        /**
+         * Constructs a new RichDottedLogootSOperationMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IRichDottedLogootSOperationMsg);
+
+        /** RichDottedLogootSOperationMsg id. */
+        public id: number;
+
+        /** RichDottedLogootSOperationMsg clock. */
+        public clock: number;
+
+        /** RichDottedLogootSOperationMsg blockOperationMsg. */
+        public blockOperationMsg?: (sync.IDottedLogootSBlockMsg|null);
+
+        /** RichDottedLogootSOperationMsg dependencies. */
+        public dependencies: { [k: string]: number };
+
+        /**
+         * Creates a new RichDottedLogootSOperationMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns RichDottedLogootSOperationMsg instance
+         */
+        public static create(properties?: sync.IRichDottedLogootSOperationMsg): sync.RichDottedLogootSOperationMsg;
+
+        /**
+         * Encodes the specified RichDottedLogootSOperationMsg message. Does not implicitly {@link sync.RichDottedLogootSOperationMsg.verify|verify} messages.
+         * @param message RichDottedLogootSOperationMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IRichDottedLogootSOperationMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a RichDottedLogootSOperationMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns RichDottedLogootSOperationMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.RichDottedLogootSOperationMsg;
+    }
+
+    /** Properties of a DottedLogootSBlockMsg. */
+    interface IDottedLogootSBlockMsg {
+
+        /** DottedLogootSBlockMsg lowerPos */
+        lowerPos?: (sync.ISimpleDotPos|null);
+
+        /** DottedLogootSBlockMsg content */
+        content?: (string|null);
+
+        /** DottedLogootSBlockMsg concatLength */
+        concatLength?: (sync.IConcatLength|null);
+    }
+
+    /** Represents a DottedLogootSBlockMsg. */
+    class DottedLogootSBlockMsg implements IDottedLogootSBlockMsg {
+
+        /**
+         * Constructs a new DottedLogootSBlockMsg.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IDottedLogootSBlockMsg);
+
+        /** DottedLogootSBlockMsg lowerPos. */
+        public lowerPos?: (sync.ISimpleDotPos|null);
+
+        /** DottedLogootSBlockMsg content. */
+        public content: string;
+
+        /** DottedLogootSBlockMsg concatLength. */
+        public concatLength?: (sync.IConcatLength|null);
+
+        /** DottedLogootSBlockMsg type. */
+        public type?: ("content"|"concatLength");
+
+        /**
+         * Creates a new DottedLogootSBlockMsg instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns DottedLogootSBlockMsg instance
+         */
+        public static create(properties?: sync.IDottedLogootSBlockMsg): sync.DottedLogootSBlockMsg;
+
+        /**
+         * Encodes the specified DottedLogootSBlockMsg message. Does not implicitly {@link sync.DottedLogootSBlockMsg.verify|verify} messages.
+         * @param message DottedLogootSBlockMsg message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IDottedLogootSBlockMsg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a DottedLogootSBlockMsg message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns DottedLogootSBlockMsg
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.DottedLogootSBlockMsg;
+    }
+
+    /** Properties of a ConcatLength. */
+    interface IConcatLength {
+
+        /** ConcatLength length */
+        length?: (number|null);
+    }
+
+    /** Represents a ConcatLength. */
+    class ConcatLength implements IConcatLength {
+
+        /**
+         * Constructs a new ConcatLength.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.IConcatLength);
+
+        /** ConcatLength length. */
+        public length: number;
+
+        /**
+         * Creates a new ConcatLength instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns ConcatLength instance
+         */
+        public static create(properties?: sync.IConcatLength): sync.ConcatLength;
+
+        /**
+         * Encodes the specified ConcatLength message. Does not implicitly {@link sync.ConcatLength.verify|verify} messages.
+         * @param message ConcatLength message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.IConcatLength, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a ConcatLength message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns ConcatLength
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.ConcatLength;
+    }
+
+    /** Properties of a SimpleDotPosPart. */
+    interface ISimpleDotPosPart {
+
+        /** SimpleDotPosPart priority */
+        priority?: (number|null);
+
+        /** SimpleDotPosPart replica */
+        replica?: (number|null);
+
+        /** SimpleDotPosPart seq */
+        seq?: (number|null);
+    }
+
+    /** Represents a SimpleDotPosPart. */
+    class SimpleDotPosPart implements ISimpleDotPosPart {
+
+        /**
+         * Constructs a new SimpleDotPosPart.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.ISimpleDotPosPart);
+
+        /** SimpleDotPosPart priority. */
+        public priority: number;
+
+        /** SimpleDotPosPart replica. */
+        public replica: number;
+
+        /** SimpleDotPosPart seq. */
+        public seq: number;
+
+        /**
+         * Creates a new SimpleDotPosPart instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SimpleDotPosPart instance
+         */
+        public static create(properties?: sync.ISimpleDotPosPart): sync.SimpleDotPosPart;
+
+        /**
+         * Encodes the specified SimpleDotPosPart message. Does not implicitly {@link sync.SimpleDotPosPart.verify|verify} messages.
+         * @param message SimpleDotPosPart message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.ISimpleDotPosPart, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SimpleDotPosPart message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SimpleDotPosPart
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.SimpleDotPosPart;
+    }
+
+    /** Properties of a SimpleDotPos. */
+    interface ISimpleDotPos {
+
+        /** SimpleDotPos parts */
+        parts?: (sync.ISimpleDotPosPart[]|null);
+    }
+
+    /** Represents a SimpleDotPos. */
+    class SimpleDotPos implements ISimpleDotPos {
+
+        /**
+         * Constructs a new SimpleDotPos.
+         * @param [properties] Properties to set
+         */
+        constructor(properties?: sync.ISimpleDotPos);
+
+        /** SimpleDotPos parts. */
+        public parts: sync.ISimpleDotPosPart[];
+
+        /**
+         * Creates a new SimpleDotPos instance using the specified properties.
+         * @param [properties] Properties to set
+         * @returns SimpleDotPos instance
+         */
+        public static create(properties?: sync.ISimpleDotPos): sync.SimpleDotPos;
+
+        /**
+         * Encodes the specified SimpleDotPos message. Does not implicitly {@link sync.SimpleDotPos.verify|verify} messages.
+         * @param message SimpleDotPos message or plain object to encode
+         * @param [writer] Writer to encode to
+         * @returns Writer
+         */
+        public static encode(message: sync.ISimpleDotPos, writer?: $protobuf.Writer): $protobuf.Writer;
+
+        /**
+         * Decodes a SimpleDotPos message from the specified reader or buffer.
+         * @param reader Reader or buffer to decode from
+         * @param [length] Message length if known beforehand
+         * @returns SimpleDotPos
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): sync.SimpleDotPos;
     }
 }

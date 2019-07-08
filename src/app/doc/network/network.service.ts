@@ -1,6 +1,6 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { Streams as MuteCoreStreams } from '@coast-team/mute-core'
+import { StreamId, Streams as MuteCoreStreams, StreamsSubtype } from '@coast-team/mute-core'
 import { KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
 import { SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
@@ -21,7 +21,7 @@ export class NetworkService implements OnDestroy {
   private leaveSubject: Subject<number>
 
   // Network message subject
-  private messageSubject: Subject<{ streamId: number; content: Uint8Array; senderId: number }>
+  private messageSubject: Subject<{ streamId: StreamId; content: Uint8Array; senderId: number }>
 
   /**
    * Peer Join/Leave subjects
@@ -78,10 +78,10 @@ export class NetworkService implements OnDestroy {
     this.wg.leave()
   }
 
-  setMessageIn(source: Observable<{ streamId: number; content: Uint8Array; recipientId?: number }>) {
+  setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (this.members.length > 1) {
-        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
+        if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
           this.cryptoService.crypto
             .encrypt(content)
             .then((encryptedContent) => this.send(streamId, encryptedContent, recipientId))
@@ -109,7 +109,7 @@ export class NetworkService implements OnDestroy {
     return this.cryptoService.crypto.state
   }
 
-  get messageOut(): Observable<{ streamId: number; content: Uint8Array; senderId: number }> {
+  get messageOut(): Observable<{ streamId: StreamId; content: Uint8Array; senderId: number }> {
     return this.messageSubject.asObservable()
   }
 
@@ -159,8 +159,8 @@ export class NetworkService implements OnDestroy {
     }
   }
 
-  send(streamId: number, content: Uint8Array, id?: number): void {
-    const msg = Message.create({ streamId, content })
+  send(streamId: StreamId, content: Uint8Array, id?: number): void {
+    const msg = Message.create({ type: streamId.type, subtype: streamId.subtype, content })
     if (id === undefined) {
       this.wg.send(Message.encode(msg).finish())
     } else {
@@ -180,7 +180,7 @@ export class NetworkService implements OnDestroy {
       bd.signingKey = this.cryptoService.signingKeyPair.privateKey
       this.cryptoService.onSignatureError = (id) => log.error('Signature verification error for ', id)
     }
-    bd.onSend = (msg, streamId) => this.send(streamId, msg)
+    bd.onSend = (msg, streamId) => this.send({ type: streamId, subtype: StreamsSubtype.CRYPTO }, msg)
     // Handle network events
     this.wg.onMyId = (myId) => bd.setMyId(myId)
     this.wg.onMemberJoin = (id) => {
@@ -199,20 +199,20 @@ export class NetworkService implements OnDestroy {
     }
     this.wg.onMessage = (id, bytes: Uint8Array) => {
       try {
-        const { streamId, content } = Message.decode(bytes)
-        if (streamId === MuteCryptoStreams.KEY_AGREEMENT_BD) {
+        const { type, subtype, content } = Message.decode(bytes)
+        if (type === MuteCryptoStreams.KEY_AGREEMENT_BD) {
           this.cryptoService.onBDMessage(id, content)
         } else {
-          if (streamId === MuteCoreStreams.DOCUMENT_CONTENT) {
+          if (type === MuteCoreStreams.DOCUMENT_CONTENT) {
             this.cryptoService.crypto
               .decrypt(content)
               .then((decryptedContent) => {
-                this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
+                this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
               })
               .catch((err) => {})
             return
           }
-          this.messageSubject.next({ streamId, content, senderId: id })
+          this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
         }
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
@@ -233,17 +233,17 @@ export class NetworkService implements OnDestroy {
 
     this.wg.onMessage = (id, bytes: Uint8Array) => {
       try {
-        const { streamId, content } = Message.decode(bytes)
-        if (streamId === MuteCoreStreams.DOCUMENT_CONTENT) {
+        const { type, subtype, content } = Message.decode(bytes)
+        if (type === MuteCoreStreams.DOCUMENT_CONTENT) {
           this.cryptoService.crypto
             .decrypt(content)
             .then((decryptedContent) => {
-              this.messageSubject.next({ streamId, content: decryptedContent, senderId: id })
+              this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
             })
             .catch((err) => {})
           return
         }
-        this.messageSubject.next({ streamId, content, senderId: id })
+        this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
       }
@@ -258,8 +258,8 @@ export class NetworkService implements OnDestroy {
 
     this.wg.onMessage = (id, bytes: Uint8Array) => {
       try {
-        const { streamId, content } = Message.decode(bytes)
-        this.messageSubject.next({ streamId, content, senderId: id })
+        const { type, subtype, content } = Message.decode(bytes)
+        this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
       }

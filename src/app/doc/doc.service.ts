@@ -313,7 +313,7 @@ export class DocService implements OnDestroy {
       })
     )
 
-    this.subs.push(
+    /*this.subs.push(
       this.muteCore.localOperationForLog$.subscribe((operation) => {
         this.logs.log({
           ...operation,
@@ -351,7 +351,7 @@ export class DocService implements OnDestroy {
           },
         })
       })
-    )
+    )*/
   }
 
   private restartSyncInterval() {

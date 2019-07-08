@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 message Message {
-  uint32 streamId = 1;
-  bytes content = 2;
+  uint32 type = 1;
+  uint32 subtype = 2;
+  bytes content = 3;
 }
