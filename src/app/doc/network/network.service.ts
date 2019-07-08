@@ -196,8 +196,8 @@ export class NetworkService implements OnDestroy {
         .subscribe(() => {
           console.log('Le doc au sein de network service : ', doc)
           console.log('Le bool au sein de network service :', doc.pulsar)
-          this._pulsarOn = doc.pulsar
-          if (doc.pulsar) {
+          this._pulsarOn = doc.pulsar || this._pulsarOn
+          if (this._pulsarOn) {
             this.pulsarConnect(this.wg.id)
           }
         })
