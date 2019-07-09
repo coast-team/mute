@@ -31,8 +31,13 @@
     </div>
   </div>
 
-  <div class="doc-block" id="pulsarButton">
-    <b>Mettre bouton pulsar ici ?</b>
+  <div class="doc-block">
+    <div fxLayoutAlign="start center">
+      <span class="mat-caption title">Mettre bouton pulsar ici ?</span>
+      <span class="mat-body-2">
+        <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
+      </span>
+    </div>
   </div>
 
   <div class="chips-block">

@@ -130,6 +130,7 @@ export class LocalStorageService extends Storage implements IStorage {
     switch (folder.id) {
       case this.local.id: {
         const [localDocs, botDocs] = [await this.fetchDocsFromFolders([this.local]), await this.botStorage.fetchDocs()]
+        console.log('locamdoooooc', localDocs)
         for (const bd of botDocs) {
           let ld = localDocs.find((d) => d.signalingKey === bd.signalingKey)
           if (ld) {
@@ -142,11 +143,6 @@ export class LocalStorageService extends Storage implements IStorage {
             ld.cryptoKey = bd.cryptoKey
             localDocs.push(ld)
             ld.addRemote(this.remote.id)
-            console.log('HEREEEEEEEEEE')
-            this.route.paramMap.subscribe((params) => {
-              ld.pulsar = params.get('pulsar') === 'true' ? true : false
-              console.log('pulsar is ... . ?', ld.pulsar)
-            })
           }
         }
         return localDocs
@@ -176,12 +172,6 @@ export class LocalStorageService extends Storage implements IStorage {
             ld.titleModified = new Date(bd.titleModified)
             ld.created = new Date(bd.created)
             ld.cryptoKey = bd.cryptoKey
-            console.log('HEREEEEEEEEEE')
-
-            this.route.paramMap.subscribe((params) => {
-              ld.pulsar = params.get('pulsar') === 'true' ? true : false
-              console.log('pulsar is ... . ?', ld.pulsar)
-            })
           }
           ld.addRemote(this.remote.id)
           resultDocs.push(ld)

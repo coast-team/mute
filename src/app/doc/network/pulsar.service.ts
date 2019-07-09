@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { StreamId, Streams } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
+import { Doc } from 'src/app/core/Doc'
 import { Stream } from 'stream'
 @Injectable()
 export class PulsarService implements OnDestroy {
@@ -23,12 +24,14 @@ export class PulsarService implements OnDestroy {
   set sockets(topic: string) {
     const docType = 400
     const encoder = new TextEncoder()
+    while (this._sockets.length !== 0) {
+      this._sockets.pop().close()
+    }
     for (let i = 0; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
 
       let sockEcoute
       const msgIdFromStorage = window.localStorage.getItem('messageId-' + topic)
-      console.log('GET STORAGE', msgIdFromStorage)
       // if (true) {
       if (msgIdFromStorage === null) {
         sockEcoute = new WebSocket(
@@ -49,15 +52,25 @@ export class PulsarService implements OnDestroy {
         console.log('ack received : ', messageSent.data)
       }
 
-      sockPost.onopen = () => {
-        for (const message of this.messageArray0) {
-          this._sockets[0].send(JSON.stringify(message))
+      if (i === 0) {
+        sockPost.onopen = () => {
+          for (const message of this.messageArray0) {
+            this._sockets[0].send(JSON.stringify(message))
+          }
         }
-        for (const message of this.messageArray2) {
-          this._sockets[2].send(JSON.stringify(message))
+      }
+      if (i === 1) {
+        sockPost.onopen = () => {
+          for (const message of this.messageArray2) {
+            this._sockets[2].send(JSON.stringify(message))
+          }
         }
-        for (const message of this.messageArray4) {
-          this._sockets[4].send(JSON.stringify(message))
+      }
+      if (i === 2) {
+        sockPost.onopen = () => {
+          for (const message of this.messageArray4) {
+            this._sockets[4].send(JSON.stringify(message))
+          }
         }
       }
 
@@ -105,6 +118,7 @@ export class PulsarService implements OnDestroy {
       properties: {
         // optionnal
         stream: streamId,
+        topic: keyTopic,
       },
     }
 

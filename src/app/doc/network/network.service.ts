@@ -46,14 +46,6 @@ export class NetworkService implements OnDestroy {
     private cryptoService: CryptoService,
     private pulsarService: PulsarService
   ) {
-    // this.route.paramMap.subscribe((params) => {
-    //   const pulsarbool = params.get('pulsar') === 'true' ? true : false
-    //   console.log('BOOOOOOOOOOOOOOOOOOOL', this.pulsarbool)
-    //   console.log('PARAAAAAAAAAAAAAAAAAAAAAAAAAM', params.get('pulsar'))
-    // })
-
-    // recupérer pulsar booleen dans metadata
-
     this.botUrls = []
     this.subs = []
 
@@ -184,8 +176,16 @@ export class NetworkService implements OnDestroy {
   join(key: string) {
     this.wg.join(key)
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+      // for the one who create the doc
       console.log('Le doc au sein de network service : ', doc)
+      this._pulsarOn = doc.pulsar || this._pulsarOn
+      console.log('Le bool au sein de network service :', this._pulsarOn)
+      if (this._pulsarOn) {
+        this.pulsarConnect(this.wg.id)
+        return
+      }
 
+      // for the others
       doc.onMetadataChanges
         .pipe(
           filter(({ isLocal, changedProperties }) => {
@@ -194,20 +194,14 @@ export class NetworkService implements OnDestroy {
           })
         )
         .subscribe(() => {
-          console.log('Le doc au sein de network service : ', doc)
-          console.log('Le bool au sein de network service :', doc.pulsar)
-          this._pulsarOn = doc.pulsar || this._pulsarOn
+          if (this._pulsarOn) {
+            return // if the change concerns pulsar but is already connected to pulsar
+          }
+          this._pulsarOn = doc.pulsar
           if (this._pulsarOn) {
             this.pulsarConnect(this.wg.id)
           }
         })
-
-      // console.log('Le doc au sein de network service : ', doc)
-      // this._pulsarOn = doc.pulsar
-      // console.log('Le bool au sein de network service :', this._pulsarOn)
-      // if (this._pulsarOn) {
-      //   this.pulsarConnect(this.wg.id)
-      // }
     })
   }
 

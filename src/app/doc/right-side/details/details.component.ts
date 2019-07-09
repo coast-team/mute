@@ -81,4 +81,10 @@ export class DetailsComponent {
   updateShareLogs(event) {
     this.doc.shareLogs = event.checked
   }
+
+  updatePulsar(event) {
+    this.doc.pulsar = event.checked
+    console.log('le doc après le toggle', this.doc)
+    // document.getElementById("pulsarButton").isDisabled = true
+  }
 }
