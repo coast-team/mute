@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core'
+import { HostListener, Injectable, OnDestroy } from '@angular/core'
 import { StreamId, Streams } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
 import { Doc } from 'src/app/core/Doc'
@@ -14,9 +14,9 @@ export class PulsarService implements OnDestroy {
   constructor() {
     this.pulsarMessageSubject = new Subject()
   }
-  ngOnDestroy() {
-    // couper lien avec Pulsar ici
-  }
+
+  ngOnDestroy() {}
+
   get pulsarMessage$(): Observable<{ streamId: Streams; content: Uint8Array }> {
     return this.pulsarMessageSubject.asObservable()
   }
@@ -24,9 +24,11 @@ export class PulsarService implements OnDestroy {
   set sockets(topic: string) {
     const docType = 400
     const encoder = new TextEncoder()
-    while (this._sockets.length !== 0) {
-      this._sockets.pop().close()
-    }
+
+    this.closeSocketConnexion('setsocket') // in case websockets are not closed yet
+
+    this.getMessageFromLocalStorage(topic)
+
     for (let i = 0; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
 
@@ -55,22 +57,25 @@ export class PulsarService implements OnDestroy {
       if (i === 0) {
         sockPost.onopen = () => {
           for (const message of this.messageArray0) {
-            this._sockets[0].send(JSON.stringify(message))
+            this._sockets[0].send(message)
           }
+          window.localStorage.setItem('msgPulsar0' + topic, null)
         }
       }
       if (i === 1) {
         sockPost.onopen = () => {
           for (const message of this.messageArray2) {
-            this._sockets[2].send(JSON.stringify(message))
+            this._sockets[2].send(message)
           }
+          window.localStorage.setItem('msgPulsar2' + topic, null)
         }
       }
       if (i === 2) {
         sockPost.onopen = () => {
           for (const message of this.messageArray4) {
-            this._sockets[4].send(JSON.stringify(message))
+            this._sockets[4].send(message)
           }
+          window.localStorage.setItem('msgPulsar4' + topic, null)
         }
       }
 
@@ -112,6 +117,7 @@ export class PulsarService implements OnDestroy {
   }
 
   sendMessageToPulsar(streamId: Streams, keyTopic: string, content: Uint8Array) {
+    console.log("les sockets avant l'envoi", this.socketsReadystate())
     const content64 = this.arrayBufferToBase64(content)
     const message = {
       payload: btoa(content64), // required
@@ -128,7 +134,8 @@ export class PulsarService implements OnDestroy {
           this._sockets[0].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
-          this.messageArray0.push(message)
+          this.messageArray0.push(JSON.stringify(message))
+          window.localStorage.setItem('msgPulsar0' + keyTopic, JSON.stringify(this.messageArray0))
           console.log('put')
         }
         break
@@ -137,7 +144,8 @@ export class PulsarService implements OnDestroy {
           this._sockets[2].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
-          this.messageArray2.push(message)
+          this.messageArray2.push(JSON.stringify(message))
+          window.localStorage.setItem('msgPulsar2' + keyTopic, JSON.stringify(this.messageArray2))
           console.log('put')
         }
         break
@@ -146,7 +154,8 @@ export class PulsarService implements OnDestroy {
           this._sockets[4].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
-          this.messageArray4.push(message)
+          this.messageArray4.push(JSON.stringify(message))
+          window.localStorage.setItem('msgPulsar4' + keyTopic, JSON.stringify(this.messageArray4))
           console.log('put')
         }
         break
@@ -155,5 +164,28 @@ export class PulsarService implements OnDestroy {
     }
   }
 
-  // waitForSocketConnection(socket, callback) {}
+  closeSocketConnexion(location: string) {
+    while (this._sockets.length !== 0) {
+      this._sockets.pop().close()
+    }
+    console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
+  }
+
+  socketsReadystate(): number[] {
+    const sockStateArray: number[] = []
+    for (const sock of this._sockets) {
+      sockStateArray.push(sock.readyState)
+    }
+    return sockStateArray
+  }
+
+  getMessageFromLocalStorage(topic: string) {
+    const localStorageMsg0 = window.localStorage.getItem('msgPulsar0' + topic)
+    const localStorageMsg2 = window.localStorage.getItem('msgPulsar2' + topic)
+    const localStorageMsg4 = window.localStorage.getItem('msgPulsar4' + topic)
+
+    this.messageArray0 = localStorageMsg0 === 'null' || localStorageMsg0 === null ? [] : JSON.parse(localStorageMsg0)
+    this.messageArray2 = localStorageMsg2 === 'null' || localStorageMsg2 === null ? [] : JSON.parse(localStorageMsg2)
+    this.messageArray4 = localStorageMsg4 === 'null' || localStorageMsg4 === null ? [] : JSON.parse(localStorageMsg4)
+  }
 }

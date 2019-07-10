@@ -91,7 +91,7 @@ export class DocService implements OnDestroy {
     // Read document content from local database and put into MuteCore model
     const docContent = await this.readDocContent()
     this.route.paramMap.subscribe((params) => {
-      this.doc.pulsar = params.get('pulsar') === 'true' ? true : false
+      this.doc.pulsar = this.doc.pulsar || params.get('pulsar') === 'true' ? true : false
     })
 
     // Initialize MuteCore with your profile data, document metadata and content

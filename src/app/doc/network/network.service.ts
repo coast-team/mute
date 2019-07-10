@@ -1,12 +1,12 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { StreamId, Streams as MuteCoreStreams, StreamsSubtype } from '@coast-team/mute-core'
+import { StreamId, Streams, Streams as MuteCoreStreams, StreamsSubtype } from '@coast-team/mute-core'
 import { KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
 import { SignalingState, WebGroup, WebGroupState } from 'netflux'
 import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
 
 import { keyAgreementCrypto } from '@coast-team/mute-crypto-helper'
-import { filter } from 'rxjs/operators'
+import { filter, shareReplay } from 'rxjs/operators'
 import { environment } from '../../../environments/environment'
 import { CryptoService } from '../../core/crypto/crypto.service'
 import { EncryptionType } from '../../core/crypto/EncryptionType'
@@ -90,8 +90,8 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-        if (!recipientId && this._pulsarOn) {
-          console.log('setMessageIn NOW PULSAR')
+        if (!recipientId && this._pulsarOn && streamId.subtype !== StreamsSubtype.METADATA_FIXDATA) {
+          console.log('setMessageIn NOW PULSAR', streamId)
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
         this.cryptoService.crypto
@@ -102,8 +102,13 @@ export class NetworkService implements OnDestroy {
           .catch((err) => {})
       } else {
         this.send(streamId, content, recipientId)
-        if (!recipientId && this._pulsarOn) {
-          console.log('setMessageIn NOW PULSAR')
+        if (
+          !recipientId &&
+          this._pulsarOn &&
+          streamId.subtype !== StreamsSubtype.METADATA_FIXDATA &&
+          streamId.type !== Streams.COLLABORATORS
+        ) {
+          console.log('setMessageIn NOW PULSAR', streamId)
           this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
         }
       }
@@ -168,7 +173,7 @@ export class NetworkService implements OnDestroy {
       this.leaveSubject.complete()
       this.memberJoinSubject.complete()
       this.memberLeaveSubject.complete()
-
+      this.pulsarService.closeSocketConnexion('network service')
       this.wg.leave()
     }
   }
@@ -189,7 +194,6 @@ export class NetworkService implements OnDestroy {
       doc.onMetadataChanges
         .pipe(
           filter(({ isLocal, changedProperties }) => {
-            console.log(changedProperties.includes(Doc.PULSAR))
             return changedProperties.includes(Doc.PULSAR)
           })
         )
