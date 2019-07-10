@@ -7,7 +7,6 @@ import { Stream } from 'stream'
 export class PulsarService implements OnDestroy {
   private messageArray0 = []
   private messageArray2 = []
-  private messageArray4 = []
 
   public _sockets: WebSocket[] = []
   public pulsarMessageSubject: Subject<{ streamId: Streams; content: Uint8Array }>
@@ -29,7 +28,7 @@ export class PulsarService implements OnDestroy {
 
     this.getMessageFromLocalStorage(topic)
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 1; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
 
       let sockEcoute
@@ -54,28 +53,20 @@ export class PulsarService implements OnDestroy {
         console.log('ack received : ', messageSent.data)
       }
 
-      if (i === 0) {
+      if (i === 1) {
         sockPost.onopen = () => {
           for (const message of this.messageArray0) {
             this._sockets[0].send(message)
           }
-          window.localStorage.setItem('msgPulsar0' + topic, null)
-        }
-      }
-      if (i === 1) {
-        sockPost.onopen = () => {
-          for (const message of this.messageArray2) {
-            this._sockets[2].send(message)
-          }
-          window.localStorage.setItem('msgPulsar2' + topic, null)
+          window.localStorage.setItem('msgPulsarMetadata' + topic, null)
         }
       }
       if (i === 2) {
         sockPost.onopen = () => {
-          for (const message of this.messageArray4) {
-            this._sockets[4].send(message)
+          for (const message of this.messageArray2) {
+            this._sockets[2].send(message)
           }
-          window.localStorage.setItem('msgPulsar4' + topic, null)
+          window.localStorage.setItem('msgPulsarDocContent' + topic, null)
         }
       }
 
@@ -129,33 +120,23 @@ export class PulsarService implements OnDestroy {
     }
 
     switch (streamId) {
-      case Streams.COLLABORATORS:
+      case Streams.METADATA:
         if (this._sockets[0].readyState === 1) {
           this._sockets[0].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
           this.messageArray0.push(JSON.stringify(message))
-          window.localStorage.setItem('msgPulsar0' + keyTopic, JSON.stringify(this.messageArray0))
+          window.localStorage.setItem('msgPulsarMetadata' + keyTopic, JSON.stringify(this.messageArray0))
           console.log('put')
         }
         break
-      case Streams.METADATA:
+      case Streams.DOCUMENT_CONTENT:
         if (this._sockets[2].readyState === 1) {
           this._sockets[2].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
           this.messageArray2.push(JSON.stringify(message))
-          window.localStorage.setItem('msgPulsar2' + keyTopic, JSON.stringify(this.messageArray2))
-          console.log('put')
-        }
-        break
-      case Streams.DOCUMENT_CONTENT:
-        if (this._sockets[4].readyState === 1) {
-          this._sockets[4].send(JSON.stringify(message))
-          console.log('SENT', content)
-        } else {
-          this.messageArray4.push(JSON.stringify(message))
-          window.localStorage.setItem('msgPulsar4' + keyTopic, JSON.stringify(this.messageArray4))
+          window.localStorage.setItem('msgPulsarDocContent' + keyTopic, JSON.stringify(this.messageArray2))
           console.log('put')
         }
         break
@@ -180,12 +161,10 @@ export class PulsarService implements OnDestroy {
   }
 
   getMessageFromLocalStorage(topic: string) {
-    const localStorageMsg0 = window.localStorage.getItem('msgPulsar0' + topic)
-    const localStorageMsg2 = window.localStorage.getItem('msgPulsar2' + topic)
-    const localStorageMsg4 = window.localStorage.getItem('msgPulsar4' + topic)
+    const localStorageMsg0 = window.localStorage.getItem('msgPulsarMetadata' + topic)
+    const localStorageMsg2 = window.localStorage.getItem('msgPulsarDocContent' + topic)
 
     this.messageArray0 = localStorageMsg0 === 'null' || localStorageMsg0 === null ? [] : JSON.parse(localStorageMsg0)
     this.messageArray2 = localStorageMsg2 === 'null' || localStorageMsg2 === null ? [] : JSON.parse(localStorageMsg2)
-    this.messageArray4 = localStorageMsg4 === 'null' || localStorageMsg4 === null ? [] : JSON.parse(localStorageMsg4)
   }
 }
