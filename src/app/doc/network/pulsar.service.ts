@@ -148,42 +148,27 @@ export class PulsarService implements OnDestroy {
       console.log('ack received : ', messageSent.data)
     }
 
+    let sockNumber
     if (i === 1) {
-      sockPost.onopen = () => {
-        for (const message of this.messageArray0) {
-          this._sockets[0].send(message)
-        }
-        window.localStorage.setItem('msgPulsarMetadata' + topic, null)
-      }
-      sockPost.onclose = (event) => {
-        console.log('socket: ' + sockPost.url + ' fermee\n', event)
-        if (event.reason !== 'networkService') {
-          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
-          this.socketPostConfig(newWs, 1, topic, docType)
-          this._sockets[0] = newWs
-          console.log('On refait une socket')
-        }
-        console.log('les sockets 0\n', this._sockets)
-      }
+      sockNumber = 0
+    } else if (i === 2) {
+      sockNumber = 2
     }
-    if (i === 2) {
-      sockPost.onopen = () => {
-        for (const message of this.messageArray2) {
-          this._sockets[2].send(message)
-        }
-        window.localStorage.setItem('msgPulsarDocContent' + topic, null)
+    sockPost.onopen = () => {
+      for (const message of this.messageArray0) {
+        this._sockets[sockNumber].send(message)
       }
-
-      sockPost.onclose = (event) => {
-        console.log('socket: ' + sockPost.url + ' fermee', event)
-        if (event.reason !== 'networkService') {
-          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
-          this.socketPostConfig(newWs, 2, topic, docType)
-          this._sockets[2] = newWs
-          console.log('On refait une socket')
-        }
-        console.log('les sockets 2\n', this._sockets)
+      window.localStorage.setItem('msgPulsarMetadata' + topic, null)
+    }
+    sockPost.onclose = (event) => {
+      console.log('socket: ' + sockPost.url + ' fermee\n', event)
+      if (event.reason !== 'networkService') {
+        const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
+        this.socketPostConfig(newWs, i, topic, docType)
+        this._sockets[sockNumber] = newWs
+        console.log('On refait une socket' + sockNumber)
       }
+      console.log('les sockets \n', this._sockets)
     }
   }
 
@@ -201,30 +186,19 @@ export class PulsarService implements OnDestroy {
       this.pulsarMessageSubject.next({ streamId, content })
     }
 
-    if (i === 1) {
-      sockEcoute.onclose = (event) => {
-        console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
-        if (event.reason !== 'networkService') {
-          const newWs = this.createWsEcoute(topic, i, docType)
-          this.socketPostConfig(newWs, 1, topic, docType)
+    sockEcoute.onclose = (event) => {
+      console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
+      if (event.reason !== 'networkService') {
+        const newWs = this.createWsEcoute(topic, i, docType)
+        this.socketEcouteConfig(newWs, i, topic, docType)
+        if (i === 1) {
           this._sockets[1] = newWs
-          console.log('On refait une socket')
-        }
-        console.log('les sockets 1\n ', this._sockets)
-      }
-    }
-
-    if (i === 2) {
-      sockEcoute.onclose = (event) => {
-        console.log('socket: ' + sockEcoute.url + ' fermee', event)
-        if (event.reason !== 'networkService') {
-          const newWs = this.createWsEcoute(topic, 2, docType)
-          this.socketPostConfig(newWs, 1, topic, docType)
+        } else if (i === 2) {
           this._sockets[3] = newWs
-          console.log('On refait une socket')
         }
-        console.log('les sockets 3\n', this._sockets)
+        console.log('On refait une socket ecoute ' + i)
       }
+      console.log('les sockets \n ', this._sockets)
     }
   }
 }
