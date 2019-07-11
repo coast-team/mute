@@ -29,9 +29,8 @@
       </span>
       <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
     </div>
-    <div>Socket state</div>
   </div>
-
+  
   <div class="doc-block">
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Pulsar</span>
@@ -39,6 +38,7 @@
         <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
       </span>
     </div>
+    <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="pulsarWsState">pulsaaar</mat-icon>
   </div>
 
   <div class="chips-block">

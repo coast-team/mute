@@ -41,6 +41,7 @@ export class DetailsComponent {
   public coniks: boolean
   public keyserver: boolean
   public logsTooltip: string
+  public pulsarWsState: string
 
   constructor(private cd: ChangeDetectorRef, public ui: UiService) {
     this.card = defaultCollab
@@ -65,6 +66,7 @@ export class DetailsComponent {
       this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
     }
     this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
+    this.pulsarWsState = 'Mettre ws state'
   }
 
   showCard(collab: ICollaborator) {

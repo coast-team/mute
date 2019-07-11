@@ -30,58 +30,11 @@ export class PulsarService implements OnDestroy {
 
     for (let i = 1; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
+      const sockEcoute = this.createWsEcoute(topic, i, docType)
 
-      let sockEcoute
-      const msgIdFromStorage = window.localStorage.getItem('messageId-' + topic)
-      // if (true) {
-      if (msgIdFromStorage === null) {
-        sockEcoute = new WebSocket(
-          'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
-        )
-      } else {
-        sockEcoute = new WebSocket(
-          'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=' + msgIdFromStorage
-        )
-      }
+      this.socketPostConfig(sockPost, i, topic, docType)
+      this.socketEcouteConfig(sockEcoute, i, topic, docType)
 
-      sockPost.onerror = (err) => {
-        console.log('Erreur socket producer Pulsar', err)
-      }
-
-      // reception de messages, le producteur ne recevra que des acks
-      sockPost.onmessage = (messageSent: MessageEvent) => {
-        console.log('ack received : ', messageSent.data)
-      }
-
-      if (i === 1) {
-        sockPost.onopen = () => {
-          for (const message of this.messageArray0) {
-            this._sockets[0].send(message)
-          }
-          window.localStorage.setItem('msgPulsarMetadata' + topic, null)
-        }
-      }
-      if (i === 2) {
-        sockPost.onopen = () => {
-          for (const message of this.messageArray2) {
-            this._sockets[2].send(message)
-          }
-          window.localStorage.setItem('msgPulsarDocContent' + topic, null)
-        }
-      }
-
-      sockEcoute.onerror = (err) => {
-        console.log('Erreur socket producer Pulsar', err)
-      }
-
-      sockEcoute.onmessage = (messageSent: MessageEvent) => {
-        const receiveMsg = JSON.parse(messageSent.data)
-        const streamId = Number(receiveMsg.properties.stream)
-        console.log(receiveMsg)
-        window.localStorage.setItem('messageId-' + topic, receiveMsg.messageId)
-        const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
-        this.pulsarMessageSubject.next({ streamId, content })
-      }
       this._sockets.push(sockPost)
       this._sockets.push(sockEcoute)
     }
@@ -146,10 +99,14 @@ export class PulsarService implements OnDestroy {
   }
 
   closeSocketConnexion(location: string) {
-    while (this._sockets.length !== 0) {
-      this._sockets.pop().close()
+    if (this._sockets.length !== 0) {
+      while (this._sockets.length !== 0) {
+        this._sockets.pop().close(1000, location)
+      }
+      console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
+    } else {
+      console.log('Pas de socket à fermer.\n')
     }
-    console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
   }
 
   socketsReadystate(): number[] {
@@ -166,5 +123,108 @@ export class PulsarService implements OnDestroy {
 
     this.messageArray0 = localStorageMsg0 === 'null' || localStorageMsg0 === null ? [] : JSON.parse(localStorageMsg0)
     this.messageArray2 = localStorageMsg2 === 'null' || localStorageMsg2 === null ? [] : JSON.parse(localStorageMsg2)
+  }
+
+  createWsEcoute(topic: string, i: number, docType: number): WebSocket {
+    const msgIdFromStorage = window.localStorage.getItem('msgId-' + (docType + i) + topic)
+    // if (true) {
+    if (msgIdFromStorage === null) {
+      return new WebSocket(
+        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
+      )
+    } else {
+      return new WebSocket(
+        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=' + msgIdFromStorage
+      )
+    }
+  }
+
+  socketPostConfig(sockPost: WebSocket, i: number, topic: string, docType) {
+    sockPost.onerror = (err) => {
+      console.log('Erreur socket producer Pulsar', err)
+    }
+    // reception de messages, le producteur ne recevra que des acks
+    sockPost.onmessage = (messageSent: MessageEvent) => {
+      console.log('ack received : ', messageSent.data)
+    }
+
+    if (i === 1) {
+      sockPost.onopen = () => {
+        for (const message of this.messageArray0) {
+          this._sockets[0].send(message)
+        }
+        window.localStorage.setItem('msgPulsarMetadata' + topic, null)
+      }
+      sockPost.onclose = (event) => {
+        console.log('socket: ' + sockPost.url + ' fermee\n', event)
+        if (event.reason !== 'networkService') {
+          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
+          this.socketPostConfig(newWs, 1, topic, docType)
+          this._sockets[0] = newWs
+          console.log('On refait une socket')
+        }
+        console.log('les sockets 0\n', this._sockets)
+      }
+    }
+    if (i === 2) {
+      sockPost.onopen = () => {
+        for (const message of this.messageArray2) {
+          this._sockets[2].send(message)
+        }
+        window.localStorage.setItem('msgPulsarDocContent' + topic, null)
+      }
+
+      sockPost.onclose = (event) => {
+        console.log('socket: ' + sockPost.url + ' fermee', event)
+        if (event.reason !== 'networkService') {
+          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
+          this.socketPostConfig(newWs, 2, topic, docType)
+          this._sockets[2] = newWs
+          console.log('On refait une socket')
+        }
+        console.log('les sockets 2\n', this._sockets)
+      }
+    }
+  }
+
+  socketEcouteConfig(sockEcoute: WebSocket, i: number, topic: string, docType) {
+    sockEcoute.onerror = (err) => {
+      console.log('Erreur socket producer Pulsar', err)
+    }
+
+    sockEcoute.onmessage = (messageSent: MessageEvent) => {
+      const receiveMsg = JSON.parse(messageSent.data)
+      const streamId = Number(receiveMsg.properties.stream)
+      console.log(receiveMsg)
+      window.localStorage.setItem('msgId-' + (docType + i) + topic, receiveMsg.messageId)
+      const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
+      this.pulsarMessageSubject.next({ streamId, content })
+    }
+
+    if (i === 1) {
+      sockEcoute.onclose = (event) => {
+        console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
+        if (event.reason !== 'networkService') {
+          const newWs = this.createWsEcoute(topic, i, docType)
+          this.socketPostConfig(newWs, 1, topic, docType)
+          this._sockets[1] = newWs
+          console.log('On refait une socket')
+        }
+        console.log('les sockets 1\n ', this._sockets)
+      }
+    }
+
+    if (i === 2) {
+      sockEcoute.onclose = (event) => {
+        console.log('socket: ' + sockEcoute.url + ' fermee', event)
+        if (event.reason !== 'networkService') {
+          const newWs = this.createWsEcoute(topic, 2, docType)
+          this.socketPostConfig(newWs, 1, topic, docType)
+          this._sockets[3] = newWs
+          console.log('On refait une socket')
+        }
+        console.log('les sockets 3\n', this._sockets)
+      }
+    }
   }
 }
