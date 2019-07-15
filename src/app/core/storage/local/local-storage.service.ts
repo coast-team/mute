@@ -118,8 +118,13 @@ export class LocalStorageService extends Storage implements IStorage {
     this.check()
     await new Promise((resolve, reject) => {
       console.log('destroy', file)
+
       if (file.isDoc) {
         const doc = file as Doc
+        console.log('doc KEY ', doc.signalingKey)
+        window.localStorage.setItem('msgId-401' + doc.signalingKey, null)
+        window.localStorage.setItem('msgId-402' + doc.signalingKey, null)
+
         IndexdbDatabase.destroy('muteLogs-' + doc.signalingKey)
       }
       this.db.remove(file.id).then(() => resolve(), (err: Error) => reject(err))

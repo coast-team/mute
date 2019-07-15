@@ -30,7 +30,7 @@
       <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
     </div>
   </div>
-  
+  <br>
   <div class="doc-block">
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Pulsar</span>
@@ -38,7 +38,20 @@
         <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
       </span>
     </div>
-    <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="pulsarWsState">pulsaaar</mat-icon>
+    <div fxLayoutAlign="start center" id="pulsarWsButton" *ngIf="doc.pulsar" style="font-size: 12px;">
+      <button mat-icon-button (click)="onClickWsInfo()">
+      <mat-icon >rowing</mat-icon>
+      </button>
+    </div>
+    <div fxLayoutAlign="start left" id="pulsarWsBlock" *ngIf="infoWsVisibility">
+      <pre>
+        <mat-icon id = "ws1" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">lens</mat-icon> Metadata Producer
+        <mat-icon id = "ws2" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">lens</mat-icon> Metadata Consummer
+        <mat-icon id = "ws3" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">lens</mat-icon> Doc-content Producer
+        <mat-icon id = "ws4" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">lens</mat-icon> Doc-content Consummer 
+      </pre>
+    </div>
+
   </div>
 
   <div class="chips-block">

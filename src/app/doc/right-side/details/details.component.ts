@@ -1,11 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
-import { ChangeDetectorRef, Component, Input } from '@angular/core'
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core'
 import { ICollaborator } from '@coast-team/mute-core'
 
 import { environment } from '../../../../environments/environment'
 import { EncryptionType } from '../../../core/crypto/EncryptionType'
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui/ui.service'
+import { PulsarService } from '../../network/pulsar.service'
 import { RichCollaborator } from '../../rich-collaborators'
 
 const defaultCollab = { avatar: '', displayName: '', login: '', deviceID: '' }
@@ -29,7 +30,7 @@ const defaultCollab = { avatar: '', displayName: '', login: '', deviceID: '' }
     ]),
   ],
 })
-export class DetailsComponent {
+export class DetailsComponent implements OnInit {
   @Input()
   doc: Doc
   @Input()
@@ -41,9 +42,38 @@ export class DetailsComponent {
   public coniks: boolean
   public keyserver: boolean
   public logsTooltip: string
-  public pulsarWsState: string
+  public pulsarWsStateArray: string[] = ['', '', '', '']
+  public infoWsVisibility: boolean
 
-  constructor(private cd: ChangeDetectorRef, public ui: UiService) {
+  ngOnInit() {
+    this.infoWsVisibility = false
+    this.pulsarService.pulsarWebsockets$.subscribe((wsArray) => {
+      this.pulsarWsStateArray = []
+      for (const ws of wsArray.webSocketsArray) {
+        switch (ws.readyState) {
+          case 0:
+            this.pulsarWsStateArray.push('blue')
+            break
+          case 1:
+            this.pulsarWsStateArray.push('green')
+            break
+          case 2:
+            this.pulsarWsStateArray.push('yellow')
+            break
+          case 3:
+            this.pulsarWsStateArray.push('red')
+            break
+          default:
+            break
+        }
+      }
+      this.cd.detectChanges()
+
+      console.log(this.pulsarWsStateArray)
+    })
+  }
+
+  constructor(private cd: ChangeDetectorRef, public ui: UiService, private pulsarService: PulsarService) {
     this.card = defaultCollab
     switch (environment.cryptography.type) {
       case EncryptionType.NONE:
@@ -66,7 +96,6 @@ export class DetailsComponent {
       this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
     }
     this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
-    this.pulsarWsState = 'Mettre ws state'
   }
 
   showCard(collab: ICollaborator) {
@@ -87,6 +116,11 @@ export class DetailsComponent {
   updatePulsar(event) {
     this.doc.pulsar = event.checked
     console.log('le doc après le toggle', this.doc)
+    // document.getElementById('pulsarWsButton').display = 'display:block;'
     // document.getElementById("pulsarButton").isDisabled = true
+  }
+
+  onClickWsInfo() {
+    this.infoWsVisibility = !this.infoWsVisibility
   }
 }
