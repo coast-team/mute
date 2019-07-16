@@ -122,8 +122,8 @@ export class LocalStorageService extends Storage implements IStorage {
       if (file.isDoc) {
         const doc = file as Doc
         console.log('doc KEY ', doc.signalingKey)
-        window.localStorage.setItem('msgId-401' + doc.signalingKey, null)
-        window.localStorage.setItem('msgId-402' + doc.signalingKey, null)
+        window.localStorage.removeItem('msgId-401-' + doc.signalingKey)
+        window.localStorage.removeItem('msgId-402-' + doc.signalingKey)
 
         IndexdbDatabase.destroy('muteLogs-' + doc.signalingKey)
       }

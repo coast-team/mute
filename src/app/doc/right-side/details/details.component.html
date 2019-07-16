@@ -38,19 +38,37 @@
         <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
       </span>
     </div>
-    <div fxLayoutAlign="start center" id="pulsarWsButton" *ngIf="doc.pulsar" style="font-size: 12px;">
-      <button mat-icon-button (click)="onClickWsInfo()">
-      <mat-icon >rowing</mat-icon>
-      </button>
-    </div>
-    <div fxLayoutAlign="start left" id="pulsarWsBlock" *ngIf="infoWsVisibility">
-      <pre>
-        <mat-icon id = "ws1" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">lens</mat-icon> Metadata Producer
-        <mat-icon id = "ws2" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">lens</mat-icon> Metadata Consummer
-        <mat-icon id = "ws3" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">lens</mat-icon> Doc-content Producer
-        <mat-icon id = "ws4" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">lens</mat-icon> Doc-content Consummer 
-      </pre>
-    </div>
+    <br>
+    <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+            <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets</span> 
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div id="pulsarWsBlock">
+          <div class="pulsarWs">
+            <mat-icon id = "ws1" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">lens</mat-icon>
+            <span class="spaceIconText">Metadata Producer</span>
+          </div>
+
+          <div class="pulsarWs">
+            <mat-icon id = "ws2" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">lens</mat-icon>
+            <span class="spaceIconText">Metadata Consummer</span>
+          </div>
+
+          <div class="pulsarWs">
+            <mat-icon id = "ws3" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">lens</mat-icon>
+            <span class="spaceIconText">Doc-content Producer</span>
+          </div>
+          
+          <div class="pulsarWs">
+            <mat-icon id = "ws4" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">lens</mat-icon>
+          <span class="spaceIconText">Doc-content Consummer</span>
+          </div>
+
+      </div>
+    </mat-expansion-panel>
+
 
   </div>
 
