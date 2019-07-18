@@ -31,6 +31,27 @@
     </div>
   </div>
   <br>
+  <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+          <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets Logs state</span> 
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div id="pulsarWsBlock">
+        <div class="pulsarWs">
+          <mat-icon id = "ws1Logs" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">lens</mat-icon>
+          <span class="spaceIconText">Metadata Producer</span>
+        </div>
+
+        <div class="pulsarWs">
+          <mat-icon id = "ws2logs" [ngStyle]="{'color': pulsarWsLogsStateArray[1]}" [inline]="true">lens</mat-icon>
+          <span class="spaceIconText">Metadata Consummer</span>
+        </div>
+
+    </div>
+  </mat-expansion-panel>
+
+  <br>
   <div class="doc-block">
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Pulsar</span>
@@ -42,7 +63,7 @@
     <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
       <mat-expansion-panel-header>
         <mat-panel-title>
-            <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets</span> 
+            <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets state</span> 
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div id="pulsarWsBlock">

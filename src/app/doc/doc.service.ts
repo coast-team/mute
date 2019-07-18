@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import {
   ICollaborator,
+  LocalOperation,
   MetaDataType,
   MuteCoreFactory,
   MuteCoreTypes,
@@ -85,6 +86,7 @@ export class DocService implements OnDestroy {
         this.newSub = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
       })
     })
+    this.logs.setStreamLogsPulsar(this.network.pulsarService)
   }
 
   async joinSession() {
@@ -325,20 +327,23 @@ export class DocService implements OnDestroy {
       })
     )
 
-    /*this.subs.push(
-      this.muteCore.localOperationForLog$.subscribe((operation) => {
-        this.logs.log({
-          ...operation,
-          timestamp: Date.now(),
-          collaborators: this.network.members,
-          neighbours: {
-            downstream: this.network.wg.neighbors,
-            upstream: this.network.wg.neighbors,
-          },
-        })
+    this.subs.push(
+      (this.muteCore.localOperationForLog$ as Observable<LocalOperation<any>>).subscribe({
+        next: (operation) => {
+          this.logs.log({
+            ...operation,
+            timestamp: Date.now(),
+            collaborators: this.network.members,
+            neighbours: {
+              downstream: this.network.wg.neighbors,
+              upstream: this.network.wg.neighbors,
+            },
+          })
+        },
       })
     )
 
+    /*
     this.subs.push(
       this.muteCore.remoteOperationForLog.subscribe((operation) => {
         const opes = []

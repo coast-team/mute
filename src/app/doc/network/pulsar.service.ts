@@ -1,21 +1,25 @@
 import { HostListener, Injectable, OnDestroy } from '@angular/core'
-import { StreamId, Streams } from '@coast-team/mute-core'
+import { StreamId, Streams, StreamsSubtype } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
 import { Doc } from 'src/app/core/Doc'
 import { Stream } from 'stream'
 @Injectable()
 export class PulsarService implements OnDestroy {
-  private messageArray0 = []
-  private messageArray2 = []
+  private messageArrayMetadata = []
+  private messageArrayDocContent = []
+  private messageArrayLogs = []
 
   public _sockets: WebSocket[] = []
+  public _socketsLogs: WebSocket[] = []
 
   public pulsarMessageSubject: Subject<{ streamId: Streams; content: Uint8Array }>
   public pulsarWebSocketsSubject: Subject<{ webSocketsArray: WebSocket[] }>
+  public pulsarWebSocketsLogsSubject: Subject<{ webSocketsArray: WebSocket[] }>
 
   constructor() {
     this.pulsarMessageSubject = new Subject()
     this.pulsarWebSocketsSubject = new Subject()
+    this.pulsarWebSocketsLogsSubject = new Subject()
   }
 
   ngOnDestroy() {}
@@ -28,6 +32,10 @@ export class PulsarService implements OnDestroy {
     return this.pulsarWebSocketsSubject.asObservable()
   }
 
+  get pulsarWebsocketsLogs$(): Observable<{ webSocketsArray: WebSocket[] }> {
+    return this.pulsarWebSocketsLogsSubject.asObservable()
+  }
+
   set sockets(topic: string) {
     const docType = 400
     const encoder = new TextEncoder()
@@ -38,16 +46,288 @@ export class PulsarService implements OnDestroy {
 
     for (let i = 1; i < 3; i++) {
       const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
-      const sockEcoute = this.createWsEcoute(topic, i, docType)
+      const sockEcoute = this.createWsEcoute(topic, i)
 
-      this.socketPostConfig(sockPost, i, topic, docType)
-      this.socketEcouteConfig(sockEcoute, i, topic, docType)
+      this.socketPostConfig(sockPost, i, topic)
+      this.socketEcouteConfig(sockEcoute, i, topic)
 
       this._sockets.push(sockPost)
       this._sockets.push(sockEcoute)
     }
     this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
     console.log(this._sockets)
+  }
+
+  set socketsLogs(topic: string) {
+    const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/Logs-' + topic)
+    const sockEcoute = this.createWsEcoute(topic, 3)
+
+    this._socketsLogs.push(sockPost)
+    this._socketsLogs.push(sockEcoute)
+    this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+    console.log(this._socketsLogs)
+  }
+
+  sendMessageToPulsar(streamId: StreamId, keyTopic: string, content: Uint8Array) {
+    console.log("les sockets avant l'envoi", this.socketsReadystate())
+    const content64 = this.arrayBufferToBase64(content)
+    const message = {
+      payload: btoa(content64),
+      properties: {
+        streamType: streamId.type,
+        streamSubtype: streamId.subtype,
+        topic: keyTopic,
+      },
+    }
+
+    switch (streamId.type) {
+      case Streams.METADATA:
+        if (this._sockets[0].readyState === 1) {
+          this._sockets[0].send(JSON.stringify(message))
+          console.log('SENT', content)
+        } else {
+          this.messageArrayMetadata.push(JSON.stringify(message))
+          window.localStorage.setItem('msgPulsarMetadata' + keyTopic, JSON.stringify(this.messageArrayMetadata))
+          console.log('put', content)
+        }
+
+        break
+      case Streams.DOCUMENT_CONTENT:
+        if (this._sockets[2].readyState === 1) {
+          this._sockets[2].send(JSON.stringify(message))
+          console.log('SENT', content)
+        } else {
+          this.messageArrayDocContent.push(JSON.stringify(message))
+          window.localStorage.setItem('msgPulsarDocContent' + keyTopic, JSON.stringify(this.messageArrayDocContent))
+          console.log('put', content)
+        }
+        break
+
+      default:
+        break
+    }
+  }
+
+  sendLogsToPulsar(keyTopic: string, obj: string) {
+    console.log(this._socketsLogs)
+    const message = {
+      payload: btoa(obj),
+      properties: {
+        streamType: Streams.METADATA,
+        streamSubtype: StreamsSubtype.METADATA_LOGS,
+        topic: keyTopic,
+      },
+    }
+
+    if (this._socketsLogs[0].readyState === 1) {
+      this._socketsLogs[0].send(JSON.stringify(message))
+      console.log('SENT', message)
+    } else {
+      this.messageArrayLogs.push(JSON.stringify(message))
+      window.localStorage.setItem('msgPulsarLogs' + keyTopic, JSON.stringify(this.messageArrayLogs))
+      console.log('put')
+    }
+  }
+
+  createWsEcoute(topic: string, i: number): WebSocket {
+    const docType = 400
+    let msgIdFromStorage
+    let urlEnd: string
+
+    if (i === 3) {
+      urlEnd = 'Logs'
+    } else {
+      urlEnd = (docType + i).toString()
+    }
+
+    msgIdFromStorage = window.localStorage.getItem('msgId-' + urlEnd + '-' + topic)
+    // if (true) {
+    if (msgIdFromStorage === null || msgIdFromStorage === 'null') {
+      return new WebSocket('ws://localhost:8080/ws/v2/reader/persistent/public/default/' + urlEnd + '-' + topic + '/?messageId=earliest')
+    } else {
+      return new WebSocket(
+        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + urlEnd + '-' + topic + '/?messageId=' + msgIdFromStorage
+      )
+    }
+  }
+
+  socketPostConfig(sockPost: WebSocket, i: number, topic: string) {
+    const docType = 400
+    sockPost.onerror = (err) => {
+      console.log('Erreur socket producer Pulsar', err)
+    }
+    // reception de messages, le producteur ne recevra que des acks
+    sockPost.onmessage = (messageSent: MessageEvent) => {
+      console.log('ack received : ', messageSent.data)
+    }
+
+    let sock
+    let sockNumber
+    let array
+
+    if (i === 1) {
+      sock = this._sockets
+      sockNumber = 0
+      array = this.messageArrayMetadata
+    } else if (i === 2) {
+      sock = this._sockets
+      sockNumber = 2
+      array = this.messageArrayDocContent
+    } else if (i === 3) {
+      sock = this._socketsLogs
+      sockNumber = 0
+      array = this.messageArrayLogs
+    }
+
+    sockPost.onopen = () => {
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+
+      for (const message of array) {
+        sock[sockNumber].send(message)
+      }
+      if (i === 1) {
+        window.localStorage.removeItem('msgPulsarMetadata' + topic)
+      } else if (i === 2) {
+        window.localStorage.removeItem('msgPulsarDocContent' + topic)
+      } else if (i === 3) {
+        window.localStorage.removeItem('msgPulsarLogs' + topic)
+      }
+    }
+
+    sockPost.onclose = (event) => {
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+
+      console.log('socket: ' + sockPost.url + ' fermee\n', event)
+      let urlEnd: string
+
+      if (i === 3) {
+        urlEnd = 'Logs'
+      } else {
+        urlEnd = (docType + i).toString()
+      }
+      if (event.reason !== 'networkService') {
+        setTimeout(() => {
+          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + urlEnd + '-' + topic)
+          this.socketPostConfig(newWs, i, topic)
+          sock[sockNumber] = newWs
+
+          console.log('On refait une socket dans 10s', sock)
+
+          this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+          this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+        }, 10000)
+        this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+      }
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+      console.log('les sockets \n', this.socketsReadystate())
+    }
+  }
+
+  socketEcouteConfig(sockEcoute: WebSocket, i: number, topic: string) {
+    const docType = 400
+    sockEcoute.onerror = (err) => {
+      console.log('Erreur socket producer Pulsar', err)
+    }
+
+    sockEcoute.onopen = () => {
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+    }
+
+    sockEcoute.onmessage = (messageSent: MessageEvent) => {
+      console.log('MESSAGE SENT', messageSent)
+      const receiveMsg = JSON.parse(messageSent.data)
+      const streamId = Number(receiveMsg.properties.streamType)
+      console.log(receiveMsg)
+
+      let urlEnd: string
+
+      if (i === 3) {
+        urlEnd = 'Logs'
+      } else {
+        urlEnd = (docType + i).toString()
+      }
+
+      window.localStorage.setItem('msgId-' + urlEnd + '-' + topic, receiveMsg.messageId)
+
+      const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
+      this.pulsarMessageSubject.next({ streamId, content })
+    }
+
+    sockEcoute.onclose = (event) => {
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+
+      console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
+      if (event.reason !== 'networkService') {
+        setTimeout(() => {
+          const newWs = this.createWsEcoute(topic, i)
+          this.socketEcouteConfig(newWs, i, topic)
+          if (i === 1) {
+            this._sockets[1] = newWs
+          } else if (i === 2) {
+            this._sockets[3] = newWs
+          } else if (i === 3) {
+            this._socketsLogs[1] = newWs
+          }
+          this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+          this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+        }, 10000)
+        this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+
+        console.log('On refait une socket ecoute dans 10s ' + i)
+      }
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+      console.log('les sockets \n ', this.socketsReadystate())
+    }
+  }
+  closeSocketConnexion(location: string) {
+    if (this._sockets.length !== 0) {
+      while (this._sockets.length !== 0) {
+        this._sockets.pop().close(1000, location)
+      }
+      console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
+      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+    } else {
+      console.log('Pas de socket à fermer.\n')
+    }
+  }
+
+  closeSocketlogsConnexion(location: string) {
+    if (this._socketsLogs.length !== 0) {
+      while (this._socketsLogs.length !== 0) {
+        this._socketsLogs.pop().close(1000, location)
+      }
+      console.log('Les websockets ont été fermées aves succès de ' + location, this._socketsLogs)
+      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+    } else {
+      console.log('Pas de socket à fermer.\n')
+    }
+  }
+
+  socketsReadystate(): number[] {
+    const sockStateArray: number[] = []
+    for (const sock of this._sockets) {
+      sockStateArray.push(sock.readyState)
+    }
+    return sockStateArray
+  }
+
+  getMessageFromLocalStorage(topic: string) {
+    const localStorageMsgMetadata = window.localStorage.getItem('msgPulsarMetadata' + topic)
+    const localStorageMsgDocContent = window.localStorage.getItem('msgPulsarDocContent' + topic)
+    // const localStorageMsglogs = window.localStorage.getItem('msgPulsarLogs' + topic)
+
+    this.messageArrayMetadata =
+      localStorageMsgMetadata === 'null' || localStorageMsgMetadata === null ? [] : JSON.parse(localStorageMsgMetadata)
+    this.messageArrayDocContent =
+      localStorageMsgDocContent === 'null' || localStorageMsgDocContent === null ? [] : JSON.parse(localStorageMsgDocContent)
+    // this.messageArrayLogs = localStorageMsglogs === 'null' || localStorageMsglogs === null ? [] : JSON.parse(localStorageMsglogs)
   }
   private arrayBufferToBase64(buffer) {
     let binary = ''
@@ -67,170 +347,5 @@ export class PulsarService implements OnDestroy {
       bytes[i] = binaryString.charCodeAt(i)
     }
     return bytes.buffer
-  }
-
-  sendMessageToPulsar(streamId: Streams, keyTopic: string, content: Uint8Array) {
-    console.log("les sockets avant l'envoi", this.socketsReadystate())
-    const content64 = this.arrayBufferToBase64(content)
-    const message = {
-      payload: btoa(content64), // required
-      properties: {
-        // optionnal
-        stream: streamId,
-        topic: keyTopic,
-      },
-    }
-
-    switch (streamId) {
-      case Streams.METADATA:
-        if (this._sockets[0].readyState === 1) {
-          this._sockets[0].send(JSON.stringify(message))
-          console.log('SENT', content)
-        } else {
-          this.messageArray0.push(JSON.stringify(message))
-          window.localStorage.setItem('msgPulsarMetadata' + keyTopic, JSON.stringify(this.messageArray0))
-          console.log('put')
-        }
-        break
-      case Streams.DOCUMENT_CONTENT:
-        if (this._sockets[2].readyState === 1) {
-          this._sockets[2].send(JSON.stringify(message))
-          console.log('SENT', content)
-        } else {
-          this.messageArray2.push(JSON.stringify(message))
-          window.localStorage.setItem('msgPulsarDocContent' + keyTopic, JSON.stringify(this.messageArray2))
-          console.log('put')
-        }
-        break
-      default:
-        break
-    }
-  }
-
-  closeSocketConnexion(location: string) {
-    if (this._sockets.length !== 0) {
-      while (this._sockets.length !== 0) {
-        this._sockets.pop().close(1000, location)
-      }
-      console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-    } else {
-      console.log('Pas de socket à fermer.\n')
-    }
-  }
-
-  socketsReadystate(): number[] {
-    const sockStateArray: number[] = []
-    for (const sock of this._sockets) {
-      sockStateArray.push(sock.readyState)
-    }
-    return sockStateArray
-  }
-
-  getMessageFromLocalStorage(topic: string) {
-    const localStorageMsg0 = window.localStorage.getItem('msgPulsarMetadata' + topic)
-    const localStorageMsg2 = window.localStorage.getItem('msgPulsarDocContent' + topic)
-
-    this.messageArray0 = localStorageMsg0 === 'null' || localStorageMsg0 === null ? [] : JSON.parse(localStorageMsg0)
-    this.messageArray2 = localStorageMsg2 === 'null' || localStorageMsg2 === null ? [] : JSON.parse(localStorageMsg2)
-  }
-
-  createWsEcoute(topic: string, i: number, docType: number): WebSocket {
-    const msgIdFromStorage = window.localStorage.getItem('msgId-' + (docType + i) + '-' + topic)
-    // if (true) {
-    if (msgIdFromStorage === null || msgIdFromStorage === 'null') {
-      return new WebSocket(
-        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=earliest'
-      )
-    } else {
-      return new WebSocket(
-        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + (docType + i) + '-' + topic + '/?messageId=' + msgIdFromStorage
-      )
-    }
-  }
-
-  socketPostConfig(sockPost: WebSocket, i: number, topic: string, docType) {
-    sockPost.onerror = (err) => {
-      console.log('Erreur socket producer Pulsar', err)
-    }
-    // reception de messages, le producteur ne recevra que des acks
-    sockPost.onmessage = (messageSent: MessageEvent) => {
-      console.log('ack received : ', messageSent.data)
-    }
-
-    let sockNumber
-    if (i === 1) {
-      sockNumber = 0
-    } else if (i === 2) {
-      sockNumber = 2
-    }
-    sockPost.onopen = () => {
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-
-      for (const message of this.messageArray0) {
-        this._sockets[sockNumber].send(message)
-      }
-      window.localStorage.removeItem('msgPulsarMetadata' + topic)
-    }
-    sockPost.onclose = (event) => {
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-
-      console.log('socket: ' + sockPost.url + ' fermee\n', event)
-      if (event.reason !== 'networkService') {
-        setTimeout(() => {
-          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
-          this.socketPostConfig(newWs, i, topic, docType)
-          this._sockets[sockNumber] = newWs
-          console.log('On refait une socket dans 10s' + sockNumber)
-          this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-        }, 10000)
-        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-      }
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-      console.log('les sockets \n', this.socketsReadystate())
-    }
-  }
-
-  socketEcouteConfig(sockEcoute: WebSocket, i: number, topic: string, docType) {
-    sockEcoute.onerror = (err) => {
-      console.log('Erreur socket producer Pulsar', err)
-    }
-
-    sockEcoute.onopen = () => {
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-    }
-
-    sockEcoute.onmessage = (messageSent: MessageEvent) => {
-      console.log(messageSent)
-      const receiveMsg = JSON.parse(messageSent.data)
-      const streamId = Number(receiveMsg.properties.stream)
-      console.log(receiveMsg)
-      window.localStorage.setItem('msgId-' + (docType + i) + '-' + topic, receiveMsg.messageId)
-      const content = new Uint8Array(this.base64ToArrayBuffer(atob(receiveMsg.payload)))
-      this.pulsarMessageSubject.next({ streamId, content })
-    }
-
-    sockEcoute.onclose = (event) => {
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-
-      console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
-      if (event.reason !== 'networkService') {
-        setTimeout(() => {
-          const newWs = this.createWsEcoute(topic, i, docType)
-          this.socketEcouteConfig(newWs, i, topic, docType)
-          if (i === 1) {
-            this._sockets[1] = newWs
-          } else if (i === 2) {
-            this._sockets[3] = newWs
-          }
-          this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-        }, 10000)
-        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-
-        console.log('On refait une socket ecoute dans 10s ' + i)
-      }
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-      console.log('les sockets \n ', this.socketsReadystate())
-    }
   }
 }

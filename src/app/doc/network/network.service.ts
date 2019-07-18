@@ -44,7 +44,7 @@ export class NetworkService implements OnDestroy {
     private zone: NgZone,
     private route: ActivatedRoute,
     private cryptoService: CryptoService,
-    private pulsarService: PulsarService
+    public pulsarService: PulsarService
   ) {
     this.botUrls = []
     this.subs = []
@@ -92,7 +92,7 @@ export class NetworkService implements OnDestroy {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
         if (!recipientId && this._pulsarOn && streamId.subtype !== StreamsSubtype.METADATA_FIXDATA) {
           console.log('setMessageIn NOW PULSAR', streamId)
-          this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
+          this.pulsarService.sendMessageToPulsar(streamId, this.wg.key, content)
         }
         this.cryptoService.crypto
           .encrypt(content)
@@ -109,7 +109,7 @@ export class NetworkService implements OnDestroy {
           streamId.type !== Streams.COLLABORATORS
         ) {
           console.log('setMessageIn NOW PULSAR', streamId)
-          this.pulsarService.sendMessageToPulsar(streamId.type, this.wg.key, content)
+          this.pulsarService.sendMessageToPulsar(streamId, this.wg.key, content)
         }
       }
     })
@@ -182,9 +182,7 @@ export class NetworkService implements OnDestroy {
     this.wg.join(key)
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       // for the one who create the doc
-      console.log('Le doc au sein de network service : ', doc)
       this._pulsarOn = doc.pulsar || this._pulsarOn
-      console.log('Le bool au sein de network service :', this._pulsarOn)
       if (this._pulsarOn) {
         this.pulsarConnect(this.wg.id)
         return
@@ -210,7 +208,7 @@ export class NetworkService implements OnDestroy {
   }
 
   pulsarConnect(id: number) {
-    console.log('PULSSAAAAAAAAAAAAAAAAAAAAR ONNNNNNNNNNNNNNNNNNNNNNNNNNNNn')
+    console.log('PULSSAAAAAAAAAAAAAAAAAAAAR ONNNNNdNNNNNNNNNNNNNNNNNNNNNNNn')
     this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
       try {

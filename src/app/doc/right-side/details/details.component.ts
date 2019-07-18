@@ -43,10 +43,9 @@ export class DetailsComponent implements OnInit {
   public keyserver: boolean
   public logsTooltip: string
   public pulsarWsStateArray: string[] = ['', '', '', '']
-  public infoWsVisibility: boolean
+  public pulsarWsLogsStateArray: string[] = ['', '']
 
   ngOnInit() {
-    this.infoWsVisibility = false
     this.pulsarService.pulsarWebsockets$.subscribe((wsArray) => {
       this.pulsarWsStateArray = []
       for (const ws of wsArray.webSocketsArray) {
@@ -70,6 +69,31 @@ export class DetailsComponent implements OnInit {
       this.cd.detectChanges()
 
       console.log(this.pulsarWsStateArray)
+    })
+
+    this.pulsarService.pulsarWebsocketsLogs$.subscribe((wsArrayLogs) => {
+      this.pulsarWsLogsStateArray = []
+      console.log(wsArrayLogs)
+      for (const ws of wsArrayLogs.webSocketsArray) {
+        switch (ws.readyState) {
+          case 0:
+            this.pulsarWsLogsStateArray.push('blue')
+            break
+          case 1:
+            this.pulsarWsLogsStateArray.push('green')
+            break
+          case 2:
+            this.pulsarWsLogsStateArray.push('yellow')
+            break
+          case 3:
+            this.pulsarWsLogsStateArray.push('red')
+            break
+          default:
+            break
+        }
+      }
+      this.cd.detectChanges()
+      console.log(this.pulsarWsLogsStateArray)
     })
   }
 
@@ -116,11 +140,5 @@ export class DetailsComponent implements OnInit {
   updatePulsar(event) {
     this.doc.pulsar = event.checked
     console.log('le doc après le toggle', this.doc)
-    // document.getElementById('pulsarWsButton').display = 'display:block;'
-    // document.getElementById("pulsarButton").isDisabled = true
-  }
-
-  onClickWsInfo() {
-    this.infoWsVisibility = !this.infoWsVisibility
   }
 }

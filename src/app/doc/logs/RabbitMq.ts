@@ -1,8 +1,9 @@
 import { StompConfig, StompService } from '@stomp/ng2-stompjs'
-
 import { environment } from '../../../environments/environment'
 
-export class RabbitMq extends StompService {
+import { ILogDatabase } from './ILogDatabase'
+
+export class RabbitMq extends StompService implements ILogDatabase {
   private queue: string
   private key: string
 

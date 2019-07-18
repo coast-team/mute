@@ -1,9 +1,15 @@
+import { PulsarService } from '../network/pulsar.service'
 import { Database } from './Database'
+import { ILogDatabase } from './ILogDatabase'
 import { IndexdbDatabase } from './IndexdbDatabase'
+import { Pulsar } from './Pulsar'
 import { RabbitMq } from './RabbitMq'
 
 export abstract class LogsStrategy {
-  protected dbDistante: RabbitMq
+  // protected dbDistante: RabbitMq
+  // protected dbDistante: ILogDatabase
+  protected dbDistante: Pulsar
+
   protected dbLocal: Database
 
   protected docKey: string
@@ -20,7 +26,11 @@ export abstract class LogsStrategy {
     this.dbLocal = new IndexdbDatabase()
     this.dbLocal.init('muteLogs-' + this.docKey)
 
-    this.dbDistante = new RabbitMq(this.docKey)
+    this.dbDistante = new Pulsar(this.docKey)
+  }
+
+  setStreamLogsPulsar(pulsarService: PulsarService) {
+    this.dbDistante.subscribeToWs(pulsarService)
   }
 
   public setShareLogs(share: boolean, state: Map<number, number>) {

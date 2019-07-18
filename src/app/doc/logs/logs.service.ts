@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
 import { environment } from '../../../environments/environment'
 import { Doc } from '../../core/Doc'
+import { PulsarService } from '../network/pulsar.service'
 import { LogsStrategy } from './LogsStrategy'
 import { SendAllLogsStrategy } from './SendAllLogsStrategy'
 import { SendIfActivateLogsStrategy } from './SendIfActivateLogsStrategy'
@@ -27,6 +28,10 @@ export class LogsService implements OnDestroy {
         this.setLogsStrategy('sendall')
       })
     )
+  }
+
+  setStreamLogsPulsar(pulsarService: PulsarService) {
+    this.strategy.setStreamLogsPulsar(pulsarService)
   }
 
   log(obj: object) {
