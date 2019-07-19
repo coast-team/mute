@@ -234,7 +234,6 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.updateDisplayedColumns()
     this.isFinishOpen = false
     folder.fetchDocs().then((docs) => {
-      console.log('openfolder', docs)
       this.docs = docs
       this.docsSubject.next(this.docs)
       this.isFinishOpen = true

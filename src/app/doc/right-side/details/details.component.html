@@ -39,13 +39,8 @@
     </mat-expansion-panel-header>
     <div id="pulsarWsBlock">
         <div class="pulsarWs">
-          <mat-icon id = "ws1Logs" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">lens</mat-icon>
+          <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">lens</mat-icon>
           <span class="spaceIconText">Metadata Producer</span>
-        </div>
-
-        <div class="pulsarWs">
-          <mat-icon id = "ws2logs" [ngStyle]="{'color': pulsarWsLogsStateArray[1]}" [inline]="true">lens</mat-icon>
-          <span class="spaceIconText">Metadata Consummer</span>
         </div>
 
     </div>
@@ -68,22 +63,22 @@
       </mat-expansion-panel-header>
       <div id="pulsarWsBlock">
           <div class="pulsarWs">
-            <mat-icon id = "ws1" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">lens</mat-icon>
+            <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">lens</mat-icon>
             <span class="spaceIconText">Metadata Producer</span>
           </div>
 
           <div class="pulsarWs">
-            <mat-icon id = "ws2" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">lens</mat-icon>
+            <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">lens</mat-icon>
             <span class="spaceIconText">Metadata Consummer</span>
           </div>
 
           <div class="pulsarWs">
-            <mat-icon id = "ws3" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">lens</mat-icon>
+            <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">lens</mat-icon>
             <span class="spaceIconText">Doc-content Producer</span>
           </div>
           
           <div class="pulsarWs">
-            <mat-icon id = "ws4" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">lens</mat-icon>
+            <mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">lens</mat-icon>
           <span class="spaceIconText">Doc-content Consummer</span>
           </div>
 

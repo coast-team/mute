@@ -42,6 +42,7 @@ export class DetailsComponent implements OnInit {
   public coniks: boolean
   public keyserver: boolean
   public logsTooltip: string
+  public wsStateInfoToolTip: string
   public pulsarWsStateArray: string[] = ['', '', '', '']
   public pulsarWsLogsStateArray: string[] = ['', '']
 
@@ -66,14 +67,13 @@ export class DetailsComponent implements OnInit {
             break
         }
       }
-      this.cd.detectChanges()
-
-      console.log(this.pulsarWsStateArray)
+      if (!this.cd['destroyed']) {
+        this.cd.detectChanges()
+      }
     })
 
     this.pulsarService.pulsarWebsocketsLogs$.subscribe((wsArrayLogs) => {
       this.pulsarWsLogsStateArray = []
-      console.log(wsArrayLogs)
       for (const ws of wsArrayLogs.webSocketsArray) {
         switch (ws.readyState) {
           case 0:
@@ -92,8 +92,9 @@ export class DetailsComponent implements OnInit {
             break
         }
       }
-      this.cd.detectChanges()
-      console.log(this.pulsarWsLogsStateArray)
+      if (!this.cd['destroyed']) {
+        this.cd.detectChanges()
+      }
     })
   }
 
@@ -120,6 +121,8 @@ export class DetailsComponent implements OnInit {
       this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
     }
     this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
+
+    this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
   }
 
   showCard(collab: ICollaborator) {
@@ -139,6 +142,5 @@ export class DetailsComponent implements OnInit {
 
   updatePulsar(event) {
     this.doc.pulsar = event.checked
-    console.log('le doc après le toggle', this.doc)
   }
 }

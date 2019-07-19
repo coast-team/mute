@@ -20,7 +20,7 @@ export class Pulsar implements ILogDatabase {
 
   send(data: object): void {
     const obj = JSON.stringify(data)
-    console.log('PULSAR DATA', obj)
+    console.log('PULSAR LOGS DATA', obj)
     this.pulsarService.sendLogsToPulsar(this.key, obj)
   }
 }

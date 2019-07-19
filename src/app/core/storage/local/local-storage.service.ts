@@ -117,11 +117,8 @@ export class LocalStorageService extends Storage implements IStorage {
   async delete(file: File): Promise<void> {
     this.check()
     await new Promise((resolve, reject) => {
-      console.log('destroy', file)
-
       if (file.isDoc) {
         const doc = file as Doc
-        console.log('doc KEY ', doc.signalingKey)
         window.localStorage.removeItem('msgId-401-' + doc.signalingKey)
         window.localStorage.removeItem('msgId-402-' + doc.signalingKey)
 
@@ -135,7 +132,6 @@ export class LocalStorageService extends Storage implements IStorage {
     switch (folder.id) {
       case this.local.id: {
         const [localDocs, botDocs] = [await this.fetchDocsFromFolders([this.local]), await this.botStorage.fetchDocs()]
-        console.log('locamdoooooc', localDocs)
         for (const bd of botDocs) {
           let ld = localDocs.find((d) => d.signalingKey === bd.signalingKey)
           if (ld) {

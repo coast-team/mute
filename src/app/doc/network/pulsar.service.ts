@@ -60,16 +60,15 @@ export class PulsarService implements OnDestroy {
 
   set socketsLogs(topic: string) {
     const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/Logs-' + topic)
-    const sockEcoute = this.createWsEcoute(topic, 3)
+
+    this.socketPostConfig(sockPost, 3, topic)
 
     this._socketsLogs.push(sockPost)
-    this._socketsLogs.push(sockEcoute)
     this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
     console.log(this._socketsLogs)
   }
 
   sendMessageToPulsar(streamId: StreamId, keyTopic: string, content: Uint8Array) {
-    console.log("les sockets avant l'envoi", this.socketsReadystate())
     const content64 = this.arrayBufferToBase64(content)
     const message = {
       payload: btoa(content64),
@@ -109,7 +108,6 @@ export class PulsarService implements OnDestroy {
   }
 
   sendLogsToPulsar(keyTopic: string, obj: string) {
-    console.log(this._socketsLogs)
     const message = {
       payload: btoa(obj),
       properties: {
@@ -207,19 +205,22 @@ export class PulsarService implements OnDestroy {
       } else {
         urlEnd = (docType + i).toString()
       }
+      console.log('event code', event.code)
       if (event.reason !== 'networkService') {
-        setTimeout(() => {
-          const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + urlEnd + '-' + topic)
-          this.socketPostConfig(newWs, i, topic)
-          sock[sockNumber] = newWs
+        if (event.code !== 1006) {
+          setTimeout(() => {
+            const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + urlEnd + '-' + topic)
+            this.socketPostConfig(newWs, i, topic)
+            sock[sockNumber] = newWs
 
-          console.log('On refait une socket dans 10s', sock)
+            console.log('On refait une socket dans 10s oui', sock)
 
+            this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+            this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+          }, 10000)
           this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
           this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-        }, 10000)
-        this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
-        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+        }
       }
       this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
@@ -239,10 +240,10 @@ export class PulsarService implements OnDestroy {
     }
 
     sockEcoute.onmessage = (messageSent: MessageEvent) => {
-      console.log('MESSAGE SENT', messageSent)
+      // console.log('MESSAGE RECEIVED', messageSent)
       const receiveMsg = JSON.parse(messageSent.data)
       const streamId = Number(receiveMsg.properties.streamType)
-      console.log(receiveMsg)
+      console.log('DATA RECEIVED', receiveMsg)
 
       let urlEnd: string
 
@@ -262,25 +263,29 @@ export class PulsarService implements OnDestroy {
       this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
 
+      console.log('event code', event.code)
+
       console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
       if (event.reason !== 'networkService') {
-        setTimeout(() => {
-          const newWs = this.createWsEcoute(topic, i)
-          this.socketEcouteConfig(newWs, i, topic)
-          if (i === 1) {
-            this._sockets[1] = newWs
-          } else if (i === 2) {
-            this._sockets[3] = newWs
-          } else if (i === 3) {
-            this._socketsLogs[1] = newWs
-          }
+        if (event.code !== 1006) {
+          setTimeout(() => {
+            const newWs = this.createWsEcoute(topic, i)
+            this.socketEcouteConfig(newWs, i, topic)
+            if (i === 1) {
+              this._sockets[1] = newWs
+            } else if (i === 2) {
+              this._sockets[3] = newWs
+            } else if (i === 3) {
+              this._socketsLogs[1] = newWs
+            }
+            this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
+            this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
+          }, 10000)
           this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
           this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
-        }, 10000)
-        this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
-        this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
 
-        console.log('On refait une socket ecoute dans 10s ' + i)
+          console.log('On refait une socket ecoute dans 10s ' + i)
+        }
       }
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
       console.log('les sockets \n ', this.socketsReadystate())
