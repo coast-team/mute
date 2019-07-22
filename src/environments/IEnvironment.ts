@@ -54,4 +54,7 @@ export interface IEnvironment {
       }
     }
   }
+  pulsar?: {
+    wsURL: string
+  }
 }

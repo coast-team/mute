@@ -2,6 +2,7 @@ import { HostListener, Injectable, OnDestroy } from '@angular/core'
 import { StreamId, Streams, StreamsSubtype } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
 import { Doc } from 'src/app/core/Doc'
+import { environment } from 'src/environments/environment'
 import { Stream } from 'stream'
 @Injectable()
 export class PulsarService implements OnDestroy {
@@ -45,7 +46,7 @@ export class PulsarService implements OnDestroy {
     this.getMessageFromLocalStorage(topic)
 
     for (let i = 1; i < 3; i++) {
-      const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + (docType + i) + '-' + topic)
+      const sockPost = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/${docType + i}-${topic}`)
       const sockEcoute = this.createWsEcoute(topic, i)
 
       this.socketPostConfig(sockPost, i, topic)
@@ -59,7 +60,7 @@ export class PulsarService implements OnDestroy {
   }
 
   set socketsLogs(topic: string) {
-    const sockPost = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/Logs-' + topic)
+    const sockPost = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/Logs-${topic}`)
 
     this.socketPostConfig(sockPost, 3, topic)
 
@@ -141,11 +142,9 @@ export class PulsarService implements OnDestroy {
     msgIdFromStorage = window.localStorage.getItem('msgId-' + urlEnd + '-' + topic)
     // if (true) {
     if (msgIdFromStorage === null || msgIdFromStorage === 'null') {
-      return new WebSocket('ws://localhost:8080/ws/v2/reader/persistent/public/default/' + urlEnd + '-' + topic + '/?messageId=earliest')
+      return new WebSocket(`${environment.pulsar.wsURL}/reader/persistent/public/default/${urlEnd}-${topic}/?messageId=earliest`)
     } else {
-      return new WebSocket(
-        'ws://localhost:8080/ws/v2/reader/persistent/public/default/' + urlEnd + '-' + topic + '/?messageId=' + msgIdFromStorage
-      )
+      return new WebSocket(`${environment.pulsar.wsURL}/reader/persistent/public/default/${urlEnd}-${topic}/?messageId=${msgIdFromStorage}`)
     }
   }
 
@@ -209,7 +208,7 @@ export class PulsarService implements OnDestroy {
       if (event.reason !== 'networkService') {
         if (event.code !== 1006) {
           setTimeout(() => {
-            const newWs = new WebSocket('ws://localhost:8080/ws/v2/producer/persistent/public/default/' + urlEnd + '-' + topic)
+            const newWs = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/${urlEnd}-${topic}`)
             this.socketPostConfig(newWs, i, topic)
             sock[sockNumber] = newWs
 

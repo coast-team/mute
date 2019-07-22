@@ -58,4 +58,7 @@ export const environment: IEnvironment = {
       },
     },
   },
+  pulsar: {
+    wsURL: 'ws://localhost:8080/ws/v2',
+  },
 }
