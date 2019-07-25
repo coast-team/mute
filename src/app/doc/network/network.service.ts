@@ -13,7 +13,6 @@ import { EncryptionType } from '../../core/crypto/EncryptionType'
 import { Doc } from '../../core/Doc'
 import { Message } from './message_proto'
 import { PulsarService } from './pulsar.service'
-import { NavComponent } from '/home/ishara/Documents/mutePulsar/src/app/shared/nav/nav.component'
 
 @Injectable()
 export class NetworkService implements OnDestroy {
@@ -90,7 +89,13 @@ export class NetworkService implements OnDestroy {
   setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
-        if (!recipientId && this._pulsarOn && streamId.subtype !== StreamsSubtype.METADATA_FIXDATA) {
+        if (
+          !recipientId &&
+          this._pulsarOn &&
+          streamId.subtype !== StreamsSubtype.METADATA_FIXDATA &&
+          streamId.subtype !== StreamsSubtype.DOCUMENT_QUERY &&
+          streamId.subtype !== StreamsSubtype.DOCUMENT_REPLY
+        ) {
           console.log('setMessageIn NOW PULSAR', streamId)
           this.pulsarService.sendMessageToPulsar(streamId, this.wg.key, content)
         }
@@ -106,7 +111,9 @@ export class NetworkService implements OnDestroy {
           !recipientId &&
           this._pulsarOn &&
           streamId.subtype !== StreamsSubtype.METADATA_FIXDATA &&
-          streamId.type !== Streams.COLLABORATORS
+          streamId.type !== Streams.COLLABORATORS &&
+          streamId.subtype !== StreamsSubtype.DOCUMENT_QUERY &&
+          streamId.subtype !== StreamsSubtype.DOCUMENT_REPLY
         ) {
           console.log('setMessageIn NOW PULSAR', streamId)
           this.pulsarService.sendMessageToPulsar(streamId, this.wg.key, content)
