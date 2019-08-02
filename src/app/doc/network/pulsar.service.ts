@@ -1,11 +1,9 @@
-import { HostListener, Injectable, OnDestroy } from '@angular/core'
+import { Injectable, OnDestroy } from '@angular/core'
 import { StreamId, Streams, StreamsSubtype } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
-import { Doc } from 'src/app/core/Doc'
 import { environment } from 'src/environments/environment'
-import { Stream } from 'stream'
 @Injectable()
-export class PulsarService implements OnDestroy {
+export class PulsarService {
   private messageArrayMetadata = []
   private messageArrayDocContent = []
   private messageArrayLogs = []
@@ -23,8 +21,6 @@ export class PulsarService implements OnDestroy {
     this.pulsarWebSocketsLogsSubject = new Subject()
   }
 
-  ngOnDestroy() {}
-
   get pulsarMessage$(): Observable<{ streamId: Streams; content: Uint8Array }> {
     return this.pulsarMessageSubject.asObservable()
   }
@@ -39,7 +35,6 @@ export class PulsarService implements OnDestroy {
 
   set sockets(topic: string) {
     const docType = 400
-    const encoder = new TextEncoder()
 
     this.closeSocketConnexion('setsocket') // in case websockets are not closed yet
 
@@ -204,9 +199,12 @@ export class PulsarService implements OnDestroy {
       } else {
         urlEnd = (docType + i).toString()
       }
+      console.log('Raison fermeture socket', event.reason)
       console.log('event code', event.code)
       if (event.reason !== 'networkService') {
+        // closed in network Service
         if (event.code !== 1006) {
+          // 1006 abnormal closure: in that case, you will not be able to connect ever again
           setTimeout(() => {
             const newWs = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/${urlEnd}-${topic}`)
             this.socketPostConfig(newWs, i, topic)
@@ -217,12 +215,8 @@ export class PulsarService implements OnDestroy {
             this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
             this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
           }, 10000)
-          this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
-          this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
         }
       }
-      this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
-      this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
       console.log('les sockets \n', this.socketsReadystate())
     }
   }

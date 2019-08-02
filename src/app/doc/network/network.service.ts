@@ -92,7 +92,6 @@ export class NetworkService implements OnDestroy {
         if (
           !recipientId &&
           this._pulsarOn &&
-          streamId.subtype !== StreamsSubtype.METADATA_FIXDATA &&
           streamId.subtype !== StreamsSubtype.DOCUMENT_QUERY &&
           streamId.subtype !== StreamsSubtype.DOCUMENT_REPLY
         ) {
