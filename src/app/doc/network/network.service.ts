@@ -230,7 +230,6 @@ export class NetworkService implements OnDestroy {
   }
 
   pulsarConnect(id: number) {
-    console.log('PULSSAAAAAAAAAAAAAAAAAAAAR ONNNNNNNNNNNNNNNNNNNNNNNNNNNn')
     this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
       try {
