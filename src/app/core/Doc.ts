@@ -69,8 +69,8 @@ export class Doc extends File {
 
   constructor(storage: IStorage, title: string, parentFolderId?: string) {
     super(storage, title, parentFolderId)
-    this.localContentChanges = new Subject()
-    this.remoteContentChanges = new Subject()
+    this.localContentChanges = new Subject<IDocContentOperation[]>()
+    this.remoteContentChanges = new Subject<IDocContentOperation[]>()
     this._title = title || DEFAULT_TITLE
     this._shareLogs = false
     this._shareLogsVector = new Map()

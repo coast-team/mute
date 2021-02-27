@@ -28,7 +28,7 @@
               "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
               "src/assets/jio-latest.js"
             ],
-            "allowedCommonJsDependencies": ["uuid", "codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "tui-editor"]
+            "allowedCommonJsDependencies": ["codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "tui-editor"]
           },
           "configurations": {
             "ovhdev": {
