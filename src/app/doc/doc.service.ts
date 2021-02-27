@@ -12,6 +12,7 @@ import {
   TextDelete,
   TextInsert,
 } from '@coast-team/mute-core'
+import { SessionParameters } from '@coast-team/mute-core/dist/types/src/MuteCore'
 import { KeyState } from '@coast-team/mute-crypto'
 import { WebGroupState } from 'netflux'
 import { merge, Observable, Subject, Subscription } from 'rxjs'
@@ -97,7 +98,7 @@ export class DocService implements OnDestroy {
     })
 
     // Initialize MuteCore with your profile data, document metadata and content
-    this.muteCore = MuteCoreFactory.createMuteCore({
+    const muteCoreOptions: SessionParameters = {
       strategy: environment.crdtStrategy,
       profile: {
         displayName: this.settings.profile.displayName,
@@ -122,7 +123,8 @@ export class DocService implements OnDestroy {
       metaPulsar: {
         activatePulsar: this.doc.pulsar,
       },
-    })
+    }
+    this.muteCore = MuteCoreFactory.createMuteCore(muteCoreOptions)
 
     this.initLogs()
 
