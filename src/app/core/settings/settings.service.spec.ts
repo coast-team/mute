@@ -1,10 +1,10 @@
-import { async } from '@angular/core/testing'
+import { waitForAsync } from '@angular/core/testing'
 import { SettingsService } from './profile.service'
 
 describe('SettingsService', () => {
   let settings: SettingsService
 
-  beforeEach(async(() => (settings = new SettingsService())))
+  beforeEach(waitForAsync(() => (settings = new SettingsService())))
 
   it('Correct Init', () => expect(settings).toBeTruthy())
 

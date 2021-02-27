@@ -91,7 +91,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
   async save(file: File): Promise<void> {
     this.check()
-    await new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (file.id) {
         this.db.put(file.id, file.serialize()).then(
           () => resolve(),
@@ -119,7 +119,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
   async delete(file: File): Promise<void> {
     this.check()
-    await new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       if (file.isDoc) {
         const doc = file as Doc
         window.localStorage.removeItem('msgId-401-' + doc.signalingKey)
@@ -200,14 +200,14 @@ export class LocalStorageService extends Storage implements IStorage {
           ({ data }) => {
             if (data) {
               if (data.rows.length === 0) {
-                resolve()
+                resolve(undefined)
               } else if (data.rows.length === 1) {
                 resolve(Doc.deserialize(this, data.rows[0].id, data.rows[0].value))
               } else {
                 reject(new Error(`Error fetching doc: more than 1 document exists with the following key: ${key}`))
               }
             }
-            resolve()
+            resolve(undefined)
           },
           (err) => reject(err)
         )
@@ -255,7 +255,7 @@ export class LocalStorageService extends Storage implements IStorage {
               resolve(body)
             }
           } else {
-            resolve()
+            resolve(undefined)
           }
         },
         (err) => reject(err)
@@ -266,7 +266,7 @@ export class LocalStorageService extends Storage implements IStorage {
   async saveDocContent(doc: Doc, body: StateTypes): Promise<any> {
     doc.modified = new Date()
     await this.save(doc)
-    return await new Promise((resolve, reject) => {
+    return await new Promise<void>((resolve, reject) => {
       this.db.putAttachment(doc.id, 'body', body.toJSON()).then(
         () => resolve(),
         (err) => reject(err)

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 import { DocHistoryService } from '../doc-history.service'
 import { CollaboratorsComponent } from './collaborators.component'
@@ -10,19 +10,21 @@ let fixture: ComponentFixture<CollaboratorsComponent>
 const docHistoryService = undefined
 
 describe('CollaboratorsComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [CollaboratorsComponent],
-      imports: [RouterTestingModule],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: DocHistoryService, useValue: docHistoryService }],
-    })
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(CollaboratorsComponent)
-        comp = fixture.componentInstance
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CollaboratorsComponent],
+        imports: [RouterTestingModule],
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        providers: [{ provide: DocHistoryService, useValue: docHistoryService }],
       })
-  }))
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(CollaboratorsComponent)
+          comp = fixture.componentInstance
+        })
+    })
+  )
   tests()
 })
 
