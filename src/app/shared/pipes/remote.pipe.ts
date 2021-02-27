@@ -7,8 +7,8 @@ import { DateEnhancedPipe } from './dateEnhanced.pipe'
   name: 'muteRemote',
 })
 export class RemotePipe extends DateEnhancedPipe implements PipeTransform {
-  transform(doc: Doc): string {
-    if (doc) {
+  transform(doc: any, timezone: string = null): any {
+    if (doc instanceof Doc) {
       if (doc.remotes.length === 0) {
         return 'No'
       } else if (doc.remotes[0].synchronized) {

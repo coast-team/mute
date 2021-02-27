@@ -28,13 +28,7 @@
               "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
               "src/assets/jio-latest.js"
             ],
-            "allowedCommonJsDependencies": [
-              "uuid",
-              "hammerjs/hammer",
-              "codemirror/mode/javascript/javascript",
-              "codemirror/mode/gfm/gfm",
-              "tui-editor"
-            ]
+            "allowedCommonJsDependencies": ["uuid", "codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "tui-editor"]
           },
           "configurations": {
             "ovhdev": {
@@ -47,7 +41,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": false,
@@ -71,7 +64,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -95,7 +87,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,

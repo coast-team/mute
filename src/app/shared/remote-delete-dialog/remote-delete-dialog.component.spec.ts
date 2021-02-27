@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { RemoteDeleteDialogComponent } from './remote-delete-dialog.component'
 
@@ -6,11 +6,13 @@ describe('RemoteDeleteDialogComponent', () => {
   let component: RemoteDeleteDialogComponent
   let fixture: ComponentFixture<RemoteDeleteDialogComponent>
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [RemoteDeleteDialogComponent],
-    }).compileComponents()
-  }))
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RemoteDeleteDialogComponent],
+      }).compileComponents()
+    })
+  )
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RemoteDeleteDialogComponent)

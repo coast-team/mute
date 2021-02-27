@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { AppComponent } from './app.component'
@@ -16,18 +16,20 @@ let comp: AppComponent
 let fixture: ComponentFixture<AppComponent>
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent, RouterOutletStubComponent],
-    })
-
-      .compileComponents()
-      .then(() => {
-        fixture = TestBed.createComponent(AppComponent)
-        comp = fixture.componentInstance
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [RouterTestingModule],
+        declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent, RouterOutletStubComponent],
       })
-  }))
+
+        .compileComponents()
+        .then(() => {
+          fixture = TestBed.createComponent(AppComponent)
+          comp = fixture.componentInstance
+        })
+    })
+  )
   tests()
 })
 
