@@ -13,7 +13,7 @@ if (version !== '' && version[0] === 'v') {
 
 // Updata appData in the Service Worker
 swConfig.appData.version = version
-fs.writeFile(swConfigFileName, JSON.stringify(swConfig), function(err) {
+fs.writeFile(swConfigFileName, JSON.stringify(swConfig), function (err) {
   if (err) {
     return console.log(err)
   }
@@ -22,7 +22,7 @@ fs.writeFile(swConfigFileName, JSON.stringify(swConfig), function(err) {
 
 // Update appData in app-data.ts file
 appData = appData.replace(/version: '.*'/, `version: '${version}'`)
-fs.writeFile(appDataFileName, appData, function(err) {
+fs.writeFile(appDataFileName, appData, function (err) {
   if (err) {
     return console.log(err)
   }

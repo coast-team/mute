@@ -26,10 +26,10 @@ export class Doc extends File {
 
   public signalingKey: string
   public cryptoKey: string
-  public remotes: Array<{
+  public remotes: {
     id: string
     synchronized?: Date
-  }>
+  }[]
   public localContentChanges: Subject<IDocContentOperation[]>
   public remoteContentChanges: Subject<IDocContentOperation[]>
 

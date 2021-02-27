@@ -93,7 +93,10 @@ export class LocalStorageService extends Storage implements IStorage {
     this.check()
     await new Promise((resolve, reject) => {
       if (file.id) {
-        this.db.put(file.id, file.serialize()).then(() => resolve(), (err) => reject(err))
+        this.db.put(file.id, file.serialize()).then(
+          () => resolve(),
+          (err) => reject(err)
+        )
       } else {
         this.db.post(file.serialize()).then(
           (id: string) => {
@@ -124,7 +127,10 @@ export class LocalStorageService extends Storage implements IStorage {
 
         IndexdbDatabase.destroy('muteLogs-' + doc.signalingKey)
       }
-      this.db.remove(file.id).then(() => resolve(), (err: Error) => reject(err))
+      this.db.remove(file.id).then(
+        () => resolve(),
+        (err: Error) => reject(err)
+      )
     })
   }
 
@@ -261,7 +267,10 @@ export class LocalStorageService extends Storage implements IStorage {
     doc.modified = new Date()
     await this.save(doc)
     return await new Promise((resolve, reject) => {
-      this.db.putAttachment(doc.id, 'body', body.toJSON()).then(() => resolve(), (err) => reject(err))
+      this.db.putAttachment(doc.id, 'body', body.toJSON()).then(
+        () => resolve(),
+        (err) => reject(err)
+      )
     })
   }
 

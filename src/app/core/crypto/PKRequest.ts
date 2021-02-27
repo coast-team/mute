@@ -20,16 +20,18 @@ export class PKRequest {
   async register(login: string, deviceID: string, pk: string) {
     return new Promise((resolve, reject) => {
       if (this.urlPrefix) {
-        this.http.post<IUserPK>(this.urlPrefix, { login, deviceID, pk } as IUserPK).subscribe(
-          (userPK) => {
-            log.info('Signing KeyPair', `Public Key REGISTERED Successfully for ${userPK.login}:${userPK.deviceID}`, userPK.pk)
-            resolve()
-          },
-          (err) => {
-            log.error('Signing KeyPair', `Public Key REGISTERATION ERROR for ${login}:${deviceID}`, err)
-            reject(err)
-          }
-        )
+        this.http
+          .post<IUserPK>(this.urlPrefix, { login, deviceID, pk } as IUserPK)
+          .subscribe(
+            (userPK) => {
+              log.info('Signing KeyPair', `Public Key REGISTERED Successfully for ${userPK.login}:${userPK.deviceID}`, userPK.pk)
+              resolve()
+            },
+            (err) => {
+              log.error('Signing KeyPair', `Public Key REGISTERATION ERROR for ${login}:${deviceID}`, err)
+              reject(err)
+            }
+          )
       } else {
         Promise.reject(new Error('Keyserver property is not defined'))
       }
@@ -66,16 +68,18 @@ export class PKRequest {
     return new Promise((resolve, reject) => {
       if (this.urlPrefix) {
         const url = `${this.urlPrefix}/${login}/${deviceID}`
-        this.http.put<IPK>(url, { pk } as IPK).subscribe(
-          () => {
-            log.info('Signing KeyPair', `Public Key UPDATED in keyserver for ${login}:${deviceID}`, pk)
-            resolve()
-          },
-          (err) => {
-            log.info('Signing KeyPair', `Public Key NOT UPDATED in keyserver for ${login}:${deviceID}`)
-            reject(err)
-          }
-        )
+        this.http
+          .put<IPK>(url, { pk } as IPK)
+          .subscribe(
+            () => {
+              log.info('Signing KeyPair', `Public Key UPDATED in keyserver for ${login}:${deviceID}`, pk)
+              resolve()
+            },
+            (err) => {
+              log.info('Signing KeyPair', `Public Key NOT UPDATED in keyserver for ${login}:${deviceID}`)
+              reject(err)
+            }
+          )
       } else {
         Promise.reject(new Error('Keyserver property is not defined'))
       }

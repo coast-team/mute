@@ -66,7 +66,6 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     MatToolbarModule,
     MatTooltipModule,
   ],
-  entryComponents: [ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent],
   providers: [DatePipe],
   declarations: [
     ProfileComponent,
