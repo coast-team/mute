@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import { MatDialog } from '@angular/material/snack-bar'
+import { MatDialog } from '@angular/material/dialog'
 
 import { Subscription } from 'rxjs'
 import { Profile } from '../../core/settings/Profile'
