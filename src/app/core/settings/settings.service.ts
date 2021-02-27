@@ -1,5 +1,5 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core'
-import { AuthService } from 'ng2-ui-auth'
+import { AuthService } from 'np2-ui-auth'
 import { Observable, Subject, Subscription } from 'rxjs'
 
 import { Folder } from '../Folder'

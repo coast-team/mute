@@ -54,7 +54,7 @@
     "loglevel": "^1.6.1",
     "mute-structs": "^1.1.0",
     "netflux": "^4.3.1",
-    "ng2-ui-auth": "^9.2.1",
+    "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
     "protobufjs": "^6.8.8",
     "rxjs": "^6.6.6",
     "tui-editor": "^1.4.3",
