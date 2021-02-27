@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { RouterTestingModule } from '@angular/router/testing'
 import { SettingsService } from '../core/settings/settings.service'
 import { UiService } from '../core/ui/ui.service'

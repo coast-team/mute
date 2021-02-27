@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core'
-import { MatSnackBar } from '@angular/material'
+import { MatSnackBar } from '@angular/material/snack-bar'
 import { DomSanitizer } from '@angular/platform-browser'
 import { Subscription } from 'rxjs'
 
