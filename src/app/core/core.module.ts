@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
-import { JwtInterceptor, Ng2UiAuthModule } from 'ng2-ui-auth'
+import { JwtInterceptor, Ng2UiAuthModule } from 'np2-ui-auth'
 
 import { environment } from '../../environments/environment'
 import { CryptoService } from './crypto/crypto.service'
