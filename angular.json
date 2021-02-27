@@ -27,6 +27,13 @@
               "node_modules/bragi-browser/dist/bragi.min.js",
               "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
               "src/assets/jio-latest.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "uuid",
+              "hammerjs/hammer",
+              "codemirror/mode/javascript/javascript",
+              "codemirror/mode/gfm/gfm",
+              "tui-editor"
             ]
           },
           "configurations": {
