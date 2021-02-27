@@ -7,6 +7,5 @@ import { ToolbarComponent } from './toolbar/toolbar.component'
 @NgModule({
   imports: [SharedModule],
   declarations: [ToolbarComponent, DocsComponent],
-  entryComponents: [],
 })
 export class DocsModule {}

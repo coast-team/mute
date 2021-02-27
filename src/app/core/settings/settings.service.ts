@@ -198,24 +198,26 @@ export class SettingsService {
 
   private async readFromDB(lookingLogins: string[]): Promise<{ id: string; value: ISerialize } | undefined> {
     if (this.isDBAvailable) {
-      const rows = (await this.db.allDocs({
-        query: {
-          type: 'simple',
-          key: {
-            read_from: 'profile',
-            equal_match: ({ logins }: { logins: string[] }) => {
-              for (const l of lookingLogins) {
-                if (logins.includes(l)) {
-                  return true
+      const rows = (
+        await this.db.allDocs({
+          query: {
+            type: 'simple',
+            key: {
+              read_from: 'profile',
+              equal_match: ({ logins }: { logins: string[] }) => {
+                for (const l of lookingLogins) {
+                  if (logins.includes(l)) {
+                    return true
+                  }
                 }
-              }
-              return false
+                return false
+              },
             },
+            value: lookingLogins,
           },
-          value: lookingLogins,
-        },
-        select_list: selectList,
-      })).data.rows
+          select_list: selectList,
+        })
+      ).data.rows
       return rows && rows.length === 1 ? rows[0] : undefined
     }
   }

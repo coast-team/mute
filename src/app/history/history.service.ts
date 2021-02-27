@@ -17,7 +17,7 @@ export class HistoryService implements OnDestroy {
     return diff.diffChars(strA, strB)
   }
 
-  getOperations(doc: Doc): Promise<Array<IDelete | IInsert>> {
+  getOperations(doc: Doc): Promise<(IDelete | IInsert)[]> {
     return new Promise((resolve) => {
       doc
         .fetchContent()
@@ -64,7 +64,7 @@ export class HistoryService implements OnDestroy {
   getAuthors(doc: Doc): Promise<Author[]> {
     return new Promise((resolve) => {
       const docAuthors: Author[] = []
-      this.getOperations(doc).then((ops: Array<IDelete | IInsert>) => {
+      this.getOperations(doc).then((ops: (IDelete | IInsert)[]) => {
         for (const o of ops) {
           const author: Author = new Author(o.authorName, o.authorId, '#9CCC65')
 

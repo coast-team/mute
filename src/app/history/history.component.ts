@@ -20,7 +20,7 @@ import { TimelineComponent } from './timeline/timeline.component'
 })
 @Injectable()
 export class HistoryComponent implements OnInit, OnDestroy {
-  private operations: Array<IDelete | IInsert>
+  private operations: (IDelete | IInsert)[]
   private subscriptions: Subscription[]
   public docAuthors: Author[]
 
@@ -61,7 +61,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
           this.docAuthors = docAuths
         })
 
-        this.history.getOperations(this.doc).then((ops: Array<IDelete | IInsert>) => {
+        this.history.getOperations(this.doc).then((ops: (IDelete | IInsert)[]) => {
           this.operations = ops
           this.showVersion(this.operations.length)
         })

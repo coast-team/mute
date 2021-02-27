@@ -7,13 +7,6 @@
   "angularCompilerOptions": {
     "preserveWhitespaces": false
   },
-  "files": [
-    "main.ts",
-    "log.ts",
-    "polyfills.ts"
-  ],
-  "include": [
-    "src/**/*.d.ts",
-    "typings.d.ts"
-  ]
+  "files": ["main.ts", "log.ts", "polyfills.ts"],
+  "include": ["src/**/*.d.ts", "typings.d.ts"]
 }
