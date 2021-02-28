@@ -9,7 +9,8 @@
   "scripts": {
     "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute build script'",
     "ng": "ng",
-    "prestart": "pm2 startOrReload process.yml",
+    "prestart": "npm run sigver",
+    "sigver": "pm2 startOrReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "build": "ng build",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
@@ -18,6 +19,7 @@
     "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
     "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md -i 'CHANGELOG.md'",
     "test": "ng test",
+    "pree2e": "npm run sigver",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
     "cz": "npx git-cz",
