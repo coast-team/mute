@@ -4,9 +4,14 @@ const { SpecReporter } = require('jasmine-spec-reporter')
 
 exports.config = {
   allScriptsTimeout: 11000,
+
+  // Spec patterns are relative to the current working directory when
+  // protractor is called.
   specs: [
     './e2e/**/*.e2e-spec.ts'
   ],
+
+  // Capabilities to be passed to the webdriver instance.
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
@@ -15,8 +20,13 @@ exports.config = {
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
+
+  // Framework to use. Jasmine is recommended.
   framework: 'jasmine',
+
   SELENIUM_PROMISE_MANAGER: false,
+
+  // Options to be passed to Jasmine.
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 30000,
@@ -26,6 +36,10 @@ exports.config = {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
     })
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }))
+    jasmine.getEnv().addReporter(new SpecReporter({
+      spec: {
+        displayStacktrace: 'raw'
+      }
+    }))
   }
 }
