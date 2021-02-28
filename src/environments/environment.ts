@@ -18,8 +18,11 @@ export const environment: IEnvironment = {
     rtcConfiguration: {
       iceServers: [
         {
-          urls: ['stun:stun.l.google.com:19302'],
+          urls: 'stun:stun.stunprotocol.org'
         },
+        {
+          urls: 'stun:stun.framasoft.org'
+        }
       ],
     },
     signalingServer: 'ws://localhost:8010',
