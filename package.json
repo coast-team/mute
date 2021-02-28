@@ -1,8 +1,11 @@
 {
   "name": "mute",
   "version": "0.12.1",
-  "description": "peer to peer collaborative text editor with CRDT ",
+  "description": "peer to peer collaborative text editor with CRDT",
   "private": true,
+  "engines": {
+    "node": ">=10.13.0"
+  },
   "scripts": {
     "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute build script'",
     "ng": "ng",
