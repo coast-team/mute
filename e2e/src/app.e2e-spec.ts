@@ -1,10 +1,7 @@
 import { browser, protractor, ProtractorBrowser } from 'protractor'
+import { focusEditor, getEditorValue, waitUntilEditorNotEmpty } from './doc.po'
 
-import { focusEditor, getEditorValue } from './doc.po'
-
-describe('mute App', () => {
-
-  beforeEach(() => {})
+describe('basic checks (1 document, 1 browser)', () => {
 
   it('angular should stabilize on docs page', async () => {
     await browser.get('/')
@@ -37,27 +34,38 @@ describe('mute App', () => {
     expect(actualText).toEqual(expectedText)
   })
 
+})
+
+describe('browser consistency (1 document, 2 browsers)', () => {
+  let peerBrowser: ProtractorBrowser
+
+  beforeEach(async () => {
+    peerBrowser =  await browser.forkNewDriverInstance(true).ready
+  })
+
+  afterEach(async () => {
+    await peerBrowser.quit()
+  })
+
   it('should connect to peers', async () => {
     await browser.get('/test-e2e-connect')
     await browser.waitForAngular()
     const browserState = await browser.executeScript('return wg.state')
     expect(browserState).toEqual(1) // Connected
 
-    const peerBrowser: ProtractorBrowser =  await browser.forkNewDriverInstance(true).ready
+    await peerBrowser.get('/test-e2e-connect')
     await peerBrowser.waitForAngular()
-    const peerBrowserState = await browser.executeScript('return wg.state')
+    const peerBrowserState = await peerBrowser.executeScript('return wg.state')
     expect(peerBrowserState).toEqual(1) // Connected
-
-    await peerBrowser.quit()
   })
 
   it('should broadcast updates to peers', async () => {
     const expectedText1 = 'Hellow'
     const expectedText2 = 'Hello world !'
     await browser.get('/test-e2e-broadcast')
-    const peerBrowser: ProtractorBrowser =  await browser.forkNewDriverInstance(true).ready
-    await peerBrowser.waitForAngular()
+    await peerBrowser.get('/test-e2e-broadcast')
     await browser.waitForAngular()
+    await peerBrowser.waitForAngular()
 
     await focusEditor(browser)
     await focusEditor(peerBrowser)
@@ -73,13 +81,10 @@ describe('mute App', () => {
     await browser.waitForAngular()
     const actualText2 = await getEditorValue(browser)
     expect(actualText2).toEqual(expectedText2)
-
-    await peerBrowser.quit()
   })
 
   it('should retrieve updates from peers when connecting', async () => {
     const expectedText = 'Hello world !'
-    const peerBrowser: ProtractorBrowser =  await browser.forkNewDriverInstance().ready
 
     await browser.get('/test-e2e-retrieve-doc-on-connection')
     await browser.waitForAngular()
@@ -91,13 +96,10 @@ describe('mute App', () => {
     await peerBrowser.waitForAngular()
     const actualText = await getEditorValue(peerBrowser)
     expect(actualText).toEqual(expectedText)
-
-    await peerBrowser.quit()
   })
 
   it('should send updates to peers when connecting', async () => {
     const expectedText = 'Hello world !'
-    const peerBrowser: ProtractorBrowser =  await browser.forkNewDriverInstance().ready
 
     // Edit a document
     await browser.get('/test-e2e-share-updates-on-connection')
@@ -116,17 +118,10 @@ describe('mute App', () => {
 
     // Re-join the collaboration and share previous updates
     await browser.get('/test-e2e-share-updates-on-connection')
+    await browser.waitForAngular()
     await waitUntilEditorNotEmpty(peerBrowser) // Handle the updates
-    await peerBrowser.waitForAngular()
+    await peerBrowser.sleep(1000) // Leave some time to the app to store updates
     const actualText2 = await getEditorValue(peerBrowser)
     expect(actualText2).toEqual(expectedText)
-
-    await peerBrowser.quit()
   })
 })
-
-const waitUntilEditorNotEmpty = async (currentBrowser: ProtractorBrowser): Promise<void> => {
-  await currentBrowser.wait(async () => {
-    return (await getEditorValue(currentBrowser)) !== ''
-  })
-}
