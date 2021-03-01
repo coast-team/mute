@@ -16,9 +16,15 @@ function getEditorValue (browser: ProtractorBrowser): promise.Promise<string> {
   return browser.executeScript<string>(`${declareEditor}; return editor.getValue()`)
 }
 
+function hasEditorValue (browser: ProtractorBrowser, value?: string): promise.Promise<boolean> {
+  browser.wait(EC.presenceOf(editorElement), 5000)
+  return value
+    ? browser.executeScript<boolean>(`${declareEditor}; return editor.getValue() === ${value}`)
+    : browser.executeScript<boolean>(`${declareEditor}; return editor.getValue() !== ''`)
+}
+
 function waitUntilEditorNotEmpty (browser: ProtractorBrowser): promise.Promise<{}> {
-  const editorHasValue = async () => (await getEditorValue(browser)) !== ''
-  return browser.wait(editorHasValue, 5000, 'editor is empty')
+  return browser.wait(hasEditorValue(browser), 5000, 'editor is empty')
 }
 
 export {
