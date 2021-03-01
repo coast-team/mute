@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { DocHistoryService } from '../doc-history.service'
+import { HistoryService } from '../history.service'
 import { CollaboratorsComponent } from './collaborators.component'
 
 let comp: CollaboratorsComponent
 let fixture: ComponentFixture<CollaboratorsComponent>
 
-const docHistoryService = undefined
+const historyService = undefined
 
 describe('CollaboratorsComponent', () => {
   beforeEach(
@@ -16,7 +16,7 @@ describe('CollaboratorsComponent', () => {
         declarations: [CollaboratorsComponent],
         imports: [RouterTestingModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
-        providers: [{ provide: DocHistoryService, useValue: docHistoryService }],
+        providers: [{ provide: HistoryService, useValue: historyService }],
       })
         .compileComponents()
         .then(() => {

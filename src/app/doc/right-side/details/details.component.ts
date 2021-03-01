@@ -9,8 +9,19 @@ import { UiService } from '../../../core/ui/ui.service'
 import { PulsarService } from '../../network/pulsar.service'
 import { RichCollaborator } from '../../rich-collaborators'
 
-const defaultCollab = { avatar: '', displayName: '', login: '', deviceID: '' }
+const defaultCollab = {
+  avatar: '',
+  displayName: '',
+  login: '',
+  deviceID: ''
+}
 
+type Card = {
+  avatar: string
+  displayName: string
+  login: string
+  deviceID: string
+}
 @Component({
   selector: 'mute-details',
   templateUrl: './details.component.html',
@@ -31,12 +42,10 @@ const defaultCollab = { avatar: '', displayName: '', login: '', deviceID: '' }
   ],
 })
 export class DetailsComponent implements OnInit {
-  @Input()
-  doc: Doc
-  @Input()
-  collaborators: RichCollaborator[]
+  @Input() doc: Doc
+  @Input() collaborators: RichCollaborator[]
 
-  public card: { avatar: string; displayName: string; login: string; deviceID: string }
+  public card: Card
   public cardState: string
   public crypto: [string, string]
   public coniks: boolean
@@ -98,7 +107,7 @@ export class DetailsComponent implements OnInit {
     })
   }
 
-  constructor(private cd: ChangeDetectorRef, public ui: UiService, private pulsarService: PulsarService) {
+  constructor (private cd: ChangeDetectorRef, public ui: UiService, private pulsarService: PulsarService) {
     this.card = defaultCollab
     switch (environment.cryptography.type) {
       case EncryptionType.NONE:
@@ -125,22 +134,22 @@ export class DetailsComponent implements OnInit {
     this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
   }
 
-  showCard(collab: ICollaborator) {
+  showCard (collab: ICollaborator) {
     this.card = Object.assign({}, defaultCollab, collab)
     this.cardState = 'visible'
     this.cd.detectChanges()
   }
 
-  hideCard() {
+  hideCard () {
     this.cardState = 'void'
     this.cd.detectChanges()
   }
 
-  updateShareLogs(event) {
+  updateShareLogs (event) {
     this.doc.shareLogs = event.checked
   }
 
-  updatePulsar(event) {
+  updatePulsar (event) {
     this.doc.pulsar = event.checked
   }
 }

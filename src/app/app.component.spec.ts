@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { AppComponent } from './app.component'
-
-import { RouterOutletStubComponent } from '../testing/router-stubs'
+import { UiService } from './core/ui/ui.service'
+import { PulsarService } from './doc/network/pulsar.service'
 
 @Component({ selector: 'mute-toolbar', template: '' })
 class ToolbarStubComponent {}
@@ -20,7 +20,8 @@ describe('AppComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [RouterTestingModule],
-        declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent, RouterOutletStubComponent],
+        providers: [UiService],
+        declarations: [AppComponent, ToolbarStubComponent, DevLabelStubComponent],
       })
 
         .compileComponents()

@@ -1,24 +1,24 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { RemoteDeleteDialogComponent } from './remote-delete-dialog.component'
 
-describe('RemoteDeleteDialogComponent', () => {
+xdescribe('RemoteDeleteDialogComponent', () => {
   let component: RemoteDeleteDialogComponent
   let fixture: ComponentFixture<RemoteDeleteDialogComponent>
 
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [RemoteDeleteDialogComponent],
+        imports: [ HttpClientTestingModule ],
+        declarations: [ RemoteDeleteDialogComponent ]
       }).compileComponents()
+
+      fixture = TestBed.createComponent(RemoteDeleteDialogComponent)
+      component = fixture.componentInstance
+      // fixture.detectChanges()
     })
   )
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RemoteDeleteDialogComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
 
   it('should create', () => {
     expect(component).toBeTruthy()

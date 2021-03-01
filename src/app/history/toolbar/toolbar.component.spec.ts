@@ -2,9 +2,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { RouterTestingModule } from '@angular/router/testing'
-import { SettingsService } from '../core/settings/settings.service'
-import { UiService } from '../core/ui/ui.service'
-import { NetworkService } from '../doc/network/network.service'
+import { SettingsService } from '../../core/settings/settings.service'
+import { UiService } from '../../core/ui/ui.service'
+import { NetworkService } from '../../doc/network/network.service'
 import { ToolbarComponent } from './toolbar.component'
 
 let comp: ToolbarComponent
