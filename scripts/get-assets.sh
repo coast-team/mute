@@ -1,4 +1,5 @@
 #!/bin/env bash
+set -e
 
 function get_url() {
   if test -f "$2"; then

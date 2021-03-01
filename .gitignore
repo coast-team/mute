@@ -2,6 +2,7 @@
 
 # compiled output
 /dist
+/releases
 /dist-desktop
 /tmp
 

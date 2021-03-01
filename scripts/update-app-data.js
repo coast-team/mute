@@ -2,7 +2,7 @@ const fs = require('fs')
 const package = require('../package.json')
 const swConfigFileName = '../ngsw-config.json'
 const swConfig = require(swConfigFileName)
-const appDataFileName = '../src/app-data.ts'
+const appDataFileName = './src/app-data.ts'
 let appData = fs.readFileSync(appDataFileName, 'utf8')
 
 // Read data from git

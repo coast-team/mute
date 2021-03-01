@@ -23,7 +23,6 @@
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
     "cz": "npx git-cz",
-    "release": "standard-version --no-verify --commit-all",
     "get-assets": "bash scripts/get-assets.sh"
   },
   "keywords": [
@@ -107,7 +106,6 @@
     "prettier": "^2.2.1",
     "protractor": "~7.0.0",
     "sigver": "^20.0.2",
-    "standard-version": "^9.1.1",
     "ts-node": "^9.1.1",
     "tslib": "^2.0.0",
     "tslint": "~6.1.0",
