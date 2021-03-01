@@ -34,19 +34,19 @@
   <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
     <mat-expansion-panel-header>
       <mat-panel-title>
-          <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets Logs state</span> 
+        <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div id="pulsarWsBlock">
-        <div class="pulsarWs">
-          <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
-          <span class="spaceIconText">Logs Producer</span>
-        </div>
-
+      <div class="pulsarWs">
+        <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
+        <span class="spaceIconText">Logs Producer</span>
+      </div>
     </div>
   </mat-expansion-panel>
 
   <br>
+
   <div class="doc-block">
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Pulsar</span>
@@ -58,25 +58,21 @@
     <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
       <mat-expansion-panel-header>
         <mat-panel-title>
-            <mat-icon >rowing</mat-icon> <span class="spaceIconText">Websockets state</span> 
+          <mat-icon >connect_without_contact</mat-icon> <span class="spaceIconText">Websockets state</span> 
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div id="pulsarWsBlock">
-          <div class="pulsarWs">
-            <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">arrow_upward</mat-icon> <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">arrow_downward</mat-icon>
-            <span class="spaceIconText">Title</span>
-          </div>
+        <div class="pulsarWs">
+          <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">arrow_upward</mat-icon> <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">arrow_downward</mat-icon>
+          <span class="spaceIconText">Title</span>
+        </div>
 
-          <div class="pulsarWs">
-            <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">arrow_upward</mat-icon><mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">arrow_downward</mat-icon>
-            <span class="spaceIconText">Doc-content</span>
-          </div>
-
-
+        <div class="pulsarWs">
+          <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">arrow_upward</mat-icon><mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">arrow_downward</mat-icon>
+          <span class="spaceIconText">Doc-content</span>
+        </div>
       </div>
     </mat-expansion-panel>
-
-
   </div>
 
   <div class="chips-block">

@@ -88,8 +88,7 @@
 }
 
 #pulsarWsPanel {
-  width: 80%;
-  margin-left: 10px;
+  width: 85%;
 }
 
 .pulsarWs {
@@ -101,4 +100,17 @@
 .spaceIconText {
   padding-left: 8px;
   font-size: 15px;
+}
+
+.mat-expansion-panel-header {
+  padding-left: 10px;
+
+  .mat-expansion-panel-header-title {
+    align-items: center;
+  }
+
+  ::ng-deep .mat-expansion-indicator {
+    position: relative !important;
+    top: -2px !important;
+  }
 }
