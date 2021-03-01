@@ -20,7 +20,7 @@ MUTE comes with a default STUN server that is already deployed.
 Proceed with the following steps:
 
 1.  Deploy the signaling server ([how to](https://github.com/coast-team/sigver))
-2.  Build MUTE static files ([how to](#build))
+2.  Build MUTE static files ([how to](https://github.com/coast-team/mute/wiki/Before-building))
 3.  Serve static files
 
 > TIP: If you serve MUTE via HTTPS, the Signaling server should also be secure, i. e. available via `wss` protocol.
@@ -42,17 +42,19 @@ In our experience, performance drops significantly after reaching tens of users 
 
 ## :hammer_and_wrench: Architecture
 
-Communication between browsers editing a document is done in a peer-to-peer fashion thanks to our [Netflux](https://github.com/coast-team/netflux) and [sigver](https://github.com/coast-team/sigver) (signaling) libraries.
-
-MUTE relies on other reusable libraries we develop:
+MUTE relies on other libraries we develop, which you can reuse in your projects:
 
 - [@coast-team/mute-core](https://github.com/coast-team/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
 - [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the LogootSplit CRDT algorithm
 - [@coast-team/mute-crypto](https://github.com/coast-team/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://github.com/coast-team/mute-crypto)
+- [netflux](https://github.com/coast-team/netflux): peer-to-peer browser communication layer
+- [sigver](https://github.com/coast-team/sigver): signaling for WebRTC
+
+One of the best ways to contribute to MUTE is to help these libraries!
 
 ## License
 
-Copyright (C) 2016-2021 COAST
+Copyright (C) 2016-2021 [COAST](https://team.inria.fr/coast)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
