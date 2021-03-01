@@ -1,11 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
-import { UiService } from '../../../core/ui/ui.service'
-import { HistoryControlsComponent } from './history-controls.component'
+import { UiService } from '../../core/ui/ui.service'
+import { ControlsComponent } from './controls.component'
 
-let comp: HistoryControlsComponent
-let fixture: ComponentFixture<HistoryControlsComponent>
+let comp: ControlsComponent
+let fixture: ComponentFixture<ControlsComponent>
 
 const uiServiceStub = undefined
 
@@ -13,14 +13,14 @@ describe('HistoryControlsComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
-        declarations: [HistoryControlsComponent],
+        declarations: [ControlsComponent],
         imports: [RouterTestingModule],
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [{ provide: UiService, useValue: uiServiceStub }],
       })
         .compileComponents()
         .then(() => {
-          fixture = TestBed.createComponent(HistoryControlsComponent)
+          fixture = TestBed.createComponent(ControlsComponent)
           comp = fixture.componentInstance
         })
     })

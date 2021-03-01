@@ -135,8 +135,8 @@
             "scripts": [
               "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/bragi-browser/dist/bragi.min.js",
-              "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
-              "node_modules/jio/dist/jio-latest.min.js"
+              "src/assets/rsvp-2.0.4.min.js",
+              "src/assets/jio-latest.js"
             ],
             "styles": ["src/styles.scss"],
             "assets": ["src/assets/images", "src/assets/fonts", "src/manifest.json"]

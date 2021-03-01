@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { RouterModule } from '@angular/router'
 
 import { JoinDialogComponent } from './join-dialog.component'
 
@@ -9,16 +10,15 @@ describe('JoinDialogComponent', () => {
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
+        imports: [ RouterModule.forRoot([]) ],
         declarations: [JoinDialogComponent],
       }).compileComponents()
+
+      fixture = TestBed.createComponent(JoinDialogComponent)
+      component = fixture.componentInstance
+      // fixture.detectChanges()
     })
   )
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(JoinDialogComponent)
-    component = fixture.componentInstance
-    fixture.detectChanges()
-  })
 
   it('should create', () => {
     expect(component).toBeTruthy()

@@ -1,4 +1,10 @@
+import { Overlay } from '@angular/cdk/overlay'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
+import { Ng2UiAuthModule } from 'np2-ui-auth'
+import { SettingsService } from 'src/app/core/settings/settings.service'
+import { UiService } from 'src/app/core/ui/ui.service'
 
 import { ProfileComponent } from './profile.component'
 
@@ -10,6 +16,8 @@ describe('ProfileComponent', () => {
     waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [ProfileComponent],
+        imports: [MatDialogModule, Ng2UiAuthModule.forRoot()],
+        providers: [MatSnackBar, Overlay, SettingsService, UiService]
       }).compileComponents()
     })
   )
@@ -17,7 +25,7 @@ describe('ProfileComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileComponent)
     component = fixture.componentInstance
-    fixture.detectChanges()
+    // fixture.detectChanges()
   })
 
   it('should create', () => {

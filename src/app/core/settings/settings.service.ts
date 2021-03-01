@@ -37,7 +37,7 @@ export class SettingsService {
     this.openedFolder = 'local'
   }
 
-  async init(): Promise<void> {
+  async init(): Promise<boolean> {
     this.isDBAvailable = (await getIndexedDBState()) === EIndexedDBState.OK
 
     if (this.isDBAvailable) {
@@ -58,6 +58,7 @@ export class SettingsService {
     const accounts = this.auth.isAuthenticated() ? [this.auth.getPayload()] : [Profile.anonymous]
     // Retrieve profile from database
     await this.setProfile(accounts)
+    return true
   }
 
   get profile(): Profile {
