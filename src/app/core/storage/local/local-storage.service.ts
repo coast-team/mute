@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { MuteCore, StateStrategy, StateTypes } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from 'nanoid'
 
 import { environment } from 'src/environments/environment'
 import { IndexdbDatabase } from '../../../doc/logs/IndexdbDatabase'
@@ -294,7 +294,7 @@ export class LocalStorageService extends Storage implements IStorage {
   }
 
   generateSignalingKey(): string {
-    return uuidv4()
+    return nanoid(10)
   }
 
   private async isInTrash(key: string): Promise<boolean> {

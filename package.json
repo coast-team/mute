@@ -65,12 +65,12 @@
     "core-js": "^3.1.4",
     "loglevel": "^1.6.1",
     "mute-structs": "^1.1.0",
+    "nanoid": "^3.1.20",
     "netflux": "^4.3.1",
     "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
     "protobufjs": "^6.8.8",
     "rxjs": "^6.6.6",
     "tui-editor": "^1.4.3",
-    "uuid": "^8.3.2",
     "uws": "^100.0.1",
     "zone.js": "~0.10.2"
   },
@@ -137,7 +137,7 @@
   },
   "standard-version": {
     "scripts": {
-      "postbump": "node update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
+      "postbump": "node scripts/update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
     }
   },
   "husky": {

@@ -62,15 +62,13 @@
       </ng-template>
       <mat-divider></mat-divider>
 
-
+      <!-- Remote storage -->
       <ng-container *ngIf="isRemoteExist">
-        <!-- Remote storage -->
-        <button mat-button [ngClass]="{'active': selected === remote}" [disabled]="remoteErrorMessage" (click)="openFolder(remote)">
+        <button mat-button [ngClass]="{'active': selected === remote}" [disabled]="remoteErrorMessage" (click)="openFolder(remote)" [matTooltip]="remoteErrorMessage">
           <div fxLayoutAlign="start center">
             <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
           </div>
         </button>
-        <span *ngIf="remoteErrorMessage" class="mat-caption hint">{{remoteErrorMessage}}</span>
 
         <mat-divider></mat-divider>
       </ng-container>
@@ -90,7 +88,7 @@
     <button mat-raised-button class="install-update-btns" *ngIf="ui.appUpdate | async" color="warn" (click)="update()">Update to v{{(ui.appUpdate | async).version}}</button>
     <button mat-raised-button class="install-update-btns" *ngIf="ui.appInstall | async" color="accent" (click)="install()">Add to home screen</button>
     <div fxLayout="column" fxLayoutAlign="end stretch" class="app-info">
-      <p class="mat-caption">Multi-User Text Editor,
+      <p class="mat-caption">Multi-User Text Editor
 
         <span *ngIf="isProd">
           <a href="https://github.com/coast-team/mute/blob/master/CHANGELOG.md" target="_blank">v{{version}}</a>,
@@ -100,8 +98,8 @@
         </a>
 
       </p>
-      <p class="mat-caption hint">Made by
-        <a href="https://www.inria.fr/en/teams/coast" target="blank">COAST team</a>
+      <p class="mat-caption hint">by
+        <a href="https://www.inria.fr/en/teams/coast" target="blank">COAST team</a> | INRIA | LORIA
       </p>
     </div>
   </div>

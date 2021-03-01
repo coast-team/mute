@@ -1,6 +1,6 @@
 import { Observable, Subject } from 'rxjs'
 
-import { v4 as uuidv4 } from 'uuid'
+import { nanoid } from 'nanoid'
 import { IKeyPair } from '../crypto/crypto.service'
 import { EProperties } from './EProperties'
 import { IAccount } from './IAccount'
@@ -43,7 +43,7 @@ export class Profile {
     profile._displayName = serialized.displayName
     let storedDeviceID = window.localStorage.getItem('deviceID')
     if (storedDeviceID === null) {
-      storedDeviceID = uuidv4()
+      storedDeviceID = nanoid()
       window.localStorage.setItem('deviceID', storedDeviceID)
     }
     profile._deviceID = storedDeviceID

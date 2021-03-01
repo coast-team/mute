@@ -5,6 +5,10 @@
         <mat-icon>menu</mat-icon>
       </button>
 
+      <a routerLink="/" mat-icon-button>
+        <mat-icon>home</mat-icon>
+      </a>
+
       <div class="title">
         <mat-form-field ngClass.gt-xs="gt-xs" color="accent">
           <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)"

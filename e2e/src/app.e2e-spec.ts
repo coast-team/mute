@@ -71,6 +71,7 @@ describe('browser consistency (1 document, 2 browsers)', () => {
     await focusEditor(peerBrowser)
 
     await browser.actions().sendKeys(expectedText1).perform()
+    expect(await getEditorValue(peerBrowser)).toEqual(expectedText1)
     await browser.sleep(1000) // Leave some time to the app to store updates
     await browser.waitForAngular()
     const actualText1 = await getEditorValue(peerBrowser)
