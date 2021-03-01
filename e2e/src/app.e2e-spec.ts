@@ -71,11 +71,10 @@ describe('browser consistency (1 document, 2 browsers)', () => {
     await focusEditor(peerBrowser)
 
     await browser.actions().sendKeys(expectedText1).perform()
-    expect(await getEditorValue(peerBrowser)).toEqual(expectedText1)
     await browser.sleep(1000) // Leave some time to the app to store updates
     await browser.waitForAngular()
-    const actualText1 = await getEditorValue(peerBrowser)
-    expect(actualText1).toEqual(expectedText1)
+    expect(await getEditorValue(browser)).toEqual(expectedText1, 'browser should have its own text :o')
+    expect(await getEditorValue(peerBrowser)).toEqual(expectedText1, 'peerBrowser should have its text, possible sync error')
 
     const sequence = `${protractor.Key.BACK_SPACE} world !`
     await peerBrowser.actions().sendKeys(sequence).perform()

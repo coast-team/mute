@@ -25,7 +25,7 @@
             "scripts": [
               "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/bragi-browser/dist/bragi.min.js",
-              "src/assets/rsvp-2.0.4.nexedi_fork.min.js",
+              "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js"
             ],
             "allowedCommonJsDependencies": ["codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "tui-editor"]
