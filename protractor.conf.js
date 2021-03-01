@@ -8,7 +8,7 @@ exports.config = {
   // Spec patterns are relative to the current working directory when
   // protractor is called.
   specs: [
-    './e2e/**/*.e2e-spec.ts'
+    'src/e2e/**/*.e2e-spec.ts'
   ],
 
   // Capabilities to be passed to the webdriver instance.
@@ -35,7 +35,7 @@ exports.config = {
 
   onPrepare() {
     require('ts-node').register({
-      project: 'e2e/tsconfig.e2e.json'
+      project: 'src/e2e/tsconfig.e2e.json'
     })
     jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
