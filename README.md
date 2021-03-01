@@ -1,14 +1,15 @@
 # MUTE: Multi User Text Editor
 
-Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: LogootSplit. This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
+Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: [LogootSplit](https://github.com/coast-team/mute-structs#ref-1). This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
 
-Compared to existing web-based collaborative text editing tool MUTE does not require a powerful central server since the server is not performing any computation. Communication between browsers editing a document is done in a peer-to-peer fashion thanks to our [Netflux](https://github.com/coast-team/netflux). You can even work offline and reconnect later without losing your changes.
+You can check:
 
-You can check our live demonstration server at <https://www.coedit.re>, or quickstart MUTE on your machine via `npm start` and then access it on <http://localhost:4200>.
+- our live demonstration server at <https://www.coedit.re>
+- or quickstart MUTE on your machine via `npm start` and then access it on <http://localhost:4200>
 
 ## :package: Deployment
 
-MUTE runs the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires a few servers for discovery and signaling. A complete MUTE instance relies on the following servers:
+MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires a few servers for discovery and signaling. A complete MUTE instance relies on the following servers:
 
 - your web server serving the MUTE static files over HTTPS
 - a WebSocket signaling server which is mandatory in order to establish a connection between two users
@@ -30,6 +31,24 @@ Proceed with the following steps:
 
 - [Demo deployment on Raspberry Pi](https://github.com/coast-team/mute/wiki/Deploy:-Raspberry-Pi)
 - [Production deployment with NGINX on Ubuntu 16.04](https://github.com/coast-team/mute/wiki/Deploy:-Production)
+
+## :bar_chart: Benchmark
+
+> NOTE: more automated/replicable benchmarks will be added in the future
+
+Compared to existing web-based collaborative text editing tools, MUTE does not require a powerful central server since the server is not performing any computation. You can even work offline and reconnect later without losing your changes.
+
+In our experience, performance drops significantly after reaching tens of users on a document on centralized platforms.
+
+## :hammer_and_wrench: Architecture
+
+Communication between browsers editing a document is done in a peer-to-peer fashion thanks to our [Netflux](https://github.com/coast-team/netflux) and [sigver](https://github.com/coast-team/sigver) (signaling) libraries.
+
+MUTE relies on other reusable libraries we develop:
+
+- [@coast-team/mute-core](https://github.com/coast-team/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
+- [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the LogootSplit CRDT algorithm
+- [@coast-team/mute-crypto](https://github.com/coast-team/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://github.com/coast-team/mute-crypto)
 
 ## License
 
