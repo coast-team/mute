@@ -10,11 +10,11 @@ export class RemotePipe extends DateEnhancedPipe implements PipeTransform {
   transform(doc: any, timezone: string = null): any {
     if (doc instanceof Doc) {
       if (doc.remotes.length === 0) {
-        return 'No'
+        return 'No remote'
       } else if (doc.remotes[0].synchronized) {
         return super.transform(doc.remotes[0].synchronized)
       } else {
-        return 'Not Yet'
+        return 'Not yet'
       }
     }
     return ''

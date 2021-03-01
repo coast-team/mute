@@ -35,8 +35,8 @@
 
           <!-- Position Column -->
           <ng-container matColumnDef="title">
-            <mat-header-cell mat-sort-header fxFlex="40%" *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell class="title-cell" fxFlex="40%" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
+            <mat-header-cell mat-sort-header fxFlex="auto" *matHeaderCellDef>Name</mat-header-cell>
+            <mat-cell class="title-cell" fxFlex="auto" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
 
               <!-- Document name -->
               <div fxFlex class="doc-in-trash" *ngIf="folder === localStorage.trash; else docTitleButton">
@@ -47,7 +47,8 @@
               <ng-template #docTitleButton>
                 <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
                   <mat-icon class="title-icon ">description</mat-icon>
-                  {{doc.title}}
+                  <span>{{doc.title}}</span>
+                  <span class="key">{{doc.signalingKey}}</span>
                 </button>
               </ng-template>
 
@@ -106,35 +107,28 @@
             </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="signalingKey">
-            <mat-header-cell mat-sort-header fxFlex="100px" *matHeaderCellDef>Key</mat-header-cell>
-            <mat-cell *matCellDef="let doc" fxFlex="100px">
-              <div class="key">{{doc.signalingKey}}</div>
-            </mat-cell>
-          </ng-container>
-
           <ng-container matColumnDef="created">
-            <mat-header-cell mat-sort-header *matHeaderCellDef>Created</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.created | muteDate}} </mat-cell>
+            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Created</mat-header-cell>
+            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.created | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="opened">
-            <mat-header-cell mat-sort-header *matHeaderCellDef>Opened by me</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.opened | muteDate}} </mat-cell>
+            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Opened by me</mat-header-cell>
+            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.opened | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="modified">
-            <mat-header-cell mat-sort-header *matHeaderCellDef>Modified</mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{doc.modified | muteDate}} </mat-cell>
+            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Modified</mat-header-cell>
+            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.modified | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="synchronized">
-            <mat-header-cell *matHeaderCellDef>
+            <mat-header-cell fxFlex="100px" *matHeaderCellDef>
               <div fxLayoutAlign="start center">
-                <mat-icon aria-label="remote storage" [matTooltip]="remoteName" class="synchronized-icon">cloud</mat-icon>Synchronized
+                <mat-icon aria-label="remote storage" [matTooltip]="'Sync with ' + remoteName" class="synchronized-icon">cloud</mat-icon>
               </div>
             </mat-header-cell>
-            <mat-cell *matCellDef="let doc"> {{ doc | muteRemote }} </mat-cell>
+            <mat-cell fxFlex="100px" *matCellDef="let doc"> {{ doc | muteRemote }} </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

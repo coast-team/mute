@@ -1,49 +1,53 @@
 <h1 mat-dialog-title>Settings</h1>
 
-<div mat-dialog-content>
+<form (submit)="save()" action="#">
 
-  <h2 class="mat-subheading-2">Profile</h2>
-  <div fxLayoutAlign="start start" fxLayoutGap="20px">
-    <ng-container *ngIf="profile.avatar; else anonymousIconBig">
-      <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
-    </ng-container>
-    <ng-template #anonymousIconBig>
-      <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
-    </ng-template>
+  <div mat-dialog-content>
 
-    <div fxLayout="column">
-      <mat-form-field>
-        <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl" (focus)="selectAll($event)">
-        <mat-hint align="end">{{displayNameControl.value.length}} / 27</mat-hint>
-      </mat-form-field>
-      <mat-form-field>
-        <input matInput disabled tabindex="-1" placeholder="Login" [value]="profile.login">
-      </mat-form-field>
+    <h2 class="mat-subheading-2">Profile</h2>
+    <div fxLayoutAlign="start start" fxLayoutGap="20px">
+      <ng-container *ngIf="profile.avatar; else anonymousIconBig">
+        <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
+      </ng-container>
+      <ng-template #anonymousIconBig>
+        <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
+      </ng-template>
+
+      <div fxLayout="column">
+        <mat-form-field>
+          <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl" (focus)="selectAll($event)">
+          <mat-hint align="end">{{displayNameControl.value.length}} / 27</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput disabled tabindex="-1" placeholder="Login" [value]="profile.login">
+        </mat-form-field>
+      </div>
     </div>
+
+
+    <h2 class="mat-subheading-2">Theme</h2>
+    <mat-form-field>
+      <span matSuffix [ngClass]="['circle', theme]"></span>
+      <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
+        <mat-option value="default">
+          <span class="circle default"></span> light
+        </mat-option>
+
+        <mat-option value="dark">
+          <span class="circle dark"></span> dark
+        </mat-option>
+
+        <mat-option value="indigo">
+          <span class="circle indigo"></span> light
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
   </div>
 
+  <div mat-dialog-actions fxLayoutAlign="end center">
+    <button mat-button mat-dialog-close (keyup.enter)="cancel()" (click)="cancel()">CANCEL</button>
+    <button mat-button mat-dialog-close type="submit">SAVE</button>
+  </div>
 
-  <h2 class="mat-subheading-2">Theme</h2>
-  <mat-form-field>
-    <span matSuffix [ngClass]="['circle', theme]"></span>
-    <mat-select [(value)]="theme" (selectionChange)="applyTheme($event)">
-      <mat-option value="default">
-        <span class="circle default"></span> light
-      </mat-option>
-
-      <mat-option value="dark">
-        <span class="circle dark"></span> dark
-      </mat-option>
-
-      <mat-option value="indigo">
-        <span class="circle indigo"></span> light
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-
-</div>
-
-<div mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button mat-dialog-close (click)="cancel()">CANCEL</button>
-  <button mat-button mat-dialog-close (click)="save()">SAVE</button>
-</div>
+</form>

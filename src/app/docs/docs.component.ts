@@ -103,8 +103,8 @@ export class DocsComponent implements OnDestroy, OnInit {
   public actions
 
   private subs: Subscription[]
-  private displayedColumnsLocal = ['title', 'signalingKey', 'created', 'opened', 'modified']
-  private displayedColumnsRemote = ['title', 'location', 'signalingKey', 'created', 'opened', 'modified']
+  private displayedColumnsLocal = ['title', 'created', 'opened', 'modified']
+  private displayedColumnsRemote = ['title', 'location', 'created', 'opened', 'modified']
 
   constructor(
     private router: Router,

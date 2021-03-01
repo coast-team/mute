@@ -18,6 +18,8 @@
     }
 
     .key {
+      margin-left: 10px;
+      opacity: .2;
       width: 90px;
       word-wrap: none;
       white-space: nowrap;
@@ -39,6 +41,16 @@
   .title-icon {
     margin-right: 5px;
     vertical-align: middle;
+  }
+
+  .title-text {
+    display: flex;
+    flex-direction: column;
+
+    span:not(:first-child) {
+      font-size: 80%;
+      opacity: .6;
+    }
   }
 
   .desktop-actions {

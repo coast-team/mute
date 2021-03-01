@@ -1,13 +1,17 @@
 <h1 mat-dialog-title>Rename document</h1>
 
-<div mat-dialog-content>
-  <mat-form-field>
-    <input matInput placeholder="Title" maxlength="128" [formControl]="titleControl" (focus)="selectAll($event)">
-    <mat-hint align="end">{{titleControl.value.length}} / 128</mat-hint>
-  </mat-form-field>
-</div>
+<form (submit)="updateTitle()" action="#">
 
-<div mat-dialog-actions fxLayoutAlign="end center">
-  <button mat-button mat-dialog-close>CANCEL</button>
-  <button mat-button mat-dialog-close (click)="updateTitle()">SAVE</button>
-</div>
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput placeholder="Title" maxlength="128" [formControl]="titleControl" (focus)="selectAll($event)">
+      <mat-hint align="end">{{titleControl.value.length}} / 128</mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions fxLayoutAlign="end center">
+    <button mat-button mat-dialog-close>CANCEL</button>
+    <button mat-button mat-dialog-close type="submit">SAVE</button>
+  </div>
+
+</form>
