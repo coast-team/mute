@@ -3,9 +3,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { MatDialog, MatDialogModule } from '@angular/material/dialog'
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import { Ng2UiAuthModule } from 'np2-ui-auth'
-import { SettingsService } from 'src/app/core/settings/settings.service'
-import { UiService } from 'src/app/core/ui/ui.service'
 
+import { SettingsService } from 'src/app/core/settings'
+import { UiService } from 'src/app/core/ui'
 import { ProfileComponent } from './profile.component'
 
 describe('ProfileComponent', () => {

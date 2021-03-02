@@ -8,7 +8,7 @@ Edit documents collaboratively in real-time with hundreds of users on the same d
 
 You can check:
 
-- our live demonstration server at <https://www.coedit.re>
+- our live demonstration server at <https://coedit.re>
 - or quickstart MUTE on your machine via `npm start` and then access it on <http://localhost:4200>
 
 ## :package: Deployment
@@ -17,9 +17,9 @@ MUTE runs in the browser, which means that modifications are sent directly to yo
 
 - your web server serving the MUTE static files over HTTPS
 - a WebSocket signaling server which is mandatory in order to establish a connection between two users
-- an (optional but highly recommended) STUN/TURN server to establish peer-to-peer connection _in some scenarios_ (a user is behind a NAT for example)
+- an (optional but highly recommended) [Pulsar](https://github.com/apache/pulsar) server to relay messages in case WebRTC is blocked on a user's network
 
-MUTE comes with a default STUN server that is already deployed.
+MUTE comes with a default set of STUN servers configured for WebRTC.
 
 Proceed with the following steps:
 
@@ -42,7 +42,7 @@ Proceed with the following steps:
 
 Compared to existing web-based collaborative text editing tools, MUTE does not require a powerful central server since the server is not performing any computation. You can even work offline and reconnect later without losing your changes.
 
-In our experience, performance drops significantly after reaching tens of users on a document on centralized platforms.
+In our experience, performance drops significantly after reaching tens of users on a document on centralized platforms. MUTE doesn't process changes server-side, allowing much larger groups to collaboratively edit a document.
 
 ## :hammer_and_wrench: Architecture
 

@@ -7,8 +7,8 @@ export class PKRequestConiks {
     this.url = environment.cryptography.coniksClient ? environment.cryptography.coniksClient.url : ''
   }
 
-  async register(pk: string, login: string) {
-    return new Promise((resolve, reject) => {
+  async register (pk: string, login: string) {
+    return new Promise<void>((resolve, reject) => {
       if (this.url) {
         this.http.post(this.url, `register ${login} ${pk}`, { responseType: 'text' }).subscribe(
           () => {
@@ -26,8 +26,8 @@ export class PKRequestConiks {
     })
   }
 
-  async lookup(login: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+  async lookup (login: string) {
+    return new Promise<string>((resolve, reject) => {
       if (this.url) {
         this.http.post(this.url, `lookup ${login}`, { responseType: 'text' }).subscribe(
           (pk) => {
@@ -42,6 +42,6 @@ export class PKRequestConiks {
       } else {
         Promise.reject(new Error('coniksClient property is not defined'))
       }
-    }) as Promise<string>
+    })
   }
 }

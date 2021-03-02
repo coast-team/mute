@@ -1,9 +1,9 @@
 import { PulsarService } from '../network/pulsar.service'
 import { Database } from './Database'
-import { ILogDatabase } from './ILogDatabase'
 import { IndexdbDatabase } from './IndexdbDatabase'
 import { Pulsar } from './Pulsar'
 import { RabbitMq } from './RabbitMq'
+import { ILogDatabase } from './ILogDatabase.model'
 
 export abstract class LogsStrategy {
   // protected dbDistante: RabbitMq

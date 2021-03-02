@@ -2,7 +2,7 @@ import { Observable, Subject } from 'rxjs'
 import { auditTime } from 'rxjs/operators'
 
 import { Folder } from './Folder'
-import { IStorage } from './storage/IStorage'
+import { IStorage } from './storage/IStorage.model'
 
 const METADATA_SAVE_INTERVAL = 1000
 

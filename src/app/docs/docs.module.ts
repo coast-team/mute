@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core'
 
 import { SharedModule } from '../shared/shared.module'
 import { DocsComponent } from './docs.component'
-import { ToolbarComponent } from './toolbar/toolbar.component'
+import { ToolbarComponent } from './toolbar'
 
 @NgModule({
   imports: [SharedModule],

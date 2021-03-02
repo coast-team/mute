@@ -1,4 +1,4 @@
-import { IEnvironment } from './IEnvironment'
+import { IEnvironment } from './IEnvironment.model'
 import { environment as defaultEnvironment } from './environment'
 
 const host = 'coedit.re'

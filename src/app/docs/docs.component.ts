@@ -11,13 +11,17 @@ import { filter, map } from 'rxjs/operators'
 
 import { Doc } from '../core/Doc'
 import { Folder } from '../core/Folder'
-import { EProperties } from '../core/settings/EProperties'
-import { SettingsService } from '../core/settings/settings.service'
-import { BotStorageService } from '../core/storage/bot/bot-storage.service'
-import { LocalStorageService } from '../core/storage/local/local-storage.service'
-import { UiService } from '../core/ui/ui.service'
-import { DocRenameDialogComponent } from '../shared/doc-rename-dialog/doc-rename-dialog.component'
-import { RemoteDeleteDialogComponent } from '../shared/remote-delete-dialog/remote-delete-dialog.component'
+import { EProperties } from '../core/settings/EProperties.enum'
+import { SettingsService } from '../core/settings'
+import {
+  BotStorageService,
+  LocalStorageService
+} from '../core/storage'
+import { UiService } from '../core/ui'
+import {
+  DocRenameDialogComponent,
+  RemoteDeleteDialogComponent
+} from '../shared/dialogs' 
 
 class DocsSource extends DataSource<Doc> {
   public sort: Sort

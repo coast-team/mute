@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component } from '@angular/core'
-import { UiService } from './core/ui/ui.service'
+import { UiService } from './core/ui'
 
 @Component({
   selector: 'mute-root',

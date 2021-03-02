@@ -86,7 +86,7 @@
     "@angular/router": "^11.2.3",
     "@angular/service-worker": "^11.2.3",
     "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "^10.0.0-2.2",
+    "@coast-team/mute-core": "10.0.0-2.2",
     "@coast-team/mute-crypto": "^0.4.1",
     "@commitlint/cli": "^12.0.1",
     "@commitlint/config-conventional": "^12.0.1",

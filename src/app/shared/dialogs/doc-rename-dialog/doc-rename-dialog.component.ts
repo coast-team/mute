@@ -2,8 +2,8 @@ import { Component, Inject } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
-import { Doc } from '../../core/Doc'
-import { LocalStorageService } from '../../core/storage/local/local-storage.service'
+import { Doc } from '../../../core/Doc'
+import { LocalStorageService } from '../../../core/storage/local/local-storage.service'
 
 @Component({
   selector: 'mute-doc-rename-dialog',

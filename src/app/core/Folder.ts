@@ -1,6 +1,6 @@
 import { Doc } from './Doc'
 import { File } from './File'
-import { IStorage } from './storage/IStorage'
+import { IStorage } from './storage/IStorage.model'
 
 const DEFAULT_TITLE = 'Untitled Folder'
 

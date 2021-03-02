@@ -5,12 +5,13 @@ import { Subscription } from 'rxjs'
 
 import { enableDebug } from '@coast-team/mute-crypto'
 import { LogLevel, setLogLevel } from 'netflux'
+
 import { environment } from '../../../environments/environment'
 import { Doc } from '../../core/Doc'
-import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
-import { UiService } from '../../core/ui/ui.service'
+import { BotStorageService } from '../../core/storage/bot'
+import { UiService } from '../../core/ui'
 import { DocService } from '../doc.service'
-import { LogsService } from '../logs/logs.service'
+import { LogsService } from '../logs'
 import { NetworkService } from '../network'
 
 @Component({

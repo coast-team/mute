@@ -5,7 +5,7 @@ import { PulsarState } from '@coast-team/mute-core'
 import { LogState } from '@coast-team/mute-core'
 import { MetaDataService } from '@coast-team/mute-core/dist/types/src/doc'
 import { File } from './File'
-import { IStorage } from './storage/IStorage'
+import { IStorage } from './storage/IStorage.model'
 
 const DEFAULT_TITLE = 'Untitled Document'
 

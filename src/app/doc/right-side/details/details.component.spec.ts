@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { UiService } from 'src/app/core/ui/ui.service'
-import { PulsarService } from '../../network/pulsar.service'
 
+import { UiService } from 'src/app/core/ui'
+import { PulsarService } from '../../network'
 import { DetailsComponent } from './details.component'
 
 describe('DetailsComponent', () => {

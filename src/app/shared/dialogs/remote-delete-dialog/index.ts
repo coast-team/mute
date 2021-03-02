@@ -1,0 +1,1 @@
+export * from './remote-delete-dialog.component'

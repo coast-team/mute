@@ -2,17 +2,19 @@ import { APP_INITIALIZER, NgModule } from '@angular/core'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
-
 import { MatSnackBar } from '@angular/material/snack-bar'
+
 import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'
-import { SettingsService } from './core/settings/settings.service'
-import { BotStorageService } from './core/storage/bot/bot-storage.service'
-import { getIndexedDBState } from './core/storage/local/indexedDBCheck'
-import { LocalStorageService } from './core/storage/local/local-storage.service'
-import { UiService } from './core/ui/ui.service'
+import { SettingsService } from './core/settings'
+import {
+  getIndexedDBState,
+  BotStorageService,
+  LocalStorageService
+} from './core/storage'
+import { UiService } from './core/ui'
 import { DocModule } from './doc'
 import { DocsModule } from './docs/docs.module'
 import { HistoryModule } from './history/history.module'

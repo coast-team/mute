@@ -4,10 +4,10 @@ import { NavigationEnd, Router } from '@angular/router'
 import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { UiService } from '../core/ui/ui.service'
+import { UiService } from '../core/ui'
 import { RichCollaboratorsService } from '../doc/rich-collaborators'
 import { DocService } from './doc.service'
-import { LogsService } from './logs/logs.service'
+import { LogsService } from './logs'
 import { NetworkService } from './network'
 
 export enum VIEWPORT {

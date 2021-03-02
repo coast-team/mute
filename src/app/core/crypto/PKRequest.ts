@@ -17,8 +17,8 @@ export class PKRequest {
     this.urlPrefix = environment.cryptography.keyserver ? environment.cryptography.keyserver.urlPrefix : ''
   }
 
-  async register(login: string, deviceID: string, pk: string) {
-    return new Promise((resolve, reject) => {
+  async register (login: string, deviceID: string, pk: string) {
+    return new Promise<void>((resolve, reject) => {
       if (this.urlPrefix) {
         this.http
           .post<IUserPK>(this.urlPrefix, { login, deviceID, pk } as IUserPK)
@@ -38,8 +38,8 @@ export class PKRequest {
     })
   }
 
-  async lookup(login: string, deviceID: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+  async lookup (login: string, deviceID: string) {
+    return new Promise<string>((resolve, reject) => {
       if (this.urlPrefix) {
         const url = `${this.urlPrefix}/${login}/${deviceID}`
         this.http.get<IPK>(url).subscribe(
@@ -61,11 +61,11 @@ export class PKRequest {
       } else {
         Promise.reject(new Error('Keyserver property is not defined'))
       }
-    }) as Promise<string>
+    })
   }
 
-  async update(login: string, deviceID: string, pk: string) {
-    return new Promise((resolve, reject) => {
+  async update (login: string, deviceID: string, pk: string) {
+    return new Promise<void>((resolve, reject) => {
       if (this.urlPrefix) {
         const url = `${this.urlPrefix}/${login}/${deviceID}`
         this.http

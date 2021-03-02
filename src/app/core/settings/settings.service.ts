@@ -4,8 +4,8 @@ import { Observable, Subject, Subscription } from 'rxjs'
 
 import { Folder } from '../Folder'
 import { EIndexedDBState, getIndexedDBState } from '../storage/local/indexedDBCheck'
-import { EProperties } from './EProperties'
-import { IAccount } from './IAccount'
+import { EProperties } from './EProperties.enum'
+import { IAccount } from './IAccount.model'
 import { ISerialize as ISerializeProfile, Profile } from './Profile'
 
 const selectList = ['profile', 'theme', 'openedFolder']

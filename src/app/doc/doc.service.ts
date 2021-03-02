@@ -1,5 +1,8 @@
 import { ChangeDetectorRef, Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
+import { merge, Observable, Subject, Subscription } from 'rxjs'
+import { auditTime, filter, map } from 'rxjs/operators'
+
 import {
   ICollaborator,
   LocalOperation,
@@ -15,18 +18,16 @@ import {
 import { SessionParameters } from '@coast-team/mute-core/dist/types/src/MuteCore'
 import { KeyState } from '@coast-team/mute-crypto'
 import { WebGroupState } from 'netflux'
-import { merge, Observable, Subject, Subscription } from 'rxjs'
-import { auditTime, filter, map } from 'rxjs/operators'
 
 import { environment } from '../../environments/environment'
-import { CryptoService } from '../core/crypto/crypto.service'
+import { CryptoService } from '../core/crypto'
 import { Doc } from '../core/Doc'
-import { EProperties } from '../core/settings/EProperties'
-import { SettingsService } from '../core/settings/settings.service'
-import { BotStorageService } from '../core/storage/bot/bot-storage.service'
-import { UiService } from '../core/ui/ui.service'
+import { EProperties } from '../core/settings/EProperties.enum'
+import { SettingsService } from '../core/settings'
+import { BotStorageService } from '../core/storage/bot'
+import { UiService } from '../core/ui'
 import { DocResolverService } from './doc-resolver.service'
-import { LogsService } from './logs/logs.service'
+import { LogsService } from './logs'
 import { NetworkService } from './network'
 import { RichCollaboratorsService } from './rich-collaborators'
 

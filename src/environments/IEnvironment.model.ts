@@ -1,6 +1,6 @@
 import { Strategy } from '@coast-team/mute-core'
 import { LogLevel } from 'netflux'
-import { EncryptionType } from '../app/core/crypto/EncryptionType'
+import { EncryptionType } from '../app/core/crypto/EncryptionType.model'
 
 export interface IEnvironment {
   production: boolean

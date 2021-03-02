@@ -5,10 +5,10 @@ import { Observable, Subject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
 import { environment } from '../../../environments/environment'
-import { EProperties } from '../settings/EProperties'
+import { EProperties } from '../settings/EProperties.enum'
 import { Profile } from '../settings/Profile'
 import { SettingsService } from '../settings/settings.service'
-import { EncryptionType } from './EncryptionType'
+import { EncryptionType } from './EncryptionType.model'
 import { PKRequest } from './PKRequest'
 import { PKRequestConiks } from './PKRequestConiks'
 

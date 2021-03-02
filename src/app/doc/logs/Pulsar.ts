@@ -1,6 +1,5 @@
-import { environment } from '../../../environments/environment'
 import { PulsarService } from '../network/pulsar.service'
-import { ILogDatabase } from './ILogDatabase'
+import { ILogDatabase } from './ILogDatabase.model'
 
 export class Pulsar implements ILogDatabase {
   private key: string

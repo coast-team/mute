@@ -4,11 +4,14 @@ import { NgModule } from '@angular/core'
 import { JwtInterceptor, Ng2UiAuthModule } from 'np2-ui-auth'
 
 import { environment } from '../../environments/environment'
-import { CryptoService } from './crypto/crypto.service'
-import { SettingsService } from './settings/settings.service'
-import { BotStorageService } from './storage/bot/bot-storage.service'
-import { LocalStorageService } from './storage/local/local-storage.service'
-import { UiService } from './ui/ui.service'
+
+import { CryptoService } from './crypto'
+import { SettingsService } from './settings'
+import { UiService } from './ui'
+import {
+  BotStorageService,
+  LocalStorageService
+} from './storage'
 
 @NgModule({
   imports: [CommonModule, HttpClientModule, Ng2UiAuthModule.forRoot(environment.authentication)],

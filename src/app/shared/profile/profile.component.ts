@@ -5,9 +5,9 @@ import { MatDialog } from '@angular/material/dialog'
 
 import { Subscription } from 'rxjs'
 import { Profile } from '../../core/settings/Profile'
-import { SettingsService } from '../../core/settings/settings.service'
-import { UiService } from '../../core/ui/ui.service'
-import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
+import { SettingsService } from '../../core/settings'
+import { UiService } from '../../core/ui'
+import { ConfigDialogComponent } from '../dialogs'
 
 @Component({
   selector: 'mute-profile',

@@ -2,8 +2,8 @@ import { Observable, Subject } from 'rxjs'
 
 import { nanoid } from 'nanoid'
 import { IKeyPair } from '../crypto/crypto.service'
-import { EProperties } from './EProperties'
-import { IAccount } from './IAccount'
+import { EProperties } from './EProperties.enum'
+import { IAccount } from './IAccount.model'
 
 export interface ISerialize {
   displayName: string

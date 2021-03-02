@@ -1,12 +1,13 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core'
+
 import { ICollaborator } from '@coast-team/mute-core'
 
 import { environment } from '../../../../environments/environment'
-import { EncryptionType } from '../../../core/crypto/EncryptionType'
+import { EncryptionType } from '../../../core/crypto/EncryptionType.model'
 import { Doc } from '../../../core/Doc'
-import { UiService } from '../../../core/ui/ui.service'
-import { PulsarService } from '../../network/pulsar.service'
+import { UiService } from '../../../core/ui'
+import { PulsarService } from '../../network'
 import { RichCollaborator } from '../../rich-collaborators'
 
 const defaultCollab = {

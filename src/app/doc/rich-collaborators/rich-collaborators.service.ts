@@ -3,7 +3,7 @@ import { ICollaborator } from '@coast-team/mute-core'
 import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { EProperties } from '../../core/settings/EProperties'
+import { EProperties } from '../../core/settings/EProperties.enum'
 import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings/settings.service'
 import { Colors } from './Colors'

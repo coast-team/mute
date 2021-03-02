@@ -3,15 +3,19 @@ import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
-import { appData } from '../../../app-data'
 import { environment } from '../../../environments/environment'
+import { appData } from '../../../app-data'
 import { Folder } from '../../core/Folder'
-import { SettingsService } from '../../core/settings/settings.service'
-import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
-import { LocalStorageService } from '../../core/storage/local/local-storage.service'
-import { UiService } from '../../core/ui/ui.service'
-import { ConfigDialogComponent } from '../config-dialog/config-dialog.component'
-import { JoinDialogComponent } from './join-dialog/join-dialog.component'
+import { SettingsService } from '../../core/settings'
+import {
+  BotStorageService,
+  LocalStorageService
+} from '../../core/storage'
+import { UiService } from '../../core/ui'
+import {
+  ConfigDialogComponent,
+  JoinDialogComponent
+} from '../dialogs'
 
 @Component({
   selector: 'mute-nav',

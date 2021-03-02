@@ -4,7 +4,7 @@ import { filter } from 'rxjs/operators'
 
 import { environment } from '../../../../environments/environment'
 import { Doc } from '../../Doc'
-import { EProperties } from '../../settings/EProperties'
+import { EProperties } from '../../settings/EProperties.enum'
 import { SettingsService } from '../../settings/settings.service'
 import { Storage } from '../Storage'
 

@@ -28,12 +28,14 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
 import { AvatarComponent } from './avatar/avatar.component'
-import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
-import { DocRenameDialogComponent } from './doc-rename-dialog/doc-rename-dialog.component'
-import { JoinDialogComponent } from './nav/join-dialog/join-dialog.component'
+import {
+  ConfigDialogComponent,
+  DocRenameDialogComponent,
+  RemoteDeleteDialogComponent,
+  JoinDialogComponent
+} from './dialogs'
 import { NavComponent } from './nav/nav.component'
 import { ProfileComponent } from './profile/profile.component'
-import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delete-dialog.component'
 
 import { DateEnhancedPipe } from './pipes/dateEnhanced.pipe'
 import { RemotePipe } from './pipes/remote.pipe'

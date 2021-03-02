@@ -3,8 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { AppComponent } from './app.component'
-import { UiService } from './core/ui/ui.service'
-import { PulsarService } from './doc/network/pulsar.service'
+import { UiService } from './core/ui'
 
 @Component({ selector: 'mute-toolbar', template: '' })
 class ToolbarStubComponent {}

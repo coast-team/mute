@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { Router } from '@angular/router'
 
 import { Doc } from '../../core/Doc'
-import { UiService } from '../../core/ui/ui.service'
+import { UiService } from '../../core/ui'
 import { CONTROLS } from './controls'
 
 @Component({

@@ -2,8 +2,8 @@ import { Component, Inject } from '@angular/core'
 import { FormControl, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 
-import { Profile } from '../../core/settings/Profile'
-import { SettingsService } from '../../core/settings/settings.service'
+import { Profile } from '../../../core/settings/Profile'
+import { SettingsService } from '../../../core/settings/settings.service'
 
 @Component({
   selector: 'mute-config-dialog',
