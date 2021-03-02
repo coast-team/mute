@@ -12,7 +12,7 @@
     "prestart": "npm run sigver",
     "sigver": "pm2 startOrReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
-    "build": "ng build",
+    "build": "ng build --prod",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "postinstall": "npm run get-assets && ngcc",
     "builddev": "ng build --configuration ovhdev",

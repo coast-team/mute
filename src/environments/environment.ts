@@ -5,7 +5,9 @@ import { IEnvironment } from './IEnvironment'
 
 export const environment: IEnvironment = {
   production: false,
+
   crdtStrategy: Strategy.LOGOOTSPLIT,
+
   debug: {
     visible: true,
     log: {
@@ -14,6 +16,7 @@ export const environment: IEnvironment = {
       doc: false,
     },
   },
+
   p2p: {
     rtcConfiguration: {
       iceServers: [
@@ -25,8 +28,9 @@ export const environment: IEnvironment = {
         }
       ],
     },
-    signalingServer: 'ws://localhost:8010',
+    signalingServer: 'ws://localhost:8010', // sigver, run automatically on local development ;-)
   },
+
   cryptography: {
     type: EncryptionType.METADATA,
     // coniksClient: {
@@ -41,16 +45,20 @@ export const environment: IEnvironment = {
     //   urlPrefix: 'http://localhost:4000/public-key',
     // },
   },
+
   logSystem: {
     logCollectorUrl: 'ws://localhost:24000/ws', // 'wss://logs.dev.coedit.re',
     stompjsDebugLog: false,
     anonimyze: true,
   },
+
+  /*
   botStorage: {
     httpURL: 'http://localhost:20000',
     wsURL: 'ws://localhost:20000',
     isAnonymousAllowed: false,
   },
+
   authentication: {
     baseUrl: 'http://localhost:4000/',
     providers: {
@@ -61,7 +69,9 @@ export const environment: IEnvironment = {
       },
     },
   },
+
   pulsar: {
     wsURL: 'ws://localhost:8080/ws/v2',
-  },
+  }
+  */
 }
