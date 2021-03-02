@@ -16,7 +16,7 @@ const defaultCollab = {
   deviceID: ''
 }
 
-type Card = {
+interface Card {
   avatar: string
   displayName: string
   login: string

@@ -8,8 +8,8 @@ import { Profile } from 'src/app/core/settings/Profile'
   styleUrls: ['./avatar.component.scss']
 })
 export class AvatarComponent {
-  @Input('profile') profile: Profile
-  @Input('size') size = 32
+  @Input() profile: Profile
+  @Input() size = 32
 
   svg: SafeHtml = ''
 

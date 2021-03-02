@@ -30,7 +30,7 @@
     "build": "ng build --prod",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "postinstall": "npm run get-assets && ngcc",
-    "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md -i 'CHANGELOG.md'",
+    "lint": "ng lint mute --type-check --fix && markdownlint ./*.md -i 'CHANGELOG.md' -i 'SECURITY.md'",
     "test": "ng test",
     "pree2e": "npm run sigver",
     "e2e": "ng e2e",
@@ -52,7 +52,7 @@
   "lint-staged": {
     "*.md": [
       "prettier --write --list-different",
-      "markdownlint -i 'CHANGELOG.md'"
+      "markdownlint ./*.md -i 'CHANGELOG.md' -i 'SECURITY.md'"
     ],
     "*.ts": [
       "ng-lint-staged lint --type-check --fix --"
