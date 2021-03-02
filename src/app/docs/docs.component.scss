@@ -2,6 +2,19 @@
   flex: 1;
   overflow: auto;
 }
+
+.mat-subimage {
+  font-size: 100px !important;
+  height: 90px !important;
+  opacity: .6;
+  cursor: default;
+}
+
+.mat-subtitle {
+  margin-bottom: 1rem;
+  cursor: default;
+}
+
 .mat-table {
   overflow: auto;
 

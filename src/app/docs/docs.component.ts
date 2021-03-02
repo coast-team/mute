@@ -98,7 +98,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   public menuDoc: Doc
   public remoteName: string
   public remoteId: string
-  public sortDefault: Sort = { active: 'title', direction: 'asc' }
+  public sortDefault: Sort = { active: 'modified', direction: 'desc' }
 
   public actions
 

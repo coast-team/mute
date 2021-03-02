@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Injectable, NgZone, O
 import { Subscription } from 'rxjs'
 
 import * as CodeMirror from 'codemirror'
-import Editor from 'tui-editor'
+import Editor from '@toast-ui/editor'
 import { Doc } from '../../core/Doc'
 import { DocService } from '../doc.service'
 
@@ -18,10 +18,8 @@ import { DocService } from '../doc.service'
 })
 @Injectable()
 export class EditorComponent implements OnDestroy, OnInit {
-  @Output()
-  isReady: EventEmitter<any>
-  @ViewChild('editorElt', { static: true })
-  editorElt
+  @Output() isReady: EventEmitter<any>
+  @ViewChild('editorElt', { static: true }) editorElt
 
   public editor: CodeMirror.Editor
 
@@ -48,7 +46,7 @@ export class EditorComponent implements OnDestroy, OnInit {
         previewStyle: 'tab',
         height: '100%',
         usageStatistics: false,
-        hideModeSwitch: true,
+        hideModeSwitch: true
       })
       this.editor = tuiEditor.getCodeMirror()
       this.setupGlobalForTests()

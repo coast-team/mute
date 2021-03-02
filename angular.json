@@ -28,7 +28,11 @@
               "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js"
             ],
-            "allowedCommonJsDependencies": ["codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "tui-editor"]
+            "allowedCommonJsDependencies": [
+              "codemirror/mode/javascript/javascript",
+              "codemirror/mode/gfm/gfm",
+              "@toast-ui/editor"
+            ]
           },
           "configurations": {
             "production": {

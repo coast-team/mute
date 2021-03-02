@@ -3,7 +3,7 @@
   "short_name": "Mute",
   "theme_color": "#2196F3",
   "background_color": "#fafafa",
-  "description": "A P2P collaborative text editor.",
+  "description": "a scalable collaborative document editor with CRDT, P2P and E2EE",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",

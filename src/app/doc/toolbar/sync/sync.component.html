@@ -1,6 +1,6 @@
 <span class="sync-icon" [ngSwitch]="syncState" [@cardState]='cardState' (mouseenter)='showCard()' (mouseleave)='hideCard()'>
-  <mat-icon *ngSwitchCase="SYNC">sync</mat-icon>
-  <mat-icon *ngSwitchCase="SYNC_DISABLED">sync_disabled</mat-icon>
+  <mat-icon *ngSwitchCase="SYNC">cloud_done</mat-icon>
+  <mat-icon *ngSwitchCase="SYNC_DISABLED">cloud_off</mat-icon>
   <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
 </span>
 

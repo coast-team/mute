@@ -77,6 +77,7 @@ export class NavComponent implements OnDestroy {
       }
       this.cd.markForCheck()
     })
+
     switch (this.localStorage.status) {
       case LocalStorageService.NOT_SUPPORTED:
         this.localErrorMessage = 'Not supported in your browser'
@@ -88,6 +89,7 @@ export class NavComponent implements OnDestroy {
         this.localErrorMessage = undefined
         break
     }
+
     // this.cd.markForCheck()
     const nav: any = navigator
     if (nav.storage && nav.storage.estimate) {
@@ -104,6 +106,10 @@ export class NavComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.forEach((sub) => sub.unsubscribe())
+  }
+
+  get pulsarOn() {
+    return this.pulsarOn
   }
 
   createDoc(remotely = false) {
@@ -152,8 +158,5 @@ export class NavComponent implements OnDestroy {
       this.ui.appInstall.next(false)
       this.ui.appInstallEvent = undefined
     })
-  }
-  get pulsarOn() {
-    return this.pulsarOn
   }
 }

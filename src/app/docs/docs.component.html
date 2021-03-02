@@ -40,13 +40,13 @@
 
               <!-- Document name -->
               <div fxFlex class="doc-in-trash" *ngIf="folder === localStorage.trash; else docTitleButton">
-                <mat-icon class="title-icon ">description</mat-icon>
+                <mat-icon class="title-icon">description</mat-icon>
                 {{doc.title}}
               </div>
 
               <ng-template #docTitleButton>
                 <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
-                  <mat-icon class="title-icon ">description</mat-icon>
+                  <mat-icon class="title-icon">description</mat-icon>
                   <span>{{doc.title}}</span>
                   <span class="key">{{doc.signalingKey}}</span>
                 </button>
@@ -138,16 +138,18 @@
     </ng-container>
 
     <ng-template #noDocs>
-      <h3 *ngIf="folder.id === localStorage.trash.id; else noDocCreated" class="noDoc mat-title">
-        The trash is empty.
+      <h3 *ngIf="folder.id === localStorage.trash.id; else noDocCreated" class="noDoc mat-title" fxLayout="column" fxFlexAlign="start" fxLayoutAlign="center center">
+        <mat-icon [inline]="true" class="mat-subimage">delete_outline</mat-icon>
+        <span class="mat-subtitle">The trash is empty</span>
       </h3>
     </ng-template>
 
     <ng-template #noDocCreated>
       <h3 class="noDoc mat-title" fxLayout="column" fxFlexAlign="start" fxLayoutAlign="center center">
-        No documents!
-        <button mat-button (click)="open()">
-          <span class="mat-title title-button">Create a new one.</span>
+        <mat-icon [inline]="true" class="mat-subimage">description</mat-icon>
+        <span class="mat-subtitle">You don't have any documents</span>
+        <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="open()">
+          New Document
         </button>
       </h3>
     </ng-template>
