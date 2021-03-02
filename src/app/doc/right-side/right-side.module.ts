@@ -7,8 +7,17 @@ import { DetailsComponent } from './details/details.component'
 import { RightSideComponent } from './right-side.component'
 
 @NgModule({
-  declarations: [RightSideComponent, MarkdownCheatsheetComponent, DetailsComponent],
-  imports: [SharedModule, RouterModule],
-  exports: [RightSideComponent],
+  declarations: [
+    RightSideComponent,
+    MarkdownCheatsheetComponent,
+    DetailsComponent
+  ],
+  imports: [
+    SharedModule,
+    RouterModule
+  ],
+  exports: [
+    RightSideComponent
+  ],
 })
 export class RightSideModule {}

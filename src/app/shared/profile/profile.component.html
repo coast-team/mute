@@ -1,21 +1,11 @@
 <button mat-icon-button (mousedown)='toggleCard($event)'>
-  <ng-container *ngIf="profile.avatar; else anonymousIcon">
-    <img class='avatar-img' src="{{profile.avatar}}" alt="avatar" height="32" width="32" />
-  </ng-container>
-  <ng-template #anonymousIcon>
-    <mat-icon aria-label="show profile information">account_circle</mat-icon>
-  </ng-template>
+  <mute-avatar [profile]="profile"></mute-avatar>
 </button>
 
 <mat-card class="profile-card mat-elevation-z8" [@cardState]="cardState" (mousedown)='mousedown($event)'>
   <span class="arrow"></span>
   <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
-    <ng-container *ngIf="profile.avatar; else anonymousIconBig">
-      <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
-    </ng-container>
-    <ng-template #anonymousIconBig>
-      <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
-    </ng-template>
+    <mute-avatar [profile]="profile" size="100"></mute-avatar>
 
     <div fxLayout="column">
       <span class="mat-body-2 name">{{ profile.displayName }}</span>

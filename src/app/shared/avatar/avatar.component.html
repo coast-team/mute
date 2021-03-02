@@ -1,0 +1,7 @@
+<ng-container *ngIf="profile.avatar && avatarIsNotDefault; else multiavatarIcon">
+  <img class='avatar' src="{{profile.avatar}}" alt="avatar" [height]="size" [width]="size" />
+</ng-container>
+
+<ng-template #multiavatarIcon>
+  <div class="avatar" [ngClass]="{ 'avatar-small': size < 50 }" [style]="{ width: size + 'px' }" [innerHTML]="svg"></div>
+</ng-template>

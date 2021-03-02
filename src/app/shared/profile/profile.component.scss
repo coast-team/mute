@@ -1,11 +1,5 @@
-.avatar-img {
-  border-radius: 50% 50%;
-}
-
-.anonymous-icon-big {
-  font-size: 100px;
-  height: 100px;
-  width: 100px;
+::ng-deep mute-avatar img {
+  margin-top: 4px;
 }
 
 .profile-card {

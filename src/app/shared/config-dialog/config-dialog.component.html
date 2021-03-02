@@ -6,12 +6,7 @@
 
     <h2 class="mat-subheading-2">Profile</h2>
     <div fxLayoutAlign="start start" fxLayoutGap="20px">
-      <ng-container *ngIf="profile.avatar; else anonymousIconBig">
-        <img height="100px" weight="100px" class="card-icon" src="{{profile.avatar}}" alt="avatar" />
-      </ng-container>
-      <ng-template #anonymousIconBig>
-        <mat-icon class="anonymous-icon-big" aria-label="avatar">account_circle</mat-icon>
-      </ng-template>
+      <mute-avatar [profile]="profile" [size]="100"></mute-avatar>
 
       <div fxLayout="column">
         <mat-form-field>

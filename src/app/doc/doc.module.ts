@@ -13,8 +13,22 @@ import { SyncComponent } from './toolbar/sync/sync.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  imports: [SharedModule, RightSideModule, RouterModule],
-  declarations: [DocComponent, EditorComponent, CursorsDirective, ToolbarComponent, SyncComponent, ResolverDialogComponent],
-  providers: [DocResolverService, PulsarService],
+  imports: [
+    SharedModule,
+    RightSideModule,
+    RouterModule
+  ],
+  declarations: [
+    DocComponent,
+    EditorComponent,
+    CursorsDirective,
+    ToolbarComponent,
+    SyncComponent,
+    ResolverDialogComponent
+  ],
+  providers: [
+    DocResolverService,
+    PulsarService
+  ],
 })
 export class DocModule {}

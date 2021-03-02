@@ -1,22 +1,35 @@
 {
   "name": "mute",
   "version": "0.12.2",
-  "description": "peer to peer collaborative text editor with CRDT",
   "private": true,
-  "engines": {
-    "node": ">=10.13.0"
-  },
+  "description": "peer to peer collaborative text editor with CRDT",
+  "keywords": [
+    "webrtc",
+    "p2p",
+    "crdt",
+    "e2ee",
+    "collaborative-editing"
+  ],
+  "repository": "https://github.com/coast-team/mute",
+  "license": "AGPL-3.0",
+  "contributors": [
+    "Pierre-Antoine Rault <par@rigelk.eu>",
+    "Philippe Kalitine <philippe.kalitine@gmail.com>",
+    "Matthieu Nicolas <matthieu.nicolas@inria.fr>",
+    "Cédric Enclos <cedric.enclos@loria.fr",
+    "Quentin Tardivon",
+    "Camille Menou",
+    "Yann Prono"
+  ],
   "scripts": {
     "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute postbuild'",
     "ng": "ng",
     "prestart": "npm run sigver",
-    "sigver": "pm2 startOrReload process.yml",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
+    "sigver": "pm2 startOrReload process.yml",
     "build": "ng build --prod",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "postinstall": "npm run get-assets && ngcc",
-    "builddev": "ng build --configuration ovhdev",
-    "postbuilddev": "tar -cvf dist/mute.tar.gz -C dist . && scp dist/mute.tar.gz ovhmute:/root/container/mute",
     "lint": "ng lint mute --type-check --fix && prettier --write --list-different 'src/**/*.{ts,json,scss,css}' './*.{js,ts,json,scss,css,md}' 'e2e/**/*.{js,ts,json,scss,css}' 'scripts/**/*.{js,ts,json,scss,css}' && markdownlint ./*.md -i 'CHANGELOG.md'",
     "test": "ng test",
     "pree2e": "npm run sigver",
@@ -25,103 +38,16 @@
     "cz": "npx git-cz",
     "get-assets": "bash scripts/get-assets.sh"
   },
-  "keywords": [
-    "webrtc",
-    "p2p",
-    "crdt",
-    "e2ee",
-    "collaborative-editing"
-  ],
-  "contributors": [
-    "Pierre-Antoine Rault <par@rigelk.eu>",
-    "Philippe Kalitine <philippe.kalitine@gmail.com> (https://philippe.kalitine.name/)",
-    "Matthieu Nicolas <matthieu.nicolas@inria.fr>",
-    "Cédric Enclos <cedric.enclos@loria.fr",
-    "Quentin Tardivon",
-    "Camille Menou",
-    "Yann Prono"
-  ],
-  "repository": "https://github.com/coast-team/mute",
-  "license": "AGPL-3.0",
-  "angular-cli": {},
-  "dependencies": {
-    "@angular/animations": "^11.2.3",
-    "@angular/cdk": "^11.2.2",
-    "@angular/common": "^11.2.3",
-    "@angular/compiler": "^11.2.3",
-    "@angular/core": "^11.2.3",
-    "@angular/flex-layout": "^11.0.0-beta.33",
-    "@angular/forms": "^11.2.3",
-    "@angular/material": "^11.2.2",
-    "@angular/platform-browser": "^11.2.3",
-    "@angular/platform-browser-dynamic": "^11.2.3",
-    "@angular/router": "^11.2.3",
-    "@angular/service-worker": "^11.2.3",
-    "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "^10.0.0-2.2",
-    "@coast-team/mute-crypto": "^0.4.1",
-    "@stomp/ng2-stompjs": "^7.2.0",
-    "@toast-ui/editor": "^2.5.1",
-    "bragi-browser": "0.0.12",
-    "core-js": "^3.1.4",
-    "loglevel": "^1.6.1",
-    "mute-structs": "^1.1.0",
-    "nanoid": "^3.1.20",
-    "netflux": "^4.3.1",
-    "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
-    "protobufjs": "^6.8.8",
-    "rxjs": "^6.6.6",
-    "uws": "^100.0.1",
-    "zone.js": "~0.10.2"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1102.2",
-    "@angular/cli": "^11.2.2",
-    "@angular/compiler-cli": "^11.2.3",
-    "@angular/language-service": "^11.2.3",
-    "@commitlint/cli": "^12.0.1",
-    "@commitlint/config-conventional": "^12.0.1",
-    "@types/codemirror": "0.0.108",
-    "@types/jasmine": "~3.6.0",
-    "@types/jasminewd2": "~2.0.6",
-    "@types/loglevel": "^1.5.3",
-    "@types/node": "^14.14.31",
-    "@types/uuid": "^8.3.0",
-    "codelyzer": "^6.0.0",
-    "commitizen": "^4.2.3",
-    "cz-conventional-changelog": "^3.3.0",
-    "husky": "^4.3.8",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "^6.0.0",
-    "karma": "~6.1.1",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage-istanbul-reporter": "~3.0.2",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
-    "lint-staged": "^10.5.4",
-    "markdownlint-cli": "^0.13.0",
-    "material-icons": "^0.5.3",
-    "ng-lint-staged": "^0.1.6",
-    "pm2": "^4.5.5",
-    "prettier": "^2.2.1",
-    "protractor": "~7.0.0",
-    "sigver": "^20.0.2",
-    "ts-node": "^9.1.1",
-    "tslib": "^2.0.0",
-    "tslint": "~6.1.0",
-    "tslint-config-prettier": "^1.17.0",
-    "typescript": "4.0.7",
-    "validate-commit-msg": "^2.14.0"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS"
+    }
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "lint-staged": {
     "*.md": [
@@ -135,15 +61,87 @@
       "prettier --write --list-different -e *proto*"
     ]
   },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1102.2",
+    "@angular/animations": "^11.2.3",
+    "@angular/cdk": "^11.2.2",
+    "@angular/cli": "^11.2.2",
+    "@angular/common": "^11.2.3",
+    "@angular/compiler": "^11.2.3",
+    "@angular/compiler-cli": "^11.2.3",
+    "@angular/core": "^11.2.3",
+    "@angular/flex-layout": "^11.0.0-beta.33",
+    "@angular/forms": "^11.2.3",
+    "@angular/language-service": "^11.2.3",
+    "@angular/material": "^11.2.2",
+    "@angular/platform-browser": "^11.2.3",
+    "@angular/platform-browser-dynamic": "^11.2.3",
+    "@angular/router": "^11.2.3",
+    "@angular/service-worker": "^11.2.3",
+    "@coast-team/mnemonicjs": "^1.0.0",
+    "@coast-team/mute-core": "^10.0.0-2.2",
+    "@coast-team/mute-crypto": "^0.4.1",
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "@multiavatar/multiavatar": "^1.0.6",
+    "@stomp/ng2-stompjs": "^7.2.0",
+    "@toast-ui/editor": "^2.5.1",
+    "@types/codemirror": "0.0.108",
+    "@types/jasmine": "~3.6.0",
+    "@types/jasminewd2": "~2.0.6",
+    "@types/loglevel": "^1.5.3",
+    "@types/node": "^14.14.31",
+    "@types/uuid": "^8.3.0",
+    "bragi-browser": "0.0.12",
+    "codelyzer": "^6.0.0",
+    "commitizen": "^4.2.3",
+    "core-js": "^3.1.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^4.3.8",
+    "jasmine-core": "~3.6.0",
+    "jasmine-spec-reporter": "^6.0.0",
+    "karma": "~6.1.1",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "lint-staged": "^10.5.4",
+    "loglevel": "^1.6.1",
+    "markdownlint-cli": "^0.13.0",
+    "material-icons": "^0.5.3",
+    "mute-structs": "^1.1.0",
+    "nanoid": "^3.1.20",
+    "netflux": "^4.3.1",
+    "ng-lint-staged": "^0.1.6",
+    "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
+    "pm2": "^4.5.5",
+    "prettier": "^2.2.1",
+    "protobufjs": "^6.8.8",
+    "protractor": "~7.0.0",
+    "rxjs": "^6.6.6",
+    "sigver": "^20.0.2",
+    "ts-node": "^9.1.1",
+    "tslib": "^2.0.0",
+    "tslint": "~6.1.0",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "4.0.7",
+    "uws": "^100.0.1",
+    "validate-commit-msg": "^2.14.0",
+    "zone.js": "~0.10.2"
+  },
+  "engines": {
+    "node": ">=10.13.0"
+  },
+  "angular-cli": {},
   "standard-version": {
     "scripts": {
       "postbump": "node scripts/update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
     }
   }
 }

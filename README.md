@@ -47,8 +47,19 @@ MUTE relies on other libraries we develop, which you can reuse in your projects:
 - [@coast-team/mute-core](https://github.com/coast-team/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
 - [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the LogootSplit CRDT algorithm
 - [@coast-team/mute-crypto](https://github.com/coast-team/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://github.com/coast-team/mute-crypto)
+- [@coast-team/mute-auth-proxy](https://github.com/coast-team/mute-auth-proxy): assign public/private key pairs to autenticated users, for later use in mute-crypto
+
+MUTE also has a pluggable system of services called *Bots*. They can act like peers in documents to provide
+services:
+
+- [@coast-team/mute-bot-storage](https://github.com/coast-team/mute-bot-storage): stores documents for others when you are offline
+
+MUTE exchanges messages by default over WebRTC via:
+
 - [netflux](https://github.com/coast-team/netflux): peer-to-peer browser communication layer
 - [sigver](https://github.com/coast-team/sigver): signaling for WebRTC
+
+In the future, any communication layer could be used, like [Pulsar](https://github.com/apache/pulsar) which we support already for increased reliability!
 
 One of the best ways to contribute to MUTE is to help these libraries!
 

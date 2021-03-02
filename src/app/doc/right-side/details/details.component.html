@@ -79,7 +79,7 @@
     <div fxLayout="row wrap" fxLayoutAlign="start start" class="chips">
       <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard()" class="chip mat-elevation-z2"
         [@joinLeave]="active" [style.border-color]="collab.color" fxFlex="150px" fxLayoutAlign='start center'>
-        <img src="{{collab.avatar}}" class="avatar" alt="avatar" width="32" height="32" />
+        <mute-avatar [profile]="collab"></mute-avatar>
         <span class="mat-body-2 displayName">
           {{collab.displayName}}
         </span>
@@ -89,9 +89,7 @@
 
   <mat-card class="profile-block" [@cardState]="cardState">
     <div fxLayoutAlign="start start" fxLayoutGap="10px">
-      <ng-container>
-        <img height="64px" weight="64px" class="card-icon" src="{{card.avatar}}" />
-      </ng-container>
+      <mute-avatar [profile]="card" [size]="64"></mute-avatar>
 
       <div class="info" fxLayout="column">
         <span class="mat-body-2 prop">{{ card.displayName }}</span>

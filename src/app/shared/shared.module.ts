@@ -1,7 +1,9 @@
 import { CommonModule, DatePipe } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { FlexLayoutModule } from '@angular/flex-layout'
+import { RouterModule } from '@angular/router'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { FlexLayoutModule } from '@angular/flex-layout'
+
 import { MatButtonModule } from '@angular/material/button'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { MatCardModule } from '@angular/material/card'
@@ -24,16 +26,18 @@ import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { RouterModule } from '@angular/router'
+
+import { AvatarComponent } from './avatar/avatar.component'
 import { ConfigDialogComponent } from './config-dialog/config-dialog.component'
 import { DocRenameDialogComponent } from './doc-rename-dialog/doc-rename-dialog.component'
 import { JoinDialogComponent } from './nav/join-dialog/join-dialog.component'
 import { NavComponent } from './nav/nav.component'
+import { ProfileComponent } from './profile/profile.component'
+import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delete-dialog.component'
+
 import { DateEnhancedPipe } from './pipes/dateEnhanced.pipe'
 import { RemotePipe } from './pipes/remote.pipe'
 import { SizePipe } from './pipes/size.pipe'
-import { ProfileComponent } from './profile/profile.component'
-import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delete-dialog.component'
 
 @NgModule({
   imports: [
@@ -42,6 +46,7 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -63,25 +68,30 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
-  providers: [DatePipe],
+  providers: [
+    DatePipe
+  ],
   declarations: [
     ProfileComponent,
     NavComponent,
-    SizePipe,
-    RemotePipe,
-    DateEnhancedPipe,
     ConfigDialogComponent,
     DocRenameDialogComponent,
     RemoteDeleteDialogComponent,
     JoinDialogComponent,
+    AvatarComponent,
+
+    SizePipe,
+    RemotePipe,
+    DateEnhancedPipe
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -104,8 +114,11 @@ import { RemoteDeleteDialogComponent } from './remote-delete-dialog/remote-delet
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
+
     NavComponent,
     ProfileComponent,
+    AvatarComponent,
+
     RemotePipe,
     DateEnhancedPipe,
   ],
