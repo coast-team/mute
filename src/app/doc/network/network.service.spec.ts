@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing'
 import { NetworkService } from './network.service'
 
 xdescribe('NetworkService', () => {
-  const networkService: NetworkService
+  let networkService: NetworkService
 
   beforeEach(() => {
     TestBed.configureTestingModule({
