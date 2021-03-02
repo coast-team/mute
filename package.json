@@ -30,7 +30,7 @@
     "build": "ng build --prod",
     "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
     "postinstall": "npm run get-assets && ngcc",
-    "lint": "ng lint mute --type-check --fix && markdownlint ./*.md -i 'CHANGELOG.md' -i 'SECURITY.md'",
+    "lint": "ng lint mute --type-check --fix",
     "test": "ng test",
     "pree2e": "npm run sigver",
     "e2e": "ng e2e",
@@ -50,14 +50,10 @@
     ]
   },
   "lint-staged": {
-    "*.md": [
-      "prettier --write --list-different",
-      "markdownlint ./*.md -i 'CHANGELOG.md' -i 'SECURITY.md'"
-    ],
     "*.ts": [
       "ng-lint-staged lint --type-check --fix --"
     ],
-    "*.{ts,json,scss,css}": [
+    "*.{json,scss,css}": [
       "prettier --write --list-different -e *proto*"
     ]
   },
@@ -118,7 +114,6 @@
     "karma-jasmine-html-reporter": "^1.5.0",
     "lint-staged": "^10.5.4",
     "loglevel": "^1.6.1",
-    "markdownlint-cli": "^0.13.0",
     "material-icons": "^0.5.3",
     "mute-structs": "^1.1.0",
     "nanoid": "^3.1.20",
