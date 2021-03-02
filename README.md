@@ -1,3 +1,7 @@
+<a href="https://github.com/coast-team/mute">
+  <img src="https://github.com/coast-team/mute/raw/4df1aa915565123f42009f54b9736506a45905ad/src/assets/images/icons/icon-512x512.png" alt="MUTE logo" title="MUTE" align="right" height="60" />
+</a>
+
 # MUTE: Multi User Text Editor
 
 Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: [LogootSplit](https://github.com/coast-team/mute-structs#ref-1). This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
