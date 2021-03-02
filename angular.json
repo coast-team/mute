@@ -24,7 +24,6 @@
             "styles": ["src/styles.scss"],
             "scripts": [
               "node_modules/loglevel/dist/loglevel.min.js",
-              "node_modules/bragi-browser/dist/bragi.min.js",
               "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js",
               "node_modules/@multiavatar/multiavatar/multiavatar.min.js"
@@ -93,7 +92,6 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
               "node_modules/loglevel/dist/loglevel.min.js",
-              "node_modules/bragi-browser/dist/bragi.min.js",
               "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js"
             ],

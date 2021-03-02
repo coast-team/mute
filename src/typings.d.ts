@@ -6,7 +6,6 @@ interface NodeModule {
 
 // Logging
 declare var log: any
-declare var BRAGI: any
 
 // For Quentin's test
 interface Window {
