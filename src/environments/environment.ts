@@ -52,7 +52,6 @@ export const environment: IEnvironment = {
     anonimyze: true,
   },
 
-  /*
   botStorage: {
     httpURL: 'http://localhost:20000',
     wsURL: 'ws://localhost:20000',
@@ -73,5 +72,4 @@ export const environment: IEnvironment = {
   pulsar: {
     wsURL: 'ws://localhost:8080/ws/v2',
   }
-  */
 }
