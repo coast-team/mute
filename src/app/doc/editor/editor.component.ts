@@ -38,6 +38,18 @@ export class EditorComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit() {
+    /*
+     * We have NgZone imported in this module and injected its instance
+     * by Angular (see constructor property).
+     * We run the following code what we call outside of Angular zone,
+     * because we do not want Angular detect any modification done inside
+     * CodeMirror and manage it ourselves.
+     * Q. Why this?
+     * A. To understand well a more detailed comprehension of Angular
+     * detect changes mechanism is mandatory, but in two words
+     * if we do not do it, we will have a performance issue,
+     * as Angular would run detectChanges mechanism infinitely.
+     */
     this.zone.runOutsideAngular(() => {
       // Initialize editor
       const tuiEditor = new Editor({

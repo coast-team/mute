@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
 import { filter } from 'rxjs/operators'
 
-import { environment } from '../../../../environments/environment'
+import { environment } from '@environments/environment'
 import { Doc } from '../../Doc'
 import { EProperties } from '../../settings/EProperties.enum'
 import { SettingsService } from '../../settings/settings.service'

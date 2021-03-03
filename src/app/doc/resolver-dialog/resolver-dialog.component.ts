@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 
-import { Doc } from '../../core/Doc'
-import { BotStorageService } from '../../core/storage/bot/bot-storage.service'
+import { Doc } from '@app/core/Doc'
+import { BotStorageService } from '@app/core/storage'
 
 @Component({
   selector: 'mute-resolver-dialog',

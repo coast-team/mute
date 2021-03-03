@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import { Author } from '../../core/Author'
+
+import { Author } from '@app/core/Author'
 
 @Component({
   selector: 'mute-collaborators',

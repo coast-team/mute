@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Subscription } from 'rxjs'
-import { environment } from '../../../environments/environment'
+
+import { environment } from '@environments/environment'
 import { Doc } from '../../core/Doc'
 import { PulsarService } from '../network/pulsar.service'
 import { LogsStrategy } from './LogsStrategy'

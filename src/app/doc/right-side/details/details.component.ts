@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core'
 
 import { ICollaborator } from '@coast-team/mute-core'
 
-import { environment } from '../../../../environments/environment'
+import { environment } from '@environments/environment'
 import { EncryptionType } from '../../../core/crypto/EncryptionType.model'
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui'
@@ -23,6 +23,7 @@ interface Card {
   login: string
   deviceID: string
 }
+
 @Component({
   selector: 'mute-details',
   templateUrl: './details.component.html',

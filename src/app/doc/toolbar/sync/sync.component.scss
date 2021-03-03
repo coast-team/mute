@@ -29,7 +29,6 @@
   top: 66px;
   right: 20px;
   z-index: 1000;
-  // opacity: 0;
 
   .center {
     text-align: center;
@@ -38,11 +37,11 @@
 
   .arrow {
     border-color: transparent;
-    border-bottom-color: #fff;
+    border-bottom-color: var(--theme-bg-dialog);
     border-style: dashed dashed solid;
     border-width: 0 8.5px 8.5px;
     position: fixed;
-    right: 156px;
+    right: 116px;
     top: 58px;
     z-index: 1000;
   }

@@ -3,7 +3,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 import { NgModule } from '@angular/core'
 import { JwtInterceptor, Ng2UiAuthModule } from 'np2-ui-auth'
 
-import { environment } from '../../environments/environment'
+import { environment } from '@environments/environment'
 
 import { CryptoService } from './crypto'
 import { SettingsService } from './settings'

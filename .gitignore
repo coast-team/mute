@@ -45,6 +45,3 @@ Thumbs.db
 # Config Files for Firebase
 .firebaserc
 firebase.json
-
-# Other
-src/environments/*ovh*.ts

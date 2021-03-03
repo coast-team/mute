@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http'
-import { environment } from '../../../environments/environment'
+import { environment } from '@environments/environment'
 
 interface IPK {
   pk: string
@@ -13,8 +13,11 @@ interface IUserPK {
 
 export class PKRequest {
   private urlPrefix: string
+
   constructor(private http: HttpClient) {
-    this.urlPrefix = environment.cryptography.keyserver ? environment.cryptography.keyserver.urlPrefix : ''
+    this.urlPrefix = environment.cryptography.keyserver
+      ? environment.cryptography.keyserver.urlPrefix
+      : ''
   }
 
   async register (login: string, deviceID: string, pk: string) {

@@ -22,15 +22,16 @@
       <button mat-icon-button class="action" [matMenuTriggerFor]="docMenu">
         <mat-icon>more_vert</mat-icon>
       </button>
-      <button mat-icon-button class="action" (click)="info.emit()">
-        <mat-icon>info</mat-icon>
-      </button>
       <mute-profile class="action profile"></mute-profile>
     </div>
   </div>
 </mat-toolbar>
 
 <mat-menu #docMenu="matMenu" overlapTrigger="false">
+  <button mat-menu-item (click)="info.emit()">
+    <mat-icon>info</mat-icon>
+    Toggle details
+  </button>
   <button disabled mat-menu-item [routerLink]="['/history', doc.signalingKey]">
     <mat-icon>history</mat-icon>
     Version history

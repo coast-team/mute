@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ServiceWorkerModule, SwUpdate } from '@angular/service-worker'
 import { MatSnackBar } from '@angular/material/snack-bar'
 
-import { environment } from '../environments/environment'
+import { environment } from '@environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { CoreModule } from './core/core.module'

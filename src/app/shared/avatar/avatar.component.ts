@@ -8,14 +8,14 @@ import { Profile } from 'src/app/core/settings/Profile'
   styleUrls: ['./avatar.component.scss']
 })
 export class AvatarComponent {
-  @Input() profile: Profile
+  @Input() profile: Profile | { deviceID: string, avatar: string }
   @Input() size = 32
 
   svg: SafeHtml = ''
 
   constructor(private sanitizer: DomSanitizer) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     const svgCode = (window as any).multiavatar(this.profile.deviceID)
     this.svg = this.sanitizer.bypassSecurityTrustHtml(svgCode)
   }

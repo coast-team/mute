@@ -89,7 +89,7 @@
 
   <mat-card class="profile-block" [@cardState]="cardState">
     <div fxLayoutAlign="start start" fxLayoutGap="10px">
-      <mute-avatar [profile]="card" [size]="64"></mute-avatar>
+      <mute-avatar *ngIf="card.deviceID" [profile]="card" [size]="64"></mute-avatar>
 
       <div class="info" fxLayout="column">
         <span class="mat-body-2 prop">{{ card.displayName }}</span>

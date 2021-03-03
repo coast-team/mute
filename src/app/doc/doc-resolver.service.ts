@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRouteSnapshot, CanDeactivate, Resolve, Router } from '@angular/router'
 
-import { environment } from '../../environments/environment'
+import { environment } from '@environments/environment'
 import { CryptoService } from '../core/crypto/crypto.service'
 import { Doc } from '../core/Doc'
 import { SettingsService } from '../core/settings/settings.service'

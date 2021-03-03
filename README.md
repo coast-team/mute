@@ -49,7 +49,7 @@ In our experience, performance drops significantly after reaching tens of users 
 MUTE relies on other libraries we develop, which you can reuse in your projects:
 
 - [@coast-team/mute-core](https://github.com/coast-team/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
-- [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the LogootSplit CRDT algorithm
+- [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the [LogootSplit](https://github.com/coast-team/mute-structs#ref-1) CRDT algorithm
 - [@coast-team/mute-crypto](https://github.com/coast-team/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://github.com/coast-team/mute-crypto)
 - [@coast-team/mute-auth-proxy](https://github.com/coast-team/mute-auth-proxy): assign public/private key pairs to autenticated users, for later use in mute-crypto
 

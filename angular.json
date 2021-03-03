@@ -31,7 +31,8 @@
             "allowedCommonJsDependencies": [
               "codemirror/mode/javascript/javascript",
               "codemirror/mode/gfm/gfm",
-              "@toast-ui/editor"
+              "@toast-ui/editor",
+              "@stomp/rx-stomp"
             ]
           },
           "configurations": {

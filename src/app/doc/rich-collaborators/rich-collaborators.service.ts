@@ -1,11 +1,15 @@
 import { ChangeDetectorRef, Injectable, OnDestroy } from '@angular/core'
-import { ICollaborator } from '@coast-team/mute-core'
 import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { EProperties } from '../../core/settings/EProperties.enum'
-import { Profile } from '../../core/settings/Profile'
-import { SettingsService } from '../../core/settings/settings.service'
+import { ICollaborator } from '@coast-team/mute-core'
+
+import { EProperties } from '@app/core/settings/EProperties.enum'
+import {
+  Profile,
+  SettingsService
+} from '@app/core/settings'
+
 import { Colors } from './Colors'
 import { RichCollaborator } from './RichCollaborator'
 

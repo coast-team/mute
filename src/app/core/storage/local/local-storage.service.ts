@@ -4,7 +4,7 @@ import { MuteCore, StateStrategy, StateTypes } from '@coast-team/mute-core'
 import { filter } from 'rxjs/operators'
 import { nanoid } from 'nanoid'
 
-import { environment } from 'src/environments/environment'
+import { environment } from '@environments/environment'
 import { IndexdbDatabase } from '../../../doc/logs/IndexdbDatabase'
 import { CryptoService } from '../../crypto/crypto.service'
 import { Doc } from '../../Doc'

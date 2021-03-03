@@ -19,7 +19,7 @@ import { SessionParameters } from '@coast-team/mute-core/dist/types/src/MuteCore
 import { KeyState } from '@coast-team/mute-crypto'
 import { WebGroupState } from 'netflux'
 
-import { environment } from '../../environments/environment'
+import { environment } from '@environments/environment'
 import { CryptoService } from '../core/crypto'
 import { Doc } from '../core/Doc'
 import { EProperties } from '../core/settings/EProperties.enum'
@@ -67,6 +67,19 @@ export class DocService implements OnDestroy {
     this.subs[this.subs.length] = this.settings.onChange
       .pipe(filter((props) => props.includes(EProperties.profile)))
       .subscribe(() => window.location.reload())
+
+    /*
+     * We have NgZone imported in this module and injected its instance
+     * by Angular (see constructor property).
+     * We run the following code what we call outside of Angular zone,
+     * because we do not want Angular detect any modification done inside
+     * CodeMirror and manage it ourselves.
+     * Q. Why this?
+     * A. To understand well a more detailed comprehension of Angular
+     * detect changes mechanism is mandatory, but in two words
+     * if we do not do it, we will have a performance issue,
+     * as Angular would run detectChanges mechanism infinitely.
+     */
     this.zone.runOutsideAngular(() => {
       this.newSub = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc

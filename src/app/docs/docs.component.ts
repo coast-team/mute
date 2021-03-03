@@ -9,15 +9,15 @@ import { Router } from '@angular/router'
 import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { Doc } from '../core/Doc'
-import { Folder } from '../core/Folder'
-import { EProperties } from '../core/settings/EProperties.enum'
-import { SettingsService } from '../core/settings'
+import { Doc } from '@app/core/Doc'
+import { Folder } from '@app/core/Folder'
+import { EProperties } from '@app/core/settings/EProperties.enum'
+import { SettingsService } from '@app/core/settings'
 import {
   BotStorageService,
   LocalStorageService
-} from '../core/storage'
-import { UiService } from '../core/ui'
+} from '@app/core/storage'
+import { UiService } from '@app/core/ui'
 import {
   DocRenameDialogComponent,
   RemoteDeleteDialogComponent

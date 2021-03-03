@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable, OnDestroy } from '@angular/core'
-import { asymmetricCrypto, KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
 import { Observable, Subject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
-import { environment } from '../../../environments/environment'
-import { EProperties } from '../settings/EProperties.enum'
-import { Profile } from '../settings/Profile'
-import { SettingsService } from '../settings/settings.service'
+import { asymmetricCrypto, KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
+
+import { environment } from '@environments/environment'
+import { EProperties } from '@app/core/settings/EProperties.enum'
+import { Profile } from '@app/core/settings/Profile'
+import { SettingsService } from '@app/core/settings/settings.service'
+
 import { EncryptionType } from './EncryptionType.model'
 import { PKRequest } from './PKRequest'
 import { PKRequestConiks } from './PKRequestConiks'

@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
-import { environment } from '../../../environments/environment'
+import { environment } from '@environments/environment'
 import { appData } from '../../../app-data'
 import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings'

@@ -1,16 +1,18 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
+import { filter } from 'rxjs/operators'
+
 import { StreamId, Streams, Streams as MuteCoreStreams, StreamsSubtype } from '@coast-team/mute-core'
 import { KeyAgreementBD, KeyState, Streams as MuteCryptoStreams, Symmetric } from '@coast-team/mute-crypto'
 import { SignalingState, WebGroup, WebGroupState } from 'netflux'
-import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs'
-
 import { keyAgreementCrypto } from '@coast-team/mute-crypto-helper'
-import { filter, shareReplay } from 'rxjs/operators'
-import { environment } from '../../../environments/environment'
-import { CryptoService } from '../../core/crypto/crypto.service'
-import { EncryptionType } from '../../core/crypto/EncryptionType.model'
-import { Doc } from '../../core/Doc'
+
+import { environment } from '@environments/environment'
+import { CryptoService } from '@app/core/crypto'
+import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
+import { Doc } from '@app/core/Doc'
+
 import { Message } from './message_proto'
 import { PulsarService } from './pulsar.service'
 
@@ -57,6 +59,18 @@ export class NetworkService implements OnDestroy {
 
     this.leaveSubject = new Subject()
 
+    /*
+     * We have NgZone imported in this module and injected its instance
+     * by Angular (see constructor property).
+     * We run the following code what we call outside of Angular zone,
+     * because we do not want Angular detect any modification done inside
+     * CodeMirror and manage it ourselves.
+     * Q. Why this?
+     * A. To understand well a more detailed comprehension of Angular
+     * detect changes mechanism is mandatory, but in two words
+     * if we do not do it, we will have a performance issue,
+     * as Angular would run detectChanges mechanism infinitely.
+     */
     this.zone.runOutsideAngular(() => {
       this.wg = new WebGroup({
         signalingServer: environment.p2p.signalingServer,
