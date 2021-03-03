@@ -214,8 +214,9 @@ export class NetworkService implements OnDestroy {
     }
   }
 
-  join(key: string) {
+  join (key: string) {
     this.wg.join(key)
+
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       // for the one who create the doc
       this._pulsarOn = doc.pulsar || this._pulsarOn
@@ -243,7 +244,7 @@ export class NetworkService implements OnDestroy {
     })
   }
 
-  pulsarConnect(id: number) {
+  pulsarConnect (id: number) {
     this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
       try {
@@ -258,14 +259,14 @@ export class NetworkService implements OnDestroy {
     })
   }
 
-  inviteBot(url: string): void {
+  inviteBot (url: string): void {
     if (!this.botUrls.includes(url)) {
       const fullUrl = url.startsWith('ws') ? url : `ws://${url}`
       this.zone.runOutsideAngular(() => this.wg.invite(fullUrl))
     }
   }
 
-  send(streamId: StreamId, content: Uint8Array, id?: number): void {
+  send (streamId: StreamId, content: Uint8Array, id?: number): void {
     if (this.members.length > 1) {
       const msg = Message.create({ type: streamId.type, subtype: streamId.subtype, content })
 
