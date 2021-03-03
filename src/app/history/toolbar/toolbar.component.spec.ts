@@ -41,7 +41,7 @@ describe('ToolbarComponent', () => {
 })
 
 function tests() {
-  it('Correct Init', () => {
+  it('Should initialize the service', () => {
     expect(comp).toBeTruthy()
   })
 }

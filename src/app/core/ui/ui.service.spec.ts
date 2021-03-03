@@ -6,5 +6,5 @@ describe('UiService', () => {
 
   beforeEach(waitForAsync(() => (uiService = new UiService())))
 
-  it('Correct Init', () => expect(uiService).toBeTruthy())
+  it('Should initialize the service', () => expect(uiService).toBeTruthy())
 })

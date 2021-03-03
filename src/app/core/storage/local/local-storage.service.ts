@@ -12,7 +12,7 @@ import { File } from '../../File'
 import { Folder } from '../../Folder'
 import { EProperties } from '../../settings/EProperties.enum'
 import { SettingsService } from '../../settings/settings.service'
-import { BotStorageService, IMetadata } from '../bot/bot-storage.service'
+import { BotStorageService, BotStorageServiceStatus, IMetadata } from '../bot/bot-storage.service'
 import { IStorage } from '../IStorage.model'
 import { Storage } from '../Storage'
 import { EIndexedDBState, getIndexedDBState } from './indexedDBCheck'
@@ -60,33 +60,38 @@ export class LocalStorageService extends Storage implements IStorage {
     this.trash = Folder.create(this, 'Trash', 'delete', false)
     this.trash.id = 'trash'
 
-    if (botStorage.status !== BotStorageService.UNAVAILABLE) {
+    if (botStorage.status !== BotStorageServiceStatus.UNAVAILABLE) {
       this.remote = Folder.create(this, 'Remote storage', 'cloud', true)
       this.remote.id = botStorage.id
     }
   }
 
-  get route() {
+  get route () {
     return this._route
   }
 
-  async init(settings: SettingsService): Promise<void> {
+  async init (settings: SettingsService): Promise<void> {
     // Check if available
     const indexedDBState = await getIndexedDBState()
-    if (indexedDBState === EIndexedDBState.OK) {
-      super.setStatus(LocalStorageService.AVAILABLE)
-    } else {
-      super.setStatus(indexedDBState)
-    }
+
+    indexedDBState === EIndexedDBState.OK
+      ? super.setStatus(LocalStorageService.AVAILABLE)
+      : super.setStatus(indexedDBState)
+
     this.dbLogin = settings.profile.login
     this.openDB(this.dbLogin)
-    settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => {
-      const login = settings.profile.login
-      if (login && this.dbLogin !== login) {
-        this.dbLogin = login
-        this.openDB(login)
-      }
-    })
+
+    settings.onChange
+      .pipe(
+        filter((properties) => properties.includes(EProperties.profile))
+      )
+      .subscribe(() => {
+        const login = settings.profile.login
+        if (login && this.dbLogin !== login) {
+          this.dbLogin = login
+          this.openDB(login)
+        }
+      })
   }
 
   async save(file: File): Promise<void> {

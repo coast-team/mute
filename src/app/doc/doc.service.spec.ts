@@ -15,7 +15,7 @@ xdescribe('DocService', () => {
     })
   })
 
-  it('should be created', inject([DocService], (service: DocService) => {
+  it('Should initialize the service', inject([DocService], (service: DocService) => {
     expect(service).toBeTruthy()
   }))
 })

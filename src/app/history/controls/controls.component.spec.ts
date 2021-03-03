@@ -26,11 +26,8 @@ describe('HistoryControlsComponent', () => {
         })
     })
   )
-  tests()
-})
-
-function tests() {
-  it('Correct Init', () => {
+  
+  it('Should create the component', () => {
     expect(comp).toBeTruthy()
   })
-}
+})

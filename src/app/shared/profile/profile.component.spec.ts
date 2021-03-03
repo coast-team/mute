@@ -28,7 +28,7 @@ describe('ProfileComponent', () => {
     // fixture.detectChanges()
   })
 
-  it('should create', () => {
+  it('Should create the component', () => {
     expect(component).toBeTruthy()
   })
 })

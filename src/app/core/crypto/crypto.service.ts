@@ -42,6 +42,7 @@ export class CryptoService implements OnDestroy {
     this.subs = []
     this.signatureErrorHandler = () => {}
     this.members = new Map()
+
     switch (environment.cryptography.type) {
       case EncryptionType.METADATA:
         this.crypto = new Symmetric()
@@ -60,11 +61,13 @@ export class CryptoService implements OnDestroy {
           },
         } as any
     }
+
     if (environment.cryptography.coniksClient) {
       this.pkRequestConiks = new PKRequestConiks(http)
     } else if (environment.cryptography.keyserver) {
       this.pkRequest = new PKRequest(http)
     }
+
     this.subs[this.subs.length] = settings.onChange.pipe(filter((props) => props.includes(EProperties.profile))).subscribe(() => {
       this.login = ''
     })
@@ -92,6 +95,10 @@ export class CryptoService implements OnDestroy {
   }
 
   async checkMySigningKeyPairConiks(profile: Profile) {
+    if (!environment.cryptography?.coniksClient) {
+      throw new Error('Coniks client is not set')
+    }
+
     if (environment.cryptography.coniksClient && profile.login !== this.login) {
       if (profile.login === Profile.anonymous.login) {
         throw new Error('You must be authenticated')
@@ -115,6 +122,10 @@ export class CryptoService implements OnDestroy {
   }
 
   async checkMySigningKeyPair(profile: Profile) {
+    if (!environment.cryptography?.keyserver) {
+      throw new Error('Key server is not set')
+    }
+
     if (environment.cryptography.keyserver && profile.login !== this.login) {
       if (profile.login === Profile.anonymous.login) {
         throw new Error('You must be authenticated')

@@ -29,7 +29,7 @@ describe('CollaboratorsComponent', () => {
 })
 
 function tests() {
-  it('Correct Init', () => {
+  it('Should create the component', () => {
     expect(comp).toBeTruthy()
   })
 }

@@ -20,7 +20,7 @@ describe('PulsarService', () => {
     pulsarService = TestBed.inject(PulsarService)
   })
 
-  it('Correct Init', () => {
+  it('Should initialize the service', () => {
     expect(pulsarService).toBeTruthy('pulsarService has not been initialized')
   })
 })

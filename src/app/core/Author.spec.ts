@@ -7,7 +7,7 @@ describe('Author', () => {
     author = new Author('name', 10, 'blue')
   })
 
-  it('Correct Init', () => {
+  it('Should initialize the service', () => {
     expect(author).toBeTruthy()
   })
 

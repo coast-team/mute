@@ -9,6 +9,7 @@ import { Folder } from '../../core/Folder'
 import { SettingsService } from '../../core/settings'
 import {
   BotStorageService,
+  BotStorageServiceStatus,
   LocalStorageService
 } from '../../core/storage'
 import { UiService } from '../../core/ui'
@@ -69,10 +70,10 @@ export class NavComponent implements OnDestroy {
     this.isRemoteExist = this.localStorage.remote !== undefined
     this.subs[this.subs.length] = this.botStorage.onStatus.subscribe((code) => {
       switch (code) {
-        case BotStorageService.NOT_RESPONDING:
+        case BotStorageServiceStatus.NOT_RESPONDING:
           this.remoteErrorMessage = 'Remote server is not responding'
           break
-        case BotStorageService.NOT_AUTHORIZED:
+        case BotStorageServiceStatus.NOT_AUTHORIZED:
           this.remoteErrorMessage = 'Unavailable for non authenticated users'
           break
         case BotStorageService.AVAILABLE:

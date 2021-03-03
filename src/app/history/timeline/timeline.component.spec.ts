@@ -26,7 +26,7 @@ describe('TimelineComponent', () => {
 })
 
 function tests() {
-  it('Correct Init', () => {
+  it('Should create the component', () => {
     expect(comp).toBeTruthy()
   })
 }

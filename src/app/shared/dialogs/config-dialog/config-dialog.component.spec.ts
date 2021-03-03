@@ -18,7 +18,7 @@ xdescribe('ConfigDialogComponent', () => {
     })
   )
 
-  it('should create', () => {
+  it('Should create the component', () => {
     expect(component).toBeTruthy()
   })
 })

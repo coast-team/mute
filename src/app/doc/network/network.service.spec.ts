@@ -24,7 +24,7 @@ describe('NetworkService', () => {
     networkService = TestBed.inject(NetworkService)
   })
 
-  it('Correct Init', () => {
+  it('Should initialize the service', () => {
     expect(networkService).toBeTruthy('networkService has not been initialized')
     networkService.wg.join('key')
   })

@@ -13,7 +13,7 @@ describe('SettingsService', () => {
     settings = TestBed.inject(SettingsService)
   }))
 
-  it('Correct Init', () => expect(settings).toBeTruthy())
+  it('Should initialize the service', () => expect(settings).toBeTruthy())
 
   xit('Get default displayName', async () => {
     await settings.init()

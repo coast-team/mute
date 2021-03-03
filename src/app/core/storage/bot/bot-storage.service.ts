@@ -16,12 +16,14 @@ export interface IMetadata {
   created: number
 }
 
+export enum BotStorageServiceStatus {
+  NOT_AUTHORIZED = 1,
+  NOT_RESPONDING = 2,
+  UNAVAILABLE = 3
+}
+
 @Injectable()
 export class BotStorageService extends Storage {
-  public static NOT_AUTHORIZED = 1
-  public static NOT_RESPONDING = 2
-  public static UNAVAILABLE = 3
-
   public displayName: string
   public version: string
   public avatar: string
@@ -30,8 +32,12 @@ export class BotStorageService extends Storage {
 
   private isAnonymousAllowed: boolean
 
-  constructor(private http: HttpClient, private settings: SettingsService) {
+  constructor(
+    private http: HttpClient,
+    private settings: SettingsService
+  ) {
     super()
+
     if (environment.botStorage) {
       const { httpURL, wsURL, isAnonymousAllowed } = environment.botStorage
       this.httpURL = httpURL
@@ -46,20 +52,20 @@ export class BotStorageService extends Storage {
     this.avatar = ''
     this.displayName = ''
     if (!this.httpURL) {
-      super.setStatus(BotStorageService.UNAVAILABLE)
+      super.setStatus(BotStorageServiceStatus.UNAVAILABLE)
     }
 
     settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => this.updateStatus())
   }
 
-  async fetchDocs(): Promise<IMetadata[]> {
-    if (this.httpURL && this.status !== BotStorageService.NOT_AUTHORIZED) {
+  async fetchDocs (): Promise<IMetadata[]> {
+    if (this.httpURL && this.status !== BotStorageServiceStatus.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(new URL(`docs/${this.settings.profile.login}`, this.httpURL).toString()).subscribe(
           (metadata: IMetadata[]) => resolve(metadata),
           (err) => {
-            log.warn('Could not retrieve documents metadat from the bot storage: ', err.message)
-            super.setStatus(BotStorageService.NOT_RESPONDING)
+            log.warn('Could not retrieve documents metadata from the bot storage: ', err.message)
+            super.setStatus(BotStorageServiceStatus.NOT_RESPONDING)
             resolve([])
           }
         )
@@ -68,7 +74,7 @@ export class BotStorageService extends Storage {
     return []
   }
 
-  async remove(doc: Doc): Promise<void> {
+  async remove (doc: Doc): Promise<void> {
     return await new Promise((resolve) => {
       this.http
         .post<{ key: string; login: string }>(new URL('remove', this.httpURL).toString(), {
@@ -79,36 +85,37 @@ export class BotStorageService extends Storage {
     })
   }
 
-  get login() {
+  get login () {
     return this.httpURL ? `bot.storage@${new URL(this.httpURL).hostname}` : ''
   }
 
-  get id() {
+  get id () {
     return `${this.httpURL}`
   }
 
-  private updateStatus(): Promise<void> {
-    if (this.httpURL) {
-      if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
-        super.setStatus(BotStorageService.NOT_AUTHORIZED)
-      } else {
-        return new Promise((resolve) => {
-          this.http.get(`${this.httpURL}/info`).subscribe(
-            (info: { displayName: string; login: string; version: string; avatar: string }) => {
-              this.version = info.version
-              this.avatar = info.avatar
-              this.displayName = info.displayName
-              super.setStatus(BotStorageService.AVAILABLE)
-              resolve()
-            },
-            (err) => {
-              super.setStatus(BotStorageService.NOT_RESPONDING)
-              resolve()
-            }
-          )
-        })
-      }
+  private updateStatus (): Promise<void> {
+    if (!this.httpURL) return Promise.resolve()
+    
+    if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
+      super.setStatus(BotStorageServiceStatus.NOT_AUTHORIZED)
+      return Promise.resolve()
+    } else {
+      return new Promise((resolve) => {
+        this.http.get(`${this.httpURL}/info`).subscribe(
+          (info: { displayName: string; login: string; version: string; avatar: string }) => {
+            this.version = info.version
+            this.avatar = info.avatar
+            this.displayName = info.displayName
+            super.setStatus(BotStorageService.AVAILABLE)
+            resolve()
+          },
+          (err) => {
+            super.setStatus(BotStorageServiceStatus.NOT_RESPONDING)
+            resolve()
+          }
+        )
+      })
     }
-    return Promise.resolve()
+    
   }
 }

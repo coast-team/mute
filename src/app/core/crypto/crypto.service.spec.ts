@@ -14,7 +14,7 @@ describe('SymmetricCryptoService', () => {
     })
   })
 
-  it('should be created', inject([CryptoService], (service: CryptoService) => {
+  it('Should initialize the service', inject([CryptoService], (service: CryptoService) => {
     expect(service).toBeTruthy()
   }))
 })
