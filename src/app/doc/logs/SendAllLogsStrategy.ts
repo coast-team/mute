@@ -16,7 +16,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
     obj['logid'] = this.useLogId()
     this.dbLocal.store(obj)
     if (share) {
-      this.dbDistante.send(obj)
+      this.dbDistant.send(obj)
     }
   }
 
@@ -31,14 +31,14 @@ export class SendAllLogsStrategy extends LogsStrategy {
       const lastState = JSON.parse(window.localStorage.getItem('shareLogs-off-' + this.docKey))
       if (lastState === null) {
         obj.forEach((val, key) => {
-          this.dbDistante.send(val)
+          this.dbDistant.send(val)
         })
       } else {
         const sortedLogs = obj.sort((a, b) => a['timestamp'] - b['timestamp'])
         let send = false
         sortedLogs.forEach((value, key) => {
           if (send) {
-            this.dbDistante.send(value)
+            this.dbDistant.send(value)
           } else {
             if (['localInsertion', 'localDeletion', 'remoteInsertion', 'remoteDeletion'].includes(value['type'])) {
               let sameState = true
@@ -51,7 +51,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
                 }
               })
               if (sameState) {
-                this.dbDistante.send(value)
+                this.dbDistant.send(value)
                 send = true
               }
             }

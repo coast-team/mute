@@ -8,7 +8,7 @@ export class SendIfActivateLogsStrategy extends LogsStrategy {
   public sendLogs(obj: object, share: boolean) {
     this.dbLocal.store(obj)
     if (share) {
-      this.dbDistante.send(obj)
+      this.dbDistant.send(obj)
     }
   }
 }

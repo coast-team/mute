@@ -209,7 +209,7 @@ export class NetworkService implements OnDestroy {
       this.memberJoinSubject.complete()
       this.memberLeaveSubject.complete()
       this.pulsarService.closeSocketConnexion('networkService')
-      this.pulsarService.closeSocketlogsConnexion('networkService')
+      this.pulsarService.closeSocketLogsConnexion('networkService')
       this.wg.leave()
     }
   }

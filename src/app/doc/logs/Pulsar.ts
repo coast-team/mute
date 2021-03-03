@@ -3,21 +3,19 @@ import { ILogDatabase } from './ILogDatabase.model'
 
 export class Pulsar implements ILogDatabase {
   private key: string
-  private localName: string
   private pulsarService: PulsarService
 
-  constructor(docKey: string) {
+  constructor (docKey: string) {
     this.key = docKey
-    this.localName = 'msgPulsarLogs' + this.key
-
     // this.pulsarService.socketsLogs = this.key // création des ws pour Prod/Cons des logs et envoi de ceux stockés dans le local storage
   }
-  subscribeToWs(pulsarService: PulsarService) {
+
+  subscribeToWs (pulsarService: PulsarService) {
     this.pulsarService = pulsarService
     this.pulsarService.socketsLogs = this.key // création des ws pour Prod/Cons des logs et envoi de ceux stockés dans le local storage
   }
 
-  send(data: object): void {
+  send (data: any) {
     const obj = JSON.stringify(data)
     console.log('PULSAR LOGS DATA', obj)
     this.pulsarService.sendLogsToPulsar(this.key, obj)

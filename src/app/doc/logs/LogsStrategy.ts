@@ -6,12 +6,10 @@ import { RabbitMq } from './RabbitMq'
 import { ILogDatabase } from './ILogDatabase.model'
 
 export abstract class LogsStrategy {
-  // protected dbDistante: RabbitMq
-  // protected dbDistante: ILogDatabase
-  protected dbDistante: Pulsar
-
+  // protected dbDistant: RabbitMq
+  // protected dbDistant: ILogDatabase
+  protected dbDistant: Pulsar
   protected dbLocal: Database
-
   protected docKey: string
   protected logId: number
 
@@ -26,18 +24,20 @@ export abstract class LogsStrategy {
     this.dbLocal = new IndexdbDatabase()
     this.dbLocal.init('muteLogs-' + this.docKey)
 
-    this.dbDistante = new Pulsar(this.docKey)
+    this.dbDistant = new Pulsar(this.docKey)
   }
 
-  setStreamLogsPulsar(pulsarService: PulsarService) {
-    this.dbDistante.subscribeToWs(pulsarService)
+  setStreamLogsPulsar (pulsarService: PulsarService) {
+    this.dbDistant.subscribeToWs(pulsarService)
   }
 
-  public setShareLogs(share: boolean, state: Map<number, number>) {
+  public setShareLogs (share: boolean, state: Map<number, number>) {
     const stateVector = {}
+
     state.forEach((v, k) => {
       stateVector[k] = v
     })
+
     if (share) {
       window.localStorage.setItem('shareLogs-on-' + this.docKey, JSON.stringify(stateVector))
     } else {
@@ -45,7 +45,7 @@ export abstract class LogsStrategy {
     }
   }
 
-  public getLocalLogs(): Promise<object[]> {
+  public getLocalLogs (): Promise<object[]> {
     return new Promise((resolve, reject) => {
       this.dbLocal
         .get()
@@ -56,11 +56,11 @@ export abstract class LogsStrategy {
     })
   }
 
-  protected useLogId(): number {
+  protected useLogId (): number {
     this.logId++
     window.localStorage.setItem('logid-' + this.docKey, this.logId + '')
     return this.logId - 1
   }
 
-  abstract sendLogs(obj: object, share: boolean): void
+  abstract sendLogs (obj: object, share: boolean): void
 }

@@ -1,20 +1,31 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { TestBed } from '@angular/core/testing'
+import { RouterTestingModule } from '@angular/router/testing'
+import { CryptoService } from '@app/core/crypto'
 import { NetworkService } from './network.service'
+import { PulsarService } from './pulsar.service'
 
-xdescribe('NetworkService', () => {
+describe('NetworkService', () => {
+  const fake =  {}
   let networkService: NetworkService
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [ 
+        RouterTestingModule,
+        HttpClientTestingModule
+      ],
       providers: [
-        { provide: NetworkService, useValue: networkService }
+        { provide: CryptoService, useValue: fake },
+        PulsarService,
+        NetworkService
       ]
     })
-
-    networkService.wg.join('key') // FIXME: wg undefined
+    networkService = TestBed.inject(NetworkService)
   })
 
   it('Correct Init', () => {
-    expect(networkService).toBeTruthy()
+    expect(networkService).toBeTruthy('networkService has not been initialized')
+    networkService.wg.join('key')
   })
 })

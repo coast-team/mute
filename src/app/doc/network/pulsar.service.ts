@@ -1,7 +1,21 @@
 import { Injectable } from '@angular/core'
-import { StreamId, Streams, StreamsSubtype } from '@coast-team/mute-core'
 import { Observable, Subject } from 'rxjs'
-import { environment } from 'src/environments/environment'
+
+import { StreamId, Streams, StreamsSubtype } from '@coast-team/mute-core'
+
+import { environment } from '@environments/environment'
+
+export const enum WebSocketReadyState {
+  /** The connection is not yet open. */
+  CONNECTING = 0,
+  /** The connection is open and ready to communicate. */
+  OPEN = 1,
+  /** The connection is in the process of closing. */
+  CLOSING = 2,
+  /** The connection is closed or couldn't be opened. */
+  CLOSED = 3
+}
+
 @Injectable()
 export class PulsarService {
   private messageArrayMetadata = []
@@ -15,25 +29,25 @@ export class PulsarService {
   public pulsarWebSocketsSubject: Subject<{ webSocketsArray: WebSocket[] }>
   public pulsarWebSocketsLogsSubject: Subject<{ webSocketsArray: WebSocket[] }>
 
-  constructor() {
+  constructor () {
     this.pulsarMessageSubject = new Subject()
     this.pulsarWebSocketsSubject = new Subject()
     this.pulsarWebSocketsLogsSubject = new Subject()
   }
 
-  get pulsarMessage$(): Observable<{ streamId: Streams; content: Uint8Array }> {
+  get pulsarMessage$ (): Observable<{ streamId: Streams; content: Uint8Array }> {
     return this.pulsarMessageSubject.asObservable()
   }
 
-  get pulsarWebsockets$(): Observable<{ webSocketsArray: WebSocket[] }> {
+  get pulsarWebsockets$ (): Observable<{ webSocketsArray: WebSocket[] }> {
     return this.pulsarWebSocketsSubject.asObservable()
   }
 
-  get pulsarWebsocketsLogs$(): Observable<{ webSocketsArray: WebSocket[] }> {
+  get pulsarWebsocketsLogs$ (): Observable<{ webSocketsArray: WebSocket[] }> {
     return this.pulsarWebSocketsLogsSubject.asObservable()
   }
 
-  set sockets(topic: string) {
+  set sockets (topic: string) {
     const docType = 400
 
     this.closeSocketConnexion('setsocket') // in case websockets are not closed yet
@@ -42,19 +56,19 @@ export class PulsarService {
 
     for (let i = 1; i < 3; i++) {
       const sockPost = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/${docType + i}-${topic}`)
-      const sockEcoute = this.createWsEcoute(topic, i)
+      const sockListen = this.createWsListen(topic, i)
 
       this.socketPostConfig(sockPost, i, topic)
-      this.socketEcouteConfig(sockEcoute, i, topic)
+      this.socketListenConfig(sockListen, i, topic)
 
       this._sockets.push(sockPost)
-      this._sockets.push(sockEcoute)
+      this._sockets.push(sockListen)
     }
     this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
     console.log(this._sockets)
   }
 
-  set socketsLogs(topic: string) {
+  set socketsLogs (topic: string) {
     const sockPost = new WebSocket(`${environment.pulsar.wsURL}/producer/persistent/public/default/Logs-${topic}`)
 
     this.socketPostConfig(sockPost, 3, topic)
@@ -64,7 +78,7 @@ export class PulsarService {
     console.log(this._socketsLogs)
   }
 
-  sendMessageToPulsar(streamId: StreamId, keyTopic: string, content: Uint8Array) {
+  sendMessageToPulsar (streamId: StreamId, keyTopic: string, content: Uint8Array) {
     const content64 = this.arrayBufferToBase64(content)
     const message = {
       payload: btoa(content64),
@@ -77,24 +91,24 @@ export class PulsarService {
 
     switch (streamId.type) {
       case Streams.METADATA:
-        if (this._sockets[0].readyState === 1) {
+        if (this._sockets[0].readyState === WebSocketReadyState.OPEN) {
           this._sockets[0].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
           this.messageArrayMetadata.push(JSON.stringify(message))
           window.localStorage.setItem('msgPulsarMetadata' + keyTopic, JSON.stringify(this.messageArrayMetadata))
-          console.log('put', content)
+          console.log('PUT', content)
         }
-
         break
+
       case Streams.DOCUMENT_CONTENT:
-        if (this._sockets[2].readyState === 1) {
+        if (this._sockets[2].readyState === WebSocketReadyState.OPEN) {
           this._sockets[2].send(JSON.stringify(message))
           console.log('SENT', content)
         } else {
           this.messageArrayDocContent.push(JSON.stringify(message))
           window.localStorage.setItem('msgPulsarDocContent' + keyTopic, JSON.stringify(this.messageArrayDocContent))
-          console.log('put', content)
+          console.log('PUT', content)
         }
         break
 
@@ -103,27 +117,27 @@ export class PulsarService {
     }
   }
 
-  sendLogsToPulsar(keyTopic: string, obj: string) {
+  sendLogsToPulsar (keyTopic: string, obj: string) {
     const message = {
       payload: btoa(obj),
       properties: {
         streamType: Streams.METADATA,
         streamSubtype: StreamsSubtype.METADATA_LOGS,
-        topic: keyTopic,
-      },
+        topic: keyTopic
+      }
     }
 
-    if (this._socketsLogs[0].readyState === 1) {
+    if (this._socketsLogs[0].readyState === WebSocketReadyState.OPEN) {
       this._socketsLogs[0].send(JSON.stringify(message))
       console.log('SENT', message)
     } else {
       this.messageArrayLogs.push(JSON.stringify(message))
       window.localStorage.setItem('msgPulsarLogs' + keyTopic, JSON.stringify(this.messageArrayLogs))
-      console.log('put')
+      console.log('PUT')
     }
   }
 
-  createWsEcoute(topic: string, i: number): WebSocket {
+  createWsListen (topic: string, i: number): WebSocket {
     const docType = 400
     let msgIdFromStorage
     let urlEnd: string
@@ -143,14 +157,15 @@ export class PulsarService {
     }
   }
 
-  socketPostConfig(sockPost: WebSocket, i: number, topic: string) {
+  socketPostConfig (sockPost: WebSocket, i: number, topic: string) {
     const docType = 400
+
     sockPost.onerror = (err) => {
-      console.log('Erreur socket producer Pulsar', err)
+      console.log('Error on Pulsar producer socket', err)
     }
     // reception de messages, le producteur ne recevra que des acks
     sockPost.onmessage = (messageSent: MessageEvent) => {
-      console.log('ack received : ', messageSent.data)
+      console.log('ACK received: ', messageSent.data)
     }
 
     let sock
@@ -201,6 +216,7 @@ export class PulsarService {
       }
       console.log('Raison fermeture socket', event.reason)
       console.log('event code', event.code)
+
       if (event.reason !== 'networkService') {
         // closed in network Service
         if (event.code !== 1006) {
@@ -221,18 +237,19 @@ export class PulsarService {
     }
   }
 
-  socketEcouteConfig(sockEcoute: WebSocket, i: number, topic: string) {
+  socketListenConfig (socketListen: WebSocket, i: number, topic: string) {
     const docType = 400
-    sockEcoute.onerror = (err) => {
-      console.log('Erreur socket producer Pulsar', err)
+
+    socketListen.onerror = (err) => {
+      console.log('Error on Pulsar producer socket', err)
     }
 
-    sockEcoute.onopen = () => {
+    socketListen.onopen = () => {
       this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
     }
 
-    sockEcoute.onmessage = (messageSent: MessageEvent) => {
+    socketListen.onmessage = (messageSent: MessageEvent) => {
       // console.log('MESSAGE RECEIVED', messageSent)
       const receiveMsg = JSON.parse(messageSent.data)
       const streamId = Number(receiveMsg.properties.streamType)
@@ -252,18 +269,18 @@ export class PulsarService {
       this.pulsarMessageSubject.next({ streamId, content })
     }
 
-    sockEcoute.onclose = (event) => {
+    socketListen.onclose = (event) => {
       this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
 
       console.log('event code', event.code)
 
-      console.log('socket: ' + sockEcoute.url + ' fermee\n', event)
+      console.log('socket: ' + socketListen.url + ' closed\n', event)
       if (event.reason !== 'networkService') {
         if (event.code !== 1006) {
           setTimeout(() => {
-            const newWs = this.createWsEcoute(topic, i)
-            this.socketEcouteConfig(newWs, i, topic)
+            const newWs = this.createWsListen(topic, i)
+            this.socketListenConfig(newWs, i, topic)
             if (i === 1) {
               this._sockets[1] = newWs
             } else if (i === 2) {
@@ -284,31 +301,32 @@ export class PulsarService {
       console.log('les sockets \n ', this.socketsReadystate())
     }
   }
-  closeSocketConnexion(location: string) {
+
+  closeSocketConnexion (location: string) {
     if (this._sockets.length !== 0) {
       while (this._sockets.length !== 0) {
         this._sockets.pop().close(1000, location)
       }
-      console.log('Les websockets ont été fermées aves succès de ' + location, this._sockets)
+      console.log('WebSockets successfuly closed at ' + location, this._sockets)
       this.pulsarWebSocketsSubject.next({ webSocketsArray: this._sockets })
     } else {
-      console.log('Pas de socket à fermer.\n')
+      console.log('No socket to close.\n')
     }
   }
 
-  closeSocketlogsConnexion(location: string) {
+  closeSocketLogsConnexion (location: string) {
     if (this._socketsLogs.length !== 0) {
       while (this._socketsLogs.length !== 0) {
         this._socketsLogs.pop().close(1000, location)
       }
-      console.log('Les websockets ont été fermées aves succès de ' + location, this._socketsLogs)
+      console.log('WebSockets successfuly closed at ' + location, this._socketsLogs)
       this.pulsarWebSocketsLogsSubject.next({ webSocketsArray: this._socketsLogs })
     } else {
-      console.log('Pas de socket à fermer.\n')
+      console.log('No socket to close.\n')
     }
   }
 
-  socketsReadystate(): number[] {
+  socketsReadystate (): number[] {
     const sockStateArray: number[] = []
     for (const sock of this._sockets) {
       sockStateArray.push(sock.readyState)
@@ -316,7 +334,7 @@ export class PulsarService {
     return sockStateArray
   }
 
-  getMessageFromLocalStorage(topic: string) {
+  getMessageFromLocalStorage (topic: string) {
     const localStorageMsgMetadata = window.localStorage.getItem('msgPulsarMetadata' + topic)
     const localStorageMsgDocContent = window.localStorage.getItem('msgPulsarDocContent' + topic)
     // const localStorageMsglogs = window.localStorage.getItem('msgPulsarLogs' + topic)
@@ -327,7 +345,7 @@ export class PulsarService {
       localStorageMsgDocContent === 'null' || localStorageMsgDocContent === null ? [] : JSON.parse(localStorageMsgDocContent)
     // this.messageArrayLogs = localStorageMsglogs === 'null' || localStorageMsglogs === null ? [] : JSON.parse(localStorageMsglogs)
   }
-  private arrayBufferToBase64(buffer) {
+  private arrayBufferToBase64 (buffer) {
     let binary = ''
     const bytes = new Uint8Array(buffer)
     const len = bytes.byteLength
@@ -337,7 +355,7 @@ export class PulsarService {
     return window.btoa(binary)
   }
 
-  private base64ToArrayBuffer(base64) {
+  private base64ToArrayBuffer (base64) {
     const binaryString = window.atob(base64)
     const len = binaryString.length
     const bytes = new Uint8Array(len)

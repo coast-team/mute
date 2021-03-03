@@ -7,7 +7,7 @@ import { environment } from '@environments/environment'
 import { EncryptionType } from '../../../core/crypto/EncryptionType.model'
 import { Doc } from '../../../core/Doc'
 import { UiService } from '../../../core/ui'
-import { PulsarService } from '../../network'
+import { PulsarService, WebSocketReadyState } from '../../network'
 import { RichCollaborator } from '../../rich-collaborators'
 
 const defaultCollab = {
@@ -62,22 +62,21 @@ export class DetailsComponent implements OnInit {
       this.pulsarWsStateArray = []
       for (const ws of wsArray.webSocketsArray) {
         switch (ws.readyState) {
-          case 0:
-            this.pulsarWsStateArray.push('blue')
-            break
-          case 1:
+          case WebSocketReadyState.OPEN:
             this.pulsarWsStateArray.push('green')
             break
-          case 2:
+          case WebSocketReadyState.CLOSING:
             this.pulsarWsStateArray.push('yellow')
             break
-          case 3:
+          case WebSocketReadyState.CLOSED:
             this.pulsarWsStateArray.push('red')
-            break
+          case WebSocketReadyState.CONNECTING:
           default:
+            this.pulsarWsStateArray.push('blue')
             break
         }
       }
+
       if (!this.cd['destroyed']) {
         this.cd.detectChanges()
       }
@@ -87,19 +86,18 @@ export class DetailsComponent implements OnInit {
       this.pulsarWsLogsStateArray = []
       for (const ws of wsArrayLogs.webSocketsArray) {
         switch (ws.readyState) {
-          case 0:
-            this.pulsarWsLogsStateArray.push('blue')
-            break
-          case 1:
+          case WebSocketReadyState.OPEN:
             this.pulsarWsLogsStateArray.push('green')
             break
-          case 2:
+          case WebSocketReadyState.CLOSING:
             this.pulsarWsLogsStateArray.push('yellow')
             break
-          case 3:
+          case WebSocketReadyState.CLOSED:
             this.pulsarWsLogsStateArray.push('red')
             break
+          case WebSocketReadyState.CONNECTING:
           default:
+            this.pulsarWsLogsStateArray.push('blue')
             break
         }
       }
@@ -109,7 +107,11 @@ export class DetailsComponent implements OnInit {
     })
   }
 
-  constructor (private cd: ChangeDetectorRef, public ui: UiService, private pulsarService: PulsarService) {
+  constructor (
+    private cd: ChangeDetectorRef,
+    public ui: UiService,
+    private pulsarService: PulsarService
+  ) {
     this.card = defaultCollab
     switch (environment.cryptography.type) {
       case EncryptionType.NONE:
