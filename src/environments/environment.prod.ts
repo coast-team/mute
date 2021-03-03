@@ -1,5 +1,6 @@
 import { IEnvironment } from './IEnvironment.model'
 import { environment as defaultEnvironment } from './environment'
+import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
 const host = 'coedit.re'
 
@@ -14,6 +15,21 @@ export const environment: IEnvironment = {
     signalingServer: `wss://${host}:10443`,
   },
 
+  cryptography: {
+    type: EncryptionType.METADATA,
+    // coniksClient: {
+    //   url: 'https://localhost:3001', // Coniks clinet URL (must be a localhost)
+    //   binaries: {
+    //     linux: '',
+    //     windows: '',
+    //     macOS: '',
+    //   },
+    // },
+    // keyserver: {
+    //   urlPrefix: 'http://localhost:4000/public-key',
+    // },
+  },
+
   /*
   // Whether MUTE should try to look for a Bot Storage
   // See https://github.com/coast-team/mute-bot-storage
@@ -22,7 +38,9 @@ export const environment: IEnvironment = {
     wsURL: `wss://${host}:20000`,
     isAnonymousAllowed: false
   },
+  */
 
+  /*
   authentication: {
     baseUrl: `https://${host}:4000/`,
     providers: {
@@ -33,7 +51,9 @@ export const environment: IEnvironment = {
       }
     }
   },
+  */
 
+  /*
   pulsar: {
     wsURL: `wss://${host}:8080/ws/v2`
   }

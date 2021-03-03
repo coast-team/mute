@@ -50,12 +50,45 @@ export class DetailsComponent implements OnInit {
   public card: Card
   public cardState: string
   public crypto: [string, string]
-  public coniks: boolean
-  public keyserver: boolean
+  public hasConiks: boolean
+  public hasKeyserver: boolean
   public logsTooltip: string
   public wsStateInfoToolTip: string
   public pulsarWsStateArray: string[] = ['', '', '', '']
   public pulsarWsLogsStateArray: string[] = ['', '']
+
+  constructor (
+    private cd: ChangeDetectorRef,
+    public ui: UiService,
+    private pulsarService: PulsarService
+  ) {
+    this.card = defaultCollab
+
+    switch (environment.cryptography.type) {
+      case EncryptionType.NONE:
+        this.crypto = ['None', 'Only WebRTC native encryption']
+        break
+      case EncryptionType.METADATA:
+        this.crypto = ['Metadata', 'Group key is shared through document metadata']
+        break
+      case EncryptionType.KEY_AGREEMENT_BD:
+        this.crypto = ['Key agreement protocol', 'All members participate in group key creation']
+        break
+    }
+
+    this.hasConiks = !!environment.cryptography.coniksClient
+    this.hasKeyserver = !!environment.cryptography.keyserver
+
+    this.logsTooltip =
+      'By activating this button, you agree to share all the operations performed on the document.\n' +
+      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.\n'
+    if (environment.logSystem.anonimyze) {
+      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
+    }
+    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
+
+    this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
+  }
 
   ngOnInit() {
     this.pulsarService.pulsarWebsockets$.subscribe((wsArray) => {
@@ -105,37 +138,6 @@ export class DetailsComponent implements OnInit {
         this.cd.detectChanges()
       }
     })
-  }
-
-  constructor (
-    private cd: ChangeDetectorRef,
-    public ui: UiService,
-    private pulsarService: PulsarService
-  ) {
-    this.card = defaultCollab
-    switch (environment.cryptography.type) {
-      case EncryptionType.NONE:
-        this.crypto = ['None', 'Only WebRTC native encryption']
-        break
-      case EncryptionType.METADATA:
-        this.crypto = ['Metadata', 'Group key is shared through document metadata']
-        break
-      case EncryptionType.KEY_AGREEMENT_BD:
-        this.crypto = ['Key agreement protocol', 'All members participate in group key creation']
-        break
-    }
-    this.coniks = !!environment.cryptography.coniksClient
-    this.keyserver = !!environment.cryptography.keyserver
-
-    this.logsTooltip =
-      'By activating this button, you agree to share all the operations performed on the document.\n' +
-      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.\n'
-    if (environment.logSystem.anonimyze) {
-      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
-    }
-    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
-
-    this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
   }
 
   showCard (collab: ICollaborator) {

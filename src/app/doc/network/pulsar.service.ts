@@ -86,7 +86,7 @@ export class PulsarService {
         streamType: streamId.type,
         streamSubtype: streamId.subtype,
         topic: keyTopic,
-      },
+      }
     }
 
     switch (streamId.type) {

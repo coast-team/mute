@@ -109,15 +109,15 @@ export class NavComponent implements OnDestroy {
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.subs.forEach((sub) => sub.unsubscribe())
   }
 
-  get pulsarOn() {
-    return this.pulsarOn
+  get pulsarOn () {
+    return this._pulsarOn
   }
 
-  createDoc(remotely = false) {
+  createDoc (remotely = false) {
     const key = this.localStorage.generateSignalingKey()
     if (remotely) {
       this.router.navigate(['/', key, { remote: true }])
@@ -126,7 +126,7 @@ export class NavComponent implements OnDestroy {
     }
   }
 
-  createDocPulsar(pulsar = false) {
+  createDocPulsar (pulsar = false) {
     const key = this.localStorage.generateSignalingKey()
     if (pulsar) {
       this.router.navigate(['/', key, { pulsar: true }])

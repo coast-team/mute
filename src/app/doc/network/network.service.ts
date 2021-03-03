@@ -19,6 +19,7 @@ import { PulsarService } from './pulsar.service'
 @Injectable()
 export class NetworkService implements OnDestroy {
   public wg: WebGroup
+
   private botUrls: string[]
 
   // Subjects related to the current peer
@@ -27,9 +28,7 @@ export class NetworkService implements OnDestroy {
   // Network message subject
   private messageSubject: Subject<{ streamId: StreamId; content: Uint8Array; senderId: number }>
 
-  /**
-   * Peer Join/Leave subjects
-   */
+  // Peer Join/Leave subjects
   private memberJoinSubject: Subject<number>
   private memberLeaveSubject: Subject<number>
 
@@ -56,7 +55,6 @@ export class NetworkService implements OnDestroy {
     this.signalingSubject = new BehaviorSubject(SignalingState.CLOSED)
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new Subject()
-
     this.leaveSubject = new Subject()
 
     /*
@@ -80,27 +78,109 @@ export class NetworkService implements OnDestroy {
 
       this.wg.onSignalingStateChange = (state) => this.signalingSubject.next(state)
 
-      switch (environment.cryptography.type) {
-        case EncryptionType.KEY_AGREEMENT_BD:
-          this.configureKeyAgreementBDEncryption()
-          break
-        case EncryptionType.METADATA:
-          this.configureMetaDataEncryption()
-          break
-        case EncryptionType.NONE:
-          this.configureNoEncryption()
-          break
-        default:
-          log.error('Unknown Encryption type: ', environment.cryptography.type)
-      }
+      this.configureEncryption(environment.cryptography.type)
     })
   }
 
-  leave() {
+  get myId (): number {
+    return this.wg.myId
+  }
+
+  get members (): number[] {
+    return this.wg.members
+  }
+
+  get state (): WebGroupState {
+    return this.wg.state
+  }
+
+  get cryptoState (): KeyState {
+    return this.cryptoService.crypto.state
+  }
+
+  get messageOut (): Observable<{ streamId: StreamId; content: Uint8Array; senderId: number }> {
+    return this.messageSubject.asObservable()
+  }
+
+  get onLeave (): Observable<number> {
+    return this.leaveSubject.asObservable()
+  }
+
+  get onMemberJoin (): Observable<number> {
+    return this.memberJoinSubject.asObservable()
+  }
+
+  get onMemberLeave (): Observable<number> {
+    return this.memberLeaveSubject.asObservable()
+  }
+
+  get onStateChange (): Observable<WebGroupState> {
+    return this.stateSubject.asObservable()
+  }
+
+  get onSignalingStateChange (): Observable<SignalingState> {
+    return this.signalingSubject.asObservable()
+  }
+
+  get onCryptoStateChange (): Observable<KeyState> {
+    return this.cryptoService.onStateChange
+  }
+
+  get pulsarOn () {
+    return this._pulsarOn
+  }
+
+  set pulsarOn (newPulsar: boolean) {
+    this._pulsarOn = newPulsar
+  }
+
+  ngOnDestroy(): void {
+    if (this.wg !== undefined) {
+      this.messageSubject.complete()
+      this.leaveSubject.complete()
+      this.memberJoinSubject.complete()
+      this.memberLeaveSubject.complete()
+      this.pulsarService.closeSocketConnexion('networkService')
+      this.pulsarService.closeSocketLogsConnexion('networkService')
+      this.wg.leave()
+    }
+  }
+
+  join (key: string) {
+    this.wg.join(key)
+
+    this.route.data.subscribe(({ doc }: { doc: Doc }) => {
+      // for the one who create the doc
+      this._pulsarOn = doc.pulsar || this._pulsarOn
+      if (this._pulsarOn) {
+        this.pulsarConnect(this.wg.id)
+        return
+      }
+
+      // for the others
+      doc.onMetadataChanges
+        .pipe(
+          filter(({ isLocal, changedProperties }) => {
+            return changedProperties.includes(Doc.PULSAR)
+          })
+        )
+        .subscribe(() => {
+          if (this._pulsarOn) {
+            return // if the change concerns pulsar but is already connected to pulsar
+          }
+          this._pulsarOn = doc.pulsar
+          if (this._pulsarOn) {
+            this.pulsarConnect(this.wg.id)
+          }
+        })
+    })
+  }
+
+  leave () {
     this.wg.leave()
   }
 
-  setMessageIn(source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
+  setMessageIn (source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
     this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
         if (
@@ -150,100 +230,6 @@ export class NetworkService implements OnDestroy {
     // }
   }
 
-  get myId(): number {
-    return this.wg.myId
-  }
-
-  get members(): number[] {
-    return this.wg.members
-  }
-
-  get state(): WebGroupState {
-    return this.wg.state
-  }
-
-  get cryptoState(): KeyState {
-    return this.cryptoService.crypto.state
-  }
-
-  get messageOut(): Observable<{ streamId: StreamId; content: Uint8Array; senderId: number }> {
-    return this.messageSubject.asObservable()
-  }
-
-  get onLeave(): Observable<number> {
-    return this.leaveSubject.asObservable()
-  }
-
-  get onMemberJoin(): Observable<number> {
-    return this.memberJoinSubject.asObservable()
-  }
-
-  get onMemberLeave(): Observable<number> {
-    return this.memberLeaveSubject.asObservable()
-  }
-
-  get onStateChange(): Observable<WebGroupState> {
-    return this.stateSubject.asObservable()
-  }
-
-  get onSignalingStateChange(): Observable<SignalingState> {
-    return this.signalingSubject.asObservable()
-  }
-
-  get onCryptoStateChange(): Observable<KeyState> {
-    return this.cryptoService.onStateChange
-  }
-
-  get pulsarOn() {
-    return this._pulsarOn
-  }
-
-  set pulsarOn(newPulsar: boolean) {
-    this._pulsarOn = newPulsar
-  }
-
-  ngOnDestroy(): void {
-    if (this.wg !== undefined) {
-      this.messageSubject.complete()
-      this.leaveSubject.complete()
-      this.memberJoinSubject.complete()
-      this.memberLeaveSubject.complete()
-      this.pulsarService.closeSocketConnexion('networkService')
-      this.pulsarService.closeSocketLogsConnexion('networkService')
-      this.wg.leave()
-    }
-  }
-
-  join (key: string) {
-    this.wg.join(key)
-
-    this.route.data.subscribe(({ doc }: { doc: Doc }) => {
-      // for the one who create the doc
-      this._pulsarOn = doc.pulsar || this._pulsarOn
-      if (this._pulsarOn) {
-        this.pulsarConnect(this.wg.id)
-        return
-      }
-
-      // for the others
-      doc.onMetadataChanges
-        .pipe(
-          filter(({ isLocal, changedProperties }) => {
-            return changedProperties.includes(Doc.PULSAR)
-          })
-        )
-        .subscribe(() => {
-          if (this._pulsarOn) {
-            return // if the change concerns pulsar but is already connected to pulsar
-          }
-          this._pulsarOn = doc.pulsar
-          if (this._pulsarOn) {
-            this.pulsarConnect(this.wg.id)
-          }
-        })
-    })
-  }
-
   pulsarConnect (id: number) {
     this.pulsarService.sockets = this.wg.key
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
@@ -282,6 +268,22 @@ export class NetworkService implements OnDestroy {
   private randomMember(): number {
     const otherMembers = this.members.filter((i) => i !== this.wg.myId)
     return otherMembers[Math.ceil(Math.random() * otherMembers.length) - 1]
+  }
+
+  private configureEncryption (type: EncryptionType) {
+    switch (type) {
+      case EncryptionType.KEY_AGREEMENT_BD:
+        this.configureKeyAgreementBDEncryption()
+        break
+      case EncryptionType.METADATA:
+        this.configureMetaDataEncryption()
+        break
+      case EncryptionType.NONE:
+        this.configureNoEncryption()
+        break
+      default:
+        log.error('Unknown Encryption type: ', type)
+    }
   }
 
   private configureKeyAgreementBDEncryption() {

@@ -4,7 +4,9 @@ import { EncryptionType } from '../app/core/crypto/EncryptionType.model'
 
 export interface IEnvironment {
   production: boolean
+
   crdtStrategy: Strategy
+
   debug: {
     visible: boolean
     log: {
@@ -13,12 +15,22 @@ export interface IEnvironment {
       doc: boolean
     }
   }
+
   p2p: {
-    rtcConfiguration?: RTCConfiguration
+    /**
+     * We provide one by default: sigver
+     */
     signalingServer: string
+
+    /**
+     * Parameters for the connection to the signaling server
+     */
+    rtcConfiguration?: RTCConfiguration
   }
+
   cryptography: {
     type: EncryptionType
+
     coniksClient?: {
       url: string
       binaries: {
@@ -27,20 +39,24 @@ export interface IEnvironment {
         macOS: string
       }
     }
+
     keyserver?: {
       urlPrefix: string
     }
   }
+
   logSystem: {
     logCollectorUrl: string
     stompjsDebugLog: boolean
     anonimyze: boolean
   }
+
   botStorage?: {
     httpURL: string
     wsURL: string
     isAnonymousAllowed: boolean
   }
+
   authentication?: {
     baseUrl: string
     providers: {
@@ -54,7 +70,8 @@ export interface IEnvironment {
       }
     }
   }
-  pulsar?: {
+
+  pulsar: {
     wsURL: string
   }
 }
