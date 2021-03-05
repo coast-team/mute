@@ -10,7 +10,6 @@ import { SettingsService } from '../core/settings/settings.service'
 import { BotStorageService } from '../core/storage/bot/bot-storage.service'
 import { LocalStorageService } from '../core/storage/local/local-storage.service'
 import { DocComponent } from './doc.component'
-import { DocService } from './doc.service'
 import { ResolverDialogComponent } from './resolver-dialog/resolver-dialog.component'
 
 @Injectable()
@@ -39,6 +38,7 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
       } else if (environment.cryptography.keyserver) {
         await this.crypto.checkMySigningKeyPair(this.settings.profile)
       }
+
       // Retreive the document from the local database
       let doc = await this.localStorage.fetchDoc(key)
       if (doc) {
@@ -47,8 +47,10 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
           // Whether to restore the document from the trash
           const isDocReconstituted = await new Promise((resolve) => {
             const dialogRef = this.dialog.open(ResolverDialogComponent, { data: doc })
-            dialogRef.afterClosed().subscribe((result) => resolve(result))
+            dialogRef.afterClosed()
+                     .subscribe(result => resolve(result))
           })
+
           if (isDocReconstituted) {
             await doc.move(this.localStorage.local)
           } else {
@@ -75,12 +77,12 @@ export class DocResolverService implements Resolve<Doc>, CanDeactivate<DocCompon
     }
   }
 
-  async canDeactivate(docComponent: DocComponent): Promise<boolean> {
+  async canDeactivate (docComponent: DocComponent): Promise<boolean> {
     await docComponent.saveDoc()
     return true
   }
 
-  get isCreate(): boolean {
+  get isCreate (): boolean {
     return this.create
   }
 }

@@ -36,6 +36,8 @@ const SYNC_DOC_INTERVAL = 10000
 
 @Injectable()
 export class DocService implements OnDestroy {
+  public doc: Doc
+
   private subs: Subscription[]
   private muteCore: MuteCoreTypes
 
@@ -44,8 +46,6 @@ export class DocService implements OnDestroy {
   private syncDocContentInterval: number | undefined
   private docContentChanged: boolean
   private initSubject$: Subject<string>
-
-  public doc: Doc
 
   constructor(
     private zone: NgZone,
@@ -101,14 +101,18 @@ export class DocService implements OnDestroy {
         this.newSub = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
       })
     })
-    this.logs.setStreamLogsPulsar(this.network.pulsarService)
+
+    if (!this.network.pulsarService.isOperational()) {
+      this.logs.setupStreamLogs(this.network.pulsarService)
+    }
   }
 
   async joinSession() {
     // Read document content from local database and put into MuteCore model
     const docContent = await this.readDocContent()
     this.route.paramMap.subscribe((params) => {
-      this.doc.pulsar = this.doc.pulsar || params.get('pulsar') === 'true' ? true : false
+      const isRouteWithPulsar = params.get('pulsar') === 'true' ? true : false
+      this.doc.pulsar = this.doc.pulsar || isRouteWithPulsar
     })
 
     // Initialize MuteCore with your profile data, document metadata and content
@@ -135,7 +139,7 @@ export class DocService implements OnDestroy {
         vector: this.doc.shareLogsVector,
       },
       metaPulsar: {
-        activatePulsar: this.doc.pulsar,
+        activatePulsar: environment.pulsar?.wsURL && this.doc.pulsar,
       },
     }
     this.muteCore = MuteCoreFactory.createMuteCore(muteCoreOptions)
@@ -280,9 +284,13 @@ export class DocService implements OnDestroy {
     // For displyaing logs in console
 
     this.subs.push(
-      this.doc.onMetadataChanges.pipe(filter(({ changedProperties }) => changedProperties.includes(Doc.SHARE_LOGS))).subscribe(() => {
-        this.logs.setShareLogs(this.doc.shareLogs, this.muteCore.state.vector)
-      })
+      this.doc.onMetadataChanges
+                .pipe(
+                  filter(({ changedProperties }) => changedProperties.includes(Doc.SHARE_LOGS))
+                )
+                .subscribe(() => {
+                  this.logs.setShareLogs(this.doc.shareLogs, this.muteCore.state.vector)
+                })
     )
 
     if (this.docResolver.isCreate) {

@@ -7,6 +7,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
 
   public setShareLogs(share: boolean, state: Map<number, number>) {
     super.setShareLogs(share, state)
+
     if (share) {
       this.sendAllLogs()
     }
@@ -15,6 +16,7 @@ export class SendAllLogsStrategy extends LogsStrategy {
   public sendLogs(obj: object, share: boolean) {
     obj['logid'] = this.useLogId()
     this.dbLocal.store(obj)
+
     if (share) {
       this.dbDistant.send(obj)
     }

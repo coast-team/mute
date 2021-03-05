@@ -12,20 +12,20 @@
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>
         </span>
-        <span>Without bot storage</span>
+        <span>Normal</span>
       </button>
-      <button mat-menu-item (click)="createDocPulsar(true)">
+      <button *ngIf="isPulsarOperational" mat-menu-item (click)="createDoc({ pulsar: true })">
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>
         </span>
         <span>With Pulsar</span>
       </button>
-      <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
+      <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc({ remotely: true })">
         <span class="new-doc-icons">
           <mat-icon>devices</mat-icon>
           <mat-icon>cloud</mat-icon>
         </span>
-        <span>With bot storage</span>
+        <span>Normal with bot storage</span>
       </button>
       <button *ngIf="isStandalone" mat-menu-item (click)="openJoinDialog()">
         <span class="new-doc-icons">

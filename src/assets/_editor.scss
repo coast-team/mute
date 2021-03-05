@@ -14,9 +14,9 @@ $editor-font-family: 'Montserrat', sans-serif;
 }
 
 .CodeMirror {
-  font-family: $editor-font-family, sans-serif;
+  font-family: $editor-font-family, sans-serif !important;
   font-size: 14px !important;
-  color: var(--theme-fg-text);
+  color: var(--theme-fg-text) !important;
   background-color: var(--theme-bg-color); // $bg-card;
   line-height: 24px;
 

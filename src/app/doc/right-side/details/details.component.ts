@@ -54,6 +54,7 @@ export class DetailsComponent implements OnInit {
   public hasKeyserver: boolean
   public logsTooltip: string
   public wsStateInfoToolTip: string
+  public pulsarNotOperationalTooltip: string
   public pulsarWsStateArray: string[] = ['', '', '', '']
   public pulsarWsLogsStateArray: string[] = ['', '']
 
@@ -88,9 +89,39 @@ export class DetailsComponent implements OnInit {
     this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
 
     this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
+    this.pulsarNotOperationalTooltip = 'The service is unavailable on this MUTE instance'
   }
 
   ngOnInit() {
+    if (environment.pulsar?.wsURL) {
+      this.setPulsarWsLogsStateArray()
+    }
+  }
+
+  get isPularOperational () {
+    return this.pulsarService.isOperational()
+  }
+
+  showCard (collab: ICollaborator) {
+    this.card = Object.assign({}, defaultCollab, collab)
+    this.cardState = 'visible'
+    this.cd.detectChanges()
+  }
+
+  hideCard () {
+    this.cardState = 'void'
+    this.cd.detectChanges()
+  }
+
+  updateShareLogs (event) {
+    this.doc.shareLogs = event.checked
+  }
+
+  updatePulsar (event) {
+    this.doc.pulsar = event.checked
+  }
+
+  private setPulsarWsLogsStateArray () {
     this.pulsarService.pulsarWebsockets$.subscribe((wsArray) => {
       this.pulsarWsStateArray = []
       for (const ws of wsArray.webSocketsArray) {
@@ -138,24 +169,5 @@ export class DetailsComponent implements OnInit {
         this.cd.detectChanges()
       }
     })
-  }
-
-  showCard (collab: ICollaborator) {
-    this.card = Object.assign({}, defaultCollab, collab)
-    this.cardState = 'visible'
-    this.cd.detectChanges()
-  }
-
-  hideCard () {
-    this.cardState = 'void'
-    this.cd.detectChanges()
-  }
-
-  updateShareLogs (event) {
-    this.doc.shareLogs = event.checked
-  }
-
-  updatePulsar (event) {
-    this.doc.pulsar = event.checked
   }
 }

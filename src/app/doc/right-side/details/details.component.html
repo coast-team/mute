@@ -25,13 +25,14 @@
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Share logs</span>
       <span class="mat-body-2">
-        <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
+        <mat-slide-toggle [disabled]="!isPularOperational" [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
       </span>
-      <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
+      <mat-icon *ngIf="isPularOperational" class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
+      <mat-icon *ngIf="!isPularOperational" class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="pulsarNotOperationalTooltip">warning</mat-icon>
     </div>
   </div>
   <br>
-  <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
+  <mat-expansion-panel *ngIf="doc.shareLogs && isPularOperational" id="pulsarWsPanel" >
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
@@ -51,11 +52,12 @@
     <div fxLayoutAlign="start center">
       <span class="mat-caption title">Pulsar</span>
       <span class="mat-body-2">
-        <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
+        <mat-slide-toggle id="pulsarButton" [disabled]="!isPularOperational" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
       </span>
+      <mat-icon *ngIf="!isPularOperational" class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="pulsarNotOperationalTooltip">warning</mat-icon>
     </div>
     <br>
-    <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
+    <mat-expansion-panel *ngIf="doc.pulsar && isPularOperational" id="pulsarWsPanel" >
       <mat-expansion-panel-header>
         <mat-panel-title>
           <mat-icon >connect_without_contact</mat-icon> <span class="spaceIconText">Websockets state</span> 

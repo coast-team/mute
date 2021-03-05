@@ -5,7 +5,7 @@ import { filter } from 'rxjs/operators'
 import { nanoid } from 'nanoid'
 
 import { environment } from '@environments/environment'
-import { IndexdbDatabase } from '../../../doc/logs/IndexdbDatabase'
+import { IndexdbDatabase } from '../../../doc/logs/databases/IndexdbDatabase'
 import { CryptoService } from '../../crypto/crypto.service'
 import { Doc } from '../../Doc'
 import { File } from '../../File'

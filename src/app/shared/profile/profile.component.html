@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <mat-card-actions>
+  <mat-card-actions *ngIf="isAuthenticationConfigured">
     <div fxLayoutAlign="end center" *ngIf="settings.isAuthenticated(); else signin">
       <!-- <button mat-button disabled>Add account</button> -->
       <button mat-button (click)="signout()">Sign Out</button>
@@ -25,10 +25,11 @@
     <ng-template #signin>
       <div fxLayoutAlign="end center">
         <span class="mat-caption secondary-text">Sign in with</span>
-        <button mat-icon-button (click)="signinWith('github')" matTooltip="Github">
+
+        <button *ngIf="isAuthenticationConfiguredForProvider('github')" mat-icon-button (click)="signinWith('github')" matTooltip="Github">
           <mat-icon aria-label="Sign in with Github" fontSet="icon-github-circled"></mat-icon>
         </button>
-        <button mat-icon-button (click)="signinWith('google')" matTooltip="Google">
+        <button *ngIf="isAuthenticationConfiguredForProvider('google')" mat-icon-button (click)="signinWith('google')" matTooltip="Google">
           <mat-icon aria-label="Sign in with Google" fontSet="icon-google"></mat-icon>
         </button>
       </div>

@@ -4,15 +4,16 @@ import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
 import { environment } from '@environments/environment'
-import { appData } from '../../../app-data'
-import { Folder } from '../../core/Folder'
-import { SettingsService } from '../../core/settings'
+import { Folder } from '@app/core/Folder'
+import { SettingsService } from '@app/core/settings'
 import {
   BotStorageService,
   BotStorageServiceStatus,
   LocalStorageService
-} from '../../core/storage'
-import { UiService } from '../../core/ui'
+} from '@app/core/storage'
+import { UiService } from '@app/core/ui'
+
+import { appData } from '../../../app-data'
 import {
   ConfigDialogComponent,
   JoinDialogComponent
@@ -113,36 +114,33 @@ export class NavComponent implements OnDestroy {
     this.subs.forEach((sub) => sub.unsubscribe())
   }
 
+  get isPulsarOperational () {
+    return !!environment.pulsar?.wsURL
+  }
+
   get pulsarOn () {
     return this._pulsarOn
   }
 
-  createDoc (remotely = false) {
+  createDoc (params?: { remotely?: boolean, pulsar?: boolean }) {
+    const defaultParams =  { remotely: false, pulsar: false }
+    const _params = { ...defaultParams, ...params }
+
     const key = this.localStorage.generateSignalingKey()
-    if (remotely) {
-      this.router.navigate(['/', key, { remote: true }])
-    } else {
-      this.router.navigate(['/', key])
-    }
+    this.router.navigate(['/', key, _params])
   }
 
-  createDocPulsar (pulsar = false) {
-    const key = this.localStorage.generateSignalingKey()
-    if (pulsar) {
-      this.router.navigate(['/', key, { pulsar: true }])
-    } else {
-      this.router.navigate(['/', key])
-    }
-  }
-
-  openFolder(folder: Folder) {
+  openFolder (folder: Folder) {
+    if (this.selected === folder) return
     this.settings.updateOpenedFolder(folder)
     this.selected = folder
     this.router.navigate(['/'])
   }
 
   openSettingsDialog() {
-    this.dialog.open(ConfigDialogComponent)
+    this.dialog.open(ConfigDialogComponent, {
+      minWidth: '500px'
+    })
   }
 
   openJoinDialog() {

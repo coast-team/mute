@@ -13,7 +13,7 @@ services:
   pulsar:
     image: apachepulsar/pulsar:2.6.0
     ports:
-      - 8080:8080
+      - 8080:8080 # see environment.pulsar.wsURL
       - 6650:6650
     environment:
       PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"

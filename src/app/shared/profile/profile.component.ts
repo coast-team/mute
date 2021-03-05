@@ -2,12 +2,15 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatDialog } from '@angular/material/dialog'
-
 import { Subscription } from 'rxjs'
-import { Profile } from '../../core/settings/Profile'
-import { SettingsService } from '../../core/settings'
-import { UiService } from '../../core/ui'
+
+import { environment } from '@environments/environment'
+import { Profile } from '@app/core/settings/Profile'
+import { SettingsService } from '@app/core/settings'
+import { UiService } from '@app/core/ui'
+
 import { ConfigDialogComponent } from '../dialogs'
+import { AuthenticationProvider } from '@environments/IEnvironment.model'
 
 @Component({
   selector: 'mute-profile',
@@ -44,20 +47,30 @@ export class ProfileComponent implements OnDestroy {
     })
   }
 
-  ngOnDestroy() {
+  ngOnDestroy () {
     this.subs.forEach((s) => s.unsubscribe())
   }
 
-  mousedown(event: Event) {
+  get isAuthenticationConfigured () {
+    return !!environment.authentication
+  }
+
+  isAuthenticationConfiguredForProvider (service: AuthenticationProvider) {
+    return !!environment.authentication.providers[service]
+  }
+
+  mousedown (event: Event) {
     event.stopPropagation()
   }
 
-  openSettingsDialog() {
-    const dialog = this.dialog.open(ConfigDialogComponent)
+  openSettingsDialog () {
+    const dialog = this.dialog.open(ConfigDialogComponent, {
+      minWidth: '500px'
+    })
     dialog.afterClosed().subscribe(() => (this.cardState = 'void'))
   }
 
-  signout() {
+  signout () {
     this.settings.signout().then(() => {
       this.profile = this.settings.profile
       const snackBarRef = this.snackBar.open('Signed out', 'close', {
@@ -67,7 +80,7 @@ export class ProfileComponent implements OnDestroy {
     })
   }
 
-  signinWith(provider: string) {
+  signinWith (provider: string) {
     this.settings
       .signin(provider)
       .then(() => {
@@ -87,7 +100,7 @@ export class ProfileComponent implements OnDestroy {
       })
   }
 
-  toggleCard(event: Event) {
+  toggleCard (event: Event) {
     event.stopPropagation()
     this.cardState = this.cardState === 'visible' ? 'void' : 'visible'
   }

@@ -15,14 +15,17 @@ export class ConfigDialogComponent {
   public initialTheme: string
   public theme: string
   public initialDisplayLogs: boolean
-
+  public displayNameMaxLength = 27
   public displayNameControl: FormControl
 
-  constructor(public settings: SettingsService, @Inject(MAT_DIALOG_DATA) public data: any) {
+  constructor(
+    public settings: SettingsService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
     this.profile = settings.profile
     this.initialTheme = this.settings.theme
     this.theme = this.settings.theme
-    this.displayNameControl = new FormControl('', [Validators.maxLength(27)])
+    this.displayNameControl = new FormControl('', [Validators.maxLength(this.displayNameMaxLength)])
     this.displayNameControl.setValue(this.profile.displayName)
   }
 

@@ -1,3 +1,3 @@
 export interface ILogDatabase {
-  send(data: object): void
+  send (data: object): void
 }

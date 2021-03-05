@@ -78,6 +78,10 @@ export class PulsarService {
     console.log(this._socketsLogs)
   }
 
+  isOperational () {
+    return !!environment.pulsar?.wsURL
+  }
+
   sendMessageToPulsar (streamId: StreamId, keyTopic: string, content: Uint8Array) {
     const content64 = this.arrayBufferToBase64(content)
     const message = {

@@ -149,6 +149,8 @@ export class NetworkService implements OnDestroy {
   join (key: string) {
     this.wg.join(key)
 
+    if (!environment.pulsar?.wsURL) return
+
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       // for the one who create the doc
       this._pulsarOn = doc.pulsar || this._pulsarOn
@@ -231,7 +233,8 @@ export class NetworkService implements OnDestroy {
   }
 
   pulsarConnect (id: number) {
-    this.pulsarService.sockets = this.wg.key
+    this.pulsarService.sockets = this.wg.key // FIXME: .sockets is a complex setter, whereas setters should stay relatively simple
+
     this.pulsarService.pulsarMessage$.subscribe((messagePulsar) => {
       try {
         this.messageSubject.next({

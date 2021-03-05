@@ -60,18 +60,20 @@ export interface IEnvironment {
   authentication?: {
     baseUrl: string
     providers: {
-      github: {
+      github?: {
         clientId: string
-        scope: [string]
+        scope: string[]
       }
-      google: {
+      google?: {
         clientId: string
         scope: [string, string]
       }
     }
   }
 
-  pulsar: {
+  pulsar?: {
     wsURL: string
   }
 }
+
+export type AuthenticationProvider = 'github' | 'google'
