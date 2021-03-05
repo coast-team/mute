@@ -22,13 +22,12 @@
     "Yann Prono"
   ],
   "scripts": {
-    "prepare": "which zopfli &> /dev/null || echo '\\033[0;31mWARNING\\033[0m: zopfli must be installed on your system to execute postbuild'",
     "ng": "ng",
     "prestart": "npm run sigver",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "pm2 startOrReload process.yml",
     "build": "ng build --prod",
-    "postbuild": "zopfli dist/*.js dist/*.css dist/*.html",
+    "postbuild": "scripts/postbuild.sh",
     "postinstall": "npm run get-assets && ngcc",
     "lint": "ng lint mute --type-check --fix",
     "test": "ng test",
@@ -36,7 +35,7 @@
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
     "cz": "npx git-cz",
-    "get-assets": "bash scripts/get-assets.sh"
+    "get-assets": "scripts/get-assets.sh"
   },
   "husky": {
     "hooks": {
