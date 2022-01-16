@@ -17,7 +17,16 @@
 Peer-to-Peer collaborative editing application relying on the newest technology.
 
 ### Different modules for different usage
-lorem ipsum. TODO
+- **Mute-structs** is an implementation of the LogootSplit CRDT algorithm. It is used to ensure consistency on replicated text sequences. 
+The code is accessible [here](https://github.com/coast-team/mute-structs).
+- **Mute-crypto** is used to encrypt the message sent through the P2P network.
+The code is accessible [here](https://github.com/coast-team/mute-crypto)
+- **Mute-auth-proxy** assign public/private key pairs to authenticated users. This module works with Mute-crypto.
+The code is accessible [here](https://github.com/coast-team/mute-auth-proxy)
+- **Netflux** manage the P2P network. It ensures . The code is accessible [here](https://github.com/coast-team/netflux).
+
+### Mute schematized as of the end of 2021
+
 
 
 
