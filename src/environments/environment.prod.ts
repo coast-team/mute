@@ -1,5 +1,5 @@
 import { IEnvironment } from './IEnvironment.model'
-import { environment as defaultEnvironment } from './environment'
+import { defaultEnvironment } from './default'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
 const host = 'coedit.re'

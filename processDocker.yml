@@ -1,4 +1,0 @@
-apps:
-  - script: sigver
-    name: 'mute-signaling'
-    args: '--port 8010'

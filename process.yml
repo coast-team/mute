@@ -2,3 +2,6 @@ apps:
   - script: node_modules/.bin/sigver
     name: 'mute-signaling'
     args: '--port 8010'
+  - script: sigver
+    name: 'mute-signaling-docker'
+    args: '--port 8010'

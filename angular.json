@@ -36,6 +36,23 @@
             ]
           },
           "configurations": {
+            "debug":  {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
             "production": {
               "budgets": [
                 {
@@ -67,6 +84,12 @@
             "browserTarget": "mute:build"
           },
           "configurations": {
+            "production": {
+              "browserTarget": "mute:build:production"
+            },
+            "debug": {
+              "browserTarget": "mute:build:debug"
+            },
             "ovhdev": {
               "browserTarget": "mute:build:ovhdev"
             },
