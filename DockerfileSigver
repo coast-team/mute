@@ -11,4 +11,6 @@ COPY process.yml /
 RUN npm install pm2 -g
 RUN npm install sigver -g
 
+EXPOSE 4200
+
 CMD ["pm2", "startOrReload", "process.yml", "--only", "mute-signaling-docker"]
