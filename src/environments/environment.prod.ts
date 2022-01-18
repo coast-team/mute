@@ -2,7 +2,7 @@ import { IEnvironment } from './IEnvironment.model'
 import { defaultEnvironment } from './default'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
-const host = 'coedit.re'
+const host = 'localhost'
 
 export const environment: IEnvironment = {
   ...defaultEnvironment, // we extend the default environment
@@ -12,7 +12,7 @@ export const environment: IEnvironment = {
   p2p: {
     // Signaling server URL
     // See https://github.com/coast-team/sigver
-    signalingServer: `wss://${host}:10443`,
+    signalingServer: `wss://${host}:8010`,
   },
 
   cryptography: {

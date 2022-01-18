@@ -1,4 +1,4 @@
-#Build de mute
+#Mute build
 FROM node:16-alpine AS builder
 
 WORKDIR /app
@@ -7,7 +7,7 @@ RUN npm ci
 COPY . /app
 RUN npm run build
 
-#Lancement de Mute
+#Launch Mute
 FROM nginx:alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"

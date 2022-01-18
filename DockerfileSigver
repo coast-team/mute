@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:8-alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
 LABEL org.opencontainers.description a scalable collaborative document editor with CRDT, P2P and E2EE
@@ -13,4 +13,4 @@ RUN npm install sigver -g
 
 EXPOSE 4200
 
-CMD ["pm2", "startOrReload", "process.yml", "--only", "mute-signaling-docker"]
+CMD ["pm2-runtime", "start", "process.yml", "--only", "mute-signaling-docker"]
