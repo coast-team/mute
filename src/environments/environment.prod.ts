@@ -1,5 +1,6 @@
 import { IEnvironment } from './IEnvironment.model'
 import { defaultEnvironment } from './default'
+import { LogLevel } from 'netflux'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
 const host = 'localhost'
@@ -12,7 +13,7 @@ export const environment: IEnvironment = {
   p2p: {
     // Signaling server URL
     // See https://github.com/coast-team/sigver
-    signalingServer: `wss://${host}:8010`,
+    signalingServer: `ws://${host}:8010`,
   },
 
   cryptography: {
