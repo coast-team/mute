@@ -64,7 +64,7 @@
   },
   "size-limit": [
     {
-      "path": "dis-t/*es2015*.js"
+      "path": "dist/*es2015*.js"
     }
   ],
   "dependencies": {},

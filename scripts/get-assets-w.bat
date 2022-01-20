@@ -1,5 +1,5 @@
 @ECHO off
-REM - Script visant à récupérer les assets javascripts utilisés pour le build de l'application.
+REM - Get javascript assets
 chcp 65001 > nul
 
 cd ../src/assets
@@ -12,7 +12,7 @@ exit /B 0
 
 :RecuperationAsset
 IF Exist %~1 (
-    echo "Le fichier %~1 existe déjà"
+    echo "The file %~1 already exist"
 ) ELSE (
     curl %~2 -o %~1
 )
