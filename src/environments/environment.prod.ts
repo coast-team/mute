@@ -3,7 +3,7 @@ import { defaultEnvironment } from './default'
 import { LogLevel } from 'netflux'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
-const host = 'localhost'
+const host = 'localhost' // FIXME: interpolation at build time required
 
 export const environment: IEnvironment = {
   ...defaultEnvironment, // we extend the default environment
