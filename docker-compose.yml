@@ -1,27 +1,38 @@
 version: '3.9'
 
 services:
+
   mute:
     image: mute
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 80:80
-      - 443:443
+      - 4200:4200
+    depends_on:
+      - sigver
 
-  pulsar:
-    image: apachepulsar/pulsar:2.6.0
+  sigver:
+    image: sigver
+    build:
+      context: .
+      dockerfile: DockerfileSigver
     ports:
-      - 8080:8080
-      - 6650:6650
-    environment:
-      PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
-    volumes:
-      - pulsardata:/pulsar/data
-      - pulsarconf:/pulsar/conf
-    command: bin/pulsar standalone
+      - 8010:8010
 
-volumes:
-  pulsardata:
-  pulsarconf:
+
+#   pulsar:
+#     image: apachepulsar/pulsar:2.6.0
+#     ports:
+#       - 8080:8080
+#       - 6650:6650
+#     environment:
+#       PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
+#     volumes:
+#       - pulsardata:/pulsar/data
+#       - pulsarconf:/pulsar/conf
+#     command: bin/pulsar standalone
+
+# volumes:
+#   pulsardata:
+#   pulsarconf:e
