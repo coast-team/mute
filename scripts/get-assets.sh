@@ -1,4 +1,5 @@
 #!/bin/env bash
+#Function to get javascript assets
 set -e
 
 function get_url() {
