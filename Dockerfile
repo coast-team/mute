@@ -2,9 +2,12 @@
 FROM node:16-alpine AS builder
 
 WORKDIR /app
-COPY package.json package-lock.json /app/
+# Copying only necessary files for the build. 
+#(.dockerignore file contains the files or folder to exclude from the COPY statement)
+COPY . ./
+RUN apk add --no-cache git
+RUN apk add --no-cache bash
 RUN npm ci
-COPY . /app
 RUN npm run build
 
 #Launch Mute
