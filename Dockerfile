@@ -1,15 +1,14 @@
 #Mute build
-FROM docker.io/node:14-alpine AS builder
+#FROM node:14-alpine AS builder
 
-WORKDIR /app
+#WORKDIR /app
 # Copying only necessary files for the build. 
 #(.dockerignore file contains the files or folder to exclude from the COPY statement)
-COPY . ./
-RUN apk add --no-cache git
-RUN apk add --no-cache bash
-RUN npm ci
-RUN npm run postinstall:default
-RUN npm run build
+#COPY . ./
+#RUN apk add --no-cache git
+#RUN apk add --no-cache bash
+#RUN npm ci
+#RUN npm run build
 
 #Launch Mute
 FROM docker.io/nginx:alpine
@@ -25,6 +24,7 @@ LABEL org.opencontainers.image.vendor COAST
 COPY conf/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY conf/nginx/nginx.ssl.conf /etc/nginx/nginx.ssl.conf
 COPY conf/nginx/nginx.mimetypes.conf /etc/nginx/nginx.mimetypes.conf
-COPY --from=builder /app/dist /usr/share/nginx/html
+#COPY --from=builder /app/dist /usr/share/nginx/html
+COPY dist /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]

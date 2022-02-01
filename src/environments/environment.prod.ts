@@ -3,7 +3,7 @@ import { defaultEnvironment } from './default'
 import { LogLevel } from 'netflux'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
-const host = 'localhost' // FIXME: interpolation at build time required
+const host = 'mutehost.loria.fr' // FIXME: interpolation at build time required
 
 export const environment: IEnvironment = {
   ...defaultEnvironment, // we extend the default environment
@@ -13,7 +13,7 @@ export const environment: IEnvironment = {
   p2p: {
     // Signaling server URL
     // See https://github.com/coast-team/sigver
-    signalingServer: `ws://${host}:8010`,
+    signalingServer: `wss://${host}:8010`,
   },
 
   cryptography: {

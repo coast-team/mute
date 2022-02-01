@@ -6,9 +6,8 @@ LABEL org.opencontainers.authors https://github.com/coast-team/sigver/graphs/con
 LABEL org.opencontainers.source https://github.com/coast-team/sigver
 LABEL org.opencontainers.image.vendor COAST
 
-# Mandatory for e2e github script
+#Mandatory code for sigver to run on the server
 RUN npm config set unsafe-perm true
-
 COPY process.yml /
 
 RUN npm install pm2@^3 -g
