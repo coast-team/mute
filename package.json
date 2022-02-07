@@ -74,7 +74,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.1",
     "@angular/animations": "^13.2.0",
-    "@angular/cdk": "^11.2.2",
+    "@angular/cdk": "^13.2.0",
     "@angular/cli": "^13.2.1",
     "@angular/common": "^13.2.0",
     "@angular/compiler": "^13.2.0",
@@ -83,7 +83,7 @@
     "@angular/flex-layout": "^13.0.0-beta.38",
     "@angular/forms": "^13.2.0",
     "@angular/language-service": "^13.2.0",
-    "@angular/material": "^11.2.2",
+    "@angular/material": "^13.2.0",
     "@angular/platform-browser": "^13.2.0",
     "@angular/platform-browser-dynamic": "^13.2.0",
     "@angular/router": "^13.2.0",
