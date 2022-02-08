@@ -28,7 +28,7 @@
     "sigver": "docker-compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
     "postinstall": "run-script-os",
-    "postinstall:win32": "scripts\\get-assets.bat",
+    "postinstall:win32": "cd scripts && get-assets.bat",
     "postinstall:default": "bash scripts/get-assets.sh && ngcc",
     "postbuild": "run-script-os",
     "postbuild:win32": "",
