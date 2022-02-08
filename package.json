@@ -25,7 +25,7 @@
     "ng": "ng",
     "prestart": "npm run sigver",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
-    "sigver": "docker-compose run -d -p 8010:8010 sigver",
+    "sigver": "docker-compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
     "postinstall": "run-script-os",
     "postinstall:win32": "scripts\\get-assets.bat",
