@@ -3,9 +3,8 @@
     <h1 class="logo">
       <a routerLink="/">MUTE</a>
     </h1>
-    <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" [matMenuTriggerFor]="newDocMenu">
-      New Document
-    </button>
+    
+    <mute-button-open-create-document></mute-button-open-create-document>
 
     <mat-menu #newDocMenu="matMenu">
       <button mat-menu-item (click)="createDoc()">
@@ -26,12 +25,6 @@
           <mat-icon>cloud</mat-icon>
         </span>
         <span>With bot storage</span>
-      </button>
-      <button *ngIf="isStandalone" mat-menu-item (click)="openJoinDialog()">
-        <span class="new-doc-icons">
-          <mat-icon>group_work</mat-icon>
-        </span>
-        <span>Join</span>
       </button>
     </mat-menu>
 

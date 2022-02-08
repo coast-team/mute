@@ -1,0 +1,42 @@
+.dialog {
+  width: 100%;
+}
+
+.mat-dialog-title {
+  text-align: left;
+}
+
+.choiceTyeOfDocument {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.informationTypeDocument {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.documentNaming {
+  font-style: italic;
+}
+
+.mat-dialog-actions {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+}
+
+.buttonsLeft {
+  float: left;
+  padding-top: 1.7rem;
+}
+
+.buttonsRight {
+  float: right;
+  padding-top: 1.7rem;
+}
+
+.button {
+  background-color: #fcc404;
+}

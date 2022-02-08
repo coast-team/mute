@@ -14,8 +14,7 @@ import {
 } from '../../core/storage'
 import { UiService } from '../../core/ui'
 import {
-  ConfigDialogComponent,
-  JoinDialogComponent
+  ConfigDialogComponent
 } from '../dialogs'
 
 @Component({
@@ -117,6 +116,7 @@ export class NavComponent implements OnDestroy {
     return this._pulsarOn
   }
 
+  //Cette fonction a été déplacé dans create-document-dialog.component
   createDoc (remotely = false) {
     const key = this.localStorage.generateSignalingKey()
     if (remotely) {
@@ -126,6 +126,7 @@ export class NavComponent implements OnDestroy {
     }
   }
 
+  //Cette fonction a été déplacé dans create-document-dialog.component
   createDocPulsar (pulsar = false) {
     const key = this.localStorage.generateSignalingKey()
     if (pulsar) {
@@ -145,11 +146,6 @@ export class NavComponent implements OnDestroy {
     this.dialog.open(ConfigDialogComponent)
   }
 
-  openJoinDialog() {
-    this.dialog.open(JoinDialogComponent, {
-      width: '300px',
-    })
-  }
 
   update() {
     document.location.reload()

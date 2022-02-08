@@ -146,13 +146,15 @@
 
     <ng-template #noDocCreated>
       <h3 class="noDoc mat-title" fxLayout="column" fxFlexAlign="start" fxLayoutAlign="center center">
+        
         <mat-icon [inline]="true" class="mat-subimage">description</mat-icon>
         <span class="mat-subtitle">You don't have any documents</span>
-        <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="open()">
-          New Document
-        </button>
+        <mute-button-open-create-document></mute-button-open-create-document>
       </h3>
+      
     </ng-template>
+
+
 
     <ng-template #fetchingDocs>
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>

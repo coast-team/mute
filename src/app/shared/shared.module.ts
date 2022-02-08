@@ -32,7 +32,8 @@ import {
   ConfigDialogComponent,
   DocRenameDialogComponent,
   RemoteDeleteDialogComponent,
-  JoinDialogComponent
+  DocCreateDialogComponent,
+  DocOpenDialogComponent
 } from './dialogs'
 import { NavComponent } from './nav/nav.component'
 import { ProfileComponent } from './profile/profile.component'
@@ -40,6 +41,7 @@ import { ProfileComponent } from './profile/profile.component'
 import { DateEnhancedPipe } from './pipes/dateEnhanced.pipe'
 import { RemotePipe } from './pipes/remote.pipe'
 import { SizePipe } from './pipes/size.pipe'
+import { ButtonComponent } from './button/button.component'
 
 @NgModule({
   imports: [
@@ -76,17 +78,19 @@ import { SizePipe } from './pipes/size.pipe'
     DatePipe
   ],
   declarations: [
+    DocCreateDialogComponent,
+    DocOpenDialogComponent,
     ProfileComponent,
     NavComponent,
     ConfigDialogComponent,
     DocRenameDialogComponent,
     RemoteDeleteDialogComponent,
-    JoinDialogComponent,
     AvatarComponent,
 
     SizePipe,
     RemotePipe,
-    DateEnhancedPipe
+    DateEnhancedPipe,
+    ButtonComponent
   ],
   exports: [
     CommonModule,
@@ -117,12 +121,15 @@ import { SizePipe } from './pipes/size.pipe'
     MatToolbarModule,
     MatTooltipModule,
 
+    DocCreateDialogComponent,
+    DocOpenDialogComponent,
     NavComponent,
     ProfileComponent,
     AvatarComponent,
 
     RemotePipe,
     DateEnhancedPipe,
-  ],
+    ButtonComponent
+  ]
 })
 export class SharedModule {}

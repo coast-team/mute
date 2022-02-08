@@ -1,0 +1,26 @@
+<div class="dialog">
+
+  <h1 mat-dialog-title>Open an existing document</h1>
+
+  <form (submit)="openDocument()" >
+    <div mat-dialog-content>
+      <mat-form-field fxFlex>
+        <input [formControl]="keyControl" matInput placeholder="Key" type="text" required [maxlength]="documentIdentifierSize">
+        <mat-hint align="end">{{keyControl.value.length}} / {{documentIdentifierSize}}</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+      <div class="buttonsLeft">
+        <button mat-button mat-dialog-close>
+          Cancel
+        </button>
+      </div>
+      <div class="buttonsRight">
+        <button [disabled]="!keyControl.valid" mat-button class="button" (keydown.space)=openDocument()>
+          Open
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

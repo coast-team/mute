@@ -1,0 +1,35 @@
+<div class="dialog">
+  <h1 mat-dialog-title>Create a document</h1>
+
+  <div class="choiceTyeOfDocument">
+  <!-- Choose the type of document you want to create -->
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" #type value="noBotStorage">
+      <mat-button-toggle value="noBotStorage" (click)="setNoBotStorage()">Without bot storage</mat-button-toggle>
+      <mat-button-toggle value="pulsar" (click)="setPulsar()">With Pulsar</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <!-- Text to explain the choice of the user-->
+  <div class="explanation">
+    <div *ngIf="typeOfDocument == 'noBotStorage'">
+      <p text-default>The document you are going to create will not use bot storage</p>
+    </div>
+
+    <div *ngIf="typeOfDocument == 'pulsar'">
+      <p class="text-body">The document you are going to create will use pulsar</p>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button (click)="createDocument()" mat-dialog-close mat-raised-button class='button'>
+      Create
+    </button>
+
+    <button mat-dialog-close mat-raised-button class='button'>
+      Cancel
+    </button>  
+  </div>
+
+</div>
+   
+ 
