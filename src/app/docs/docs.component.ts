@@ -20,10 +20,12 @@ import {
 import { UiService } from '@app/core/ui'
 import {
   DocRenameDialogComponent,
-  RemoteDeleteDialogComponent
+  RemoteDeleteDialogComponent,
+  DocCreateDialogComponent
 } from '../shared/dialogs' 
 
 class DocsSource extends DataSource<Doc> {
+
   public sort: Sort
 
   private docs: Doc[]
@@ -43,6 +45,7 @@ class DocsSource extends DataSource<Doc> {
   disconnect() {
     this.sub.unsubscribe()
   }
+
 
   sortDocs(sort: Sort) {
     this.sort = sort
@@ -131,6 +134,10 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
     this.updateDisplayedColumns()
     this.openFolder(this.localStorage.getFolder(this.settings.openedFolder) || this.localStorage.local)
+    
+    this.localStorage.newFileNotifier.subscribe((value) => {
+      this.openFolder(this.folder)
+    })
   }
 
   ngOnInit() {
@@ -236,6 +243,9 @@ export class DocsComponent implements OnDestroy, OnInit {
     })
   }
 
+  /**
+   * Opens the current folder and lists documents
+   */
   openFolder(folder: Folder) {
     this.folder = folder
     this.updateDisplayedColumns()
@@ -250,6 +260,8 @@ export class DocsComponent implements OnDestroy, OnInit {
   getDocLocationIcon(doc: Doc) {
     return this.localStorage.getFolder(doc.parentFolderId).icon
   }
+
+  
 
   private moveToTrash(doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)

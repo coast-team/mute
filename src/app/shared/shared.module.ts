@@ -26,6 +26,7 @@ import { MatTableModule } from '@angular/material/table'
 import { MatTabsModule } from '@angular/material/tabs'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { AvatarComponent } from './avatar/avatar.component'
 import {
@@ -54,6 +55,7 @@ import { ButtonComponent } from './button/button.component'
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
     MatExpansionModule,
@@ -101,6 +103,7 @@ import { ButtonComponent } from './button/button.component'
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
+    MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
     MatExpansionModule,

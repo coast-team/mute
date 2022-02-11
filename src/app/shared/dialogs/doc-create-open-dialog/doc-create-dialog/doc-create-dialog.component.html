@@ -12,13 +12,24 @@
   <!-- Text to explain the choice of the user-->
   <div class="explanation">
     <div *ngIf="typeOfDocument == 'noBotStorage'">
-      <p text-default>The document you are going to create will not use bot storage</p>
+      <p class="mat-body">The document you are going to create will not use bot storage</p>
     </div>
 
     <div *ngIf="typeOfDocument == 'pulsar'">
-      <p class="text-body">The document you are going to create will use pulsar</p>
+      <p class="mat-body">The document you are going to create will use pulsar</p>
     </div>
   </div>
+
+  <div class="documentNaming"></div>
+    <mat-checkbox #chooseDocumentName> I want to define a name for my document </mat-checkbox>
+    <br>
+    <div *ngIf="chooseDocumentName.checked">
+      
+      <input class="mat-Input" placeholder="Document name" type="text" [(ngModel)]="documentName" maxlength="25">
+      <mat-hint align="end">{{documentName.length}} / {{documentNameMaxSize}}</mat-hint>
+    </div>
+    <mat-checkbox [(ngModel)]="accessingDocument"> I want to access the document right after creating it </mat-checkbox>
+  
 
   <div class="buttons">
     <button (click)="createDocument()" mat-dialog-close mat-raised-button class='button'>
@@ -31,5 +42,3 @@
   </div>
 
 </div>
-   
- 

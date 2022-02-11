@@ -16,6 +16,7 @@ import { BotStorageService, BotStorageServiceStatus, IMetadata } from '../bot/bo
 import { IStorage } from '../IStorage.model'
 import { Storage } from '../Storage'
 import { EIndexedDBState, getIndexedDBState } from './indexedDBCheck'
+import { Subject } from 'rxjs/internal/Subject'
 
 const selectListForDoc = [
   'type',
@@ -41,6 +42,7 @@ const DB_NAME_PREFIX = 'docs-'
 
 @Injectable()
 export class LocalStorageService extends Storage implements IStorage {
+  
   public static NO_ACCESS = 1
   public static NOT_SUPPORTED = 2
 
@@ -52,9 +54,10 @@ export class LocalStorageService extends Storage implements IStorage {
   private db: any
   private dbLogin: string
 
+  newFileNotifier: Subject<null> = new Subject<null>();
+  
   constructor(private botStorage: BotStorageService) {
     super()
-
     this.local = Folder.create(this, 'Local storage', 'devices', false)
     this.local.id = 'local'
     this.trash = Folder.create(this, 'Trash', 'delete', false)
@@ -80,7 +83,7 @@ export class LocalStorageService extends Storage implements IStorage {
 
     this.dbLogin = settings.profile.login
     this.openDB(this.dbLogin)
-
+    
     settings.onChange
       .pipe(
         filter((properties) => properties.includes(EProperties.profile))
