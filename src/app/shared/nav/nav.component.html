@@ -6,29 +6,7 @@
     
     <mute-button-open-create-document></mute-button-open-create-document>
 
-    <mat-menu #newDocMenu="matMenu">
-      <button mat-menu-item (click)="createDoc()">
-        <span class="new-doc-icons">
-          <mat-icon>devices</mat-icon>
-        </span>
-        <span>Without bot storage</span>
-      </button>
-      <button mat-menu-item (click)="createDocPulsar(true)">
-        <span class="new-doc-icons">
-          <mat-icon>devices</mat-icon>
-        </span>
-        <span>With Pulsar</span>
-      </button>
-      <button *ngIf="isRemoteExist && !this.remoteErrorMessage" mat-menu-item (click)="createDoc(true)">
-        <span class="new-doc-icons">
-          <mat-icon>devices</mat-icon>
-          <mat-icon>cloud</mat-icon>
-        </span>
-        <span>With bot storage</span>
-      </button>
-    </mat-menu>
-
-    <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
+     <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
 
       <!-- Local storage -->
       <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === local && !localErrorMessage}" (click)="openFolder(local)">

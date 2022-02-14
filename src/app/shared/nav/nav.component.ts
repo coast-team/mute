@@ -116,26 +116,6 @@ export class NavComponent implements OnDestroy {
     return this._pulsarOn
   }
 
-  //Cette fonction a été déplacé dans create-document-dialog.component
-  createDoc (remotely = false) {
-    const key = this.localStorage.generateSignalingKey()
-    if (remotely) {
-      this.router.navigate(['/', key, { remote: true }])
-    } else {
-      this.router.navigate(['/', key])
-    }
-  }
-
-  //Cette fonction a été déplacé dans create-document-dialog.component
-  createDocPulsar (pulsar = false) {
-    const key = this.localStorage.generateSignalingKey()
-    if (pulsar) {
-      this.router.navigate(['/', key, { pulsar: true }])
-    } else {
-      this.router.navigate(['/', key])
-    }
-  }
-
   openFolder(folder: Folder) {
     this.settings.updateOpenedFolder(folder)
     this.selected = folder
