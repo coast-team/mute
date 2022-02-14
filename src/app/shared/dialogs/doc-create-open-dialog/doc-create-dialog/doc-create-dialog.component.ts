@@ -34,34 +34,33 @@ export class DocCreateDialogComponent implements OnDestroy {
   ngOnDestroy(){
   }
 
-  @HostListener('window:keyup.Enter', ['$event'])
-  onDialogSpace(event: KeyboardEvent): void {
-    this.createDocument()
-    this.closeDialog()
-  }
+  /**
+   * This function creates a document, 
+   * and depending on user input, 
+   * modify its name or acces it, or both
+   */
+  async createDocument (accessingDocument? : true) {
+    const key = this.localStorage.generateSignalingKey()
+    let doc = await this.localStorage.createDoc(key, this.documentName)
 
-  setNoBotStorage(){
-    this.typeOfDocument = "noBotStorage"
-  }
+    if (this.typeOfDocument == "pulsar"){
+      doc.pulsar=true
+    }
 
-  setPulsar(){
-    this.typeOfDocument = "pulsar"
-  }
+    let typeDocument = this.enableType()
 
-  closeDialog(){
-    this.dialogRef.close()
+    if (accessingDocument){
+      this.router.navigate(['/', doc.signalingKey, typeDocument])
+    }
+    
+    this.localStorage.newFileNotifier.next()
   }
 
   /**
-   * This function creates a document, and depending on user input, modify its name or acces it, or both
+   * Will return the parameter necessary to create
+   * the type of document the user will create
    */
-  async createDocument () {
-    const key = this.localStorage.generateSignalingKey()
-    let doc = await this.localStorage.createDoc(key)
-    doc.title = this.documentName || this.defaultNameForDoc
-    await this.localStorage.save(doc)
-    this.localStorage.newFileNotifier.next()
-
+  enableType(){
     let typeDocument = {}
     switch(this.typeOfDocument){
       case "noBotStorage" :{
@@ -76,8 +75,28 @@ export class DocCreateDialogComponent implements OnDestroy {
         break;
       }
     }
-    if (this.accessingDocument){
-      this.router.navigate(['/', doc.signalingKey, typeDocument])
-    } 
+    return typeDocument
   }
+
+  /**
+   * Close the dialog when the user hits enter on its keyboard
+   */
+   @HostListener('window:keyup.Enter', ['$event'])
+   onDialogSpace(event: KeyboardEvent): void {
+     this.createDocument()
+     this.closeDialog()
+   }
+ 
+   setNoBotStorage(){
+     this.typeOfDocument = "noBotStorage"
+   }
+ 
+   setPulsar(){
+     this.typeOfDocument = "pulsar"
+   }
+ 
+   closeDialog(){
+     this.dialogRef.close()
+   }
+
 }

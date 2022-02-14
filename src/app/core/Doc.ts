@@ -68,10 +68,16 @@ export class Doc extends File {
   }
 
   constructor(storage: IStorage, title: string, parentFolderId?: string) {
-    super(storage, title, parentFolderId)
+    super(storage, DEFAULT_TITLE, parentFolderId)
+    
     this.localContentChanges = new Subject<IDocContentOperation[]>()
     this.remoteContentChanges = new Subject<IDocContentOperation[]>()
-    this._title = title || DEFAULT_TITLE
+
+    if (title) {
+      this._title = title
+      this.titleModified = new Date()
+    }
+    
     this._shareLogs = false
     this._shareLogsVector = new Map()
     this._pulsar = false
@@ -187,6 +193,7 @@ export class Doc extends File {
   }
 
   private updateTitle(newTitle: string, isLocal: boolean, titleModified = new Date()) {
+    console.log("titleModified : " , titleModified, " isLocal : ", isLocal)
     if (this._title !== newTitle) {
       const changedProperties = [Doc.TITLE, Doc.TITLE_MODIFIED, Doc.MODIFIED]
       this._title = newTitle

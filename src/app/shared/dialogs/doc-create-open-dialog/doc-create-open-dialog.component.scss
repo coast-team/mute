@@ -2,41 +2,43 @@
   width: 100%;
 }
 
-.mat-dialog-title {
-  text-align: left;
+.mat-dialog-title{
+  text-align:left;
 }
 
-.choiceTyeOfDocument {
+.choiceTyeOfDocument{
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto ;
+  margin-right: auto ;
 }
 
-.informationTypeDocument {
-  margin-left: auto;
-  margin-right: auto;
+.informationTypeDocument{
+  margin-left: auto ;
+  margin-right: auto ;
 }
 
-.documentNaming {
+.documentNaming{
   font-style: italic;
 }
 
-.mat-dialog-actions {
+.mat-dialog-actions{
   display: inline-block;
   position: relative;
-  width: 100%;
+  top: 0.2em;
+  padding-top: 5%;
+  width:100%;
 }
 
 .buttonsLeft {
-  float: left;
-  padding-top: 1.7rem;
+  padding-top: 1%;
+  float: left; 
 }
 
 .buttonsRight {
-  float: right;
-  padding-top: 1.7rem;
+  float: right; 
 }
 
-.button {
+.button{
+  margin:5px;
   background-color: #fcc404;
 }
