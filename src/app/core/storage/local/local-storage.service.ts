@@ -74,7 +74,7 @@ export class LocalStorageService extends Storage implements IStorage {
     // Check if available
     const indexedDBState = await getIndexedDBState()
 
-    indexedDBState === EIndexedDBState.OK
+    indexedDBState === EIndexedDBState.OK // eslint-disable-line @typescript-eslint/no-unused-expressions
       ? super.setStatus(LocalStorageService.AVAILABLE)
       : super.setStatus(indexedDBState)
 

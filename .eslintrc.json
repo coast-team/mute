@@ -1,18 +1,12 @@
 {
   "root": true,
-  "ignorePatterns": [
-    "projects/**/*"
-  ],
+
+  "ignorePatterns": ["projects/**/*", "src/assets/*", "dist/*"],
   "overrides": [
     {
-      "files": [
-        "*.ts"
-      ],
+      "files": ["*.{ts,tsx}"],
       "parserOptions": {
-        "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
-        ],
+        "project": ["tsconfig.json", "e2e/tsconfig.json"],
         "createDefaultProgram": true
       },
       "extends": [
@@ -20,9 +14,7 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
-      "plugins": [
-        "eslint-plugin-react"
-      ],
+      "plugins": ["eslint-plugin-react"],
       "rules": {
         "@typescript-eslint/array-type": [
           "error",
@@ -59,19 +51,10 @@
             "allowTemplateLiterals": true
           }
         ],
-        "@typescript-eslint/semi": [
-          "off",
-          "always"
-        ],
+        "@typescript-eslint/semi": ["off", "always"],
         "@typescript-eslint/type-annotation-spacing": "off",
-        "arrow-parens": [
-          "off",
-          "always"
-        ],
-        "brace-style": [
-          "off",
-          "off"
-        ],
+        "arrow-parens": ["off", "always"],
+        "brace-style": ["off", "off"],
         "eol-last": "off",
         "linebreak-style": "off",
         "max-len": "off",
@@ -81,6 +64,15 @@
         "no-invalid-this": "error",
         "no-irregular-whitespace": "off",
         "no-trailing-spaces": "off",
+        "no-underscore-dangle": "warn",
+        "jsdoc/newline-after-description": "off",
+        "prefer-arrow/prefer-arrow-functions": "warn",
+        "@angular-eslint/component-selector": "warn",
+        "@angular-eslint/directive-selector": "warn",
+        "@angular-eslint/contextual-lifecycle": "warn",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "arrow-body-style": "warn",
         "quote-props": "off",
         "react/jsx-curly-spacing": "off",
         "react/jsx-equals-spacing": "off",
@@ -93,19 +85,12 @@
         ],
         "react/jsx-wrap-multilines": "off",
         "space-before-function-paren": "off",
-        "space-in-parens": [
-          "off",
-          "never"
-        ]
+        "space-in-parens": ["off", "never"]
       }
     },
     {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended"
-      ],
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {}
     }
   ]

@@ -1,3 +1,4 @@
+/*eslint-env es6*/
 const fs = require('fs')
 const package = require('../package.json')
 const swConfigFileName = '../ngsw-config.json'

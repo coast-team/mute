@@ -11,13 +11,13 @@ export class CollaboratorsComponent implements OnInit {
   @Input()
   docAuthors: Author[]
   @Output()
-  change = new EventEmitter<boolean>()
+  collaboratorChanged = new EventEmitter<boolean>()
 
   constructor() {}
 
   ngOnInit() {}
 
   onChange(value: any) {
-    this.change.emit(value.checked)
+    this.collaboratorChanged.emit(value.checked)
   }
 }

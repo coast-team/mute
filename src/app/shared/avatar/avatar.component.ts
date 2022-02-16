@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, OnInit } from '@angular/core'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { Profile } from 'src/app/core/settings/Profile'
 
@@ -7,7 +7,7 @@ import { Profile } from 'src/app/core/settings/Profile'
   templateUrl: './avatar.component.html',
   styleUrls: ['./avatar.component.scss']
 })
-export class AvatarComponent {
+export class AvatarComponent implements OnInit{
   @Input() profile: Profile | { deviceID: string, avatar: string }
   @Input() size = 32
 

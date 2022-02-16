@@ -139,7 +139,6 @@ export class PulsarService {
 
   createWsListen (topic: string, i: number): WebSocket {
     const docType = 400
-    let msgIdFromStorage
     let urlEnd: string
 
     if (i === 3) {
@@ -148,7 +147,7 @@ export class PulsarService {
       urlEnd = (docType + i).toString()
     }
 
-    msgIdFromStorage = window.localStorage.getItem('msgId-' + urlEnd + '-' + topic)
+    const msgIdFromStorage = window.localStorage.getItem('msgId-' + urlEnd + '-' + topic)
     // if (true) {
     if (msgIdFromStorage === null || msgIdFromStorage === 'null') {
       return new WebSocket(`${environment.pulsar.wsURL}/reader/persistent/public/default/${urlEnd}-${topic}/?messageId=earliest`)
