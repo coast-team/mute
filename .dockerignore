@@ -16,4 +16,3 @@ docker-compose.yml
 karma.conf
 protractor.conf
 LICENSE
-tslint.json
