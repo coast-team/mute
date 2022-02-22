@@ -1,5 +1,6 @@
 import { DataSource } from '@angular/cdk/table'
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Clipboard } from '@angular/cdk/clipboard';
 import { MediaChange, MediaObserver } from '@angular/flex-layout'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSidenav } from '@angular/material/sidenav'
@@ -121,7 +122,8 @@ export class DocsComponent implements OnDestroy, OnInit {
     public localStorage: LocalStorageService,
     public ui: UiService,
     public media: MediaObserver,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private clipboard: Clipboard
   ) {
     this.docsSubject = new BehaviorSubject([])
     this.docsSource = new DocsSource(this.docsSubject, this.sortDefault)
@@ -225,24 +227,25 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
+  //FIXME -> When creating a file (with or without a name)
+  //Renaming it using the pen button doesn't work -> files disappears.
+  //When reloading the page, renaming works all the time as intended.
   rename(doc: Doc) {
+    console.log("first pass here in docs.component.ts")
     const dialog = this.dialog.open(DocRenameDialogComponent, { data: doc })
     this.subs[this.subs.length] = dialog.afterClosed().subscribe(() => this.docsSource.sortDocs(this.docsSource.sort))
   }
 
+  /**
+   * Gets the url to access the document
+   */
   share(doc: Doc) {
-    // Workaround, but not pretty
-    const aux = document.createElement('input')
-    aux.setAttribute('value', `${window.location.origin}/${doc.signalingKey}`)
-    document.body.appendChild(aux)
-    aux.select()
-    document.execCommand('copy')
-    document.body.removeChild(aux)
+    this.clipboard.copy(window.location.origin + "/" + doc.signalingKey);
     this.snackBar.open(`Link copied to clipboard.`, 'Close', {
       duration: 5000,
     })
   }
-
+  
   /**
    * Opens the current folder and lists documents
    */
