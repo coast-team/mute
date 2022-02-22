@@ -13,6 +13,8 @@ export class DocOpenDialogComponent {
   public keyControl: FormControl
   public documentSignalingKeyMaxSize: number
 
+  public regex = new RegExp("^[A-Za-z0-9_-]{" + muteConsts.documentSignalingKeyMaxSize + "}$");
+
   constructor(private router: Router, private dialogRef: MatDialogRef<DocOpenDialogComponent>) {
     this.documentSignalingKeyMaxSize = muteConsts.documentSignalingKeyMaxSize
     this.keyControl = new FormControl('', [Validators.required, Validators.minLength(this.documentSignalingKeyMaxSize),Validators.maxLength(this.documentSignalingKeyMaxSize)])
@@ -25,7 +27,11 @@ export class DocOpenDialogComponent {
   openDocument() {
     if (this.keyControl.value != ''){
       this.dialogRef.close()
-      this.router.navigateByUrl(`/${this.keyControl.value}`)
+      if (this.regex.test(this.keyControl.value)){
+        this.router.navigateByUrl(`/${this.keyControl.value}`)
+      } else {
+        alert(muteConsts.koAccessDocument)
+      }
     }
   }
  
