@@ -17,6 +17,7 @@ import { IStorage } from '../IStorage.model'
 import { Storage } from '../Storage'
 import { EIndexedDBState, getIndexedDBState } from './indexedDBCheck'
 import { Subject } from 'rxjs/internal/Subject'
+import { muteConsts } from '@app/shared/muteConsts'
 
 const selectListForDoc = [
   'type',
@@ -282,8 +283,8 @@ export class LocalStorageService extends Storage implements IStorage {
     })
   }
 
-  async createDoc(key = this.generateSignalingKey(), title?:string): Promise<Doc> {
-    const doc = Doc.create(this, key, await CryptoService.generateKey(), title ||'', this.local.id)
+  async createDoc(key = this.generateSignalingKey(), title?:string, typeDocument?: string): Promise<Doc> {
+    const doc = Doc.create(this, key, await CryptoService.generateKey(), title || '', this.local.id, typeDocument || muteConsts.defaultTypeDocument)
     await this.save(doc)
     return doc
   }

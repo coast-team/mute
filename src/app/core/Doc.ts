@@ -3,9 +3,9 @@ import { Observable, Subject } from 'rxjs'
 
 import { PulsarState } from '@coast-team/mute-core'
 import { LogState } from '@coast-team/mute-core'
-import { MetaDataService } from '@coast-team/mute-core/dist/types/src/doc'
 import { File } from './File'
 import { IStorage } from './storage/IStorage.model'
+import { muteConsts } from '@app/shared/muteConsts'
 
 const DEFAULT_TITLE = 'Untitled Document'
 
@@ -58,12 +58,13 @@ export class Doc extends File {
     return doc
   }
 
-  static create(storage: IStorage, signalingKey: string, cryptoKey: string, title: string, parentFolderId?: string): Doc {
+  static create(storage: IStorage, signalingKey: string, cryptoKey: string, title: string, parentFolderId?: string, typeDocument?: string): Doc {
     const doc = new Doc(storage, title, parentFolderId)
     doc.created = new Date()
     doc.signalingKey = signalingKey
     doc.cryptoKey = cryptoKey
     doc.remotes = []
+    this.setDocumentType(doc, typeDocument)
     return doc
   }
 
@@ -82,6 +83,22 @@ export class Doc extends File {
     this._shareLogsVector = new Map()
     this._pulsar = false
   }
+
+  /**
+   * Set the type of document depending on the choice of the user
+   */
+   static setDocumentType(doc: Doc, typeDoc:string){
+    switch (typeDoc){
+      case muteConsts.isWithoutBotStorage:
+        break
+      case muteConsts.isWithPulsar:
+        doc._pulsar=true
+        break
+      case muteConsts.defaultTypeDocument:
+        break
+    }
+  }
+
 
   get isDoc() {
     return true

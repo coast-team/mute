@@ -41,17 +41,12 @@ export class DocCreateDialogComponent implements OnDestroy {
    */
   async createDocument (accessingDocument? : true) {
     const key = this.localStorage.generateSignalingKey()
-    let doc = await this.localStorage.createDoc(key, this.documentName)
-    if (this.typeOfDocument == "pulsar"){
-      doc.pulsar=true
-    }
-
-    let typeDocument = this.enableType()
+    this.prepareType()
+    let doc = await this.localStorage.createDoc(key, this.documentName, this.typeOfDocument)
 
     if (accessingDocument){
-      this.router.navigate(['/', doc.signalingKey, typeDocument])
+      this.router.navigate(['/', doc.signalingKey])
     }
-    
     this.localStorage.newFileNotifier.next()
   }
 
@@ -59,15 +54,15 @@ export class DocCreateDialogComponent implements OnDestroy {
    * Will return the parameter necessary to create
    * the type of document the user will create
    */
-  enableType(){
+   prepareType(){
     let typeDocument = {}
     switch(this.typeOfDocument){
       case "noBotStorage" :{
-        typeDocument = { remote: true }
+        this.typeOfDocument = muteConsts.isWithoutBotStorage
         break;
       }
       case "pulsar" :{
-        typeDocument = { pulsar: true }
+        this.typeOfDocument = muteConsts.isWithPulsar
         break;
       }
       default: {
