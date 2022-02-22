@@ -4,6 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog'
 
 import { Doc } from '../../../core/Doc'
 import { LocalStorageService } from '../../../core/storage/local/local-storage.service'
+import { muteConsts } from '@app/shared/muteConsts'
+
 
 @Component({
   selector: 'mute-doc-rename-dialog',
@@ -12,16 +14,17 @@ import { LocalStorageService } from '../../../core/storage/local/local-storage.s
 })
 export class DocRenameDialogComponent {
   public titleControl: FormControl
-
   private doc: Doc
+  public documentNameMaxSize : number
 
   constructor(
     public dialogRef: MatDialogRef<DocRenameDialogComponent>,
     public localStorage: LocalStorageService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
+    this.documentNameMaxSize = muteConsts.documentNameMaxSize
     this.doc = data
-    this.titleControl = new FormControl('', [Validators.maxLength(128)])
+    this.titleControl = new FormControl('', [Validators.maxLength(28)])
     this.titleControl.setValue(this.doc.title)
   }
 
@@ -31,5 +34,6 @@ export class DocRenameDialogComponent {
 
   updateTitle() {
     this.doc.title = this.titleControl.value
+    this.localStorage.newFileNotifier.next()
   }
 }

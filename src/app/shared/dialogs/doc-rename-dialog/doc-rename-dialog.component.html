@@ -4,8 +4,8 @@
 
   <div mat-dialog-content>
     <mat-form-field>
-      <input matInput placeholder="Title" maxlength="128" [formControl]="titleControl" (focus)="selectAll($event)">
-      <mat-hint align="end">{{titleControl.value.length}} / 128</mat-hint>
+      <input matInput placeholder="Title" maxlength={{this.documentNameMaxSize}} [formControl]="titleControl" (focus)="selectAll($event)">
+      <mat-hint align="end">{{titleControl.value.length}} / {{this.documentNameMaxSize}}</mat-hint>
     </mat-form-field>
   </div>
 

@@ -1,9 +1,8 @@
 import { Component, HostListener, OnDestroy} from '@angular/core'
 import { MatDialogRef } from '@angular/material/dialog';
-
 import { Router } from '@angular/router'
 import { LocalStorageService } from '@app/core/storage'
-import { Output, EventEmitter } from '@angular/core';
+import { muteConsts } from '@app/shared/muteConsts';
 
 @Component({
   selector: 'mute-doc-create-dialog',
@@ -16,13 +15,14 @@ export class DocCreateDialogComponent implements OnDestroy {
   public accessingDocument : boolean
 
   //Constants
-  public documentNameMaxSize = 25
+  public documentNameMaxSize : number
   public defaultNameForDoc = "Untitled Document"
 
   constructor(private router: Router,
      private localStorage: LocalStorageService,
      private dialogRef: MatDialogRef<DocCreateDialogComponent>
      ) {
+    this.documentNameMaxSize = muteConsts.documentNameMaxSize
     this.typeOfDocument = "noBotStorage"
     this.documentName = ""
     this.accessingDocument = false
@@ -42,7 +42,6 @@ export class DocCreateDialogComponent implements OnDestroy {
   async createDocument (accessingDocument? : true) {
     const key = this.localStorage.generateSignalingKey()
     let doc = await this.localStorage.createDoc(key, this.documentName)
-
     if (this.typeOfDocument == "pulsar"){
       doc.pulsar=true
     }

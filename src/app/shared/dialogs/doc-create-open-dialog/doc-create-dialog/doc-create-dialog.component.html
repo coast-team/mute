@@ -22,7 +22,7 @@
 
   <div class="documentNaming">
     <mat-form-field fxFlex>
-      <input matInput class="input" placeholder="Untitled Document" type="text" [(ngModel)]="documentName" maxlength="25">
+      <input matInput class="input" placeholder="Untitled Document" type="text" [(ngModel)]="documentName" [maxlength]=documentNameMaxSize>
       <mat-hint align="end">{{documentName.length}} / {{documentNameMaxSize}}</mat-hint>
     </mat-form-field>
   </div>
