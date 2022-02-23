@@ -55,7 +55,7 @@ export class LocalStorageService extends Storage implements IStorage {
   private db: any
   private dbLogin: string
 
-  newFileNotifier: Subject<null> = new Subject<null>();
+  newFileNotifier: Subject<any> = new Subject<any>();
   
   constructor(private botStorage: BotStorageService) {
     super()
@@ -288,6 +288,7 @@ export class LocalStorageService extends Storage implements IStorage {
     await this.save(doc)
     return doc
   }
+
 
   getFolder(id: string): Folder | undefined {
     switch (id) {

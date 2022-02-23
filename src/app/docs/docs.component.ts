@@ -22,7 +22,6 @@ import { UiService } from '@app/core/ui'
 import {
   DocRenameDialogComponent,
   RemoteDeleteDialogComponent,
-  DocCreateDialogComponent
 } from '../shared/dialogs' 
 
 class DocsSource extends DataSource<Doc> {
@@ -46,7 +45,6 @@ class DocsSource extends DataSource<Doc> {
   disconnect() {
     this.sub.unsubscribe()
   }
-
 
   sortDocs(sort: Sort) {
     this.sort = sort
@@ -136,9 +134,12 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
     this.updateDisplayedColumns()
     this.openFolder(this.localStorage.getFolder(this.settings.openedFolder) || this.localStorage.local)
-    
-    this.localStorage.newFileNotifier.subscribe((value) => {
-      this.openFolder(this.folder)
+
+    //When a new file is created, we have to update the docs component status to display the new file
+    this.localStorage.newFileNotifier.subscribe(() => {
+      this.openFolder(this.localStorage.getFolder(this.settings.openedFolder) || this.localStorage.local) 
+      this.docsSource.disconnect()
+      this.docsSource = new DocsSource(this.docsSubject, this.docsSource.sort)
     })
   }
 
@@ -227,14 +228,11 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
-  //FIXME -> When creating a file (with or without a name)
-  //Renaming it using the pen button doesn't work -> files disappears.
-  //When reloading the page, renaming works all the time as intended.
   rename(doc: Doc) {
-    console.log("first pass here in docs.component.ts")
     const dialog = this.dialog.open(DocRenameDialogComponent, { data: doc })
     this.subs[this.subs.length] = dialog.afterClosed().subscribe(() => this.docsSource.sortDocs(this.docsSource.sort))
   }
+
 
   /**
    * Gets the url to access the document

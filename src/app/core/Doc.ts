@@ -210,7 +210,6 @@ export class Doc extends File {
   }
 
   private updateTitle(newTitle: string, isLocal: boolean, titleModified = new Date()) {
-    console.log("titleModified : " , titleModified, " isLocal : ", isLocal)
     if (this._title !== newTitle) {
       const changedProperties = [Doc.TITLE, Doc.TITLE_MODIFIED, Doc.MODIFIED]
       this._title = newTitle

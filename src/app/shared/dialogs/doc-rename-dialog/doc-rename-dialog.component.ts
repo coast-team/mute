@@ -34,6 +34,5 @@ export class DocRenameDialogComponent {
 
   updateTitle() {
     this.doc.title = this.titleControl.value
-    this.localStorage.newFileNotifier.next()
   }
 }
