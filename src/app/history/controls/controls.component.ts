@@ -27,8 +27,9 @@ export class ControlsComponent implements OnInit {
   slide: EventEmitter<number>
 
   constructor(private router: Router, public ui: UiService) {
-    this.pausePlayBtn = 'play_arrow'
-    ;(this.controls = new EventEmitter<number>()), (this.slide = new EventEmitter<number>())
+    this.pausePlayBtn = 'play_arrow';
+    this.controls = new EventEmitter<number>()
+    this.slide = new EventEmitter<number>()
   }
 
   ngOnInit() {

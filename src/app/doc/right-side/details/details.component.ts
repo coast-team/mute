@@ -103,7 +103,9 @@ export class DetailsComponent implements OnInit {
             break
           case WebSocketReadyState.CLOSED:
             this.pulsarWsStateArray.push('red')
+            break
           case WebSocketReadyState.CONNECTING:
+            break
           default:
             this.pulsarWsStateArray.push('blue')
             break

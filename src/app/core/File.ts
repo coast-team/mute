@@ -58,10 +58,10 @@ export abstract class File {
   abstract get isDoc(): boolean
 
   abstract get title()
-  abstract set title(newTitle: string)
+  abstract set title(newTitle: string) // eslint-disable-line @typescript-eslint/unified-signatures
 
   abstract get description()
-  abstract set description(newTitle: string)
+  abstract set description(newTitle: string) // eslint-disable-line @typescript-eslint/unified-signatures
 
   get onMetadataChanges(): Observable<{ isLocal: boolean; changedProperties: number[] }> {
     return this.changes.asObservable()

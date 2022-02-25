@@ -94,7 +94,9 @@ export class BotStorageService extends Storage {
   }
 
   private updateStatus (): Promise<void> {
-    if (!this.httpURL) return Promise.resolve()
+    if (!this.httpURL) {
+      return Promise.resolve()
+    } 
     
     if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
       super.setStatus(BotStorageServiceStatus.NOT_AUTHORIZED)

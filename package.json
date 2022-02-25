@@ -33,7 +33,7 @@
     "postbuild": "run-script-os",
     "postbuild:win32": "",
     "postbuild:default": "bash scripts/postbuild.sh",
-    "lint": "ng lint mute --type-check --fix",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "ng test",
     "pree2e": "npm run sigver",
     "e2e": "ng e2e",
@@ -54,7 +54,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "ng-lint-staged lint --type-check --fix --"
+      "ng-lint-staged lint"
     ],
     "*.{json,scss,css}": [
       "prettier --write --list-different -e *proto*"
@@ -73,6 +73,11 @@
   ],
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.2.1",
+    "@angular-eslint/builder": "13.1.0",
+    "@angular-eslint/eslint-plugin": "^13.1.0",
+    "@angular-eslint/eslint-plugin-template": "13.1.0",
+    "@angular-eslint/schematics": "13.1.0",
+    "@angular-eslint/template-parser": "13.1.0",
     "@angular/animations": "^13.2.0",
     "@angular/cdk": "^13.2.0",
     "@angular/cli": "^13.2.1",
@@ -103,10 +108,17 @@
     "@types/loglevel": "^1.5.3",
     "@types/node": "^14.14.31",
     "@types/uuid": "^8.3.0",
+    "@typescript-eslint/eslint-plugin": "5.11.0",
+    "@typescript-eslint/parser": "5.11.0",
     "codelyzer": "^6.0.0",
     "commitizen": "^4.2.3",
     "core-js": "^3.1.4",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.9.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsdoc": "^37.9.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-react": "^7.28.0",
     "husky": "^4.3.8",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "^6.0.0",
@@ -133,8 +145,6 @@
     "size-limit": "^7.0.5",
     "ts-node": "^9.1.1",
     "tslib": "^2.0.0",
-    "tslint": "~6.1.0",
-    "tslint-config-prettier": "^1.17.0",
     "typescript": "4.4.4",
     "uws": "^100.0.1",
     "zone.js": "~0.11.4"
