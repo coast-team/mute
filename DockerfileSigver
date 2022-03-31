@@ -11,7 +11,7 @@ RUN npm config set unsafe-perm true
 
 COPY process.yml /
 
-RUN npm install pm2 -g
+RUN npm install pm2@^3 -g
 RUN npm install sigver -g
 
 EXPOSE 8010
