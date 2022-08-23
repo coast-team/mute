@@ -221,7 +221,7 @@ export class LocalStorageService extends Storage implements IStorage {
     // FIXME: remove this code when all clients have updated to the new version
     if (doc) {
       if (doc.signalingKey === doc.cryptoKey) {
-        doc.cryptoKey = await CryptoService.generateKey()
+        doc.cryptoKey = nanoid(10)
       }
     }
     return doc
@@ -280,7 +280,7 @@ export class LocalStorageService extends Storage implements IStorage {
   }
 
   async createDoc(key = this.generateSignalingKey()): Promise<Doc> {
-    const doc = Doc.create(this, key, await CryptoService.generateKey(), '', this.local.id)
+    const doc = Doc.create(this, key, nanoid(10), '', this.local.id)
     await this.save(doc)
     return doc
   }
