@@ -1,6 +1,6 @@
 {
   "name": "mute",
-  "version": "0.12.3",
+  "version": "0.12.2",
   "private": true,
   "description": "peer to peer collaborative text editor with CRDT",
   "keywords": [
@@ -98,7 +98,6 @@
     "material-icons": "^0.5.3",
     "mute-structs": "^1.1.0",
     "nanoid": "^3.1.20",
-    "netflux": "^4.3.1",
     "ng-lint-staged": "^0.1.6",
     "np2-ui-auth": "git+https://github.com/harmanpa/ng2-ui-auth.git#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
     "pm2": "^5.0.0",
@@ -119,5 +118,12 @@
     "node": ">=10.13.0 <15"
   },
   "angular-cli": {},
-  "dependencies": {}
+  "standard-version": {
+    "scripts": {
+      "postbump": "node scripts/update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
+    }
+  },
+  "dependencies": {
+    "netflux": "file:netflux-0.0.0-development-raspberry-fix.tgz"
+  }
 }
