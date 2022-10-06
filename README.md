@@ -8,7 +8,7 @@ Edit documents collaboratively in real-time with hundreds of users on the same d
 
 You can check:
 
-- our live demonstration server at <https://coedit.re>
+- our live demonstration server at <https://mutehost.loria.fr>
 - or quickstart MUTE on your machine via `npm start` and then access it on <http://localhost:4200>
 
 ## :package: Deployment
@@ -69,7 +69,7 @@ One of the best ways to contribute to MUTE is to help these libraries!
 
 ## License
 
-Copyright (C) 2016-2021 [COAST](https://team.inria.fr/coast)
+Copyright (C) 2016-2022 [COAST](https://team.inria.fr/coast)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
