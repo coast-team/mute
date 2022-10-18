@@ -13,9 +13,10 @@
   "repository": "https://github.com/coast-team/mute",
   "license": "AGPL-3.0",
   "contributors": [
-    "Pierre-Antoine Rault <par@rigelk.eu>",
-    "Philippe Kalitine <philippe.kalitine@gmail.com>",
+    "Baptiste Hubert <baptiste.hubert@inria.fr>",
+    "Pierre-Antoine Rault <pierre-antoine.rault@inria.fr>",
     "Matthieu Nicolas <matthieu.nicolas@inria.fr>",
+    "Philippe Kalitine <philippe.kalitine@gmail.com>",
     "Cédric Enclos <cedric.enclos@loria.fr",
     "Quentin Tardivon",
     "Camille Menou",
