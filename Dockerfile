@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . ./
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
-RUN npm ci
+RUN npm i
 RUN npm run build
 
 #Launch Mute
