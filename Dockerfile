@@ -7,7 +7,8 @@ WORKDIR /app
 COPY . ./
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
-RUN npm i
+RUN npm ci
+RUN npm run postinstall:default
 RUN npm run build
 
 #Launch Mute
