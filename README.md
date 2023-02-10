@@ -13,28 +13,17 @@ You can check:
 
 ## :package: Deployment
 
-MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires a few servers for discovery and signaling. A complete MUTE instance relies on the following servers:
+MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires at least a server for the initial discovery and signaling phase. A complete MUTE instance relies on the following servers:
 
-- your web server serving the MUTE static files over HTTPS
-- a WebSocket signaling server which is mandatory in order to establish a connection between two users
-- an (optional but highly recommended) [Pulsar](https://github.com/apache/pulsar) server to relay messages in case WebRTC is blocked on a user's network
+- web server serving the MUTE static files over HTTPS
+- WebSocket signaling server
+- (optional but highly recommended) [Pulsar](https://github.com/apache/pulsar) server to relay messages in case WebRTC is blocked on a user's network
 
-MUTE comes with a default set of STUN servers configured for WebRTC.
+Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Deployment).
 
-Proceed with the following steps:
+## :book: Development
 
-1.  Deploy the signaling server ([how to](https://github.com/coast-team/sigver))
-2.  Build MUTE static files ([how to](https://github.com/coast-team/mute/wiki/Before-building))
-3.  Serve static files
-
-> TIP: If you serve MUTE via HTTPS, the Signaling server should also be secure, i. e. available via `wss` protocol.
->
-> TIP: You may find a full NGINX configuration example in the `conf` folder
-
-## :book: Documentation
-
-- [Demo deployment on Raspberry Pi](https://github.com/coast-team/mute/wiki/Deploy:-Raspberry-Pi)
-- [Production deployment with NGINX on Ubuntu 16.04](https://github.com/coast-team/mute/wiki/Deploy:-Production)
+Simply run `npm install` and start the build/serve watchdog with `npm start`. The application is now available at http://localhost:4200 with the signaling server running at http://localhost:8010.
 
 ## :bar_chart: Benchmark
 
