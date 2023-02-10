@@ -20,9 +20,10 @@ test('Main user for the offline scenario', async t => {
     await t.typeText(editorComponent, 'Hello, i am the first user')
             .pressKey('enter')
             .pressKey('enter')
-            .typeText(editorComponent, 'Have a nice day')
+            .typeText(editorComponent, 'This is a simple line of text')
             .pressKey('space')
             .pressKey('space')
+            .typeText(editorComponent, gv.textAddedAfterWhitespace)
 
     await t.wait(2000) //Wait for the editor to save the text
 

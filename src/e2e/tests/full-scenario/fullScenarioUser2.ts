@@ -85,7 +85,7 @@ test('Additional user for the full scenario', async t => {
 //      - c.3 Text added by User 1 is seen in User 2 tab
     editorText = await tool.getTextWrittenInTheEditor(t)
     expectedText = gv.textAddedWhileOfflineUser1+ gv.onlineExpectedText
-    const commandToDeleteText = tool.deleteTextFromEditor(gv.textAddedWhileOfflineUser1, "backspace")
+    let commandToDeleteText = tool.deleteTextFromEditor(gv.textAddedWhileOfflineUser1, "backspace")
     await t.expect(editorText).eql(expectedText, '5.c.3 Text added by User 1 is seen in User 2 tab')
             .pressKey(commandToDeleteText) // User 2 remove what User 1 added to the editor
 
@@ -97,10 +97,14 @@ test('Additional user for the full scenario', async t => {
     numberOfVisibleUsers = await usersComponent.child(0).childElementCount
     await t.expect(numberOfVisibleUsers).eql(1, ' 6.a.1 User 2 is alone as he left the document and re-joined it while the signaling server was off') 
 
+    
+    commandToDeleteText = tool.deleteTextFromEditor(gv.textAddedAfterWhitespace, "backspace")
     await t.click(editorComponent)
             .pressKey('home up up end space') // When we click on the document, we are at the end of the text written in the editor
-            .typeText(editorComponent, '(accompanied by a second user)')
-            .pressKey('down down backspace backspace')
+            .typeText(editorComponent, '(This text should also show on both tabs)')
+            .pressKey('down down end')
+            .pressKey(commandToDeleteText)
+            .pressKey('backspace backspace')
     
     await tool.leaveAndRejoin(t, gv.muteHomeMenu, gv.muteDoc)
 

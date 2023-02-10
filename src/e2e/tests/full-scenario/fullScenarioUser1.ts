@@ -32,9 +32,10 @@ test('Main user for the full scenario', async t => {
     await t.typeText(editorComponent, 'Hello, i am the first user')
             .pressKey('enter')
             .pressKey('enter')
-            .typeText(editorComponent, 'Have a nice day')
+            .typeText(editorComponent, 'This is a simple line of text')
             .pressKey('space')
             .pressKey('space')
+            .typeText(editorComponent, gv.textAddedAfterWhitespace)
 
 //      - a. The text written in the document is displayed as intended
     editorText = await tool.getTextWrittenInTheEditor(t)
@@ -97,7 +98,7 @@ test('Main user for the full scenario', async t => {
 
     await t.click(editorComponent)
             .pressKey('home up end')
-            .typeText(editorComponent, 'If i was accompanied, i\'d say we come in peace')
+            .typeText(editorComponent, 'This text should show on both tabs')
     
     await tool.leaveAndRejoin(t, gv.muteHomeMenu, gv.muteDoc)
 

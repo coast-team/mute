@@ -29,11 +29,14 @@ test('Additional user for the offline To Online scenario', async t => {
 //          - a.1 User 2 is alone as he left the document and re-joined it while the signaling server was off
     const numberOfVisibleUsers = await usersComponent.child(0).childElementCount
     await t.expect(numberOfVisibleUsers).eql(1, '6.a.1 User 2 is alone as he left the document and re-joined it while the signaling server was off') 
-
+    const commandToDeleteText = tool.deleteTextFromEditor(gv.textAddedAfterWhitespace, "backspace")
+    
     await t.click(editorComponent)
             .pressKey('home up up end space') // When we click on the document, we are at the end of the text written in the editor
-            .typeText(editorComponent, '(accompanied by a second user)')
-            .pressKey('down down backspace backspace')
+            .typeText(editorComponent, '(This text should also show on both tabs)')
+            .pressKey('down down end')
+            .pressKey(commandToDeleteText)
+            .pressKey('backspace backspace')
     
     await tool.leaveAndRejoin(t, gv.muteHomeMenu, gv.muteDoc)
 

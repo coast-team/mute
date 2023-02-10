@@ -48,12 +48,12 @@ export { urlSignaling, muteHomeMenu, muteDoc}
 const onlineExpectedText = 
 `Hello, i am the first user
 
-Have a nice day  `
+This is a simple line of text  (There should be two whitespaces before this parenthesis)`
  
 const onlineExpectedTextAccessTest =
 `accessHello, i am the first user
 
-Have a nice day  `
+This is a simple line of text  (There should be two whitespaces before this parenthesis)`
  
 export { onlineExpectedText, onlineExpectedTextAccessTest }
 
@@ -61,22 +61,24 @@ const textAddedWhileOfflineUser1 ='access while offline by user 1'
 
 const textAddedWhileOfflineUser2 ='access while offline by user 2'
 
-export { textAddedWhileOfflineUser1, textAddedWhileOfflineUser2 }
+const textAddedAfterWhitespace = '(There should be two whitespaces before this parenthesis)'
+
+export { textAddedWhileOfflineUser1, textAddedWhileOfflineUser2, textAddedAfterWhitespace }
 
 const expectedTextSignalingOffUser1 = 
 `Hello, i am the first user
-If i was accompanied, i'd say we come in peace
-Have a nice day  `
+This text should show on both tabs
+This is a simple line of text  (There should be two whitespaces before this parenthesis)`
 
 const expectedTextSignalingOffUser2 = 
-`Hello, i am the first user (accompanied by a second user)
+`Hello, i am the first user (This text should also show on both tabs)
 
-Have a nice day`
+This is a simple line of text`
 
 const expectedTextSignalingMerge = 
-`Hello, i am the first user (accompanied by a second user)
-If i was accompanied, i'd say we come in peace
-Have a nice day`
+`Hello, i am the first user (This text should also show on both tabs)
+This text should show on both tabs
+This is a simple line of text`
 
 export { expectedTextSignalingOffUser1, expectedTextSignalingOffUser2, expectedTextSignalingMerge}
 
