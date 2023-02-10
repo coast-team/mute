@@ -4,7 +4,7 @@ chcp 65001 > nul
 
 cd ../src/assets
 
-CALL :RecuperationAsset jio-latest.js, https://lab.nexedi.com/nexedi/jio/raw/master/dist/jio-v3.42.0.js?inline=false
+CALL :RecuperationAsset jio-latest.js, https://lab.nexedi.com/nexedi/jio/raw/master/dist/jio-v3.45.0.js?inline=false
 
 CALL :RecuperationAsset rsvp-2.0.4.min.js, https://lab.nexedi.com/nexedi/rsvp.js/raw/master/dist/rsvp-2.0.4.min.js?inline=false 
 
