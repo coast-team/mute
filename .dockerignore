@@ -10,8 +10,6 @@ protoc/
 #Files
 /*.md
 /.*
-Dockerfile
-DockerfileSigver
 docker-compose.yml
 karma.conf
 protractor.conf

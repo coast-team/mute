@@ -2,12 +2,14 @@
 
 # compiled output
 /dist
+/src/e2e/dist
 /releases
 /dist-desktop
 /tmp
 
 # dependencies
 /node_modules
+src/e2e/node_modules
 /src/assets/*.js
 
 # IDEs and editors
