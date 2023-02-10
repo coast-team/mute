@@ -1,36 +1,15 @@
-variables:
-  GIT_SUBMODULE_STRATEGY: normal
-  DOCKERFILE_PATH: src/e2e/Dockerfile
-  # CI variables
-  BROWSER1: chromium
-  BROWSER2: firefox
-  
-
-  # CI specific command
-  # Before script
-  BUILD_IMAGE: 'docker build -f $DOCKERFILE_PATH -t $IMAGE --no-cache .' 
-  RUN_CI_CONTAINER: 'docker run --privileged -d --name $CONTAINER $IMAGE'
-  RUN_MUTE_SIGVER: 'docker exec -w /app/mute $CONTAINER /bin/sh start-mute-sigver-containers.sh'
-  #Script
-  RUN_TEST: 'docker exec -w /app/ci $CONTAINER $TEST $SCENARIO true'
-  TEST: 'npm run test $BROWSER1 $BROWSER2'
-  #After script
-  STOP_CI_CONTAINER: 'docker stop $CONTAINER'
-  
-  
-
 default:
-  image: docker:20.10.12-dind
   tags:
-    - ci.inria.fr
+    - ci.inria.fr # required to run on shared gitlab.inria.fr runners
 
 stages:
   - build
   - test
 
 ###
-## Jobs
+## Build
 #
+
 build application:
   stage: build
   image: node:14-alpine
@@ -48,69 +27,61 @@ build application:
       - "dist"
   when: manual
 
+###
+## Test
+#
 
-## Full E2E scenario
-e2e full scenario:
+.e2e:
+  image: docker:20.10.12-dind
   stage: test
+  except:
+    - schedules
+  variables:
+    DOCKERFILE_PATH: src/e2e/Dockerfile
+    BUILD_IMAGE: 'docker build -f $DOCKERFILE_PATH -t $IMAGE --no-cache .' 
+    RUN_CI_CONTAINER: 'docker run --privileged -d --name $CONTAINER $IMAGE'
+    RUN_MUTE_SIGVER: 'docker exec -w /app/mute $CONTAINER /bin/sh start-mute-sigver-containers.sh'
+    STOP_CI_CONTAINER: 'docker stop $CONTAINER'
+    RUN_TEST: 'docker exec -w /app/ci $CONTAINER npm run test chromium firefox $SCENARIO true'
+  before_script:
+    - $BUILD_IMAGE
+    - $RUN_CI_CONTAINER
+    - sleep 10
+    - $RUN_MUTE_SIGVER
+  script:
+    - $RUN_TEST
+
+e2e full scenario:
+  extends: .e2e
   variables: 
     IMAGE: ci-full-scenario
     CONTAINER: ci-full-scenario-container
     SCENARIO: fullscenario
-  before_script:
-    - $BUILD_IMAGE
-    - $RUN_CI_CONTAINER
-    - sleep 10
-    - $RUN_MUTE_SIGVER
-  script:
-    - $RUN_TEST
   after_script:
     - $STOP_CI_CONTAINER
   when: manual
 
-
 e2e online scenario:
-  stage: test
+  extends: .e2e
   variables: 
     IMAGE: ci-online-scenario
     CONTAINER: ci-online-scenario-container
     SCENARIO: online
-  before_script:
-    - $BUILD_IMAGE
-    - $RUN_CI_CONTAINER
-    - sleep 10
-    - $RUN_MUTE_SIGVER
-  script:
-    - $RUN_TEST
   after_script:
     - $STOP_CI_CONTAINER
 
 e2e offline scenario:
-  stage: test
+  extends: .e2e
   variables: 
     IMAGE: ci-offline-scenario
     CONTAINER: ci-offline-scenario-container
     SCENARIO: offline
-  before_script:
-    - $BUILD_IMAGE
-    - $RUN_CI_CONTAINER
-    - sleep 10
-    - $RUN_MUTE_SIGVER
-  script:
-    - $RUN_TEST
   after_script:
     - $STOP_CI_CONTAINER
 
 e2e offline-to-online scenario:
-  stage: test
+  extends: .e2e
   variables: 
     IMAGE: ci-offline-to-online-scenario
     CONTAINER: ci-offline-to-online-scenario-container
     SCENARIO: offline-to-online
-  before_script:
-    - $BUILD_IMAGE
-    - $RUN_CI_CONTAINER
-    - sleep 10
-    - $RUN_MUTE_SIGVER
-  script:
-    - $RUN_TEST
-  
