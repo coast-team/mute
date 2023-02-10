@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 4200:4200
+      - 4200:${MUTE_PORT:-4200}
     depends_on:
       - sigver
 
@@ -18,15 +18,15 @@ services:
       context: .
       dockerfile: DockerfileSigver
     ports:
-      - 8010:8010
+      - 8010:${SIGVER_PORT:-8010}
 
   pulsar:
     profiles:
       - pulsar
     image: apachepulsar/pulsar:2.6.0
     ports:
-      - 8080:8080
-      - 6650:6650
+      - 8080:${PULSAR_WEB_PORT:-8080}
+      - 6650:${PULSAR_PORT:-6650}
     environment:
       PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
     volumes:
