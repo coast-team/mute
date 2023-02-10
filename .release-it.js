@@ -3,7 +3,7 @@ module.exports = {
     "publish": false
   },
   "git": {
-    "tagAnnotation": "${version}",
+    "tagAnnotation": "v${version}",
     "commitMessage": "chore(release): v${version}",
     "changelog": false
   },
