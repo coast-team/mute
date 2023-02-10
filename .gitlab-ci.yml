@@ -85,3 +85,4 @@ e2e offline-to-online scenario:
     IMAGE: ci-offline-to-online-scenario
     CONTAINER: ci-offline-to-online-scenario-container
     SCENARIO: offline-to-online
+  retry: 2
