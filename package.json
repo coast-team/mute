@@ -31,40 +31,12 @@
     "postinstall": "run-script-os",
     "postinstall:win32": "cd scripts && get-assets.bat",
     "postinstall:default": "bash scripts/get-assets.sh && ngcc",
-    "postbuild": "run-script-os",
-    "postbuild:win32": "",
-    "postbuild:default": "bash scripts/postbuild.sh",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "ng test",
     "pree2e": "npm run sigver",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
-    "cz": "npx git-cz",
     "size": "npm run build && size-limit"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -e $HUSKY_GIT_PARAMS"
-    }
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "lint-staged": {
-    "*.ts": [
-      "ng-lint-staged lint"
-    ],
-    "*.{json,scss,css}": [
-      "prettier --write --list-different -e *proto*"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "size-limit": [
     {
@@ -97,8 +69,6 @@
     "@coast-team/mnemonicjs": "^1.0.0",
     "@coast-team/mute-core": "10.0.0-2.2",
     "@coast-team/mute-crypto": "^0.4.1",
-    "@commitlint/cli": "^12.0.1",
-    "@commitlint/config-conventional": "^12.0.1",
     "@multiavatar/multiavatar": "^1.0.6",
     "@size-limit/file": "^7.0.5",
     "@stomp/ng2-stompjs": "^7.2.0",
@@ -112,15 +82,12 @@
     "@typescript-eslint/eslint-plugin": "5.11.0",
     "@typescript-eslint/parser": "5.11.0",
     "codelyzer": "^6.0.0",
-    "commitizen": "^4.2.3",
     "core-js": "^3.1.4",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.9.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsdoc": "^37.9.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.28.0",
-    "husky": "^4.3.8",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "^6.0.0",
     "karma": "~6.3.12",
@@ -128,7 +95,6 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "lint-staged": "^10.5.4",
     "loglevel": "^1.6.7",
     "material-icons": "^0.5.3",
     "mute-structs": "^1.1.0",
@@ -154,10 +120,5 @@
     "node": ">=10.13.0 <15"
   },
   "angular-cli": {},
-  "standard-version": {
-    "scripts": {
-      "postbump": "node scripts/update-app-data.js && prettier --write --list-different ngsw-config.json ; git add ngsw-config.json src/app-data.ts"
-    }
-  },
   "dependencies": {}
 }
