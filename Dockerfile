@@ -1,5 +1,5 @@
 #Mute build
-FROM node:14-alpine AS builder
+FROM docker.io/node:14-alpine AS builder
 
 WORKDIR /app
 # Copying only necessary files for the build. 
@@ -12,7 +12,7 @@ RUN npm run postinstall:default
 RUN npm run build
 
 #Launch Mute
-FROM nginx:alpine
+FROM docker.io/nginx:alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
 LABEL org.opencontainers.title coast-team/mute

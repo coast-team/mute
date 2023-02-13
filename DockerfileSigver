@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM docker.io/node:8-alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
 LABEL org.opencontainers.description a scalable collaborative document editor with CRDT, P2P and E2EE
