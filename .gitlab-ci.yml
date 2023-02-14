@@ -157,6 +157,7 @@ deploy-to-production:
   environment:
     name: production
     url: https://mutehost.loria.fr
+  resource_group: production
 
 deploy-to-test:
   extends: .deploy-to
@@ -168,5 +169,5 @@ deploy-to-test:
     ENV_NAME: test
     COMPOSE_ENV_FILE: conf/gitlab-ci/test.env
   environment:
-    name: test
+    name: test/default
     url: https://mutehost.loria.fr:8004
