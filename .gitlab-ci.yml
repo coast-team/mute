@@ -15,15 +15,15 @@ stages:
 
 .docker_registry_access: &docker_registry_access
   before_script:
-    - echo ${CI_REGISTRY_PASSWORD} | docker login -u ${CI_REGISTRY_USER} --password-stdin ${CI_REGISTRY_IMAGE}
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY_IMAGE
   after_script:
-    - docker logout ${CI_REGISTRY_IMAGE}
+    - docker logout $CI_REGISTRY_IMAGE
 
 .docker_deployment: &docker_deployment
   script:
-    - docker-compose -f ${COMPOSE_FILE} --env-file ${COMPOSE_ENV_FILE:-""} down || true
+    - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} down || true
     - docker-compose pull --include-deps mute
-    - docker-compose -f ${COMPOSE_FILE} --env-file ${COMPOSE_ENV_FILE:-""} up -d
+    - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} up -d
 
 ###
 ## Test
@@ -36,11 +36,11 @@ stages:
     - schedules
   variables:
     DOCKERFILE_PATH: src/e2e/Dockerfile
-    BUILD_IMAGE: 'docker build -f $DOCKERFILE_PATH -t $IMAGE --no-cache .'
-    RUN_CI_CONTAINER: 'docker run --privileged -d --name $CONTAINER $IMAGE'
-    RUN_MUTE_SIGVER: 'docker exec -w /app/mute $CONTAINER /bin/sh start-mute-sigver-containers.sh'
-    STOP_CI_CONTAINER: 'docker stop $CONTAINER'
-    RUN_TEST: 'docker exec -w /app/ci $CONTAINER npm run test chromium firefox $SCENARIO true'
+    BUILD_IMAGE: docker build -f $DOCKERFILE_PATH -t $IMAGE --no-cache .
+    RUN_CI_CONTAINER: docker run --privileged -d --name $CONTAINER $IMAGE
+    RUN_MUTE_SIGVER: docker exec -w /app/mute $CONTAINER /bin/sh start-mute-sigver-containers.sh
+    STOP_CI_CONTAINER: docker stop $CONTAINER
+    RUN_TEST: docker exec -w /app/ci $CONTAINER npm run test chromium firefox $SCENARIO true
   before_script:
     - $BUILD_IMAGE
     - $RUN_CI_CONTAINER
@@ -108,39 +108,65 @@ build application:
   when: manual
   <<: *task
 
-build docker image:
+.build-docker-image:
   image: docker.io/docker:dind # needs > 19.03
   stage: build
   <<: [ *docker_registry_access, *task, *images ]
-  only:
-    - main
-  #  - tags
-  #variables:
-  #  TAG: ${CI_COMMIT_TAG:-latest}
   script:
     - docker-compose build
     - docker push "${MUTE_IMAGE}"
     - docker push "${SIGVER_IMAGE}"
 
+build-latest-docker-image:
+  extends: .build-docker-image
+  only:
+    - main
+
+build-release-docker-image:
+  extends: .build-docker-image
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v?(\d+(?:\.\d+)*)$/
+      when: on_success
+  variables:
+    TAG: $CI_COMMIT_TAG
+
 ###
 ## Deployment
 #
 
-deploy to production:
+.deploy-to:
   image: docker.io/docker:dind # needs > 19.03
   stage: deploy
   <<: [ *docker_registry_access, *docker_deployment ]
   variables:
     COMPOSE_FILE: docker-compose.yml
-    COMPOSE_ENV_FILE: conf/gitlab-ci/production.env
-    #TAG: ${CI_COMMIT_TAG:-latest}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_DEPLOY_FREEZE == null
-      when: on_success
+  tags:
+    - mutehost # nécessite un runner gitlab ci en mode shell sur la machine de déploiement
+
+deploy-to-production:
+  extends: .deploy-to
   needs:
-    - job: build docker image
+    - job: build-release-docker-image
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v?(\d+(?:\.\d+)*)$/ && $CI_DEPLOY_FREEZE == null
+      when: on_success
+  variables:
+    TAG: $CI_COMMIT_TAG
+    ENV_NAME: production
+    COMPOSE_ENV_FILE: conf/gitlab-ci/production.env
   environment:
     name: production
     url: https://mutehost.loria.fr
-  tags:
-    - mutehost # nécessite un runner gitlab ci en mode shell sur la machine de déploiement
+
+deploy-to-test:
+  extends: .deploy-to
+  needs:
+    - job: build-latest-docker-image
+  only:
+    - main
+  variables:
+    ENV_NAME: test
+    COMPOSE_ENV_FILE: conf/gitlab-ci/test.env
+  environment:
+    name: test
+    url: https://mutehost.loria.fr:8004
