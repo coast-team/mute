@@ -43,7 +43,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     // When a new peer joins
     this.subs.push(
       this.collabService.onJoin.subscribe((collab: RichCollaborator) => {
-        this.cursors.set(collab.id, new CollaboratorCursor(this.cm, collab))
+        this.cursors.set(collab.networkId, new CollaboratorCursor(this.cm, collab))
         if (this.cm.hasFocus()) {
           this.sendMyCursorPos()
         }
@@ -52,11 +52,11 @@ export class CursorsDirective implements OnInit, OnDestroy {
 
     // When the peer leaves
     this.subs.push(
-      this.collabService.onLeave.subscribe((id: number) => {
-        const cursor = this.cursors.get(id)
+      this.collabService.onLeave.subscribe((networkId: number) => {
+        const cursor = this.cursors.get(networkId)
         if (cursor !== undefined) {
           cursor.clean()
-          this.cursors.delete(id)
+          this.cursors.delete(networkId)
         }
       })
     )
@@ -64,7 +64,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     // When the peer changes his display name
     this.subs.push(
       this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
-        const cursor = this.cursors.get(collab.id)
+        const cursor = this.cursors.get(collab.networkId)
         if (cursor !== undefined) {
           cursor.updateDisplayName(collab.displayName)
         }
@@ -95,10 +95,10 @@ export class CursorsDirective implements OnInit, OnDestroy {
     // On message from the network
     this.subs[this.subs.length] = this.network.messageOut
       .pipe(filter(({ streamId }) => streamId.type === Streams.CURSOR))
-      .subscribe(({ senderId, content }) => {
+      .subscribe(({ senderNetworkId, content }) => {
         try {
           const protoCursor = proto.Cursor.decode(content)
-          const cursor = this.cursors.get(senderId)
+          const cursor = this.cursors.get(senderNetworkId)
           if (cursor) {
             if (protoCursor.head) {
               const headPos = this.protoPos2codemirrorPos(protoCursor.head)
@@ -123,7 +123,8 @@ export class CursorsDirective implements OnInit, OnDestroy {
       this.docService.doc.remoteContentChanges.subscribe((ops) => {
         ops.forEach(({ collaborator }) => {
           if (collaborator) {
-            const cursor = this.cursors.get(collaborator.id)
+            const collaboratorNetworkId = this.network.idMap.getNetworkId(collaborator.muteCoreId)
+            const cursor = this.cursors.get(collaboratorNetworkId)
             if (cursor) {
               cursor.resetDisplayNameTimeout()
             }

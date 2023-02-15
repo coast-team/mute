@@ -12,6 +12,7 @@ import {
 
 import { Colors } from './Colors'
 import { RichCollaborator } from './RichCollaborator'
+import { NetworkService } from '../network'
 
 @Injectable()
 export class RichCollaboratorsService implements OnDestroy {
@@ -21,6 +22,8 @@ export class RichCollaboratorsService implements OnDestroy {
   private me: Promise<void>
   private colors: Colors
   private subs: Subscription[]
+
+  private network: NetworkService
 
   public collaborators: RichCollaborator[]
 
@@ -56,6 +59,10 @@ export class RichCollaboratorsService implements OnDestroy {
     this.subs.forEach((s) => s.unsubscribe())
   }
 
+  setNetwork(network : NetworkService){
+    this.network = network
+  } 
+
   get onUpdate(): Observable<RichCollaborator> {
     return this.updateSubject.asObservable()
   }
@@ -72,11 +79,19 @@ export class RichCollaboratorsService implements OnDestroy {
     return merge(this.updateSubject, this.joinSubject, this.leaveSubject, this.me).pipe(map(() => undefined))
   }
 
+  addCollaboratorToIdMap(muteCoreId : number){
+    this.network.idMap.addIds(this.network.tempNetworkId, muteCoreId)
+  }
+
+  removeCollaboratorFromIdMap(muteCoreId : number){
+    this.network.idMap.removeIds(muteCoreId)
+  }
+
   subscribeToUpdateSource(source: Observable<ICollaborator>) {
     this.subs.push(
       source.subscribe((collab: ICollaborator) => {
         for (const c of this.collaborators) {
-          if (collab.id === c.id) {
+          if (this.network.idMap.networkIdToMuteCoreIdMap.has(c.networkId)){
             c.update(collab)
             this.updateSubject.next(c)
             break
@@ -89,7 +104,9 @@ export class RichCollaboratorsService implements OnDestroy {
   subscribeToJoinSource(source: Observable<ICollaborator>) {
     this.subs.push(
       source.subscribe((collab) => {
-        const rc = new RichCollaborator(collab, this.colors.pick())
+        this.addCollaboratorToIdMap(collab.muteCoreId)
+        let collabNetworkId = this.network.idMap.getNetworkId(collab.muteCoreId)
+        const rc = new RichCollaborator(collabNetworkId, collab, this.colors.pick())
         this.collaborators[this.collaborators.length] = rc
         this.joinSubject.next(rc)
       })
@@ -99,18 +116,22 @@ export class RichCollaboratorsService implements OnDestroy {
   subscribeToLeaveSource(source: Observable<ICollaborator>) {
     this.subs.push(
       source.subscribe((collaborator: ICollaborator) => {
-        const index = this.collaborators.findIndex((c) => c.id === collaborator.id)
+        let collaboratorNetworkId = this.network.idMap.getNetworkId(collaborator.muteCoreId)
+        this.removeCollaboratorFromIdMap(collaborator.muteCoreId)
+        const index = this.collaborators.findIndex((c) => c.networkId == collaboratorNetworkId)
         this.colors.dismiss(this.collaborators[index].color)
         this.collaborators.splice(index, 1)
-        this.leaveSubject.next(collaborator.id)
+        this.leaveSubject.next(collaboratorNetworkId)
       })
     )
   }
 
+
+
   private createMe(profile: Profile): RichCollaborator {
     return new RichCollaborator(
+      0,
       {
-        id: -1,
         login: profile.login,
         displayName: profile.displayName,
         deviceID: profile.deviceID,
@@ -120,4 +141,5 @@ export class RichCollaboratorsService implements OnDestroy {
       this.colors.pick()
     )
   }
+
 }

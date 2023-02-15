@@ -172,7 +172,11 @@ export class DocService implements OnDestroy {
     this.muteCore.messageIn$ = this.network.messageOut
     this.network.setMessageIn(this.muteCore.messageOut$)
 
+    //Set up the network to be used in the collaboratorService
+    this.collabs.setNetwork(this.network)
+
     // Setup collaborators' subscriptions
+    this.handleCollaboratorJoining()
     this.collabs.subscribeToUpdateSource(this.muteCore.remoteCollabUpdate$)
     this.collabs.subscribeToJoinSource(this.muteCore.collabJoin$)
     this.collabs.subscribeToLeaveSource(this.muteCore.collabLeave$)
@@ -238,14 +242,14 @@ export class DocService implements OnDestroy {
 
     // Config assymetric cryptography
     if (environment.cryptography.coniksClient) {
-      this.collabs.onJoin.subscribe(({ id, login }) =>
-        this.crypto.verifyLoginPKConiks(id, login).catch((err) => {
+      this.collabs.onJoin.subscribe(({ networkId, login }) =>
+        this.crypto.verifyLoginPKConiks(networkId, login).catch((err) => {
           log.info('Failed to retreive Public Key of ' + login)
         })
       )
     } else if (environment.cryptography.keyserver) {
-      this.collabs.onJoin.subscribe(({ id, login, deviceID }) => {
-        return this.crypto.verifyLoginPK(id, login, deviceID).catch((err) => {
+      this.collabs.onJoin.subscribe(({ networkId, login, deviceID }) => {
+        return this.crypto.verifyLoginPK(networkId, login, deviceID).catch((err) => {
           log.info('Failed to retreive Public Key of ' + login)
         })
       })
@@ -253,6 +257,16 @@ export class DocService implements OnDestroy {
 
     // Start join the collaboration session
     this.network.join(this.doc.signalingKey)
+  }
+
+  /**
+   * 
+   */
+  handleCollaboratorJoining(){
+    let self = this
+    this.network.onMemberJoin.subscribe((networkId) => {
+      self.network.tempNetworkId = networkId
+    })
   }
 
   ngOnDestroy() {
@@ -334,12 +348,12 @@ export class DocService implements OnDestroy {
 
     this.subs.push(
       this.muteCore.collabJoin$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId, remoteNetworkId: c.id })
+        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId/*, remoteNetworkId: c.muteCoreId*/ })
       })
     )
     this.subs.push(
       this.muteCore.collabLeave$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId, remoteNetworkId: c.id })
+        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId/*, remoteNetworkId: c.id*/ })
       })
     )
 

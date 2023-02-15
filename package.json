@@ -67,7 +67,7 @@
     "@angular/router": "^13.2.0",
     "@angular/service-worker": "^13.2.0",
     "@coast-team/mnemonicjs": "^1.0.0",
-    "@coast-team/mute-core": "10.0.0-2.2",
+    "@coast-team/mute-core": "^11.0.0",
     "@coast-team/mute-crypto": "^0.4.1",
     "@multiavatar/multiavatar": "^1.0.6",
     "@size-limit/file": "^7.0.5",

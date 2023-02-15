@@ -16,6 +16,8 @@ import { Doc } from '@app/core/Doc'
 import { Message } from './message_proto'
 import { PulsarService } from './pulsar.service'
 
+import { IdMap } from './idMap'
+
 @Injectable()
 export class NetworkService implements OnDestroy {
   public wg: WebGroup
@@ -26,7 +28,7 @@ export class NetworkService implements OnDestroy {
   private leaveSubject: Subject<number>
 
   // Network message subject
-  private messageSubject: Subject<{ streamId: StreamId; content: Uint8Array; senderId: number }>
+  private messageSubject: Subject<{ streamId: StreamId; content: Uint8Array; senderNetworkId: number }>
 
   // Peer Join/Leave subjects
   private memberJoinSubject: Subject<number>
@@ -35,6 +37,10 @@ export class NetworkService implements OnDestroy {
   // Connection state subject
   private stateSubject: BehaviorSubject<WebGroupState>
   private signalingSubject: BehaviorSubject<SignalingState>
+
+  // idMap for the peers
+  public idMap : IdMap
+  public tempNetworkId : number
 
   // Other
   private subs: Subscription[]
@@ -56,6 +62,9 @@ export class NetworkService implements OnDestroy {
     this.stateSubject = new BehaviorSubject(WebGroupState.LEFT)
     this.messageSubject = new Subject()
     this.leaveSubject = new Subject()
+
+    //Initialize the id map 
+    this.idMap = new IdMap()
 
     /*
      * We have NgZone imported in this module and injected its instance
@@ -98,7 +107,7 @@ export class NetworkService implements OnDestroy {
     return this.cryptoService.crypto.state
   }
 
-  get messageOut (): Observable<{ streamId: StreamId; content: Uint8Array; senderId: number }> {
+  get messageOut (): Observable<{ streamId: StreamId; content: Uint8Array; senderNetworkId: number }> {
     return this.messageSubject.asObservable()
   }
 
@@ -149,6 +158,7 @@ export class NetworkService implements OnDestroy {
   join (key: string) {
     this.wg.join(key)
 
+    /*
     this.route.data.subscribe(({ doc }: { doc: Doc }) => {
       // for the one who create the doc
       this._pulsarOn = doc.pulsar || this._pulsarOn
@@ -173,18 +183,18 @@ export class NetworkService implements OnDestroy {
             this.pulsarConnect(this.wg.id)
           }
         })
-    })
+    })*/
   }
 
   leave () {
     this.wg.leave()
   }
 
-  setMessageIn (source: Observable<{ streamId: StreamId; content: Uint8Array; recipientId?: number }>) {
-    this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientId }) => {
+  setMessageIn (source: Observable<{ streamId: StreamId; content: Uint8Array; recipientNetworkId?: number }>) {
+    this.subs[this.subs.length] = source.subscribe(({ streamId, content, recipientNetworkId }) => {
       if (streamId.type === MuteCoreStreams.DOCUMENT_CONTENT && environment.cryptography.type !== EncryptionType.NONE) {
         if (
-          !recipientId &&
+          !recipientNetworkId &&
           this._pulsarOn &&
           streamId.subtype !== StreamsSubtype.DOCUMENT_QUERY &&
           streamId.subtype !== StreamsSubtype.DOCUMENT_REPLY
@@ -195,13 +205,13 @@ export class NetworkService implements OnDestroy {
         this.cryptoService.crypto
           .encrypt(content)
           .then((encryptedContent) => {
-            this.send(streamId, encryptedContent, recipientId)
+            this.send(streamId, encryptedContent, recipientNetworkId)
           })
           .catch((err) => {})
       } else {
-        this.send(streamId, content, recipientId)
+        this.send(streamId, content, recipientNetworkId)
         if (
-          !recipientId &&
+          !recipientNetworkId &&
           this._pulsarOn &&
           streamId.subtype !== StreamsSubtype.METADATA_FIXDATA &&
           streamId.type !== Streams.COLLABORATORS &&
@@ -237,7 +247,7 @@ export class NetworkService implements OnDestroy {
         this.messageSubject.next({
           streamId: { type: messagePulsar.streamId, subtype: StreamsSubtype.METADATA_PULSAR },
           content: messagePulsar.content,
-          senderId: id,
+          senderNetworkId: id,
         })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
@@ -295,13 +305,13 @@ export class NetworkService implements OnDestroy {
     bd.onSend = (msg, streamId) => this.send({ type: streamId, subtype: StreamsSubtype.CRYPTO }, msg)
     // Handle network events
     this.wg.onMyId = (myId) => bd.setMyId(myId)
-    this.wg.onMemberJoin = (id) => {
-      bd.addMember(id)
-      this.memberJoinSubject.next(id)
+    this.wg.onMemberJoin = (networkId) => {
+      bd.addMember(networkId)
+      this.memberJoinSubject.next(networkId)
     }
-    this.wg.onMemberLeave = (id) => {
-      bd.removeMember(id)
-      this.memberLeaveSubject.next(id)
+    this.wg.onMemberLeave = (networkId) => {
+      bd.removeMember(networkId)
+      this.memberLeaveSubject.next(networkId)
     }
     this.wg.onStateChange = (state: WebGroupState) => {
       if (state === WebGroupState.JOINED) {
@@ -309,22 +319,22 @@ export class NetworkService implements OnDestroy {
       }
       this.stateSubject.next(state)
     }
-    this.wg.onMessage = (id, bytes: Uint8Array) => {
+    this.wg.onMessage = (networkId, bytes: Uint8Array) => {
       try {
         const { type, subtype, content } = Message.decode(bytes)
         if (type === MuteCryptoStreams.KEY_AGREEMENT_BD) {
-          this.cryptoService.onBDMessage(id, content)
+          this.cryptoService.onBDMessage(networkId, content)
         } else {
           if (type === MuteCoreStreams.DOCUMENT_CONTENT) {
             this.cryptoService.crypto
               .decrypt(content)
               .then((decryptedContent) => {
-                this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
+                this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderNetworkId: networkId })
               })
               .catch((err) => {})
             return
           }
-          this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
+          this.messageSubject.next({ streamId: { type, subtype }, content, senderNetworkId: networkId })
         }
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
@@ -345,23 +355,27 @@ export class NetworkService implements OnDestroy {
         })
     })
     // Handle network events
-    this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
-    this.wg.onMemberLeave = (id) => this.memberLeaveSubject.next(id)
+    this.wg.onMemberJoin = (networkId) => {
+      this.memberJoinSubject.next(networkId)
+    } 
+    this.wg.onMemberLeave = (networkId) => {
+      this.memberLeaveSubject.next(networkId)
+    }
     this.wg.onStateChange = (state: WebGroupState) => this.stateSubject.next(state)
 
-    this.wg.onMessage = (id, bytes: Uint8Array) => {
+    this.wg.onMessage = (networkId, bytes: Uint8Array) => {
       try {
         const { type, subtype, content } = Message.decode(bytes)
         if (type === MuteCoreStreams.DOCUMENT_CONTENT) {
           this.cryptoService.crypto
             .decrypt(content)
             .then((decryptedContent) => {
-              this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderId: id })
+              this.messageSubject.next({ streamId: { type, subtype }, content: decryptedContent, senderNetworkId: networkId })
             })
             .catch((err) => {})
           return
         }
-        this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
+        this.messageSubject.next({ streamId: { type, subtype }, content, senderNetworkId: networkId })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
       }
@@ -370,14 +384,14 @@ export class NetworkService implements OnDestroy {
 
   private configureNoEncryption() {
     // Handle network events
-    this.wg.onMemberJoin = (id) => this.memberJoinSubject.next(id)
-    this.wg.onMemberLeave = (id) => this.memberLeaveSubject.next(id)
+    this.wg.onMemberJoin = (networkId) => this.memberJoinSubject.next(networkId)
+    this.wg.onMemberLeave = (networkId) => this.memberLeaveSubject.next(networkId)
     this.wg.onStateChange = (state: WebGroupState) => this.stateSubject.next(state)
 
-    this.wg.onMessage = (id, bytes: Uint8Array) => {
+    this.wg.onMessage = (networkId, bytes: Uint8Array) => {
       try {
         const { type, subtype, content } = Message.decode(bytes)
-        this.messageSubject.next({ streamId: { type, subtype }, content, senderId: id })
+        this.messageSubject.next({ streamId: { type, subtype }, content, senderNetworkId: networkId })
       } catch (err) {
         log.warn('Message from network decode error: ', err.message)
       }
