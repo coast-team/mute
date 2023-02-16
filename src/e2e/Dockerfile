@@ -1,4 +1,4 @@
-FROM docker:23.0.1-dind-alpine3.17
+FROM docker:20.10.12-dind-alpine3.14
 
 WORKDIR /src
 COPY src/e2e/ ./e2e/
