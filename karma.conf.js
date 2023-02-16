@@ -2,7 +2,7 @@
 // https://karma-runner.github.io/0.13/config/configuration-file.html
 
 module.exports = function (config) {
-  config.set({
+  karmaConfig = {
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -10,6 +10,7 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
+      require('karma-junit-reporter'),
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
@@ -21,7 +22,8 @@ module.exports = function (config) {
       'text/x-typescript': ['ts', 'tsx'],
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'coverage'), reports: ['html', 'lcovonly'],
+      dir: require('path').join(__dirname, 'coverage'),
+      reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true,
     },
     angularCli: {
@@ -35,10 +37,23 @@ module.exports = function (config) {
     browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
     customLaunchers: {
       ChromeHeadlessCI: {
+        displayName: 'Chrome',
         base: 'ChromeHeadless',
+        // chrome cannot run in sandboxed mode inside a docker container unless it is run with
+        // escalated kernel privileges (e.g. docker run --cap-add=CAP_SYS_ADMIN)
         flags: ['--no-sandbox']
       }
     },
     singleRun: false,
-  })
+  }
+
+  if (process.env.CI) {
+    karmaConfig.reporters = ['progress', 'junit']
+    karmaConfig.junitReporter = {
+      outputFile: 'karma.xml',
+      useBrowserName: false,
+    }
+  }
+
+  config.set(karmaConfig)
 }

@@ -23,7 +23,6 @@
     "Yann Prono"
   ],
   "scripts": {
-    "ng": "ng",
     "prestart": "npm run sigver",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "docker-compose up -d --no-recreate sigver",
@@ -33,6 +32,7 @@
     "postinstall:default": "bash scripts/get-assets.sh && ngcc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "ng test",
+    "karma": "ng test --watch=false --browsers=ChromeHeadlessCI",
     "pree2e": "npm run sigver",
     "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js",
@@ -95,6 +95,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "karma-junit-reporter": "^2.0.1",
     "loglevel": "^1.6.7",
     "material-icons": "^0.5.3",
     "mute-structs": "^1.1.0",
@@ -119,6 +120,5 @@
   "engines": {
     "node": ">=10.13.0 <15"
   },
-  "angular-cli": {},
-  "dependencies": {}
+  "angular-cli": {}
 }

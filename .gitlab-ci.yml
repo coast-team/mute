@@ -3,9 +3,12 @@ stages:
   - build
   - deploy
 
-.task: &task
+.runner_inria: &runner_inria
   tags:
     - ci.inria.fr # required to run on shared gitlab.inria.fr runners
+.runner_rmutehost: &runner_mutehost
+  tags:
+    - mutehost # required to deploy
 
 .images: &images
   variables:
@@ -25,13 +28,38 @@ stages:
     - docker-compose pull --include-deps mute
     - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} up -d
 
+.js:
+  image: docker.io/node:14
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline --no-audit
+  <<: *runner_inria
+
 ###
 ## Test
 #
 
-.e2e:
-  image: docker.io/docker:dind
+karma:
   stage: test
+  extends: .js
+  image: docker.io/timbru31/node-chrome:14
+  except:
+    - schedules
+  script:
+    - npm run karma
+  artifacts:
+    reports:
+      junit:
+        - karma.xml
+
+.e2e:
+  stage: test
+  image: docker.io/docker:dind
   except:
     - schedules
   variables:
@@ -48,7 +76,7 @@ stages:
     - $RUN_MUTE_SIGVER
   script:
     - $RUN_TEST
-  <<: *task
+  <<: *runner_inria
 
 e2e full scenario: # whole E2E scenario
   extends: .e2e
@@ -92,26 +120,18 @@ e2e offline-to-online scenario: # the document at the end is a merge of their re
 
 build application:
   stage: build
-  image: docker.io/node:14-alpine
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
+  extends: .js
   script:
-    - npm ci .npm --prefer-offline
     - npm run build
   artifacts:
     paths:
       - "dist"
   when: manual
-  <<: *task
 
 .build-docker-image:
   image: docker.io/docker:dind # needs > 19.03
   stage: build
-  <<: [ *docker_registry_access, *task, *images ]
+  <<: [ *docker_registry_access, *runner_inria, *images ]
   script:
     - docker-compose build
     - docker push "${MUTE_IMAGE}"
@@ -137,11 +157,9 @@ build-release-docker-image:
 .deploy-to:
   image: docker.io/docker:dind # needs > 19.03
   stage: deploy
-  <<: [ *docker_registry_access, *docker_deployment ]
+  <<: [ *docker_registry_access, *docker_deployment, *runner_mutehost ]
   variables:
     COMPOSE_FILE: docker-compose.yml
-  tags:
-    - mutehost # nécessite un runner gitlab ci en mode shell sur la machine de déploiement
 
 deploy-to-production:
   extends: .deploy-to
