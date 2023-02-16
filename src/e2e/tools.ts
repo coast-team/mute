@@ -121,6 +121,7 @@ export class Tools{
         const failed = await runner
             .src(pathToFile)
             .browsers(browser)
+            .reporter('xunit', 'e2e.xml')
             .run({stopOnFirstFail : true})
         console.log('Tests failed: ' + failed);
         if (failed > 0){
