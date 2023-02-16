@@ -101,7 +101,7 @@
     "nanoid": "^3.1.20",
     "netflux": "^4.3.1",
     "ng-lint-staged": "^0.1.6",
-    "np2-ui-auth": "git+https://github.com/harmanpa/ng2-ui-auth.git#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
+    "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
     "pm2": "^5.0.0",
     "prettier": "^2.2.1",
     "protobufjs": "^6.8.8",
