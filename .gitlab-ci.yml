@@ -157,11 +157,15 @@ karma:
     NAME: ${CONTAINER}-${CI_PIPELINE_IID}
   script:
     - docker build -f $DOCKERFILE_PATH -t $IMAGE . # build image
-    - docker run --privileged -d --name $NAME $IMAGE # run image
-    - sleep 10
-    - docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
-    - docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
-    - docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
+    - | # block that deletes image on teardown
+      {
+        docker run --privileged -d --name $NAME $IMAGE
+        sleep 10
+        docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
+        docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
+        docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
+      }
+      docker rm -f $NAME || true
   artifacts:
     when: always
     reports:
@@ -211,24 +215,36 @@ e2e-offline-to-online: # the document at the end is a merge of their respective 
 .build-docker-image:
   image: docker.io/docker:dind # needs > 19.03
   stage: publish
-  <<: [ *docker_registry_access, *runner_inria, *images ]
+  <<: [ *docker_registry_access, *runner_workstation, *images ]
+  variables:
+    IMAGE: $MUTE_IMAGE
   script:
     - docker-compose build
-    - docker push "${MUTE_IMAGE}"
-    - docker push "${SIGVER_IMAGE}"
+    - docker push $IMAGE
 
 build-latest-docker-image:
   extends: .build-docker-image
   only:
     - main
+  except:
+    - schedules
 
 build-release-docker-image:
   extends: .build-docker-image
   rules:
     - if: $CI_COMMIT_TAG =~ /^v?(\d+(?:\.\d+)*)$/
       when: on_success
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
   variables:
     TAG: $CI_COMMIT_TAG
+
+build-sigver-docker-image:
+  extends: .build-docker-image
+  variables:
+    IMAGE: $SIGVER_IMAGE
+  rules:
+    - if: $SIGVER == "True" # meant to be triggered by schedule
 
 ### Stage
 ## Deployment
