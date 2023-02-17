@@ -1,4 +1,4 @@
-#Mute build
+# Mute build
 FROM docker.io/node:14-alpine AS builder
 
 WORKDIR /app
@@ -7,11 +7,11 @@ WORKDIR /app
 COPY . ./
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
-RUN npm ci
+RUN test -d node_modules || npm ci
 RUN npm run postinstall:default
 RUN npm run build
 
-#Launch Mute
+# Launch Mute
 FROM docker.io/nginx:alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"

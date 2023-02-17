@@ -9,6 +9,6 @@ RUN apk add firefox
 RUN apk add chromium
 
 WORKDIR /src/e2e
-RUN npm ci
+RUN test -d node_modules || npm ci
 
 WORKDIR /app/mute
