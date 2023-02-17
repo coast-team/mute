@@ -1,17 +1,15 @@
-# Mute build
+# Build Mute
 FROM docker.io/node:14-alpine AS builder
 
 WORKDIR /app
-# Copying only necessary files for the build. 
-#(.dockerignore file contains the files or folder to exclude from the COPY statement)
 COPY . ./
-RUN apk add --no-cache git
-RUN apk add --no-cache bash
-RUN test -d node_modules || npm ci
+RUN apk add git
+RUN apk add bash
+RUN test -d node_modules || (echo "no cached modules" && npm ci --no-audit)
 RUN npm run postinstall:default
 RUN npm run build
 
-# Launch Mute
+# Serve Mute
 FROM docker.io/nginx:alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"

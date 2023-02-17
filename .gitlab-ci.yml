@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: '$CI_MERGE_REQUEST_ID' # Run pipeline on Merge Requests
+    - if: '$CI_MERGE_REQUEST_IID' # Run pipeline on Merge Requests
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH' # Run pipeline on 'main' branch
 
 default:
@@ -70,14 +70,6 @@ stages:
         - src/assets/rsvp-2.0.4.min.js
       when: on_success
       policy: pull-push
-  script:
-    - |
-      if [  -f .cache_exists ]; then # npm ci --cache .npm --prefer-offline --no-audit
-        echo "cache already exists"
-      else
-        npm ci --cache .npm --prefer-offline --no-audit
-        echo > .cache_exists
-      fi
 
 .use_node_cache: &use_node_cache
   image: docker.io/node:14-alpine
@@ -92,23 +84,31 @@ stages:
       when: on_success
       policy: pull
   needs:
-    - job: install-dependencies [init]
+    - job: check-dependencies
       optional: true
-    - job: install-dependencies [update]
+    - job: change-dependencies
       optional: true
 
 ### Stage
 ## Build
 #
 
-install-dependencies [init]:
+check-dependencies: # runs once then quickly on lock stable
   stage: build
   <<: [*runner_workstation, *make_node_cache]
+  script:
+    - |
+      if [  -f .cache_exists ]; then # npm ci --cache .npm --prefer-offline --no-audit
+        echo "cache already exists"
+      else
+        npm ci --cache .npm --prefer-offline --no-audit
+        echo > .cache_exists
+      fi
   except:
     changes:
       - package-lock.json
 
-install-dependencies [update]:
+change-dependencies: # updates cache on lock change
   stage: build
   <<: [*runner_workstation, *make_node_cache]
   script:
@@ -148,25 +148,25 @@ karma:
 
 .e2e:
   stage: test
+  <<: [*runner_workstation, *use_node_cache]
   image: docker.io/docker:dind
   except:
     - schedules
   variables:
     DOCKERFILE_PATH: src/e2e/Dockerfile
+    NAME: ${CONTAINER}-${CI_PIPELINE_IID}
   script:
-    - docker build -f $DOCKERFILE_PATH -t $IMAGE --no-cache . # build image
-    - docker run --privileged -d --name $CONTAINER $IMAGE # run image
+    - docker build -f $DOCKERFILE_PATH -t $IMAGE . # build image
+    - docker run --privileged -d --name $NAME $IMAGE # run image
     - sleep 10
-    - docker exec -w /src/mute $CONTAINER /bin/sh start-mute-sigver-containers.sh # run sigver
-    - docker exec -w /src/e2e/ $CONTAINER npm run test chromium firefox $SCENARIO true # run test scenario
-    - docker cp $CONTAINER:/src/e2e/e2e.xml e2e.xml # copy report from container to host
+    - docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
+    - docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
+    - docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
   artifacts:
     when: always
     reports:
       junit:
         - e2e.xml
-  needs: []
-  <<: *runner_inria
 
 e2e-full: # whole E2E scenario
   extends: .e2e
@@ -175,7 +175,7 @@ e2e-full: # whole E2E scenario
     CONTAINER: ci-full-scenario-container
     SCENARIO: fullscenario
   after_script:
-    - docker stop $CONTAINER
+    - docker stop $NAME
   when: manual
 
 e2e-online: # two users meet up on the same document and modify its content
@@ -185,7 +185,7 @@ e2e-online: # two users meet up on the same document and modify its content
     CONTAINER: ci-online-scenario-container
     SCENARIO: online
   after_script:
-    - docker stop $CONTAINER
+    - docker stop $NAME
 
 e2e-offline: # two previously met users are disconnected from the signaling server but can still both modify the document
   extends: .e2e
@@ -194,7 +194,7 @@ e2e-offline: # two previously met users are disconnected from the signaling serv
     CONTAINER: ci-offline-scenario-container
     SCENARIO: offline
   after_script:
-    - docker stop $CONTAINER
+    - docker stop $NAME
 
 e2e-offline-to-online: # the document at the end is a merge of their respective modifications
   extends: .e2e
