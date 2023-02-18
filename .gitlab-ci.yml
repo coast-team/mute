@@ -136,8 +136,8 @@ karma:
   stage: test
   <<: [*runner_workstation, *use_node_cache]
   image: docker.io/timbru31/node-chrome:14
-  except:
-    - schedules
+  only:
+    - merge_requests
   script:
     - npm run karma
   artifacts:
@@ -150,8 +150,8 @@ karma:
   stage: test
   <<: [*runner_workstation, *use_node_cache]
   image: docker.io/docker:dind
-  except:
-    - schedules
+  only:
+    - merge_requests
   variables:
     DOCKERFILE_PATH: src/e2e/Dockerfile
     NAME: ${CONTAINER}-${CI_PIPELINE_IID}
@@ -216,11 +216,9 @@ e2e-offline-to-online: # the document at the end is a merge of their respective 
   image: docker.io/docker:dind # needs > 19.03
   stage: publish
   <<: [ *docker_registry_access, *runner_workstation, *images ]
-  variables:
-    IMAGE: $MUTE_IMAGE
   script:
-    - docker-compose build
-    - docker push $IMAGE
+    - docker-compose build mute
+    - docker push "${MUTE_IMAGE}"
 
 build-latest-docker-image:
   extends: .build-docker-image
@@ -241,8 +239,9 @@ build-release-docker-image:
 
 build-sigver-docker-image:
   extends: .build-docker-image
-  variables:
-    IMAGE: $SIGVER_IMAGE
+  script:
+    - docker-compose build sigver
+    - docker push "${SIGVER_IMAGE}"
   rules:
     - if: $SIGVER == "True" # meant to be triggered by schedule
 
