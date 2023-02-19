@@ -1,3 +1,6 @@
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 workflow:
   rules:
     - if: '$CI_MERGE_REQUEST_IID' # Run pipeline on Merge Requests
@@ -84,16 +87,16 @@ stages:
       when: on_success
       policy: pull
   needs:
-    - job: check-dependencies
+    - job: check_dependencies
       optional: true
-    - job: change-dependencies
+    - job: change_dependencies
       optional: true
 
 ### Stage
 ## Build
 #
 
-check-dependencies: # runs once then quickly on lock stable
+check_dependencies: # runs once then quickly on lock stable
   stage: build
   <<: [*runner_workstation, *make_node_cache]
   script:
@@ -108,7 +111,7 @@ check-dependencies: # runs once then quickly on lock stable
     changes:
       - package-lock.json
 
-change-dependencies: # updates cache on lock change
+change_dependencies: # updates cache on lock change
   stage: build
   <<: [*runner_workstation, *make_node_cache]
   script:
@@ -118,7 +121,7 @@ change-dependencies: # updates cache on lock change
     changes:
       - package-lock.json
 
-build-application:
+build_application:
   stage: build
   <<: [*runner_workstation, *use_node_cache]
   script:
@@ -127,6 +130,16 @@ build-application:
     paths:
       - dist/
   when: manual
+
+### Stage
+## Lint
+#
+
+code_quality:
+  artifacts:
+    paths:
+      - gl-code-quality-report.json
+  <<: [*runner_inria]
 
 ### Stage
 ## Test
@@ -172,7 +185,7 @@ karma:
       junit:
         - e2e.xml
 
-e2e-full: # whole E2E scenario
+e2e_full: # whole E2E scenario
   extends: .e2e
   variables:
     IMAGE: ci-full-scenario
@@ -182,7 +195,7 @@ e2e-full: # whole E2E scenario
     - docker stop $NAME
   when: manual
 
-e2e-online: # two users meet up on the same document and modify its content
+e2e_online: # two users meet up on the same document and modify its content
   extends: .e2e
   variables: 
     IMAGE: ci-online-scenario
@@ -191,7 +204,7 @@ e2e-online: # two users meet up on the same document and modify its content
   after_script:
     - docker stop $NAME
 
-e2e-offline: # two previously met users are disconnected from the signaling server but can still both modify the document
+e2e_offline: # two previously met users are disconnected from the signaling server but can still both modify the document
   extends: .e2e
   variables:
     IMAGE: ci-offline-scenario
@@ -200,7 +213,7 @@ e2e-offline: # two previously met users are disconnected from the signaling serv
   after_script:
     - docker stop $NAME
 
-e2e-offline-to-online: # the document at the end is a merge of their respective modifications
+e2e_offline-to-online: # the document at the end is a merge of their respective modifications
   extends: .e2e
   variables:
     IMAGE: ci-offline-to-online-scenario
@@ -212,7 +225,7 @@ e2e-offline-to-online: # the document at the end is a merge of their respective 
 ## Publish
 #
 
-.build-docker-image:
+.build_docker_image:
   image: docker.io/docker:dind # needs > 19.03
   stage: publish
   <<: [ *docker_registry_access, *runner_workstation, *images ]
@@ -220,15 +233,15 @@ e2e-offline-to-online: # the document at the end is a merge of their respective 
     - docker-compose build mute
     - docker push "${MUTE_IMAGE}"
 
-build-latest-docker-image:
-  extends: .build-docker-image
+build_latest_docker_image:
+  extends: .build_docker_image
   only:
     - main
   except:
     - schedules
 
-build-release-docker-image:
-  extends: .build-docker-image
+build_release_docker_image:
+  extends: .build_docker_image
   rules:
     - if: $CI_COMMIT_TAG =~ /^v?(\d+(?:\.\d+)*)$/
       when: on_success
@@ -237,8 +250,8 @@ build-release-docker-image:
   variables:
     TAG: $CI_COMMIT_TAG
 
-build-sigver-docker-image:
-  extends: .build-docker-image
+build_sigver_docker_image:
+  extends: .build_docker_image
   script:
     - docker-compose build sigver
     - docker push "${SIGVER_IMAGE}"
@@ -249,17 +262,17 @@ build-sigver-docker-image:
 ## Deployment
 #
 
-.deploy-to:
+.deploy_to:
   image: docker.io/docker:dind # needs > 19.03
   stage: deploy
   <<: [ *docker_registry_access, *docker_deployment, *runner_mutehost ]
   variables:
     COMPOSE_FILE: docker-compose.yml
 
-deploy-to-production:
-  extends: .deploy-to
+deploy_to_production:
+  extends: .deploy_to
   needs:
-    - job: build-release-docker-image
+    - job: build_release_docker_image
   rules:
     - if: $CI_COMMIT_TAG =~ /^v?(\d+(?:\.\d+)*)$/ && $CI_DEPLOY_FREEZE == null
       when: on_success
@@ -272,10 +285,10 @@ deploy-to-production:
     url: https://mutehost.loria.fr
   resource_group: production
 
-deploy-to-test:
-  extends: .deploy-to
+deploy_to_test:
+  extends: .deploy_to
   needs:
-    - job: build-latest-docker-image
+    - job: build_latest_docker_image
   only:
     - main
   variables:
