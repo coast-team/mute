@@ -8,6 +8,8 @@ Edit documents collaboratively in real-time with hundreds of users on the same d
 
 [stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](https://libp2p.io/) instead of [netflux](https://github.com/coast-team/netflux))
 
+![](https://gitlab.inria.fr/coast-team/mute/mute/uploads/b2363cb860a073fc277b9b62f2bc4bae/mute.jpeg){width=75%}
+
 ## :package: Deployment
 
 MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires at least a server for the initial discovery and signaling phase. A complete MUTE instance relies on the following services:
