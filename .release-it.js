@@ -4,7 +4,7 @@ module.exports = {
   },
   "git": {
     "tagName": "v${version}",
-    "tagAnnotation": "v${version}",
+    "tagAnnotation": "chore(release): ${version}",
     "commitMessage": "chore(release): ${version}",
     "changelog": false,
     "requireBranch": "main"
