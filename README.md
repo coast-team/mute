@@ -6,9 +6,12 @@
 
 Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: [LogootSplit](https://github.com/coast-team/mute-structs#ref-1). This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
 
-[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](https://libp2p.io/) instead of [netflux](https://github.com/coast-team/netflux))
+<div align="center"> <!-- extra line is important for proper markdown evaluation-->
 
 ![](https://gitlab.inria.fr/coast-team/mute/mute/uploads/b2363cb860a073fc277b9b62f2bc4bae/mute.jpeg){width=75%}
+
+[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](https://libp2p.io/) instead of [netflux](https://github.com/coast-team/netflux))
+</div>
 
 ## :package: Deployment
 
