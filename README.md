@@ -37,9 +37,9 @@ In our experience, performance drops significantly after reaching tens of users 
 
 MUTE relies on other libraries we develop, which you can reuse in your projects:
 
-- [@coast-team/mute-core](https://github.com/coast-team/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
-- [@coast-team/mute-structs](https://github.com/coast-team/mute-structs): an implementation of the [LogootSplit](https://github.com/coast-team/mute-structs#ref-1) CRDT algorithm
-- [@coast-team/mute-crypto](https://github.com/coast-team/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://github.com/coast-team/mute-crypto)
+- [@coast-team/mute-core](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
+- [@coast-team/mute-structs](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs): an implementation of the [LogootSplit](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs#ref-1) CRDT algorithm
+- [@coast-team/mute-crypto](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto)
 - [@coast-team/mute-auth-proxy](https://github.com/coast-team/mute-auth-proxy): assign public/private key pairs to autenticated users, for later use in mute-crypto
 
 MUTE also has a pluggable system of services called *Bots*. They can act like peers in documents to provide
@@ -58,7 +58,7 @@ One of the best ways to contribute to MUTE is to help these libraries!
 
 ## License
 
-Copyright (C) 2016-2022 [COAST](https://team.inria.fr/coast)
+Copyright (C) 2016-2023 [COAST](https://team.inria.fr/coast)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
