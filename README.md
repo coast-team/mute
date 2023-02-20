@@ -6,18 +6,11 @@
 
 Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: [LogootSplit](https://github.com/coast-team/mute-structs#ref-1). This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
 
-You can either:
-
-- check our [live demo](mutehost.loria.fr)
-- or run MUTE on your machine via `npm start` and then access it on [localhost:4200](http://localhost:4200)
+[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](https://libp2p.io/) instead of [netflux](https://github.com/coast-team/netflux))
 
 ## :package: Deployment
 
 MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires at least a server for the initial discovery and signaling phase. A complete MUTE instance relies on the following services:
-
-- web server of your choice serving the MUTE static files over HTTPS
-- [SigVer](https://github.com/coast-team/sigver) signaling server
-- (in WebRTC-unfriendly networks) [Pulsar](https://github.com/apache/pulsar) server *NOT AVAILABLE YET*
 
 Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Deployment).
 
@@ -25,9 +18,9 @@ Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/m
 
 Run `npm install` and start the build/serve watchdog with `npm start`. The application is now available at [localhost:4200](http://localhost:4200) with the signaling server running at [localhost:8010](http://localhost:8010).)
 
-## :bar_chart: Benchmark
+Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Development).
 
-> NOTE: more automated/replicable benchmarks will be added in the future
+## :bar_chart: Benchmark
 
 Compared to existing web-based collaborative text editing tools, MUTE does not require a powerful central server since the server is not performing any computation. You can even work offline and reconnect later without losing your changes.
 
