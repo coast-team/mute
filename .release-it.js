@@ -13,13 +13,13 @@ module.exports = {
     "release": true,
     "draft": true,
     "releaseName": "v${version}",
-    "assets": ["dist/*.tar.xz", "dist/*.asc"]
+    "assets": ["releases/*.tar.xz", "releases/*.asc"]
   },
   "gitlab": {
     "release": true,
     "draft": true,
     "releaseName": "v${version}",
-    "assets": ["dist/*.tar.xz", "dist/*.asc"]
+    "assets": ["releases/*.tar.xz", "releases/*.asc"]
   },
   "hooks": {
     "before:bump": "scripts/bump.sh ${version}",
