@@ -4,7 +4,7 @@
 
 # MUTE: Multi User Text Editor
 
-Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm for large scale peer-to-peer collaboration: [LogootSplit](https://github.com/coast-team/mute-structs#ref-1). This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
+Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm ([LogootSplit](#hammer_and_wrench-architecture)) for large scale peer-to-peer collaboration on top of a peer-to-peer message layer (netflux and soon libp2p).
 
 <div align="center"> <!-- extra line is important for proper markdown evaluation-->
 
@@ -17,26 +17,26 @@ Edit documents collaboratively in real-time with hundreds of users on the same d
 
 MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires at least a server for the initial discovery and signaling phase. A complete MUTE instance relies on the following services:
 
-Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Deployment).
+Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Deployment)
 
 ## :book: Development
 
-Run `npm install` and start the build/serve watchdog with `npm start`. The application is now available at [localhost:4200](http://localhost:4200) with the signaling server running at [localhost:8010](http://localhost:8010).)
+Run `npm install` then `npm start`. The application is now available at [localhost:4200](http://localhost:4200), the signaling server at [localhost:8010](http://localhost:8010).
 
-Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Development).
+Read more in our [development documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Development)
 
 ## :bar_chart: Benchmark
 
 Compared to existing web-based collaborative text editing tools, MUTE does not require a powerful central server since the server is not performing any computation. You can even work offline and reconnect later without losing your changes.
 
-In our experience, performance drops significantly after reaching tens of users on a document on centralized platforms. MUTE doesn't process changes server-side, allowing much larger groups to collaboratively edit a document.
+While centralized alternatives suffer significant performance drops after reaching tens of users on a document, MUTE remains unfazed. This is due to its architecture: MUTE doesn't process changes server-side, allowing much larger groups to collaboratively edit a document.
 
 ## :hammer_and_wrench: Architecture
 
-MUTE relies on other libraries we develop, which you can reuse in your projects:
+MUTE relies on reusable libraries we develop:
 
 - [@coast-team/mute-core](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
-- [@coast-team/mute-structs](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs): an implementation of the [LogootSplit](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs#ref-1) CRDT algorithm
+- [@coast-team/mute-structs](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs): an implementation of the [LogootSplit](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs#ref-1) CRDT algorithm. This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
 - [@coast-team/mute-crypto](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto)
 - [@coast-team/mute-auth-proxy](https://github.com/coast-team/mute-auth-proxy): assign public/private key pairs to autenticated users, for later use in mute-crypto
 
@@ -50,9 +50,10 @@ MUTE exchanges messages by default over WebRTC via:
 - [netflux](https://github.com/coast-team/netflux): peer-to-peer browser communication layer
 - [sigver](https://github.com/coast-team/sigver): signaling for WebRTC
 
-In the future, any communication layer could be used, like [Pulsar](https://github.com/apache/pulsar) which we support already for increased reliability!
+We plan to improve messages exchange via:
 
-One of the best ways to contribute to MUTE is to help these libraries!
+- [pulsar](https://github.com/apache/pulsar) for increased reliability in networks banning WebRTC
+- [libp2p](https://libp2p.io) for a more modern peer-to-peer browser communication layer
 
 ## License
 
