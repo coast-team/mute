@@ -3,9 +3,11 @@ module.exports = {
     "publish": false
   },
   "git": {
+    "tagName": "v${version}",
     "tagAnnotation": "v${version}",
     "commitMessage": "chore(release): ${version}",
-    "changelog": false
+    "changelog": false,
+    "requireBranch": "main"
   },
   "github": {
     "release": true,

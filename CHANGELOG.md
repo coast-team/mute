@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.13.0"></a>
+# [0.13.0](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.12.2...v0.12.3) (2023-02-20)
+
+### Update
+
+* Angular update from v11 to v13
+
+### Features
+
+* GitLab CI/CD
+* full e2e/karma harness
+
+<a name="0.12.2"></a>
+## [0.12.2](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.12.1...v0.12.2) (2021-03-02)
+
+Move from GitHub to GitLab (self-hosted instance by INRIA) and code modernisation (update of Angular from v8 to v11)
+
 <a name="0.12.1"></a>
 ## [0.12.1](https://github.com/coast-team/mute/compare/v0.12.0...v0.12.1) (2018-12-14)
 
