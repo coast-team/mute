@@ -27,14 +27,13 @@
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "docker-compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
+    "build:stats": "ng build --stats-json",
     "postinstall": "run-script-os",
     "postinstall:win32": "cd scripts && get-assets.bat",
     "postinstall:default": "bash scripts/get-assets.sh && ngcc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "test": "ng test",
     "karma": "ng test --watch=false --browsers=ChromeHeadlessCI",
-    "pree2e": "npm run sigver",
-    "e2e": "ng e2e",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js"
   },
   "devDependencies": {
