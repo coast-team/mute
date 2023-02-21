@@ -4,24 +4,28 @@
 
 # MUTE: Multi User Text Editor
 
-Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm ([LogootSplit](#hammer_and_wrench-architecture)) for large scale peer-to-peer collaboration on top of a peer-to-peer message layer (netflux and soon libp2p).
+Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm ([LogootSplit](#hammer_and_wrench-architecture)) for large scale peer-to-peer collaboration on top of a peer-to-peer message layer ([netflux](#hammer_and_wrench-architecture) and soon [libp2p](#hammer_and_wrench-architecture)).
 
 <div align="center"> <!-- extra line is important for proper markdown evaluation-->
+<a href="https://gitlab.inria.fr/coast-team/mute/mute">
 
 ![](https://gitlab.inria.fr/coast-team/mute/mute/uploads/b2363cb860a073fc277b9b62f2bc4bae/mute.jpeg){width=75%}
+</a>
 
-[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](https://libp2p.io/) instead of [netflux](https://github.com/coast-team/netflux))
+[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](#hammer_and_wrench-architecture) instead of [netflux](#hammer_and_wrench-architecture))
 </div>
 
 ## :package: Deployment
 
-MUTE runs in the browser, which means that modifications are sent directly to your peers without any intermediary server. However the peer-to-peer technology requires at least a server for the initial discovery and signaling phase. A complete MUTE instance relies on the following services:
+MUTE is browser-based, without any intermediary between you and your peers. However the peer-to-peer initial discovery and signaling requires at least a (lightweight) server.
 
 Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Deployment)
 
 ## :book: Development
 
 Run `npm install` then `npm start`. The application is now available at [localhost:4200](http://localhost:4200), the signaling server at [localhost:8010](http://localhost:8010).
+
+Development happens on the INRIA GitLab repository, but external contributions are very welcome on the [GitHub mirror](https://github.com/coast-team/mute/) we maintain.
 
 Read more in our [development documentation](https://gitlab.inria.fr/coast-team/mute/mute/-/wikis/Development)
 
@@ -48,12 +52,12 @@ services:
 MUTE exchanges messages by default over WebRTC via:
 
 - [netflux](https://github.com/coast-team/netflux): peer-to-peer browser communication layer
-- [sigver](https://github.com/coast-team/sigver): signaling for WebRTC
+- [@coast-team/sigver](https://github.com/coast-team/sigver): signaling for WebRTC
 
 We plan to improve messages exchange via:
 
+- [libp2p](https://libp2p.io) for a more modern peer-to-peer browser communication layers
 - [pulsar](https://github.com/apache/pulsar) for increased reliability in networks banning WebRTC
-- [libp2p](https://libp2p.io) for a more modern peer-to-peer browser communication layer
 
 ## License
 
