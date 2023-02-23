@@ -1,7 +1,6 @@
 version: '3.9'
 
 services:
-
   mute:
     image: ${MUTE_IMAGE:-registry.gitlab.inria.fr/coast-team/mute/mute}
     build:
@@ -19,21 +18,3 @@ services:
       dockerfile: DockerfileSigver
     ports:
       - ${SIGVER_PORT:-8010}:8010
-
-  pulsar:
-    profiles:
-      - pulsar
-    image: docker.io/apachepulsar/pulsar:2.6.0
-    ports:
-      - ${PULSAR_WEB_PORT:-8080}:8080
-      - ${PULSAR_PORT:-6650}:6650
-    environment:
-      PULSAR_MEM: " -Xms512m -Xmx512m -XX:MaxDirectMemorySize=1g"
-    volumes:
-      - pulsardata:/pulsar/data
-      - pulsarconf:/pulsar/conf
-    command: bin/pulsar standalone
-
-volumes:
-  pulsardata:
-  pulsarconf:
