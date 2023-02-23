@@ -1,5 +1,4 @@
 export * from './Database'
 export * from './Pulsar'
-export * from './RabbitMq'
 export * from './IndexdbDatabase'
 export * from './logs.service'

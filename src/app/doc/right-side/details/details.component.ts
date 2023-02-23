@@ -81,11 +81,8 @@ export class DetailsComponent implements OnInit {
 
     this.logsTooltip =
       'By activating this button, you agree to share all the operations performed on the document.\n' +
-      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.\n'
-    if (environment.logSystem.anonimyze) {
-      this.logsTooltip += 'This content is anonymous, that is, it is replaced by random characters before being stored.\n'
-    }
-    this.logsTooltip += 'These logs will allow the realization of experimentation on the collaboration sessions.\n'
+      'The collected data is the information about the operations of the collaboration, which contains the contents of the document.\n' +
+      'These logs will allow the realization of experimentation on the collaboration sessions.\n'
 
     this.wsStateInfoToolTip = 'Blue: Connecting\r\nGreen: Open\r\nYellow:Closing\r\nRed: Closed'
   }

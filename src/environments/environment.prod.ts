@@ -1,6 +1,5 @@
 import { IEnvironment } from './IEnvironment.model'
 import { defaultEnvironment } from './default'
-import { LogLevel } from 'netflux'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
 const host = 'localhost' // FIXME: interpolation at build time required

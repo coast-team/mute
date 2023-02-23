@@ -83,7 +83,8 @@ export class DocService implements OnDestroy {
     this.zone.runOutsideAngular(() => {
       this.newSub = this.route.data.subscribe(({ doc }: { doc: Doc }) => {
         this.doc = doc
-        // Handle bot storage if exist
+
+        // BEGIN: Handle bot storage if exists
         this.newSub = this.collabs.onUpdate.subscribe((collab: ICollaborator) => {
           if (collab.login === this.botStorage.login) {
             if (this.doc.remotes.length === 0) {
@@ -97,11 +98,14 @@ export class DocService implements OnDestroy {
             this.network.inviteBot(this.botStorage.wsURL)
           }
         })
-
         this.newSub = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
+        // END: Handle bot storage if exists
       })
     })
-    this.logs.setStreamLogsPulsar(this.network.pulsarService)
+
+    if (environment.pulsar) {
+      this.logs.setStreamLogsPulsar(this.network.pulsarService)
+    }
   }
 
   async joinSession() {
@@ -263,7 +267,7 @@ export class DocService implements OnDestroy {
    * 
    */
   handleCollaboratorJoining(){
-    let self = this
+    const self = this
     this.network.onMemberJoin.subscribe((networkId) => {
       self.network.tempNetworkId = networkId
     })

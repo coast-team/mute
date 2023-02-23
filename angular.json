@@ -38,8 +38,7 @@
             "allowedCommonJsDependencies": [
               "codemirror/mode/javascript/javascript",
               "codemirror/mode/gfm/gfm",
-              "@toast-ui/editor",
-              "@stomp/rx-stomp"
+              "@toast-ui/editor"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

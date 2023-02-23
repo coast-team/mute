@@ -12,7 +12,6 @@ import { SendIfActivateLogsStrategy } from './SendIfActivateLogsStrategy'
 @Injectable()
 export class LogsService implements OnDestroy {
   private subs: Subscription[]
-
   private docKey: string
   private displayLogs: boolean
   private strategy: LogsStrategy
@@ -31,6 +30,10 @@ export class LogsService implements OnDestroy {
     )
   }
 
+  get isSharingLogs(): boolean {
+    return this.shareLogs
+  }
+
   setStreamLogsPulsar(pulsarService: PulsarService) {
     this.strategy.setStreamLogsPulsar(pulsarService)
   }
@@ -47,11 +50,14 @@ export class LogsService implements OnDestroy {
       })
       obj['context'] = tab
     }
-    if (environment.logSystem.anonimyze) {
-      this.strategy.sendLogs(this.anonymize(obj), this.shareLogs)
-    } else {
-      this.strategy.sendLogs(obj, this.shareLogs)
+    if (environment.pulsar !== undefined){
+      if (environment.pulsar.anonymize) {
+        this.strategy.sendLogs(this.anonymize(obj), this.shareLogs)
+      } else {
+        this.strategy.sendLogs(obj, this.shareLogs)
+      }
     }
+    
   }
 
   anonymize(obj: object): object {
@@ -78,9 +84,7 @@ export class LogsService implements OnDestroy {
       const tab: object[] = anonymObj['textOperation']
       let cpt = 0
       tab
-        .sort((a, b) => {
-          return a['position'] - b['position']
-        })
+        .sort((a, b) => a['position'] - b['position'])
         .forEach((value) => {
           const l = value['content'].length
           value['content'] = anonymContent.substr(cpt, l)
@@ -90,19 +94,8 @@ export class LogsService implements OnDestroy {
     return anonymObj
   }
 
-  private randomizeChar(c: string): string {
-    const character = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,?;.:/!%*$&()[]_-<>'
-    const min = 0
-    const max = character.length - 1
-    return character.charAt(Math.floor(Math.random() * (max - min + 1)) + min)
-  }
-
   getLogs(): Promise<object[]> {
     return this.strategy.getLocalLogs()
-  }
-
-  public setDisplayLogs(display: boolean) {
-    this.displayLogs = display
   }
 
   setShareLogs(share: boolean, state: Map<number, number>): void {
@@ -110,10 +103,6 @@ export class LogsService implements OnDestroy {
       this.shareLogs = share
       this.strategy.setShareLogs(share, state)
     }
-  }
-
-  get isSharingLogs(): boolean {
-    return this.shareLogs
   }
 
   setLogsStrategy(logsStrategy: string): void {
@@ -136,5 +125,16 @@ export class LogsService implements OnDestroy {
 
   ngOnDestroy() {
     this.subs.forEach((s) => s.unsubscribe())
+  }
+
+  public setDisplayLogs(display: boolean) {
+    this.displayLogs = display
+  }
+
+  private randomizeChar(c: string): string {
+    const character = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,?;.:/!%*$&()[]_-<>'
+    const min = 0
+    const max = character.length - 1
+    return character.charAt(Math.floor(Math.random() * (max - min + 1)) + min)
   }
 }
