@@ -45,15 +45,5 @@ export const defaultEnvironment: IEnvironment = {
     // keyserver: {
     //   urlPrefix: 'http://localhost:4000/public-key',
     // },
-  },
-
-  logSystem: {
-    logCollectorUrl: 'ws://localhost:24000/ws', // 'wss://logs.dev.coedit.re',
-    stompjsDebugLog: false,
-    anonimyze: true,
-  },
-
-  pulsar: {
-    wsURL: 'ws://localhost:8080/ws/v2',
   }
 }
