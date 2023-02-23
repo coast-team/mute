@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
+import { IEnvironment } from '@environments/IEnvironment.model'
 import { environment } from '@environments/environment'
 import { appData } from '../../../app-data'
 import { Folder } from '../../core/Folder'
@@ -44,12 +45,11 @@ export class NavComponent implements OnDestroy {
   public usage: number
 
   public version: string
-  public isProd: boolean
   public isStandalone: boolean
+  
+  public environment = environment
 
   private subs: Subscription[]
-
-  public _pulsarOn: boolean
 
   constructor(
     private router: Router,
@@ -61,7 +61,6 @@ export class NavComponent implements OnDestroy {
     public ui: UiService
   ) {
     this.isStandalone = window.matchMedia('(display-mode: standalone)').matches
-    this.isProd = environment.production
     this.version = appData.version
     this.local = localStorage.local
     this.trash = localStorage.trash
@@ -111,10 +110,6 @@ export class NavComponent implements OnDestroy {
 
   ngOnDestroy () {
     this.subs.forEach((sub) => sub.unsubscribe())
-  }
-
-  get pulsarOn () {
-    return this._pulsarOn
   }
 
   createDoc (remotely = false) {

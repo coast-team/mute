@@ -56,6 +56,7 @@ export class DetailsComponent implements OnInit {
   public wsStateInfoToolTip: string
   public pulsarWsStateArray: string[] = ['', '', '', '']
   public pulsarWsLogsStateArray: string[] = ['', '']
+  public environment = environment
 
   constructor (
     private cd: ChangeDetectorRef,

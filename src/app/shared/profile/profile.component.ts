@@ -8,6 +8,7 @@ import { Profile } from '../../core/settings/Profile'
 import { SettingsService } from '../../core/settings'
 import { UiService } from '../../core/ui'
 import { ConfigDialogComponent } from '../dialogs'
+import { environment } from '@environments/environment'
 
 @Component({
   selector: 'mute-profile',
@@ -23,10 +24,12 @@ import { ConfigDialogComponent } from '../dialogs'
   ],
 })
 export class ProfileComponent implements OnDestroy {
-  private subs: Subscription[]
-
   public profile: Profile
   public cardState: string
+  
+  public environment = environment
+
+  private subs: Subscription[]
 
   constructor(
     private snackBar: MatSnackBar,

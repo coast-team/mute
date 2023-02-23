@@ -30,7 +30,10 @@ export class SettingsService {
   private profileChangeSub: Subscription
   private isDBAvailable: boolean
 
-  constructor(rendererFactory: RendererFactory2, private auth: AuthService) {
+  constructor(
+    rendererFactory: RendererFactory2,
+    private auth: AuthService
+  ) {
     this.renderer = rendererFactory.createRenderer(null, null)
     this.changeSubject = new Subject()
     this.theme = 'default'

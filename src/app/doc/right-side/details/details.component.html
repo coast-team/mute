@@ -21,60 +21,66 @@
       <span class="mat-body-2">Yes</span></div>
   </div>
 
-  <div class="doc-block">
-    <div fxLayoutAlign="start center">
-      <span class="mat-caption title">Share logs</span>
-      <span class="mat-body-2">
-        <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
-      </span>
-      <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
-    </div>
-  </div>
-  <br>
-  <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div id="pulsarWsBlock">
-      <div class="pulsarWs">
-        <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
-        <span class="spaceIconText">Logs Producer</span>
+  <ng-template *ngIf="environment.pulsar">
+    <!-- checkbox to share logs for experimentation (opt-in for explicit consent) -->
+    <div class="doc-block">
+      <div fxLayoutAlign="start center">
+        <span class="mat-caption title">Share logs</span>
+        <span class="mat-body-2">
+          <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
+        </span>
+        <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
       </div>
     </div>
-  </mat-expansion-panel>
-
-  <br>
-
-  <div class="doc-block">
-    <div fxLayoutAlign="start center">
-      <span class="mat-caption title">Pulsar</span>
-      <span class="mat-body-2">
-        <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
-      </span>
-    </div>
     <br>
-    <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
+
+    <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-icon >connect_without_contact</mat-icon> <span class="spaceIconText">Websockets state</span> 
+          <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div id="pulsarWsBlock">
         <div class="pulsarWs">
-          <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">arrow_upward</mat-icon> <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">arrow_downward</mat-icon>
-          <span class="spaceIconText">Title</span>
-        </div>
-
-        <div class="pulsarWs">
-          <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">arrow_upward</mat-icon><mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">arrow_downward</mat-icon>
-          <span class="spaceIconText">Doc-content</span>
+          <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
+          <span class="spaceIconText">Logs Producer</span>
         </div>
       </div>
     </mat-expansion-panel>
-  </div>
 
+    <br>
+
+    <!-- enable pulsar on this document -->
+    <div class="doc-block">
+      <div fxLayoutAlign="start center">
+        <span class="mat-caption title">Pulsar</span>
+        <span class="mat-body-2">
+          <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
+        </span>
+      </div>
+      <br>
+      <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon >connect_without_contact</mat-icon> <span class="spaceIconText">Websockets state</span> 
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div id="pulsarWsBlock">
+          <div class="pulsarWs">
+            <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">arrow_upward</mat-icon> <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">arrow_downward</mat-icon>
+            <span class="spaceIconText">Title</span>
+          </div>
+
+          <div class="pulsarWs">
+            <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">arrow_upward</mat-icon><mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">arrow_downward</mat-icon>
+            <span class="spaceIconText">Doc-content</span>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </div>
+  </ng-template>
+
+  <!-- list of collaborators -->
   <div class="chips-block">
     <div fxLayout="row wrap" fxLayoutAlign="start start" class="chips">
       <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard()" class="chip mat-elevation-z2"

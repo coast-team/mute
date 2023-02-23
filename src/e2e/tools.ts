@@ -81,8 +81,8 @@ export class Tools{
         const runningInAContainerEnv = process.argv[5]
         if (runningInAContainerEnv === 'true') { // If we are in a container environment
             commandFullLine = 'docker ' + option + ' sigver'
-        } else { //If we are in a local environment (with docker-compose running)
-            commandFullLine = 'cd ../../ && docker-compose ' + option + ' sigver' 
+        } else { //If we are in a local environment (with docker compose running)
+            commandFullLine = 'cd ../../ && docker compose ' + option + ' sigver' 
         }
         exec(commandFullLine, (err, stdout, stdrr) => {
             /* Uncomment if there is an error during execution of a test
