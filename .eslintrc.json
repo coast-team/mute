@@ -1,6 +1,5 @@
 {
   "root": true,
-
   "ignorePatterns": ["projects/**/*", "src/assets/*", "dist/*"],
   "overrides": [
     {
@@ -67,11 +66,11 @@
         "no-underscore-dangle": "warn",
         "jsdoc/newline-after-description": "off",
         "prefer-arrow/prefer-arrow-functions": "warn",
-        "@angular-eslint/component-selector": "warn",
+        "@angular-eslint/component-selector": "off",
         "@angular-eslint/directive-selector": "warn",
         "@angular-eslint/contextual-lifecycle": "warn",
         "@typescript-eslint/member-ordering": "warn",
-        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/naming-convention": "off",
         "arrow-body-style": "warn",
         "quote-props": "off",
         "react/jsx-curly-spacing": "off",
@@ -93,5 +92,6 @@
       "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {}
     }
-  ]
+  ],
+  "extends": ["prettier"]
 }
