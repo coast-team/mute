@@ -11,6 +11,7 @@
     "collaborative-editing"
   ],
   "repository": "https://gitlab.inria.fr/coast-team/mute/mute",
+  "bugs": "https://github.com/coast-team/mute/issues",
   "license": "AGPL-3.0",
   "contributors": [
     "Baptiste Hubert <baptiste.hubert@inria.fr>",
@@ -25,13 +26,13 @@
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "docker compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
-    "build:stats": "ng build --stats-json",
+    "build:stats": "ng build --configuration debug --stats-json # use scripts/bundle-analyser.sh instead",
     "postinstall": "run-script-os",
     "postinstall:win32": "cd scripts && get-assets.bat",
     "postinstall:default": "bash scripts/get-assets.sh && ngcc",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "test": "ng test",
-    "karma": "ng test --watch=false --browsers=ChromeHeadlessCI",
+    "lint": "ng lint # eslint",
+    "test": "ng test # karma",
+    "test:coverage": "ng test --no-watch --code-coverage",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js"
   },
   "devDependencies": {
@@ -63,8 +64,7 @@
     "@toast-ui/editor": "^2.5.1",
     "@types/codemirror": "0.0.108",
     "@types/jasmine": "~3.6.0",
-    "@types/jasminewd2": "~2.0.6",
-    "@types/loglevel": "^1.5.3",
+    "@types/loglevel": "^1.6.3",
     "@types/node": "^14.14.31",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
@@ -80,7 +80,7 @@
     "jasmine-spec-reporter": "^6.0.0",
     "karma": "^6.4.1",
     "karma-chrome-launcher": "^3.1.1",
-    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-coverage": "^2.2.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "karma-junit-reporter": "^2.0.1",
@@ -91,7 +91,6 @@
     "np2-ui-auth": "harmanpa/ng2-ui-auth#aa965bc5a8982ab51a26deb4e15b04fde55cf8c9",
     "pm2": "^5.2.2",
     "protobufjs": "^6.8.8",
-    "protractor": "~7.0.0",
     "run-script-os": "^1.1.6",
     "rxjs": "^6.6.6",
     "sigver": "^20.0.2",
@@ -101,6 +100,5 @@
   },
   "engines": {
     "node": ">=10.13.0 <15"
-  },
-  "angular-cli": {}
+  }
 }

@@ -30,9 +30,9 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "node_modules/loglevel/dist/loglevel.min.js",
               "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js",
+              "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/@multiavatar/multiavatar/multiavatar.min.js"
             ],
             "allowedCommonJsDependencies": [
@@ -96,7 +96,7 @@
               ]
             }
           },
-          "defaultConfiguration": ""
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -104,28 +104,14 @@
             "browserTarget": "mute:build"
           },
           "configurations": {
-            "production": {
-              "browserTarget": "mute:build:production"
-            },
             "debug": {
               "browserTarget": "mute:build:debug"
             },
-            "ovhdev": {
-              "browserTarget": "mute:build:ovhdev"
-            },
-            "ovhprod": {
-              "browserTarget": "mute:build:ovhprod"
-            },
-            "demo": {
-              "browserTarget": "mute:build:demo"
+            "production": {
+              "browserTarget": "mute:build:production"
             }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "mute:build"
-          }
+          },
+          "defaultConfiguration": "debug"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",

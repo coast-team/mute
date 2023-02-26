@@ -152,7 +152,7 @@ karma:
   only:
     - merge_requests
   script:
-    - npm run karma
+    - npm run test:ci
   artifacts:
     when: always
     reports:

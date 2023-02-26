@@ -9,7 +9,7 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('karma-junit-reporter'),
       require('@angular-devkit/build-angular/plugins/karma'),
     ],
@@ -21,20 +21,22 @@ module.exports = function (config) {
     mime: {
       'text/x-typescript': ['ts', 'tsx'],
     },
-    coverageIstanbulReporter: {
+    coverageReporter: {
       dir: require('path').join(__dirname, 'coverage'),
-      reports: ['html', 'lcovonly'],
+      reporters: ['html', 'lcovonly'],
+      reporters: [
+        { type: 'html' },
+        { type: 'lcovonly' },
+        { type: 'cobertura' }
+      ],
       fixWebpackSourcePaths: true,
     },
-    angularCli: {
-      environment: 'dev',
-    },
-    reporters: config.angularCli && config.angularCli.codeCoverage ? ['progress', 'coverage-istanbul'] : ['progress', 'kjhtml'],
+    reporters: ['progress', 'kjhtml'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome', 'ChromeHeadless', 'ChromeHeadlessCI'],
+    browsers: ['Chrome'],
     customLaunchers: {
       ChromeHeadlessCI: {
         displayName: 'Chrome',
@@ -48,11 +50,19 @@ module.exports = function (config) {
   }
 
   if (process.env.CI) {
+    karmaConfig.browsers = ['ChromeHeadlessCI']
     karmaConfig.reporters = ['progress', 'junit']
     karmaConfig.junitReporter = {
       outputFile: 'karma.xml',
       useBrowserName: false,
     }
+    karmaConfig.singleRun = true
+  }
+
+  if (config.angularCli && config.angularCli.codeCoverage) {
+    karmaConfig.browsers = ['ChromeHeadlessCI']
+    karmaConfig.reporters = ['progress', 'coverage-istanbul']
+    karmaConfig.singleRun = true
   }
 
   config.set(karmaConfig)
