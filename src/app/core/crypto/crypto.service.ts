@@ -40,7 +40,7 @@ export class CryptoService implements OnDestroy {
   constructor(http: HttpClient, settings: SettingsService) {
     this.stateSubject = new Subject()
     this.subs = []
-    this.signatureErrorHandler = () => {}
+    this.signatureErrorHandler = () => { }
     this.members = new Map()
 
     switch (environment.cryptography.type) {
@@ -154,7 +154,7 @@ export class CryptoService implements OnDestroy {
     if (member) {
       member.key = cryptoKey
       for (const m of member.buffer) {
-        ;(this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
+        ; (this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
           this.signatureErrorHandler(id)
         })
       }
@@ -171,7 +171,7 @@ export class CryptoService implements OnDestroy {
     if (member) {
       member.key = cryptoKey
       for (const m of member.buffer) {
-        ;(this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
+        ; (this.crypto as KeyAgreementBD).onMessage(id, m, member.key).catch(() => {
           this.signatureErrorHandler(id)
         })
       }
@@ -190,7 +190,7 @@ export class CryptoService implements OnDestroy {
       const member = this.members.get(id)
       if (member) {
         if (member.key) {
-          ;(this.crypto as KeyAgreementBD).onMessage(id, content, member.key).catch(() => {
+          ; (this.crypto as KeyAgreementBD).onMessage(id, content, member.key).catch(() => {
             this.signatureErrorHandler(id)
           })
         } else {
@@ -200,7 +200,7 @@ export class CryptoService implements OnDestroy {
         this.members.set(id, { buffer: [content] })
       }
     } else {
-      ;(this.crypto as KeyAgreementBD).onMessage(id, content)
+      ; (this.crypto as KeyAgreementBD).onMessage(id, content)
     }
   }
 

@@ -1,134 +1,123 @@
 <mute-toolbar [folder]="folder" (menu)="leftSidenav.toggle()"></mute-toolbar>
 
-<mat-sidenav-container>
+<mat-sidenav-container style="background-color: var(--theme-bg-card);">
 
   <!-- Left Sidenav-->
   <mat-sidenav #leftSidenav [mode]="sideNavMode" class="nav" [opened]="!this.media.isActive('xs')">
     <mute-nav [selected]="folder"></mute-nav>
   </mat-sidenav>
 
-
-  <mat-menu #menu="matMenu" fxLayout="column">
-    <button mat-menu-item (click)="open(menuDoc)">
-      <mat-icon aria-label="open document">open_in_browser</mat-icon>Open
-    </button>
-    <button mat-menu-item (click)="rename(menuDoc)">
-      <mat-icon aria-label="rename document">mode_edit</mat-icon>Rename
-    </button>
-    <button mat-menu-item (click)="share(menuDoc)">
-      <mat-icon aria-label="share document">share</mat-icon>Share
-    </button>
-    <button mat-menu-item (click)="infoDoc()">
-      <mat-icon aria-label="delete document">info</mat-icon>Info
-    </button>
-    <button mat-menu-item (click)="delete(menuDoc)">
-      <mat-icon aria-label="delete document">delete</mat-icon>Move to trash
-    </button>
-  </mat-menu>
-
-  <!-- Content -->
+  <!-- Content
+  First wait for docs fetching (especially if remote)
+  If documents are found, display table, else "noDocs"
+  -->
   <div fxLayoutAlign="center stretch" ngClass.gt-sm="table-container" ngClass.lt-md="table-container-mobile">
     <ng-container *ngIf="isFinishOpen; else fetchingDocs">
       <ng-container *ngIf="docs.length !== 0; else noDocs">
-        <mat-table [dataSource]="docsSource" matSort [matSortActive]="sortDefault.active" [matSortDirection]="sortDefault.direction"
-          (matSortChange)="sortDocs($event)" fxFlex [ngClass]="{mobile: isMobile}">
+        <mat-table [dataSource]="docsSource" matSort [matSortActive]="sortDefault.active"
+          [matSortDirection]="sortDefault.direction" (matSortChange)="sortDocs($event)" fxFlex
+          [ngClass]="{mobile: isMobile}">
 
           <!-- Position Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell mat-sort-header fxFlex="auto" *matHeaderCellDef>Name</mat-header-cell>
-            <mat-cell class="title-cell" fxFlex="auto" fxFlex.lt-md="100%" fxLayoutAlign="start center" *matCellDef="let doc">
+            <mat-cell class="title-cell" fxFlex="auto" fxFlex.lt-md="100%" fxLayoutAlign="start center"
+              *matCellDef="let doc" (contextmenu)="onRightClick($event, doc)">
 
-              <!-- Document name -->
-              <div fxFlex class="doc-in-trash" *ngIf="folder === localStorage.trash; else docTitleButton">
-                <mat-icon class="title-icon">description</mat-icon>
-                {{doc.title}}
-              </div>
+              <!-- Document name + key -->
+              <ng-container
+                *ngIf="folder === localStorage.trash; then docTitleButtonTrash else docTitleButton"></ng-container>
 
-              <ng-template #docTitleButton>
-                <button mat-button (click)="open(doc)" fxFlex fxLayoutAlign="start center">
+              <ng-template #docTitleButtonTrash>
+                <button mat-button class="doc-in-trash" [disableRipple]="true" (click)="open(doc)" fxFlex
+                  fxLayoutAlign="start center">
                   <mat-icon class="title-icon">description</mat-icon>
                   <span>{{doc.title}}</span>
                   <span class="key">{{doc.signalingKey}}</span>
                 </button>
               </ng-template>
 
-              <!-- Document action buttons -->
-              <div *ngIf="isMobile; else desktopActions">
-                <!-- <ng-container  fxHide [fxShow]="isActionsVisible(doc)"> -->
-                <!-- Mobile actions -->
-                <button mat-icon-button [matMenuTriggerFor]="menu" (click)="setMenuDoc(doc)">
-                  <mat-icon aria-label="show actions">more_vert</mat-icon>
+              <ng-template #docTitleButton>
+                <button mat-button [disableRipple]="true" (click)="open(doc)" fxFlex fxLayoutAlign="start center">
+                  <mat-icon class="title-icon">description</mat-icon>
+                  <span>{{doc.title}}</span>
+                  <span class="key">{{doc.signalingKey}}</span>
                 </button>
-                <!-- </ng-container> -->
-              </div>
+              </ng-template>
 
-              <!-- Desktop actions -->
-              <ng-template #desktopActions>
+              <!-- Document actions (only for trash/remote)
+              Note: find the document actions for regular documents in the "more" column below
+              -->
+              <ng-container>
                 <div [ngSwitch]="folder.id" class='desktop-actions'>
-                  <ng-container *ngSwitchCase="localStorage.local.id">
-                    <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
-                      <mat-icon aria-label="rename document">mode_edit</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="share(doc)" matTooltip="share">
-                      <mat-icon aria-label="share document">share</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="delete(doc)" matTooltip="move to trash">
-                      <mat-icon aria-label="delete document">delete</mat-icon>
-                    </button>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="localStorage.trash.id">
-                    <button mat-icon-button (click)="restore(doc)" matTooltip="restore">
-                      <mat-icon aria-label="share document">restore</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="delete(doc)" matTooltip="delete">
-                      <mat-icon aria-label="delete document">delete</mat-icon>
-                    </button>
-                  </ng-container>
                   <ng-container *ngSwitchCase="remoteId">
-                    <button mat-icon-button (click)="rename(doc)" matTooltip="rename">
-                      <mat-icon aria-label="rename document">mode_edit</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="share(doc)" matTooltip="share">
-                      <mat-icon aria-label="share document">share</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="delete(doc)" matTooltip="remove my login reference from remote server">
+                    <button mat-icon-button (click)="delete(doc)"
+                      matTooltip="remove my login reference from remote server">
                       <mat-icon aria-label="remove my login reference from remote server">delete</mat-icon>
                     </button>
                   </ng-container>
                 </div>
-              </ng-template>
+              </ng-container>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="location">
             <mat-header-cell fxFlex="100px" *matHeaderCellDef>Location</mat-header-cell>
-            <mat-cell *matCellDef="let doc" fxFlex="100px" fxLayoutAlign="start center">
+            <mat-cell *matCellDef="let doc" fxFlex="100px" fxLayoutAlign="start center" (click)="open(doc)"
+              (contextmenu)="onRightClick($event, doc)">
               <mat-icon aria-label="location" fxFlexOffset="10px">{{getDocLocationIcon(doc)}}</mat-icon>
             </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="created">
             <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Created</mat-header-cell>
-            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.created | muteDate}} </mat-cell>
+            <mat-cell fxFlex="150px" *matCellDef="let doc" (click)="open(doc)"
+              (contextmenu)="onRightClick($event, doc)"> {{doc.created | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="opened">
-            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Opened by me</mat-header-cell>
-            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.opened | muteDate}} </mat-cell>
+            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Last opened by me</mat-header-cell>
+            <mat-cell fxFlex="150px" *matCellDef="let doc" (click)="open(doc)"
+              (contextmenu)="onRightClick($event, doc)"> {{doc.opened | muteDate}} </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="modified">
-            <mat-header-cell fxFlex="150px" mat-sort-header *matHeaderCellDef>Modified</mat-header-cell>
-            <mat-cell fxFlex="150px" *matCellDef="let doc"> {{doc.modified | muteDate}} </mat-cell>
+          <ng-container matColumnDef="modified" *ngIf="folder.id !== localStorage.trash.id">
+            <mat-header-cell fxFlex="100px" mat-sort-header *matHeaderCellDef>Last modified</mat-header-cell>
+            <mat-cell fxFlex="100px" *matCellDef="let doc" (click)="open(doc)"
+              (contextmenu)="onRightClick($event, doc)"> {{doc.modified | muteDate}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="modified" *ngIf="folder.id === localStorage.trash.id">
+            <mat-header-cell fxFlex="100px" mat-sort-header *matHeaderCellDef>Trashed</mat-header-cell>
+            <mat-cell fxFlex="100px" *matCellDef="let doc" (click)="open(doc)"
+              (contextmenu)="onRightClick($event, doc)"> {{doc.modified | muteDate}} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="synchronized">
             <mat-header-cell fxFlex="100px" *matHeaderCellDef>
               <div fxLayoutAlign="start center">
-                <mat-icon aria-label="remote storage" [matTooltip]="'Sync with ' + remoteName" class="synchronized-icon">cloud</mat-icon>
+                <mat-icon aria-label="remote storage" [matTooltip]="'Sync with ' + remoteName"
+                  class="synchronized-icon">cloud</mat-icon>
               </div>
             </mat-header-cell>
-            <mat-cell fxFlex="100px" *matCellDef="let doc"> {{ doc | muteRemote }} </mat-cell>
+            <mat-cell fxFlex="100px" *matCellDef="let doc" (click)="open(doc)"> {{ doc | muteRemote }} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="more">
+            <mat-header-cell fxFlex="60px" *matHeaderCellDef></mat-header-cell>
+            <mat-cell fxFlex="60px" *matCellDef="let doc">
+              <button mat-icon-button color="primary" [matMenuTriggerFor]="moreMenu" (click)="setMenuDoc(doc)">
+                <mat-icon aria-label="show actions">more_vert</mat-icon>
+              </button>
+
+              <!-- Document action
+              Note: following docs.google.com's design, all actions are grouped in a dropdown to center
+              design on the table sort
+              -->
+              <mat-menu #moreMenu="matMenu" fxLayout="column">
+                <ng-container *ngTemplateOutlet="rightClickMenuContent; context: { item: doc }"></ng-container>
+              </mat-menu>
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -138,7 +127,8 @@
     </ng-container>
 
     <ng-template #noDocs>
-      <h3 *ngIf="folder.id === localStorage.trash.id; else noDocCreated" class="noDoc mat-title" fxLayout="column" fxFlexAlign="start" fxLayoutAlign="center center">
+      <h3 *ngIf="folder.id === localStorage.trash.id; else noDocCreated" class="noDoc mat-title" fxLayout="column"
+        fxFlexAlign="start" fxLayoutAlign="center center">
         <mat-icon [inline]="true" class="mat-subimage">delete_outline</mat-icon>
         <span class="mat-subtitle">The trash is empty</span>
       </h3>
@@ -159,7 +149,38 @@
     </ng-template>
   </div>
 
-  <!-- Right Sidenav-->
+  <!-- Right click menu -->
+  <div style="visibility: hidden; position: fixed;" [style.left]="menuTopLeftPosition.x"
+    [style.top]="menuTopLeftPosition.y" #rightClickTrigger="matMenuTrigger" [matMenuTriggerFor]="rightClickMenu">
+
+    <mat-menu #rightClickMenu="matMenu" fxLayout="column">
+      <ng-template #rightClickMenuContent matMenuContent let-doc="item">
+        <button mat-menu-item (click)="open(doc, true)">
+          <mat-icon aria-label="open document">open_in_browser</mat-icon>Open in tab
+        </button>
+        <button mat-menu-item (click)="rename(doc)">
+          <mat-icon aria-label="rename document">mode_edit</mat-icon>Rename
+        </button>
+        <button mat-menu-item (click)="share(doc)">
+          <mat-icon aria-label="share document">share</mat-icon>Share
+        </button>
+        <button mat-menu-item (click)="infoDoc()">
+          <mat-icon aria-label="info on document">info</mat-icon>Info
+        </button>
+        <button mat-menu-item (click)="delete(doc)" *ngIf="folder.id !== localStorage.trash.id">
+          <mat-icon aria-label="delete document">delete</mat-icon>Move to trash
+        </button>
+        <button mat-menu-item (click)="restore(doc)" *ngIf="folder.id === localStorage.trash.id">
+          <mat-icon aria-label="restore document">restore</mat-icon>Restore
+        </button>
+        <button mat-menu-item (click)="delete(doc)" *ngIf="folder.id === localStorage.trash.id">
+          <mat-icon aria-label="delete document">delete</mat-icon>Delete permanently
+        </button>
+      </ng-template>
+    </mat-menu>
+  </div>
+
+  <!-- Right Sidenav: info for extra details about a single document -->
   <mat-sidenav #rightSidenav class="rightsidenav" position="end" mode="push">
     <mat-list>
       <mat-list-item>
@@ -172,7 +193,15 @@
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Created:&nbsp;</span>
-        <span class="mat-body-2 info-values">{{menuDoc?.created | date:'longDate'}}</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.created | date:'medium'}}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="mat-body-1">Opened:&nbsp;</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.opened | date:'medium'}}</span>
+      </mat-list-item>
+      <mat-list-item>
+        <span class="mat-body-1">Modified:&nbsp;</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.modified | date:'medium'}}</span>
       </mat-list-item>
     </mat-list>
   </mat-sidenav>

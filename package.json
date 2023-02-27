@@ -24,7 +24,7 @@
   "scripts": {
     "prestart": "npm run sigver",
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
-    "sigver": "docker compose up -d --no-recreate sigver",
+    "sigver": "docker-compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
     "build:stats": "ng build --configuration debug --stats-json # use scripts/bundle-analyser.sh instead",
     "postinstall": "run-script-os",

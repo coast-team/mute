@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { DomSanitizer } from '@angular/platform-browser'
+import { Router } from '@angular/router'
 import { Subscription } from 'rxjs'
 
 import { enableDebug } from '@coast-team/mute-crypto'
@@ -43,6 +44,7 @@ export class ToolbarComponent implements OnDestroy {
 
   constructor(
     public docService: DocService,
+    public route: Router,
     private sanitizer: DomSanitizer,
     private network: NetworkService,
     private botStorage: BotStorageService,

@@ -1,7 +1,7 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
   <div fxFill fxLayoutAlign="space-between">
     <div fxLayoutAlign="start center">
-      <button mat-icon-button (click)="menu.emit()">
+      <button mat-icon-button (click)="menu.emit()" *ngIf="route.url === '/'">
         <mat-icon>menu</mat-icon>
       </button>
 

@@ -6,6 +6,8 @@ import { MatSidenav } from '@angular/material/sidenav'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Sort } from '@angular/material/sort'
 import { Router } from '@angular/router'
+import { Clipboard } from '@angular/cdk/clipboard'
+
 import { BehaviorSubject, Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
@@ -21,14 +23,15 @@ import { UiService } from '@app/core/ui'
 import {
   DocRenameDialogComponent,
   RemoteDeleteDialogComponent
-} from '../shared/dialogs' 
+} from '../shared/dialogs'
+import { MatMenuTrigger } from '@angular/material/menu'
 
 class DocsSource extends DataSource<Doc> {
   public sort: Sort
-
   private docs: Doc[]
   private docs$: BehaviorSubject<Doc[]>
   private sub: Subscription
+
   constructor(docs$: BehaviorSubject<Doc[]>, sort: Sort) {
     super()
     this.docs$ = docs$
@@ -85,14 +88,13 @@ class DocsSource extends DataSource<Doc> {
   styleUrls: ['./docs.component.scss'],
 })
 export class DocsComponent implements OnDestroy, OnInit {
-  @ViewChild('leftSidenav', { static: true })
-  leftSidenav: MatSidenav
-  @ViewChild('rightSidenav', { static: true })
-  rightSidenav
+  @ViewChild('leftSidenav', { static: true }) leftSidenav: MatSidenav
+  @ViewChild('rightSidenav', { static: true }) rightSidenav: MatSidenav
+  @ViewChild('rightClickTrigger') rightClickTrigger: MatMenuTrigger
+
   public folder: Folder
   public title: string
   public displayedColumns: string[]
-
   public docsSubject: BehaviorSubject<Doc[]>
   public docsSource: DocsSource
   public docs: Doc[]
@@ -103,18 +105,20 @@ export class DocsComponent implements OnDestroy, OnInit {
   public remoteName: string
   public remoteId: string
   public sortDefault: Sort = { active: 'modified', direction: 'desc' }
-
+  public menuTopLeftPosition = { x: '0', y: '0' }
   public actions
 
   private subs: Subscription[]
-  private displayedColumnsLocal = ['title', 'created', 'opened', 'modified']
-  private displayedColumnsRemote = ['title', 'location', 'created', 'opened', 'modified']
+  private displayedColumnsMobile = ['title', 'more']
+  private displayedColumnsLocal = ['title', 'created', 'opened', 'modified', 'more']
+  private displayedColumnsRemote = ['title', 'location', 'created', 'opened', 'modified', 'more']
 
   constructor(
     private router: Router,
     private snackBar: MatSnackBar,
     private botStorage: BotStorageService,
     private settings: SettingsService,
+    private clipboard: Clipboard,
     public localStorage: LocalStorageService,
     public ui: UiService,
     public media: MediaObserver,
@@ -208,13 +212,15 @@ export class DocsComponent implements OnDestroy, OnInit {
     }
   }
 
-  open(doc?: Doc) {
-    if (this.folder !== this.localStorage.trash) {
-      if (doc) {
-        this.router.navigate(['/', doc.signalingKey])
-      } else {
-        this.router.navigate(['/', this.localStorage.generateSignalingKey()])
-      }
+  open(doc?: Doc, newTab?: boolean) {
+    const key = doc
+      ? doc.signalingKey
+      : this.localStorage.generateSignalingKey()
+
+    if (newTab) {
+      window.open(`${window.location.origin}/${key}`, '_blank')
+    } else {
+      this.router.navigate(['/', key])
     }
   }
 
@@ -224,13 +230,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   share(doc: Doc) {
-    // Workaround, but not pretty
-    const aux = document.createElement('input')
-    aux.setAttribute('value', `${window.location.origin}/${doc.signalingKey}`)
-    document.body.appendChild(aux)
-    aux.select()
-    document.execCommand('copy')
-    document.body.removeChild(aux)
+    this.clipboard.copy(`${window.location.origin}/${doc.signalingKey}`)
     this.snackBar.open(`Link copied to clipboard.`, 'Close', {
       duration: 5000,
     })
@@ -250,6 +250,28 @@ export class DocsComponent implements OnDestroy, OnInit {
   getDocLocationIcon(doc: Doc) {
     return this.localStorage.getFolder(doc.parentFolderId).icon
   }
+
+  /** 
+   * Method called when the user click with the right button
+   * @param event MouseEvent, it contains the coordinates
+   * @param item Our data contained in the row of the table
+   */
+  public onRightClick(event: MouseEvent, item: any): void {
+    // preventDefault avoids to show the visualization of the right-click menu of the browser
+    event.preventDefault()
+
+    // we record the mouse position in our object
+    this.menuTopLeftPosition.x = event.clientX + 'px'
+    this.menuTopLeftPosition.y = event.clientY + 'px'
+
+    // we pass to the menu the information about our object
+    this.rightClickTrigger.menuData = { item }
+
+    // we open the menu
+    this.rightClickTrigger.menu.focusFirstItem("mouse")
+    this.rightClickTrigger.openMenu()
+  }
+
 
   private moveToTrash(doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
@@ -271,7 +293,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   private updateDisplayedColumns() {
     if (this.isMobile) {
-      this.displayedColumns = ['title']
+      this.displayedColumns = this.displayedColumnsMobile
     } else {
       if (this.folder === this.localStorage.remote) {
         this.displayedColumns = this.displayedColumnsRemote

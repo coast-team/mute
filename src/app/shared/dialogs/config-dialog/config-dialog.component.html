@@ -8,13 +8,17 @@
     <div fxLayoutAlign="start start" fxLayoutGap="20px">
       <mute-avatar [profile]="profile" [size]="100"></mute-avatar>
 
-      <div fxLayout="column">
+      <div fxLayout="column" style="width: 250px">
         <mat-form-field>
-          <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl" (focus)="selectAll($event)">
+          <input matInput placeholder="Display name" maxlength="27" [formControl]="displayNameControl"
+            (focus)="selectAll($event)">
           <mat-hint align="end">{{displayNameControl.value.length}} / 27</mat-hint>
         </mat-form-field>
         <mat-form-field>
           <input matInput disabled tabindex="-1" placeholder="Login" [value]="profile.login">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput disabled tabindex="-1" placeholder="Device ID" [value]="profile.deviceID">
         </mat-form-field>
       </div>
     </div>

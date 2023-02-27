@@ -26,7 +26,7 @@ import { environment } from '@environments/environment'
 export class ProfileComponent implements OnDestroy {
   public profile: Profile
   public cardState: string
-  
+
   public environment = environment
 
   private subs: Subscription[]

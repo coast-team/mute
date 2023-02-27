@@ -43,32 +43,17 @@
 
   .mat-row {
     padding-left: 5px;
+    cursor: pointer;
 
     &:hover {
-      .desktop-actions {
-        visibility: visible;
-      }
+      background-color: var(--theme-bg-hover);
+      border-radius: 25px;
     }
   }
 
   .title-icon {
     margin-right: 5px;
     vertical-align: middle;
-  }
-
-  .title-text {
-    display: flex;
-    flex-direction: column;
-
-    span:not(:first-child) {
-      font-size: 80%;
-      opacity: .6;
-    }
-  }
-
-  .desktop-actions {
-    visibility: hidden;
-    margin-right: 16px;
   }
 
   .synchronized-icon {
@@ -97,8 +82,20 @@
   }
 }
 
+// hover on lines, not on buttons
+::ng-deep .mat-button:hover:not(.mat-button-disabled) > .mat-button-focus-overlay {
+	opacity: 0 !important;
+}
+// end hover tweaks
+
 .table-container {
   height: 100%;
+  max-width: 920px;
+  margin: auto;
+
+  @media screen and (min-width: 1400px) {
+    max-width: 1150px;
+  }
 }
 
 .info-values {
