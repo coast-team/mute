@@ -26,8 +26,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent implements OnDestroy {
-  @Input()
-  selected: Folder
+  @Input() selected: Folder
 
   // Folders
   public local: Folder
