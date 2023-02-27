@@ -27,8 +27,7 @@ import { networkSolution } from '@app/doc/network/solutions/networkSolution'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent implements OnDestroy {
-  @Input()
-  selected: Folder
+  @Input() selected: Folder
 
   // Folders
   public local: Folder
