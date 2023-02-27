@@ -58,7 +58,15 @@ export class BotStorageService extends Storage {
     settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => this.updateStatus())
   }
 
-  async fetchDocs (): Promise<IMetadata[]> {
+  get login() {
+    return this.httpURL ? `bot.storage@${new URL(this.httpURL).hostname}` : ''
+  }
+
+  get id() {
+    return `${this.httpURL}`
+  }
+
+  async fetchDocs(): Promise<IMetadata[]> {
     if (this.httpURL && this.status !== BotStorageServiceStatus.NOT_AUTHORIZED) {
       return (await new Promise((resolve) => {
         this.http.get(new URL(`docs/${this.settings.profile.login}`, this.httpURL).toString()).subscribe(
@@ -74,7 +82,7 @@ export class BotStorageService extends Storage {
     return []
   }
 
-  async remove (doc: Doc): Promise<void> {
+  async remove(doc: Doc): Promise<void> {
     return await new Promise((resolve) => {
       this.http
         .post<{ key: string; login: string }>(new URL('remove', this.httpURL).toString(), {
@@ -85,19 +93,11 @@ export class BotStorageService extends Storage {
     })
   }
 
-  get login () {
-    return this.httpURL ? `bot.storage@${new URL(this.httpURL).hostname}` : ''
-  }
-
-  get id () {
-    return `${this.httpURL}`
-  }
-
-  private updateStatus (): Promise<void> {
+  private updateStatus(): Promise<void> {
     if (!this.httpURL) {
       return Promise.resolve()
-    } 
-    
+    }
+
     if (!this.settings.isAuthenticated() && !this.isAnonymousAllowed) {
       super.setStatus(BotStorageServiceStatus.NOT_AUTHORIZED)
       return Promise.resolve()
@@ -118,6 +118,6 @@ export class BotStorageService extends Storage {
         )
       })
     }
-    
+
   }
 }

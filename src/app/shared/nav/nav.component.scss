@@ -80,9 +80,27 @@
 
   p {
     margin-bottom: 0;
+
+    &:nth-child(1) {
+      margin-bottom: 10px;
+    }
   }
 }
 
 .install-update-btns {
   margin: 16px 16px 0 16px;
+}
+
+mat-chip-list {
+  max-width: 249px;
+  display: inline-block;
+
+  .mat-chip-list-wrapper {
+    flex-direction: row-reverse;
+  }
+
+  mat-chip {
+    justify-content: space-between;
+    gap: 5px;
+  }
 }

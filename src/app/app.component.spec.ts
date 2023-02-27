@@ -6,10 +6,10 @@ import { AppComponent } from './app.component'
 import { UiService } from './core/ui'
 
 @Component({ selector: 'mute-toolbar', template: '' })
-class ToolbarStubComponent {}
+class ToolbarStubComponent { }
 
 @Component({ selector: 'mute-dev-label', template: '' })
-class DevLabelStubComponent {}
+class DevLabelStubComponent { }
 
 let comp: AppComponent
 let fixture: ComponentFixture<AppComponent>
@@ -33,7 +33,7 @@ describe('AppComponent', () => {
   tests()
 })
 
-function tests() {
+const tests = () => {
   it('Should create the component', () => {
     expect(comp).toBeTruthy()
   })

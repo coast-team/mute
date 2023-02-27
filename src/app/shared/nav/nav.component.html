@@ -69,7 +69,7 @@
       <!-- Local storage quota -->
       <ng-container *ngIf="!localErrorMessage else localDisabled">
         <div *ngIf="isStorageManagerAvailable">
-          <div class="mat-caption hint">{{usage | muteSize}} of {{quota | muteSize}} used</div>
+          <div class="mat-caption hint">{{usage | muteSize}} of {{quota | muteSize:0}} used</div>
         </div>
       </ng-container>
       <ng-template #localDisabled>
@@ -109,12 +109,31 @@
     <div fxLayout="column" fxLayoutAlign="end stretch" class="app-info">
 
       <p>
-        <mat-chip-list>
+        <mat-chip-list fxLayout="column">
           <!-- TODO: add to libp2p once implemented
-          <mat-chip selected *ngIf="environment.">libp2p</mat-chip>
+            <mat-chip matTooltip="feature is {{!environment.libp2p ? 'disabled' : 'enabled'}} on this version of Mute"
+              [disabled]="!environment.libp2p">
+              <mat-icon *ngIf="environment.libp2p">check</mat-icon>
+              libp2p
+            </mat-chip>
           -->
-          <mat-chip selected *ngIf="environment.pulsar">pulsar</mat-chip>
-          <mat-chip selected *ngIf="environment.authentication">auth</mat-chip>
+          <span fxFill></span>
+          <mat-chip matTooltip="feature is {{!environment.botStorage ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.botStorage">
+            <mat-icon *ngIf="environment.botStorage">check</mat-icon>
+            bot storage
+          </mat-chip>
+          <mat-chip matTooltip="feature is {{!environment.pulsar ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.pulsar">
+            <mat-icon *ngIf="environment.pulsar">check</mat-icon>
+            pulsar
+          </mat-chip>
+          <mat-chip
+            matTooltip="feature is {{!environment.authentication ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.authentication">
+            <mat-icon *ngIf="environment.authentication">check</mat-icon>
+            auth
+          </mat-chip>
         </mat-chip-list>
       </p>
       <ng-container *ngIf="environment.production; then versionInfo"></ng-container>
@@ -129,7 +148,7 @@
           </a>
         </p>
         <p class="mat-caption hint">by
-          <a href="https://www.inria.fr/en/teams/coast" target="blank">COAST team</a> | INRIA | LORIA
+          <a href="https://team.inria.fr/coast/" target="_blank">COAST team</a> | INRIA | LORIA
         </p>
       </ng-template>
 
