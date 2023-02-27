@@ -266,6 +266,7 @@ export class DocsComponent implements OnDestroy, OnInit {
 
     // we pass to the menu the information about our object
     this.rightClickTrigger.menuData = { item }
+    this.setMenuDoc(item)
 
     // we open the menu
     this.rightClickTrigger.menu.focusFirstItem("mouse")

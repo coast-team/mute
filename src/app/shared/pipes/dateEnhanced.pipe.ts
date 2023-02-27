@@ -24,7 +24,8 @@ export class DateEnhancedPipe extends DatePipe implements PipeTransform {
           format = 'HH:mm'
           prefix = 'yesterday '
         } else {
-          format = todayYear === value.getFullYear() ? 'MMM d, y' : 'MMM d'
+          // if the date is from the same year, omit the year
+          format = todayYear !== value.getFullYear() ? 'MMM d, y, HH:mm' : 'MMM d, HH:mm'
         }
       } else {
         format = 'HH:mm'

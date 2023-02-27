@@ -12,7 +12,10 @@ import { RichCollaboratorsService } from '../rich-collaborators'
 export class RightSideComponent {
   public doc: Doc
 
-  constructor(docService: DocService, public collabService: RichCollaboratorsService) {
+  constructor(
+    public docService: DocService,
+    public collabService: RichCollaboratorsService
+  ) {
     this.doc = docService.doc
   }
 }

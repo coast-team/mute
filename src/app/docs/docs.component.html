@@ -193,15 +193,15 @@
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Created:&nbsp;</span>
-        <span class="mat-body-2 info-values">{{menuDoc?.created | date:'medium'}}</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.created | muteDate}}</span>
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Opened:&nbsp;</span>
-        <span class="mat-body-2 info-values">{{menuDoc?.opened | date:'medium'}}</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.opened | muteDate}}</span>
       </mat-list-item>
       <mat-list-item>
         <span class="mat-body-1">Modified:&nbsp;</span>
-        <span class="mat-body-2 info-values">{{menuDoc?.modified | date:'medium'}}</span>
+        <span class="mat-body-2 info-values">{{menuDoc?.modified | muteDate}}</span>
       </mat-list-item>
     </mat-list>
   </mat-sidenav>

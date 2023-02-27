@@ -38,6 +38,7 @@ export class ToolbarComponent implements OnDestroy {
   public cryptoLog: boolean
   public docLog: boolean
   public LogLevel = LogLevel
+  public environment = environment
 
   private subs: Subscription[]
   private digest: string

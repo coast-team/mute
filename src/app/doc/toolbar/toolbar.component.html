@@ -36,7 +36,7 @@
     <mat-icon>history</mat-icon>
     Version history
   </button>
-  <button mat-menu-item (click)="inviteBot()" [disabled]="botNotAvailable">
+  <button mat-menu-item (click)="inviteBot()" [disabled]="botNotAvailable" *ngIf="environment.botStorage">
     <mat-icon>cloud</mat-icon>
     Invite bot storage
   </button>

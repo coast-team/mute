@@ -76,6 +76,11 @@ stages:
 
 .use_node_cache: &use_node_cache
   image: docker.io/node:14-alpine
+  before_script:
+    - |
+      if [ ! -f .cache_exists ]; then
+        npm ci --cache .npm --prefer-offline --no-audit
+      fi
   cache:
     - key:
         files:
@@ -101,7 +106,7 @@ check_dependencies: # runs once then quickly on lock stable
   <<: [*runner_workstation, *make_node_cache]
   script:
     - |
-      if [  -f .cache_exists ]; then # npm ci --cache .npm --prefer-offline --no-audit
+      if [ -f .cache_exists ]; then # nothing otherwise npm ci --cache .npm --prefer-offline --no-audit
         echo "cache already exists"
       else
         npm ci --cache .npm --prefer-offline --no-audit
@@ -152,7 +157,7 @@ karma:
   only:
     - merge_requests
   script:
-    - npm run test:ci
+    - npm test
   artifacts:
     when: always
     reports:
@@ -161,7 +166,7 @@ karma:
 
 .e2e:
   stage: test
-  <<: [*runner_workstation, *use_node_cache]
+  <<: [*runner_inria]
   image: docker.io/docker:dind
   only:
     - merge_requests

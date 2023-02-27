@@ -30,11 +30,8 @@ describe('AppComponent', () => {
         })
     })
   )
-  tests()
-})
 
-const tests = () => {
   it('Should create the component', () => {
     expect(comp).toBeTruthy()
   })
-}
+})
