@@ -19,17 +19,17 @@ stages:
 ## Runners
 #
 
-.runner_inria: &runner_inria
+.runner_inria:
   tags:
     - ci.inria.fr # required to run on shared gitlab.inria.fr runners
-.runner_workstation: &runner_workstation
+.runner_workstation:
   tags:
     - workstation # local workstation machine that leverages cache
-.runner_mutehost: &runner_mutehost
+.runner_mutehost:
   tags:
     - mutehost # required to deploy
 
-.images: &images
+.images:
   variables:
     TAG: latest
     MUTE_IMAGE: registry.gitlab.inria.fr/coast-team/mute/mute:${TAG}
@@ -103,7 +103,9 @@ stages:
 
 check_dependencies: # runs once then quickly on lock stable
   stage: build
-  <<: [*runner_workstation, *make_node_cache]
+  extends:
+    - runner_workstation
+    - make_node_cache
   script:
     - |
       if [ -f .cache_exists ]; then # nothing otherwise npm ci --cache .npm --prefer-offline --no-audit
@@ -118,7 +120,9 @@ check_dependencies: # runs once then quickly on lock stable
 
 change_dependencies: # updates cache on lock change
   stage: build
-  <<: [*runner_workstation, *make_node_cache]
+  extends:
+    - runner_workstation
+    - make_node_cache
   script:
     - npm ci --cache .npm --prefer-offline --no-audit
     - echo > .cache_exists
@@ -128,7 +132,9 @@ change_dependencies: # updates cache on lock change
 
 build_application:
   stage: build
-  <<: [*runner_workstation, *use_node_cache]
+  extends:
+    - runner_workstation
+    - use_node_cache
   script:
     - npm run build
   artifacts:
@@ -141,10 +147,11 @@ build_application:
 #
 
 code_quality:
+  extends:
+    - runner_inria
   artifacts:
     paths:
       - gl-code-quality-report.json
-  <<: [*runner_inria]
 
 ### Stage
 ## Test
@@ -152,7 +159,9 @@ code_quality:
 
 karma:
   stage: test
-  <<: [*runner_workstation, *use_node_cache]
+  extends:
+    - runner_workstation
+    - use_node_cache
   image: docker.io/timbru31/node-chrome:14
   only:
     - merge_requests
@@ -233,7 +242,10 @@ e2e_offline-to-online: # the document at the end is a merge of their respective 
 .build_docker_image:
   image: docker.io/docker:dind # needs > 19.03
   stage: publish
-  <<: [ *docker_registry_access, *runner_workstation, *images ]
+  extends:
+    - docker_registry_access
+    - runner_workstation
+    - images
   script:
     - docker-compose build mute
     - docker push "${MUTE_IMAGE}"
@@ -268,7 +280,10 @@ build_sigver_docker_image:
 .deploy_to:
   image: docker.io/docker:dind # needs > 19.03
   stage: deploy
-  <<: [ *docker_registry_access, *docker_deployment, *runner_mutehost ]
+  extends:
+    - docker_registry_access
+    - docker_deployment
+    - runner_mutehost
   variables:
     COMPOSE_FILE: docker-compose.yml
 
