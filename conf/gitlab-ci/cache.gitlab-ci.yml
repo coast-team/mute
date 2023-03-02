@@ -1,0 +1,45 @@
+### Templates
+## Cache
+#
+
+.make_node_cache:
+  image: docker.io/node:14
+  variables:
+    FF_USE_FASTZIP: "true"
+    ARTIFACT_COMPRESSION_LEVEL: "fast"
+    CACHE_COMPRESSION_LEVEL: "fast"
+  cache:
+    - key:
+        files:
+          - package-lock.json
+      paths:
+        - .cache_exists
+        - .npm/
+        - node_modules/
+        - src/assets/jio-latest.js
+        - src/assets/rsvp-2.0.4.min.js
+      when: on_success
+      policy: pull-push
+
+.use_node_cache:
+  image: docker.io/node:14-alpine
+  before_script:
+    - |
+      if [ ! -f .cache_exists ]; then
+        npm ci --cache .npm --prefer-offline --no-audit
+      fi
+  cache:
+    - key:
+        files:
+          - package-lock.json
+      paths:
+        - node_modules/
+        - src/assets/jio-latest.js
+        - src/assets/rsvp-2.0.4.min.js
+      when: on_success
+      policy: pull
+  needs:
+    - job: check_dependencies
+      optional: true
+    - job: change_dependencies
+      optional: true
