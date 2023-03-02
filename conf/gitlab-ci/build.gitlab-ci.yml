@@ -1,0 +1,47 @@
+include:
+  - local: 'conf/gitlab-ci/runners.gitlab-ci.yml'
+
+### Stage
+## Build
+#
+
+check_dependencies: # runs once then quickly on lock stable
+  stage: build
+  extends:
+    - .runner_workstation
+    - .make_node_cache
+  script:
+    - |
+      if [ -f .cache_exists ]; then # nothing otherwise npm ci --cache .npm --prefer-offline --no-audit
+        echo "cache already exists"
+      else
+        npm ci --cache .npm --prefer-offline --no-audit
+        echo > .cache_exists
+      fi
+  except:
+    changes:
+      - package-lock.json
+
+change_dependencies: # updates cache on lock change
+  stage: build
+  extends:
+    - .runner_workstation
+    - .make_node_cache
+  script:
+    - npm ci --cache .npm --prefer-offline --no-audit
+    - echo > .cache_exists
+  only:
+    changes:
+      - package-lock.json
+
+build_application:
+  stage: build
+  extends:
+    - .runner_workstation
+    - .use_node_cache
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+  when: manual

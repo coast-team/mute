@@ -68,11 +68,7 @@ export class HistoryService implements OnDestroy {
         for (const o of ops) {
           const author: Author = new Author(o.authorName, o.authorId, '#9CCC65')
 
-          if (
-            docAuthors.filter((e) => {
-              return e.getId() === author.getId()
-            }).length === 0
-          ) {
+          if (docAuthors.filter((e) => e.getId() === author.getId()).length === 0) {
             docAuthors.push(author)
           }
         }

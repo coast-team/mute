@@ -1,11 +1,18 @@
 <mat-toolbar color="primary" class="mat-elevation-z6">
+  <div fxFill fxLayoutAlign="space-between">
+    <div fxLayoutAlign="start center">
+      <button mat-icon-button (click)="menu.emit()">
+        <mat-icon>menu</mat-icon>
+      </button>
 
-  <button mat-icon-button (click)="menu.emit()">
-    <mat-icon>menu</mat-icon>
-  </button>
-
-  <h2 fxFlex>{{title}}</h2>
-
-  <mute-profile class="profile"></mute-profile>
-
+      <h2 fxFlex class="header">
+        {{header}}
+        <mat-icon>chevron_right</mat-icon>
+        History
+      </h2>
+    </div>
+    <div fxLayoutAlign="end center">
+      <mute-profile class="profile"></mute-profile>
+    </div>
+  </div>
 </mat-toolbar>

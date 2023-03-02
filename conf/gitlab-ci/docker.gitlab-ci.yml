@@ -1,0 +1,21 @@
+### Templates
+## Docker
+#
+
+.images:
+  variables:
+    TAG: latest
+    MUTE_IMAGE: registry.gitlab.inria.fr/coast-team/mute/mute:${TAG}
+    SIGVER_IMAGE: registry.gitlab.inria.fr/coast-team/mute/mute/sigver:${TAG}
+
+.docker_registry_access:
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY_IMAGE
+  after_script:
+    - docker logout $CI_REGISTRY_IMAGE
+
+.docker_deployment:
+  script:
+    - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} down || true
+    - docker-compose pull --include-deps mute
+    - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} up -d

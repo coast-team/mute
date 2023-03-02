@@ -13,7 +13,7 @@ const routes: Routes = [
     component: DocsComponent,
   },
   {
-    path: 'history/:key',
+    path: ':key/history',
     component: HistoryComponent,
     resolve: { doc: HistoryResolverService },
   },
@@ -34,4 +34,4 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

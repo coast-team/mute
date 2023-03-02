@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core'
 })
 export class ToolbarComponent {
   @Input()
-  title: string
+  header: string
   @Output()
   menu: EventEmitter<void>
 

@@ -1,0 +1,47 @@
+include:
+  - local: 'conf/gitlab-ci/runners.gitlab-ci.yml'
+  - local: 'conf/gitlab-ci/docker.gitlab-ci.yml'
+  - local: 'conf/gitlab-ci/rules.gitlab-ci.yml'
+
+.deploy_to:
+  image: docker.io/docker:dind # needs > 19.03
+  stage: deploy
+  extends:
+    - .docker_registry_access
+    - .docker_deployment
+    - .runner_mutehost
+  variables:
+    COMPOSE_FILE: docker-compose.yml
+
+### Stage
+## Deployment
+#
+
+deploy_to_production:
+  extends:
+    - .deploy_to
+    - .rules_deploy_to_production
+  needs:
+    - job: build_release_docker_image
+  variables:
+    TAG: $CI_COMMIT_TAG
+    ENV_NAME: production
+    COMPOSE_ENV_FILE: conf/gitlab-ci/production.env
+  environment:
+    name: production
+    url: https://mutehost.loria.fr
+  resource_group: production
+
+deploy_to_test:
+  extends:
+    - .deploy_to
+    - .rules_deploy_to_test
+  needs:
+    - job: build_latest_docker_image
+  variables:
+    ENV_NAME: test
+    COMPOSE_ENV_FILE: conf/gitlab-ci/test.env
+  environment:
+    name: test/default
+    url: https://mutehost.loria.fr:8004
+  resource_group: test

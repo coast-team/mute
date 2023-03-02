@@ -1,4 +1,4 @@
-<mute-toolbar [title]="doc.title" (menu)="leftSidenavElm.toggle()"></mute-toolbar>
+<mute-toolbar [header]="doc.title" (menu)="leftSidenavElm.toggle()"></mute-toolbar>
 <mat-sidenav-container #sidenavElm>
 
   <!-- Left Sidenav-->
@@ -11,17 +11,18 @@
       <div #editorElt></div>
 
       <mat-divider></mat-divider>
-      <mute-controls (controls)="onControlsChange($event)" (slide)="updateStep($event)" [nbOperations]="countOperations()" [currentOp]="currentOp"
-        [max]="countMax()" [doc]="doc">
+      <mute-controls (controls)="onControlsChange($event)" (slide)="updateStep($event)"
+        [nbOperations]="countOperations()" [currentOp]="currentOp" [max]="countMax()" [doc]="doc">
       </mute-controls>
 
-      <mute-timeline [nbOperations]="countOperations()" [step]="step" [max]="countMax()" [currentOp]="currentOp" (slide)="showVersion($event)"
-        [delay]="300">
+      <mute-timeline [nbOperations]="countOperations()" [step]="step" [max]="countMax()" [currentOp]="currentOp"
+        (slide)="showVersion($event)" [delay]="300">
       </mute-timeline>
     </mat-card>
   </div>
 
-  <mat-sidenav #rightSidenavElm class="rightsidenav" align="end" [opened]="!this.media.isActive('xs')" [mode]="rightSideNavMode">
+  <mat-sidenav #rightSidenavElm class="rightsidenav" align="end" [opened]="!this.media.isActive('xs')"
+    [mode]="rightSideNavMode">
     <mute-collaborators [docAuthors]="docAuthors" (change)="onToggle()"></mute-collaborators>
   </mat-sidenav>
 

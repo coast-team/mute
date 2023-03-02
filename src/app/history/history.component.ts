@@ -12,18 +12,14 @@ import { UiService } from '../core/ui'
 import { CONTROLS } from './controls/controls'
 import { HistoryService, IDelete, IInsert } from './history.service'
 import { TimelineComponent } from './timeline/timeline.component'
+import { TextDelete, TextInsert } from 'mute-structs'
 
 @Component({
   selector: 'mute-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss'],
 })
-@Injectable()
 export class HistoryComponent implements OnInit, OnDestroy {
-  private operations: (IDelete | IInsert)[]
-  private subscriptions: Subscription[]
-  public docAuthors: Author[]
-
   @ViewChild('editorElt', { static: true })
   editorElt: ElementRef
   @ViewChild(TimelineComponent, { static: true })
@@ -34,12 +30,16 @@ export class HistoryComponent implements OnInit, OnDestroy {
   leftSidenavElm
   @ViewChild('rightSidenavElm', { static: true })
   rightSidenavElm
+
   public editor: CodeMirror.Editor
   public currentOp: number
   public doc: Doc
   public step: number
-
   public rightSideNavMode = 'side'
+  public docAuthors: Author[]
+
+  private operations: (IDelete | IInsert)[]
+  private subscriptions: Subscription[]
 
   constructor(
     private zone: NgZone,
@@ -118,8 +118,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * numOperations corresponds to a numero between
-   * 1 and countOperation().
+   * @argument numOperations corresponds to a numero between 1 and countOperation().
    */
   showVersion(numOperation: number) {
     // let begin = 0
@@ -158,7 +157,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   }
 
   generateText(beginOp: number, endOp: number): string {
-    const textContent = ''
+    let textContent = ''
     // for (let i = beginOp; i <= endOp; i++) {
     //   const currentOp = this.operations[i]
     //   if (currentOp instanceof TextInsert) {

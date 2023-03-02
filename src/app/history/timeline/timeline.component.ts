@@ -6,7 +6,6 @@ import { Subscription, timer } from 'rxjs'
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
 })
-@Injectable()
 export class TimelineComponent implements OnInit, OnDestroy {
   @Input()
   currentOp: number
@@ -52,7 +51,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   pause() {
-    this.subscriptionPlayer.unsubscribe()
+    this.subscriptionPlayer?.unsubscribe()
   }
 
   goToBegin() {
@@ -66,8 +65,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.subscriptionPlayer) {
-      this.pause()
-    }
+    this.pause()
   }
 }

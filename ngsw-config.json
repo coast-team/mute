@@ -1,6 +1,6 @@
 {
   "appData": {
-    "version": "0.12.2"
+    "version": "0.13.0"
   },
   "index": "/index.html",
   "assetGroups": [
@@ -9,7 +9,16 @@
       "installMode": "prefetch",
       "updateMode": "prefetch",
       "resources": {
-        "files": ["/index.html", "/*.js", "/*.css", "/*.png", "/assets/**/*.woff2", "/assets/**/*.png", "/assets/**/*.svg", "!/*.txt"]
+        "files": [
+          "/index.html",
+          "/*.js",
+          "/*.css",
+          "/*.png",
+          "/assets/**/*.woff2",
+          "/assets/**/*.png",
+          "/assets/**/*.svg",
+          "!/*.txt"
+        ]
       }
     }
   ]

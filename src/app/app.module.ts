@@ -36,7 +36,11 @@ import { SharedModule } from './shared/shared.module'
   providers: [
     {
       provide: APP_INITIALIZER,
-      useFactory: (settings: SettingsService, localStorage: LocalStorageService, botStorage: BotStorageService) => async () => {
+      useFactory: (
+        settings: SettingsService,
+        localStorage: LocalStorageService,
+        botStorage: BotStorageService
+      ) => async () => {
         await getIndexedDBState()
         await settings.init()
         await localStorage.init(settings)

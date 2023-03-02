@@ -1,0 +1,93 @@
+include:
+  - local: 'conf/gitlab-ci/runners.gitlab-ci.yml'
+  - local: 'conf/gitlab-ci/rules.gitlab-ci.yml'
+
+.e2e:
+  stage: test
+  extends: .runner_inria
+  image: docker.io/docker:dind
+  only:
+    - merge_requests
+  needs: []
+  variables:
+    DOCKERFILE_PATH: src/e2e/Dockerfile
+    NAME: ${CONTAINER}-${CI_PIPELINE_IID}
+  script:
+    - docker build -f $DOCKERFILE_PATH -t $IMAGE . # build image
+    - | # block that deletes image on teardown
+      {
+        docker run --privileged -d --name $NAME $IMAGE
+        sleep 10
+        docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
+        docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
+        docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
+      }
+      docker rm -f $NAME || true
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - e2e.xml
+
+### Stage
+## Test
+#
+
+code_quality:
+  extends: .runner_inria
+  artifacts:
+    paths:
+      - gl-code-quality-report.json
+
+karma:
+  stage: test
+  extends:
+    - .runner_workstation
+    - .use_node_cache
+  image: docker.io/timbru31/node-chrome:14
+  only:
+    - merge_requests
+  script:
+    - npm test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - karma.xml
+
+e2e_full: # whole E2E scenario
+  extends: .e2e
+  variables:
+    IMAGE: ci-full-scenario
+    CONTAINER: ci-full-scenario-container
+    SCENARIO: fullscenario
+  after_script:
+    - docker stop $NAME
+  when: manual
+
+e2e_online: # two users meet up on the same document and modify its content
+  extends: .e2e
+  variables: 
+    IMAGE: ci-online-scenario
+    CONTAINER: ci-online-scenario-container
+    SCENARIO: online
+  after_script:
+    - docker stop $NAME
+
+e2e_offline: # two previously met users are disconnected from the signaling server but can still both modify the document
+  extends: .e2e
+  variables:
+    IMAGE: ci-offline-scenario
+    CONTAINER: ci-offline-scenario-container
+    SCENARIO: offline
+  after_script:
+    - docker stop $NAME
+
+e2e_offline-to-online: # the document at the end is a merge of their respective modifications
+  extends:
+    - .e2e
+    - .retry
+  variables:
+    IMAGE: ci-offline-to-online-scenario
+    CONTAINER: ci-offline-to-online-scenario-container
+    SCENARIO: offline-to-online
