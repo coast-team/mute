@@ -4,7 +4,7 @@ include:
 
 .e2e:
   stage: test
-  extends: .runner_inria
+  extends: .runner_workstation
   image: docker.io/docker:dind
   only:
     - merge_requests
