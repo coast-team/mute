@@ -48,18 +48,12 @@
             "namedChunks": true
           },
           "configurations": {
-            "debug": {
+            "development": {
               "outputHashing": "all",
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "serviceWorker": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ]
+              "serviceWorker": false
             },
             "production": {
               "budgets": [
@@ -104,14 +98,14 @@
             "browserTarget": "mute:build"
           },
           "configurations": {
-            "debug": {
-              "browserTarget": "mute:build:debug"
+            "development": {
+              "browserTarget": "mute:build:development"
             },
             "production": {
               "browserTarget": "mute:build:production"
             }
           },
-          "defaultConfiguration": "debug"
+          "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",

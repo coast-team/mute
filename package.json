@@ -26,6 +26,7 @@
     "start": "ng serve --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "docker-compose up -d --no-recreate sigver",
     "build": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
     "build:stats": "ng build --configuration debug --stats-json # use scripts/bundle-analyser.sh instead",
     "postinstall": "run-script-os",
     "postinstall:win32": "cd scripts && get-assets.bat",

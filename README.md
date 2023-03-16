@@ -12,7 +12,7 @@ Edit documents collaboratively in real-time with hundreds of users on the same d
 ![](https://gitlab.inria.fr/coast-team/mute/mute/uploads/b2363cb860a073fc277b9b62f2bc4bae/mute.jpeg){width=75%}
 </a>
 
-[stable demo](https://mutehost.loria.fr) · [bleeding-edge demo](https://mutehost.loria.fr:8004) · [experimental network demo](https://mutehost.loria.fr:8006) (using [libp2p](#hammer_and_wrench-architecture) instead of [netflux](#hammer_and_wrench-architecture))
+[stable demo](https://mute.loria.fr) · [bleeding-edge demo](https://main.mute.loria.fr) · [experimental network demo](https://test-libp2p.mute.loria.fr) (using [libp2p](#hammer_and_wrench-architecture) instead of [netflux](#hammer_and_wrench-architecture))
 </div>
 
 ## :package: Deployment

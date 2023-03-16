@@ -1,13 +1,16 @@
 # Build Mute
 FROM docker.io/node:14-alpine AS builder
 
+ARG BUILD_TARGET
+
 WORKDIR /app
 COPY . ./
 RUN apk add git
 RUN apk add bash
 RUN test -d node_modules || (echo "no cached modules" && npm ci --no-audit)
 RUN npm run postinstall:default
-RUN npm run build
+RUN npm run build$BUILD_TARGET
+
 
 # Serve Mute
 FROM docker.io/nginx:alpine
