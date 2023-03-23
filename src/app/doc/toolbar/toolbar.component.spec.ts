@@ -4,18 +4,19 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 import { RouterTestingModule } from '@angular/router/testing'
 import { Ng2UiAuthModule } from 'np2-ui-auth'
 
-import { SettingsService } from '../../core/settings'
-import { UiService } from '../../core/ui'
-import { NetworkService } from '../../doc/network'
-import { DocService } from '../doc.service'
-import { RichCollaboratorsService } from '../rich-collaborators'
+
+import { SettingsService } from '@app/core/settings'
+import { UiService } from '@app/core/ui'
+import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstracted'
+import { DocService } from '@app/doc/doc.service'
+import { RichCollaboratorsService } from '@app/doc/rich-collaborators/rich-collaborators.service'
 import { ToolbarComponent } from './toolbar.component'
 
 let comp: ToolbarComponent
 let fixture: ComponentFixture<ToolbarComponent>
 
 const uiServiceStub = undefined
-const networkServiceStub = undefined
+const networkServiceAbstractedStub = undefined
 const settingsServiceStub = undefined
 const mdSnackBarStub = undefined
 
@@ -31,7 +32,7 @@ xdescribe('ToolbarComponent', () => {
           RichCollaboratorsService,
           ChangeDetectorRef,
           { provide: UiService, useValue: uiServiceStub },
-          { provide: NetworkService, useValue: networkServiceStub },
+          { provide: NetworkServiceAbstracted, useValue: networkServiceAbstractedStub },
           { provide: SettingsService, useValue: settingsServiceStub },
           { provide: MatSnackBar, useValue: mdSnackBarStub },
         ],

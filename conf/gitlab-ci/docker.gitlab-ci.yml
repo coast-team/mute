@@ -17,5 +17,5 @@
 .docker_deployment:
   script:
     - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} down || true
-    - docker-compose pull --include-deps mute
+    - docker-compose --env-file ${COMPOSE_ENV_FILE:-""} pull --include-deps mute
     - docker-compose -p $ENV_NAME -f $COMPOSE_FILE --env-file ${COMPOSE_ENV_FILE:-""} up -d

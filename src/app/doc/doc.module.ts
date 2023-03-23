@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 
-import { SharedModule } from '../shared/shared.module'
+import { SharedModule } from '@app/shared/shared.module'
 import { DocResolverService } from './doc-resolver.service'
 import { DocComponent } from './doc.component'
 import { CursorsDirective } from './editor/cursor/cursors.directive'
@@ -13,22 +13,8 @@ import { SyncComponent } from './toolbar/sync/sync.component'
 import { ToolbarComponent } from './toolbar/toolbar.component'
 
 @NgModule({
-  imports: [
-    SharedModule,
-    RightSideModule,
-    RouterModule
-  ],
-  declarations: [
-    DocComponent,
-    EditorComponent,
-    CursorsDirective,
-    ToolbarComponent,
-    SyncComponent,
-    ResolverDialogComponent
-  ],
-  providers: [
-    DocResolverService,
-    PulsarService
-  ],
+  imports: [SharedModule, RightSideModule, RouterModule],
+  declarations: [DocComponent, EditorComponent, CursorsDirective, ToolbarComponent, SyncComponent, ResolverDialogComponent],
+  providers: [DocResolverService, PulsarService],
 })
 export class DocModule {}

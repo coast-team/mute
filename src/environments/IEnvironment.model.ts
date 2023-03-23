@@ -1,16 +1,28 @@
 import { Strategy } from '@coast-team/mute-core'
-import { LogLevel } from 'netflux'
-import { EncryptionType } from '../app/core/crypto/EncryptionType.model'
+import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
+import { networkSolution } from '@app/doc/network/solutions/networkSolution'
+
+export enum NetfluxLogLevel {
+  DEBUG = 0,
+  WEB_GROUP = 1,
+  WEBRTC = 2,
+  CHANNEL = 3,
+  TOPOLOGY = 4,
+  SIGNALING = 5,
+  CHANNEL_BUILDER = 6,
+}
 
 export interface IEnvironment {
   production: boolean
 
   crdtStrategy: Strategy
 
+  network: networkSolution
+
   debug: {
     visible: boolean
     log: {
-      netflux: LogLevel[]
+      netflux: NetfluxLogLevel[]
       crypto: boolean
       doc: boolean
     }
@@ -18,14 +30,15 @@ export interface IEnvironment {
 
   p2p: {
     /**
+     * Parameters for the connection to the signaling server
+     */
+    rtcConfiguration: RTCConfiguration
+
+    /**
      * We provide one by default: sigver
      */
     signalingServer: string
-
-    /**
-     * Parameters for the connection to the signaling server
-     */
-    rtcConfiguration?: RTCConfiguration
+    signalingServerTestAddr?: string // If the address of the signaling server to test is ws:// or http://
   }
 
   cryptography: {

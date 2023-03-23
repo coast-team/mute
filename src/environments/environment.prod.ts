@@ -1,18 +1,24 @@
 import { IEnvironment } from './IEnvironment.model'
 import { defaultEnvironment } from './default'
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
+import { networkSolution } from '@app/doc/network/solutions/networkSolution'
 
 const host = 'mute.loria.fr' // FIXME: interpolation at build time required
 
 export const environment: IEnvironment = {
   ...defaultEnvironment, // we extend the default environment
 
+  
+  network:  networkSolution.LIBP2P,
+
   production: true,
 
   p2p: {
+    rtcConfiguration: defaultEnvironment.p2p.rtcConfiguration,
     // Signaling server URL
     // See https://github.com/coast-team/sigver
-    signalingServer: `wss://${host}:8010`,
+    signalingServer: `/dns4/${host}/tcp/8012/wss/p2p-webrtc-star/`,
+    signalingServerTestAddr: `http://mute.loria.fr:8012`
   },
 
   cryptography: {

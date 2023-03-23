@@ -213,6 +213,7 @@ export class PulsarService {
       } else {
         urlEnd = (docType + i).toString()
       }
+      
       console.log('Raison fermeture socket', event.reason)
       console.log('event code', event.code)
 

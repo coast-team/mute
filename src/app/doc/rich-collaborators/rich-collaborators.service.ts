@@ -9,20 +9,21 @@ import { Profile, SettingsService } from '@app/core/settings'
 
 import { Colors } from './Colors'
 import { RichCollaborator } from './RichCollaborator'
-import { NetworkService } from '../network'
+import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstracted'
 
 @Injectable()
 export class RichCollaboratorsService implements OnDestroy {
+
+  public collaborators: RichCollaborator[]
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
   private updateSubject: Subject<RichCollaborator>
   private me: Promise<void>
   private colors: Colors
   private subs: Subscription[]
+  private network: NetworkServiceAbstracted
 
-  private network: NetworkService
-
-  public collaborators: RichCollaborator[]
+  
 
   constructor(cd: ChangeDetectorRef, settings: SettingsService) {
     this.joinSubject = new Subject()
@@ -52,14 +53,6 @@ export class RichCollaboratorsService implements OnDestroy {
     this.subs[this.subs.length] = this.onChanges.subscribe(() => cd.detectChanges())
   }
 
-  ngOnDestroy() {
-    this.subs.forEach((s) => s.unsubscribe())
-  }
-
-  setNetwork(network: NetworkService) {
-    this.network = network
-  }
-
   get onUpdate(): Observable<RichCollaborator> {
     return this.updateSubject.asObservable()
   }
@@ -76,8 +69,16 @@ export class RichCollaboratorsService implements OnDestroy {
     return merge(this.updateSubject, this.joinSubject, this.leaveSubject, this.me).pipe(map(() => undefined))
   }
 
-  addCollaboratorToIdMap(muteCoreId: number) {
-    this.network.idMap.addIds(this.network.tempNetworkId, muteCoreId)
+  ngOnDestroy() {
+    this.subs.forEach((s) => s.unsubscribe())
+  }
+
+  setNetwork(network : NetworkServiceAbstracted){
+    this.network = network
+  } 
+
+  addCollaboratorToIdMap(muteCoreId : number){
+    this.network.idMap.addIds(NetworkServiceAbstracted.tempNetworkId, muteCoreId)
   }
 
   removeCollaboratorFromIdMap(muteCoreId: number) {
@@ -104,6 +105,7 @@ export class RichCollaboratorsService implements OnDestroy {
         this.addCollaboratorToIdMap(collab.muteCoreId)
         const collabNetworkId = this.network.idMap.getNetworkId(collab.muteCoreId)
         const rc = new RichCollaborator(collabNetworkId, collab, this.colors.pick())
+        this.network.addCollaboratorToGroup(rc)
         this.collaborators[this.collaborators.length] = rc
         this.joinSubject.next(rc)
       })
@@ -115,6 +117,8 @@ export class RichCollaboratorsService implements OnDestroy {
       source.subscribe((collaborator: ICollaborator) => {
         const collaboratorNetworkId = this.network.idMap.getNetworkId(collaborator.muteCoreId)
         this.removeCollaboratorFromIdMap(collaborator.muteCoreId)
+        const indexGroupOfCollaborators = this.network.groupOfCollaborators.findIndex((c) => c.networkId === collaboratorNetworkId)
+        this.network.removeCollaboratorFromGroup(indexGroupOfCollaborators)
         const index = this.collaborators.findIndex((c) => c.networkId === collaboratorNetworkId)
         this.colors.dismiss(this.collaborators[index].color)
         this.collaborators.splice(index, 1)

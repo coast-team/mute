@@ -17,7 +17,7 @@ include:
     - | # block that deletes image on teardown
       {
         docker run --privileged -d --name $NAME $IMAGE
-        sleep 10
+        sleep 15
         docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
         docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
         docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host

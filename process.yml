@@ -5,3 +5,7 @@ apps:
   - script: sigver
     name: 'mute-signaling-docker'
     args: '--port 8010'
+  - script: /usr/local/lib/node_modules/@libp2p/webrtc-star-signalling-server/bin/index.js
+    name: 'libp2p-webrtc-star-signaling-server'
+    args: '--port 8010'
+

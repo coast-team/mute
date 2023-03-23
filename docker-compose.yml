@@ -5,7 +5,9 @@ services:
     image: ${MUTE_IMAGE:-registry.gitlab.inria.fr/coast-team/mute/mute}
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ${MUTE_DOCKERFILE:-Dockerfile}
+      args:
+        - BUILD_TARGET=${BUILD_TARGET}
     ports:
       - ${MUTE_PORT:-4200}:4200
     depends_on:
@@ -15,6 +17,6 @@ services:
     image: ${SIGVER_IMAGE:-registry.gitlab.inria.fr/coast-team/mute/mute/sigver}
     build:
       context: .
-      dockerfile: DockerfileSigver
+      dockerfile: ${SIGVER_DOCKERFILE:-conf/docker/DockerfileSigver}
     ports:
       - ${SIGVER_PORT:-8010}:8010

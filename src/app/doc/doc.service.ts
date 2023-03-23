@@ -17,25 +17,27 @@ import {
 } from '@coast-team/mute-core'
 import { SessionParameters } from '@coast-team/mute-core/dist/types/src/MuteCore'
 import { KeyState } from '@coast-team/mute-crypto'
-import { WebGroupState } from 'netflux'
 
 import { environment } from '@environments/environment'
-import { CryptoService } from '../core/crypto'
-import { Doc } from '../core/Doc'
-import { EProperties } from '../core/settings/EProperties.enum'
-import { SettingsService } from '../core/settings'
-import { BotStorageService } from '../core/storage/bot'
-import { UiService } from '../core/ui'
+import { CryptoService } from '@app/core/crypto'
+import { Doc } from '@app/core/Doc'
+import { EProperties } from '@app/core/settings/EProperties.enum'
+import { SettingsService } from '@app/core/settings'
+import { BotStorageService } from '@app/core/storage/bot'
+import { UiService } from '@app/core/ui/ui.service'
 import { DocResolverService } from './doc-resolver.service'
 import { LogsService } from './logs'
-import { NetworkService } from './network'
-import { RichCollaboratorsService } from './rich-collaborators'
+import { NetworkServiceAbstracted, PeersGroupConnectionStatus } from '@app/doc/network/network.service.abstracted'
+import { RichCollaboratorsService } from './rich-collaborators/rich-collaborators.service'
+import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
 
 const SAVE_DOC_INTERVAL = 2000
 const SYNC_DOC_INTERVAL = 10000
 
 @Injectable()
 export class DocService implements OnDestroy {
+  public doc: Doc
+
   private subs: Subscription[]
   private muteCore: MuteCoreTypes
 
@@ -45,14 +47,12 @@ export class DocService implements OnDestroy {
   private docContentChanged: boolean
   private initSubject$: Subject<string>
 
-  public doc: Doc
-
   constructor(
     private zone: NgZone,
     private route: ActivatedRoute,
     private collabs: RichCollaboratorsService,
     private settings: SettingsService,
-    private network: NetworkService,
+    private network: NetworkServiceAbstracted,
     private botStorage: BotStorageService,
     public ui: UiService,
     private cd: ChangeDetectorRef,
@@ -93,11 +93,13 @@ export class DocService implements OnDestroy {
             this.doc.remotes[0].synchronized = new Date()
           }
         })
+        /* TODO code that needs to be re-evaluated for Bot functionality
         this.newSub = this.network.onStateChange.subscribe((state) => {
           if (state === WebGroupState.JOINED && this.doc.remotes.length !== 0) {
             this.network.inviteBot(this.botStorage.wsURL)
           }
-        })
+        })*/
+
         this.newSub = this.doc.onMetadataChanges.subscribe(() => cd.detectChanges())
         // END: Handle bot storage if exists
       })
@@ -173,14 +175,13 @@ export class DocService implements OnDestroy {
     })
 
     // Link message stream between Network and MuteCore
-    this.muteCore.messageIn$ = this.network.messageOut
-    this.network.setMessageIn(this.muteCore.messageOut$)
+    this.muteCore.messageIn$ = this.network.messageIn
+    this.network.setMessageOut(this.muteCore.messageOut$)
 
     //Set up the network to be used in the collaboratorService
     this.collabs.setNetwork(this.network)
 
     // Setup collaborators' subscriptions
-    this.handleCollaboratorJoining()
     this.collabs.subscribeToUpdateSource(this.muteCore.remoteCollabUpdate$)
     this.collabs.subscribeToJoinSource(this.muteCore.collabJoin$)
     this.collabs.subscribeToLeaveSource(this.muteCore.collabLeave$)
@@ -191,14 +192,14 @@ export class DocService implements OnDestroy {
       map((props) => {
         if (props.includes(EProperties.profile)) {
           return {
-            id: this.network.myId,
+            id: this.network.solution.myNetworkId,
             displayName: this.settings.profile.displayName,
             login: this.settings.profile.login,
             email: this.settings.profile.email,
             avatar: this.settings.profile.avatar,
           }
         } else {
-          return { id: this.network.myId, displayName: this.settings.profile.displayName }
+          return { id: this.network.solution.myNetworkId, displayName: this.settings.profile.displayName }
         }
       })
     )
@@ -236,13 +237,7 @@ export class DocService implements OnDestroy {
     this.startSaveDocInterval()
 
     // Subscribe to events which trigger document content synchronization
-
-    this.newSub = merge(
-      this.network.onCryptoStateChange.pipe(filter((state) => state === KeyState.READY)),
-      this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED))
-    )
-      .pipe(auditTime(1000))
-      .subscribe((v) => this.restartSyncInterval())
+    this.handleSynchronizationActivation()
 
     // Config assymetric cryptography
     if (environment.cryptography.coniksClient) {
@@ -258,19 +253,26 @@ export class DocService implements OnDestroy {
         })
       })
     }
-
     // Start join the collaboration session
-    this.network.join(this.doc.signalingKey)
+    this.network.joinNetwork(this.doc.signalingKey)
   }
 
   /**
-   * 
+   * enable the MuteCore synchronization under specific conditions
    */
-  handleCollaboratorJoining(){
-    const self = this
-    this.network.onMemberJoin.subscribe((networkId) => {
-      self.network.tempNetworkId = networkId
-    })
+  handleSynchronizationActivation() {
+    if (environment.cryptography.type !== EncryptionType.NONE) {
+      this.newSub = merge(
+        this.network.onCryptoStateChange.pipe(filter((state) => state === KeyState.READY)),
+        this.network.onPeersGroupConnectionStatusChange.pipe(filter((status) => status === PeersGroupConnectionStatus.JOINED))
+      )
+        .pipe(auditTime(1000))
+        .subscribe((v) => this.restartSyncInterval())
+    } else {
+      setInterval(() => {
+        this.restartSyncInterval()
+      }, 1000)
+    }
   }
 
   ngOnDestroy() {
@@ -310,19 +312,21 @@ export class DocService implements OnDestroy {
     }
 
     this.subs.push(
-      this.network.onStateChange.pipe(filter((state) => state === WebGroupState.JOINED)).subscribe(() => {
-        const obj = {
-          type: 'connection',
-          timestamp: Date.now(),
-          siteId,
-          networkId: this.network.myId,
-          neighbours: {
-            downstream: this.network.wg.neighbors,
-            upstream: this.network.wg.neighbors,
-          },
-        }
-        this.logs.log(obj)
-      })
+      this.network.onPeersGroupConnectionStatusChange
+        .pipe(filter((status) => status === PeersGroupConnectionStatus.JOINED))
+        .subscribe(() => {
+          const obj = {
+            type: 'connection',
+            timestamp: Date.now(),
+            siteId,
+            networkId: this.network.solution.myNetworkId,
+            neighbours: {
+              downstream: this.network.solution.neighbors,
+              upstream: this.network.solution.neighbors,
+            },
+          }
+          this.logs.log(obj)
+        })
     )
     this.subs.push(
       this.network.onLeave.subscribe(() => {
@@ -330,10 +334,10 @@ export class DocService implements OnDestroy {
           type: 'disconnection',
           timestamp: Date.now(),
           siteId,
-          networkId: this.network.myId,
+          networkId: this.network.solution.myNetworkId,
           neighbours: {
-            downstream: this.network.wg.neighbors,
-            upstream: this.network.wg.neighbors,
+            downstream: this.network.solution.neighbors,
+            upstream: this.network.solution.neighbors,
           },
         })
       })
@@ -352,12 +356,12 @@ export class DocService implements OnDestroy {
 
     this.subs.push(
       this.muteCore.collabJoin$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId/*, remoteNetworkId: c.muteCoreId*/ })
+        this.logs.log({ type: 'collaboratorJoin', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId })
       })
     )
     this.subs.push(
       this.muteCore.collabLeave$.subscribe((c: ICollaborator) => {
-        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId/*, remoteNetworkId: c.id*/ })
+        this.logs.log({ type: 'collaboratorLeave', timestamp: Date.now(), siteId, remoteSiteId: c.muteCoreId })
       })
     )
 
@@ -367,10 +371,10 @@ export class DocService implements OnDestroy {
           this.logs.log({
             ...operation,
             timestamp: Date.now(),
-            collaborators: this.network.members,
+            collaborators: this.network.groupOfCollaborators,
             neighbours: {
-              downstream: this.network.wg.neighbors,
-              upstream: this.network.wg.neighbors,
+              downstream: this.network.solution.neighbors,
+              upstream: this.network.solution.neighbors,
             },
           })
         },
@@ -412,8 +416,12 @@ export class DocService implements OnDestroy {
   }
 
   private sync() {
-    if (this.network.cryptoState === KeyState.READY) {
-      // if (this.network.members.length > 1 && this.network.cryptoState === KeyState.READY) {
+    if (environment.cryptography.type !== EncryptionType.NONE) {
+      if (this.network.cryptoState === KeyState.READY) {
+        // if (this.network.members.length > 1 && this.network.cryptoState === KeyState.READY) {
+        this.muteCore.synchronize()
+      }
+    } else {
       this.muteCore.synchronize()
     }
   }

@@ -1,4 +1,4 @@
-FROM docker:20.10.12-dind-alpine3.14
+FROM docker:20.10.23-dind-alpine3.17
 
 WORKDIR /src
 COPY src/e2e/ ./e2e/
@@ -9,6 +9,6 @@ RUN apk add firefox
 RUN apk add chromium
 
 WORKDIR /src/e2e
-RUN npm ci --no-audit
+RUN test -d node_modules || (echo "no cached modules" && npm ci --no-audit)
 
-WORKDIR /app/mute
+WORKDIR /src/mute

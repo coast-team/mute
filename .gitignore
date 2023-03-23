@@ -10,6 +10,7 @@
 # dependencies
 /node_modules
 src/e2e/node_modules
+src/e2e/e2e.xml
 /src/assets/*.js
 
 # IDEs and editors

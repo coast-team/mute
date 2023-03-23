@@ -40,6 +40,18 @@
     <mat-icon>cloud</mat-icon>
     Invite bot storage
   </button>
+  <div *ngIf="isConnected" >
+    <button mat-menu-item  (click)="leaveNetwork()">
+      <mat-icon>clear</mat-icon>
+      Leave the network
+    </button>
+  </div>
+  <div *ngIf="!isConnected">
+    <button mat-menu-item  (click)="rejoinNetwork()">
+      <mat-icon>loop</mat-icon>
+      Join the network
+    </button>
+  </div>
   <!--FIXME: *ngIf didn't work here, fxShow doesn't work with ng-container-->
   <mat-divider fxShow="debug === true"></mat-divider>
   <button fxShow="debug === true" mat-menu-item [matMenuTriggerFor]="debug">

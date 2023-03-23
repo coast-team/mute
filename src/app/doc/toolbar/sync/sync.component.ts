@@ -1,9 +1,17 @@
 import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core'
-import { SignalingState, WebGroupState } from 'netflux'
 import { Subscription } from 'rxjs'
+import {
+  NetworkServiceAbstracted,
+  PeersGroupConnectionStatus,
+  SignalingServerConnectionStatus,
+} from '@app/doc/network/network.service.abstracted'
 
-import { NetworkService } from '../../network/network.service'
+enum SyncState {
+  UNDEFINED,
+  ENABLED,
+  DISABLED,
+}
 
 @Component({
   selector: 'mute-sync',
@@ -23,66 +31,71 @@ import { NetworkService } from '../../network/network.service'
   ],
 })
 export class SyncComponent implements OnInit, OnDestroy {
+  public syncState = SyncState
+  public syncStateValue = SyncState.UNDEFINED
+  public cardState: string
+  public groupDetails: string
+  public serverDetails: string
+
+  public networkUseGroup: boolean
+  public networkUseServer: boolean
+
   private subscriptions: Subscription[]
 
-  public SYNC = 1
-  public SYNC_DISABLED = 2
-
-  public syncState: number
-  public cardState: string
-  public signalingDetails: string
-  public groupDetails: string
-
-  constructor(private changeDetectorRef: ChangeDetectorRef, private networkService: NetworkService) {
+  constructor(private changeDetectorRef: ChangeDetectorRef, private networkService: NetworkServiceAbstracted) {
     this.subscriptions = []
     this.groupDetails = ''
-    this.signalingDetails = ''
+    this.serverDetails = ''
+    this.networkUseGroup = networkService.solution.USE_GROUP
+    this.networkUseServer = networkService.solution.USE_SERVER
   }
 
   ngOnInit() {
+    //Handling the status of connection to the group of peers
     this.subscriptions.push(
-      this.networkService.onStateChange.subscribe((s: WebGroupState) => {
-        switch (s) {
-          case WebGroupState.JOINING:
-            this.groupDetails = 'Joining the group...'
-            this.syncState = undefined
+      this.networkService.onPeersGroupConnectionStatusChange.subscribe((status: PeersGroupConnectionStatus) => {
+        switch (status) {
+          case PeersGroupConnectionStatus.JOINING:
+            this.groupDetails = 'Trying to join the group...'
+            this.syncStateValue = SyncState.UNDEFINED
             break
-          case WebGroupState.JOINED:
+          case PeersGroupConnectionStatus.JOINED:
             this.groupDetails = 'Joined the group'
-            this.syncState = this.SYNC
+            this.syncStateValue = SyncState.ENABLED
             break
-          case WebGroupState.LEFT:
-            this.groupDetails = 'Left the group'
-            this.syncState = this.SYNC_DISABLED
+          case PeersGroupConnectionStatus.OFFLINE:
+            this.groupDetails = 'Not connected to the group'
+            this.syncStateValue = SyncState.DISABLED
             break
           default:
-            this.groupDetails = 'undefined'
-            this.syncState = undefined
+            this.groupDetails = 'Not connected to the group'
+            this.syncStateValue = SyncState.UNDEFINED
         }
         this.changeDetectorRef.detectChanges()
       })
     )
 
+    // Handling the status of connection to the signaling server, message queue...
     this.subscriptions.push(
-      this.networkService.onSignalingStateChange.subscribe((s: SignalingState) => {
-        switch (s) {
-          case SignalingState.CONNECTING:
-            this.signalingDetails = 'Connecting to the signaling server...'
+      this.networkService.onSignalingServerConnectionStatusChange.subscribe((status: SignalingServerConnectionStatus) => {
+        switch (status) {
+          case SignalingServerConnectionStatus.CONNECTING:
+            this.serverDetails = 'Connecting to the signaling server... '
             break
-          case SignalingState.OPEN:
-            this.signalingDetails = 'Connected to the signaling server'
+          case SignalingServerConnectionStatus.OPEN:
+            this.serverDetails = 'Connected to the signaling server'
             break
-          case SignalingState.CHECKING:
-            this.signalingDetails = 'Checking group membership'
+          case SignalingServerConnectionStatus.CHECKING:
+            this.serverDetails = 'Checking group membership'
             break
-          case SignalingState.CHECKED:
-            this.signalingDetails = 'Signaling checked'
+          case SignalingServerConnectionStatus.CHECKED:
+            this.serverDetails = 'Signaling checked'
             break
-          case SignalingState.CLOSED:
-            this.signalingDetails = 'No longer connected to the signaling server'
+          case SignalingServerConnectionStatus.CLOSED:
+            this.serverDetails = 'No longer connected to the signaling server'
             break
           default:
-            this.signalingDetails = 'undefined'
+            this.serverDetails = 'undefined'
         }
         this.changeDetectorRef.detectChanges()
       })

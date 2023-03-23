@@ -1,0 +1,14 @@
+FROM node:16-alpine
+
+LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
+LABEL org.opencontainers.description running the signaling server of libp2p-webrtc star
+LABEL org.opencontainers.image.vendor COAST
+
+COPY process.yml /
+
+RUN npm install -g pm2@^5.2.2
+RUN npm install -g @libp2p/webrtc-star-signalling-server@^2.0.5
+
+EXPOSE 8010
+
+CMD ["pm2-runtime", "start", "process.yml", "--only", "libp2p-webrtc-star-signaling-server"]

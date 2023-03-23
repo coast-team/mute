@@ -11,7 +11,6 @@ RUN test -d node_modules || (echo "no cached modules" && npm ci --no-audit)
 RUN npm run postinstall:default
 RUN npm run build$BUILD_TARGET
 
-
 # Serve Mute
 FROM docker.io/nginx:alpine
 

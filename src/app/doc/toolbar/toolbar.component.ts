@@ -12,9 +12,9 @@ import { Doc } from '@app/core/Doc'
 import { BotStorageService } from '@app/core/storage/bot'
 import { UiService } from '@app/core/ui'
 
-import { DocService } from '../doc.service'
-import { LogsService } from '../logs'
-import { NetworkService } from '../network'
+import { DocService } from '@app/doc/doc.service'
+import { LogsService } from '@app/doc/logs/logs.service'
+import { NetworkServiceAbstracted, PeersGroupConnectionStatus } from '@app/doc/network/network.service.abstracted'
 
 @Component({
   selector: 'mute-toolbar',
@@ -39,6 +39,7 @@ export class ToolbarComponent implements OnDestroy {
   public docLog: boolean
   public LogLevel = LogLevel
   public environment = environment
+  public isConnected: boolean
 
   private subs: Subscription[]
   private digest: string
@@ -47,14 +48,14 @@ export class ToolbarComponent implements OnDestroy {
     public docService: DocService,
     public route: Router,
     private sanitizer: DomSanitizer,
-    private network: NetworkService,
+    private network: NetworkServiceAbstracted,
     private botStorage: BotStorageService,
     private snackBar: MatSnackBar,
     private ui: UiService,
     private logs: LogsService
   ) {
     this.debug = environment.debug.visible
-    this.netfluxLog = environment.debug.log.netflux
+    this.netfluxLog = environment.debug.log.netflux as any as LogLevel[]
     this.updateNetfluxLog()
     this.cryptoLog = environment.debug.log.crypto
     this.updateCryptoLog()
@@ -67,6 +68,16 @@ export class ToolbarComponent implements OnDestroy {
     this.subs = []
     this.subs.push(botStorage.onStatus.subscribe((code) => (this.botNotAvailable = code !== BotStorageService.AVAILABLE)))
     this.subs.push(this.ui.docDigest.subscribe((digest) => (this.digest = digest)))
+
+    this.isConnected = false // When the toolbar is initialized, user isn't connected to the network
+    this.network.solution.peersGroupConnectionStatusSubject.subscribe((state) => {
+      if (state === PeersGroupConnectionStatus.JOINED) {
+        this.isConnected = true
+      }
+      if (state === PeersGroupConnectionStatus.OFFLINE) {
+        this.isConnected = false
+      }
+    })
   }
 
   ngOnDestroy(): void {
@@ -83,6 +94,14 @@ export class ToolbarComponent implements OnDestroy {
         this.input.nativeElement.value = this.doc.title
       }
     }
+  }
+
+  leaveNetwork() {
+    this.network.leaveNetwork()
+  }
+
+  rejoinNetwork() {
+    this.network.joinNetwork(this.network.documentKey)
   }
 
   selectTitle() {

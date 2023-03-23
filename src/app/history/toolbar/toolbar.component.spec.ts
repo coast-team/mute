@@ -5,14 +5,14 @@ import { RouterTestingModule } from '@angular/router/testing'
 
 import { SettingsService } from '../../core/settings'
 import { UiService } from '../../core/ui'
-import { NetworkService } from '../../doc/network'
+import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstracted'
 import { ToolbarComponent } from './toolbar.component'
 
 let comp: ToolbarComponent
 let fixture: ComponentFixture<ToolbarComponent>
 
 const uiServiceStub = undefined
-const networkServiceStub = undefined
+const networkServiceAbstractedStub = undefined
 const settingsServiceStub = undefined
 const mdSnackBarStub = undefined
 
@@ -25,7 +25,7 @@ describe('ToolbarComponent', () => {
         schemas: [CUSTOM_ELEMENTS_SCHEMA],
         providers: [
           { provide: UiService, useValue: uiServiceStub },
-          { provide: NetworkService, useValue: networkServiceStub },
+          { provide: NetworkServiceAbstracted, useValue: networkServiceAbstractedStub },
           { provide: SettingsService, useValue: settingsServiceStub },
           { provide: MatSnackBar, useValue: mdSnackBarStub },
         ],

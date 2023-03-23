@@ -1,6 +1,6 @@
 import * as CodeMirror from 'codemirror'
 
-import { RichCollaborator } from '../../rich-collaborators/'
+import { RichCollaborator } from '@app/doc/rich-collaborators/RichCollaborator'
 
 let lineHeight: number
 

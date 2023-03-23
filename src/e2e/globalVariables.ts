@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
 // * -------------------------SCENARIOS--------------------------------
 // Scenario names and the path to execute the scenarios
 
@@ -8,14 +7,13 @@ const fullScenario = 'fullscenario'
 const pathFullScenarioUser1 = 'tests/full-scenario/fullScenarioUser1.ts'
 const pathFullScenarioUser2 = 'tests/full-scenario/fullScenarioUser2.ts'
 
-
 // * The online scenario
 // Two users are on the same document and they can both write text in the editor
 const onlineTest = 'online'
 const pathOnlineTestUser1 = 'tests/online-test/onlineTestUser1.ts'
 const pathOnlineTestUser2 = 'tests/online-test/onlineTestUser2.ts'
- 
-export { onlineTest, pathOnlineTestUser1, pathOnlineTestUser2}
+
+export { onlineTest, pathOnlineTestUser1, pathOnlineTestUser2 }
 
 // * The offline scenario
 // Signaling server is killed off, users can still see each other modifications
@@ -23,7 +21,7 @@ const offlineTest = 'offline'
 const pathOfflineTestUser1 = 'tests/offline-test/offlineTestUser1.ts'
 const pathOfflineTestUser2 = 'tests/offline-test/ofllineTestUser2.ts'
 
-export { offlineTest, pathOfflineTestUser1, pathOfflineTestUser2}
+export { offlineTest, pathOfflineTestUser1, pathOfflineTestUser2 }
 
 // * The offline to online scenario
 // Signaling server is started after users added text to doc while disconnected
@@ -31,57 +29,50 @@ export { offlineTest, pathOfflineTestUser1, pathOfflineTestUser2}
 const offlineToOnlineTest = 'offline-to-online'
 const pathOfflineToOnlineTestUser1 = 'tests/offline-to-online-test/offlineToOnlineUser1.ts'
 const pathOfflineToOnlineTestUser2 = 'tests/offline-to-online-test/offlineToOnlineUser2.ts'
- 
- export { offlineToOnlineTest, pathOfflineToOnlineTestUser1, pathOfflineToOnlineTestUser2}
 
+export { offlineToOnlineTest, pathOfflineToOnlineTestUser1, pathOfflineToOnlineTestUser2 }
 
 // * ------------------GLOBAL VARIABLES FOR USE IN THE TESTS------------------
-                    
-// Url variables for the tests 
-const urlSignaling = 'ws://localhost:8010'
+
+// Url variables for the tests
+const urlSignaling = new URL('http://localhost:8010')
 const muteHomeMenu = 'http://localhost:4200'
 const muteDoc = 'http://localhost:4200/urlDoc'
 
-export { urlSignaling, muteHomeMenu, muteDoc}
+export { urlSignaling, muteHomeMenu, muteDoc }
 
 // Expected texts for TestCafe assertion
-const onlineExpectedText = 
-`Hello, i am the first user
+const onlineExpectedText = `Hello, i am the first user
 
 This is a simple line of text  (There should be two whitespaces before this parenthesis)`
- 
-const onlineExpectedTextAccessTest =
-`accessHello, i am the first user
+
+const onlineExpectedTextAccessTest = `accessHello, i am the first user
 
 This is a simple line of text  (There should be two whitespaces before this parenthesis)`
- 
+
 export { onlineExpectedText, onlineExpectedTextAccessTest }
 
-const textAddedWhileOfflineUser1 ='access while offline by user 1'
+const textAddedWhileOfflineUser1 = 'access while offline by user 1'
 
-const textAddedWhileOfflineUser2 ='access while offline by user 2'
+const textAddedWhileOfflineUser2 = 'access while offline by user 2'
 
 const textAddedAfterWhitespace = '(There should be two whitespaces before this parenthesis)'
 
 export { textAddedWhileOfflineUser1, textAddedWhileOfflineUser2, textAddedAfterWhitespace }
 
-const expectedTextSignalingOffUser1 = 
-`Hello, i am the first user
+const expectedTextSignalingOffUser1 = `Hello, i am the first user
 This text should show on both tabs
 This is a simple line of text  (There should be two whitespaces before this parenthesis)`
 
-const expectedTextSignalingOffUser2 = 
-`Hello, i am the first user (This text should also show on both tabs)
+const expectedTextSignalingOffUser2 = `Hello, i am the first user (This text should also show on both tabs)
 
 This is a simple line of text`
 
-const expectedTextSignalingMerge = 
-`Hello, i am the first user (This text should also show on both tabs)
+const expectedTextSignalingMerge = `Hello, i am the first user (This text should also show on both tabs)
 This text should show on both tabs
 This is a simple line of text`
 
-export { expectedTextSignalingOffUser1, expectedTextSignalingOffUser2, expectedTextSignalingMerge}
-
+export { expectedTextSignalingOffUser1, expectedTextSignalingOffUser2, expectedTextSignalingMerge }
 
 // * ------------------PARAMETERS WHEN RUNNING TESTCAFE------------------
 // The parameters of the execution and what they represent
@@ -97,14 +88,12 @@ export { browser1, browser2, scenarioToRun, runningInDockerContainer }
 /**
  * Setting up the browser execution as headless when we are executing the tests in a container
  */
-function setHeadlessBrowser(){
-    browser1 += ":headless"
-    browser2 += ":headless"
+const setHeadlessBrowser = (): void => {
+  browser1 += ':headless'
+  browser2 += ':headless'
 }
 
 export { setHeadlessBrowser }
-
-
 
 // *------------------HANDLING PARRALLEL EXECUTION------------------
 // The global path that will be used to launch a test run (this path is determined by running the whichPath function)
@@ -113,36 +102,36 @@ export { setHeadlessBrowser }
 let pathUser1 = ''
 let pathUser2 = ''
 
-export { pathUser1, pathUser2}
+export { pathUser1, pathUser2 }
 
 /**
  * Determines the path of the test to execute depending on the scenario
  * @param scenarioName scenario executed for the test *(will be compared to scenario values in globalVariables file)*
  */
-function whichPath(scenarioName : string){
-    scenarioName = scenarioName.toLowerCase() // Remove eventual typing caps
-    switch (scenarioName){
-        case fullScenario :
-            pathUser1 = pathFullScenarioUser1
-            pathUser2 = pathFullScenarioUser2
-            break;
-        case onlineTest :
-            pathUser1 = pathOnlineTestUser1
-            pathUser2 = pathOnlineTestUser2
-            break;
-        case offlineTest :
-            pathUser1 = pathOfflineTestUser1
-            pathUser2 = pathOfflineTestUser2
-            break;
-        case offlineToOnlineTest :
-            pathUser1 = pathOfflineToOnlineTestUser1
-            pathUser2 = pathOfflineToOnlineTestUser2
-            break;
-        default : 
-            pathUser1 = 'Name of the scenario is not known'
-            pathUser2 = 'Name of the scenario is not known'
-            break;
-    }
+const whichPath = (scenarioName: string): void => {
+  scenarioName = scenarioName.toLowerCase() // Remove eventual typing caps
+  switch (scenarioName) {
+    case fullScenario:
+      pathUser1 = pathFullScenarioUser1
+      pathUser2 = pathFullScenarioUser2
+      break
+    case onlineTest:
+      pathUser1 = pathOnlineTestUser1
+      pathUser2 = pathOnlineTestUser2
+      break
+    case offlineTest:
+      pathUser1 = pathOfflineTestUser1
+      pathUser2 = pathOfflineTestUser2
+      break
+    case offlineToOnlineTest:
+      pathUser1 = pathOfflineToOnlineTestUser1
+      pathUser2 = pathOfflineToOnlineTestUser2
+      break
+    default:
+      pathUser1 = 'Name of the scenario is not known'
+      pathUser2 = 'Name of the scenario is not known'
+      break
+  }
 }
 
 export { whichPath }
@@ -150,38 +139,34 @@ export { whichPath }
 // * ------------------HANDLING PARRALLEL EXECUTION------------------
 // These variables handle the execution of a test for a specified user (When user 1 is running, user 2 is paused and vice-versa)
 // By default, user 1 execution is set to true (user 1 is the main user, and is the first one to start to test)
-let executingTestUser1 = true;
-let executingTestUser2 = false;
+let executingTestUser1 = true
+let executingTestUser2 = false
 
 /**
  * Stop current execution and resume the execution of the other user
  */
-async function stopExecAndResumeOther() {
-    if (executingTestUser1){
-        executingTestUser1 = false
-    } else {
-        executingTestUser1 = true
-    }
-    if (executingTestUser2){
-        executingTestUser2 = false
-    } else {
-        executingTestUser2 = true
-    }
-    await new Promise( resolve => setTimeout(resolve, 5000)); // Time to wait while the other user goes out of his while loop
+const stopExecAndResumeOther = async (): Promise<void> => {
+  if (executingTestUser1) {
+    executingTestUser1 = false
+  } else {
+    executingTestUser1 = true
+  }
+  if (executingTestUser2) {
+    executingTestUser2 = false
+  } else {
+    executingTestUser2 = true
+  }
+  await new Promise((resolve) => setTimeout(resolve, 5000)) // Time to wait while the other user goes out of their while loop
 }
 
 /**
  * Returns the execution status of user 1
  */
-function getExecutingTestUser1() {
-    return executingTestUser1;
-}
+const getExecutingTestUser1 = (): boolean => executingTestUser1
 
 /**
  * Returns the execution status of user 2
  */
-function getExecutingTestUser2() {
-    return executingTestUser2;
-}
+const getExecutingTestUser2 = (): boolean => executingTestUser2
 
-export { stopExecAndResumeOther, getExecutingTestUser1, getExecutingTestUser2 };
+export { stopExecAndResumeOther, getExecutingTestUser1, getExecutingTestUser2 }

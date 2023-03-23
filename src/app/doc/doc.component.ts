@@ -5,10 +5,10 @@ import { BehaviorSubject, merge, Observable, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
 import { UiService } from '../core/ui'
-import { RichCollaboratorsService } from '../doc/rich-collaborators'
+import { RichCollaboratorsService } from '@app/doc/rich-collaborators/rich-collaborators.service'
 import { DocService } from './doc.service'
 import { LogsService } from './logs'
-import { NetworkService } from './network'
+import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstracted'
 
 export enum VIEWPORT {
   LARGE,
@@ -21,7 +21,7 @@ export enum VIEWPORT {
   selector: 'mute-doc',
   templateUrl: './doc.component.html',
   styleUrls: ['./doc.component.scss'],
-  providers: [LogsService, DocService, NetworkService, RichCollaboratorsService],
+  providers: [LogsService, DocService, NetworkServiceAbstracted, RichCollaboratorsService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 @Injectable()

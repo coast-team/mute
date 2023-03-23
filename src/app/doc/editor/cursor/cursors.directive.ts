@@ -4,9 +4,9 @@ import { Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
 import { Streams, StreamsSubtype } from '@coast-team/mute-core'
-import { DocService } from '../../doc.service'
-import { NetworkService } from '../../network'
-import { RichCollaborator, RichCollaboratorsService } from '../../rich-collaborators'
+import { DocService } from '@app/doc/doc.service'
+import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstracted'
+import { RichCollaborator, RichCollaboratorsService } from '@app/doc/rich-collaborators'
 import { CollaboratorCursor } from './CollaboratorCursor'
 import * as proto from './cursor_proto'
 
@@ -29,7 +29,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
   private protoAnchor: proto.Position
   private protoHead: proto.Position
 
-  constructor(private docService: DocService, private collabService: RichCollaboratorsService, private network: NetworkService) {
+  constructor(private docService: DocService, private collabService: RichCollaboratorsService, private network: NetworkServiceAbstracted) {
     this.protoCursor = proto.Cursor.create()
     this.protoAnchor = proto.Position.create()
     this.protoHead = proto.Position.create()
@@ -61,7 +61,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
       })
     )
 
-    // When the peer changes his display name
+    // When the peer changes their display name
     this.subs.push(
       this.collabService.onUpdate.subscribe((collab: RichCollaborator) => {
         const cursor = this.cursors.get(collab.networkId)
@@ -93,7 +93,7 @@ export class CursorsDirective implements OnInit, OnDestroy {
     this.listenEventsForCursorChange()
 
     // On message from the network
-    this.subs[this.subs.length] = this.network.messageOut
+    this.subs[this.subs.length] = this.network.messageIn
       .pipe(filter(({ streamId }) => streamId.type === Streams.CURSOR))
       .subscribe(({ senderNetworkId, content }) => {
         try {

@@ -1,13 +1,21 @@
-<span class="sync-icon" [ngSwitch]="syncState" [@cardState]='cardState' (mouseenter)='showCard()' (mouseleave)='hideCard()'>
-  <mat-icon *ngSwitchCase="SYNC">cloud_done</mat-icon>
-  <mat-icon *ngSwitchCase="SYNC_DISABLED">cloud_off</mat-icon>
+<span class="sync-icon" [ngSwitch]="syncStateValue" [@cardState]='cardState' (mouseenter)='showCard()'
+  (mouseleave)='hideCard()'>
+  <mat-icon *ngSwitchCase="syncState.ENABLED">cloud_done</mat-icon>
+  <mat-icon *ngSwitchCase="syncState.DISABLED">cloud_off</mat-icon>
   <mat-icon class="syncing" *ngSwitchDefault>sync</mat-icon>
 </span>
 
 <mat-card *ngIf="cardState === 'visible'" class="mat-elevation-z8 sync-details" [@cardState]='cardState'>
   <span class="arrow"></span>
   <mat-card-content>
-    <p class="mat-subheading-2 center">{{groupDetails}}</p>
-    <p class="mat-body-1 center">{{signalingDetails}}</p>
+
+    <div *ngIf="networkUseGroup">
+      <p class="mat-subheading-2 center">{{groupDetails}}</p>
+    </div>
+
+    <div *ngIf="networkUseServer">
+      <p class="mat-body-1 center">{{serverDetails}}</p>
+    </div>
+
   </mat-card-content>
 </mat-card>

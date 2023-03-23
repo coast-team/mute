@@ -1,18 +1,21 @@
 import { Strategy } from '@coast-team/mute-core'
-import { LogLevel } from 'netflux'
-
 import { EncryptionType } from '@app/core/crypto/EncryptionType.model'
-import { IEnvironment } from './IEnvironment.model'
+import { networkSolution } from '@app/doc/network/solutions/networkSolution'
+import { IEnvironment, NetfluxLogLevel } from './IEnvironment.model'
+
+const host = 'localhost' // FIXME: interpolation at build time required
 
 export const defaultEnvironment: IEnvironment = {
   production: false,
+
+  network: networkSolution.LIBP2P,
 
   crdtStrategy: Strategy.LOGOOTSPLIT,
 
   debug: {
     visible: true,
     log: {
-      netflux: [LogLevel.DEBUG],
+      netflux: [NetfluxLogLevel.DEBUG],
       crypto: false,
       doc: false,
     },
@@ -22,14 +25,18 @@ export const defaultEnvironment: IEnvironment = {
     rtcConfiguration: {
       iceServers: [
         {
-          urls: 'stun:stun.stunprotocol.org'
+          urls: 'stun:stun.stunprotocol.org',
         },
         {
-          urls: 'stun:stun.framasoft.org'
-        }
+          urls: 'stun:stun.framasoft.org',
+        },
       ],
     },
-    signalingServer: 'ws://localhost:8010', // sigver, run automatically on local development ;-)
+    //libp2p value
+    signalingServer: `/dns4/${host}/tcp/8010/ws/p2p-webrtc-star/`,
+    signalingServerTestAddr: `http://${host}:8010`,
+    //netflux value
+    //signalingServer: `ws://localhost:8010`,
   },
 
   cryptography: {
@@ -45,5 +52,5 @@ export const defaultEnvironment: IEnvironment = {
     // keyserver: {
     //   urlPrefix: 'http://localhost:4000/public-key',
     // },
-  }
+  },
 }
