@@ -110,13 +110,11 @@
 
       <p>
         <mat-chip-list fxLayout="column">
-          <!-- TODO: add to libp2p once implemented
-            <mat-chip matTooltip="feature is {{!environment.libp2p ? 'disabled' : 'enabled'}} on this version of Mute"
-              [disabled]="!environment.libp2p">
-              <mat-icon *ngIf="environment.libp2p">check</mat-icon>
-              libp2p
-            </mat-chip>
-          -->
+          <mat-chip matTooltip="feature is {{environment.network !== networkSolution.LIBP2P ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="environment.network !== networkSolution.LIBP2P">
+            <mat-icon *ngIf="environment.network === networkSolution.LIBP2P">check</mat-icon>
+            libp2p
+          </mat-chip>
           <span fxFill></span>
           <mat-chip matTooltip="feature is {{!environment.botStorage ? 'disabled' : 'enabled'}} on this version of Mute"
             [disabled]="!environment.botStorage">

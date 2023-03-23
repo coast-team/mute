@@ -6,18 +6,19 @@ import { Subscription } from 'rxjs'
 import { IEnvironment } from '@environments/IEnvironment.model'
 import { environment } from '@environments/environment'
 import { appData } from '../../../app-data'
-import { Folder } from '../../core/Folder'
-import { SettingsService } from '../../core/settings'
+import { Folder } from '@app/core/Folder'
+import { SettingsService } from '@app/core/settings'
 import {
   BotStorageService,
   BotStorageServiceStatus,
   LocalStorageService
-} from '../../core/storage'
-import { UiService } from '../../core/ui'
+} from '@app/core/storage'
+import { UiService } from '@app/core/ui'
 import {
   ConfigDialogComponent,
   JoinDialogComponent
-} from '../dialogs'
+} from '@app/shared/dialogs'
+import { networkSolution } from '@app/doc/network/solutions/networkSolution'
 
 @Component({
   selector: 'mute-nav',
@@ -48,6 +49,7 @@ export class NavComponent implements OnDestroy {
   public isStandalone: boolean
 
   public environment = environment
+  public networkSolution = networkSolution
 
   private subs: Subscription[]
 

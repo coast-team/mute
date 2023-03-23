@@ -18,7 +18,7 @@ export const environment: IEnvironment = {
     // Signaling server URL
     // See https://github.com/coast-team/sigver
     signalingServer: `/dns4/${host}/tcp/8012/wss/p2p-webrtc-star/`,
-    signalingServerTestAddr: `http://mute.loria.fr:8012`
+    signalingServerTestAddr: `https://mute.loria.fr:8012`
   },
 
   cryptography: {
