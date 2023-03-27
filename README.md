@@ -4,7 +4,7 @@
 
 # MUTE: Multi User Text Editor
 
-Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm ([LogootSplit](#hammer_and_wrench-architecture)) for large scale peer-to-peer collaboration on top of a peer-to-peer message layer ([netflux](#hammer_and_wrench-architecture) and soon [libp2p](#hammer_and_wrench-architecture)).
+Edit documents collaboratively in real-time with hundreds of users on the same document, even with a light server. MUTE implements a CRDT-based consistency algorithm ([LogootSplit](#hammer_and_wrench-architecture)) for large scale peer-to-peer collaboration on top of a peer-to-peer message layer ([libp2p](#hammer_and_wrench-architecture)).
 
 <div align="center"> <!-- extra line is important for proper markdown evaluation-->
 <a href="https://gitlab.inria.fr/coast-team/mute/mute">
@@ -52,26 +52,27 @@ We rely on pluggable network layers, so part of the real use performance not acc
 
 ## :hammer_and_wrench: Architecture
 
-MUTE relies on reusable libraries we develop:
+Document editing layer:
 
 - [@coast-team/mute-core](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-core): core component ensuring typical document-editing operations are done in an orderly fashion
 - [@coast-team/mute-structs](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs): an implementation of the [LogootSplit](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-structs#ref-1) CRDT algorithm. This algorithm can be seen as an extension for variable-sized elements (e.g. strings) of one of the basic CRDT algorithms for unit elements (e.g. characters).
+
+Security layer:
+
 - [@coast-team/mute-crypto](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto): a group cryptographic key agreement implementation using [Burmester and Desmedt's algorithm](https://gitlab.inria.fr/coast-team/mute/mute-modules/mute-crypto)
-- [@coast-team/mute-auth-proxy](https://github.com/coast-team/mute-auth-proxy): assign public/private key pairs to autenticated users, for later use in mute-crypto
 
-MUTE also has a pluggable system of services called *Bots*. They can act like peers in documents to provide
-services:
+P2P Network layer:
 
-- [@coast-team/mute-bot-storage](https://github.com/coast-team/mute-bot-storage): stores documents for others when you are offline
+- [libp2p](https://libp2p.io): modern peer-to-peer browser communication layer
+  - [@libp2p/webrtc-star-signalling-server](https://www.npmjs.com/package/@libp2p/webrtc-star-signalling-server): signaling for libp2p via WebRTC
 
-MUTE exchanges messages by default over WebRTC via:
+Legacy P2P network layer:
 
 - [netflux](https://github.com/coast-team/netflux): peer-to-peer browser communication layer
-- [@coast-team/sigver](https://github.com/coast-team/sigver): signaling for WebRTC
+- [@coast-team/sigver](https://github.com/coast-team/sigver): signaling for netflux via WebRTC
 
-We plan to improve messages exchange via:
+Non-P2P network layer backup:
 
-- [libp2p](https://libp2p.io) for a more modern peer-to-peer browser communication layers
 - [pulsar](https://github.com/apache/pulsar) for increased reliability in networks banning WebRTC
 
 ## License
