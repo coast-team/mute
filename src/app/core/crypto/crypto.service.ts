@@ -3,7 +3,8 @@ import { Injectable, OnDestroy } from '@angular/core'
 import { Observable, Subject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
-import { asymmetricCrypto, KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
+import { KeyAgreementBD, KeyState, MuteCrypto, Symmetric } from '@coast-team/mute-crypto'
+import { asymmetricCrypto } from '@coast-team/mute-crypto-helper'
 
 import { environment } from '@environments/environment'
 import { EProperties } from '@app/core/settings/EProperties.enum'

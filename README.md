@@ -23,6 +23,8 @@ Read more in our [deployment documentation](https://gitlab.inria.fr/coast-team/m
 
 ## :book: Development
 
+:pencil2: - *The project's package-lock.json was last generated with NPM@9.5.0 and Node@18.15.0. Developers on the app uses Docker Engine@20.10*  
+
 Run `npm install` then `npm start`. The application is now available at [localhost:4200](http://localhost:4200), the signaling server at [localhost:8010](http://localhost:8010).
 
 Development happens on the INRIA GitLab repository, but external contributions are very welcome on the [GitHub mirror](https://github.com/coast-team/mute/) we maintain.

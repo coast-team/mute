@@ -48,7 +48,7 @@ test('Main user for the online test', async (t) => {
   const collaboratorCursorExists = Selector('.CodeMirror-widget').exists
   await t.expect(collaboratorCursorExists).ok()
   await t.click(editorComponent) // Click the editor to trigger the appearance of the cursor in the user 2 tab
-
+  await t.click(editorComponent) // Click the editor a second time to force selection, wich force the appearance of cursor in the user 2 tab (without this, the cursor cannot be found in the other tab)
   await gv.stopExecAndResumeOther() //  Wait for the other user to join the document
   while (gv.getExecutingTestUser1() !== true) {
     await t.wait(1000)

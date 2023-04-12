@@ -1,6 +1,8 @@
 # Build Mute
-FROM docker.io/node:14-alpine AS builder
+FROM docker.io/node:18-alpine AS builder
 
+# Setting up higher heap memory limit as otherwise CI would throw an error during the npm run build step (default is 512mb)
+ENV NODE_OPTIONS=--max_old_space_size=2048
 ARG BUILD_TARGET
 
 WORKDIR /app

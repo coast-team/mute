@@ -5,7 +5,7 @@ include:
 .e2e:
   stage: test
   extends: .runner_inria
-  image: docker.io/docker:dind
+  image: docker.io/docker:20.10.24-dind-alpine3.17
   only:
     - merge_requests
   needs: []
@@ -45,10 +45,11 @@ karma:
   extends:
     - .runner_workstation
     - .use_node_cache
-  image: docker.io/timbru31/node-chrome:14
+  image: docker.io/timbru31/node-chrome:18
   only:
     - merge_requests
   script:
+    - export CHROME_BIN=/usr/bin/chromium
     - npm test
   artifacts:
     when: always
@@ -68,7 +69,7 @@ e2e_full: # whole E2E scenario
 
 e2e_online: # two users meet up on the same document and modify its content
   extends: .e2e
-  variables: 
+  variables:
     IMAGE: ci-online-scenario
     CONTAINER: ci-online-scenario-container
     SCENARIO: online
