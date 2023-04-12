@@ -17,11 +17,11 @@
 #
 
 .make_node_cache:
-  image: docker.io/node:14
+  image: docker.io/node:18
   variables:
-    FF_USE_FASTZIP: "true"
-    ARTIFACT_COMPRESSION_LEVEL: "fast"
-    CACHE_COMPRESSION_LEVEL: "fast"
+    FF_USE_FASTZIP: 'true'
+    ARTIFACT_COMPRESSION_LEVEL: 'fast'
+    CACHE_COMPRESSION_LEVEL: 'fast'
   cache:
     - key:
         files:
@@ -36,7 +36,7 @@
       policy: pull-push
 
 .use_node_cache:
-  image: docker.io/node:14-alpine
+  image: docker.io/node:18-alpine
   before_script:
     - |
       if [ ! -f .cache_exists ]; then
