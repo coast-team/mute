@@ -1,4 +1,4 @@
-FROM docker.io/node:8-alpine
+FROM node:16-alpine
 
 LABEL maintainer="Baptiste Hubert <baptiste.hubert@inria.fr>"
 LABEL org.opencontainers.description a scalable collaborative document editor with CRDT, P2P and E2EE
@@ -12,7 +12,7 @@ RUN npm config set unsafe-perm true
 COPY process.yml /
 
 RUN npm install pm2@^3 -g
-RUN npm install sigver -g
+RUN npm install @coast-team/sigver -g
 
 EXPOSE 8010
 

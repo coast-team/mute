@@ -38,3 +38,36 @@ build_sigver_docker_image:
   script:
     - docker-compose build sigver
     - docker push "${SIGVER_IMAGE}"
+
+build_mute_with_netflux_and_sigver_docker_images:
+  extends:
+    - .build_docker_image
+    - .rules_latest
+  variables:
+    TAG: netflux
+    BUILD_TARGET: ':netflux'
+    SIGVER_DOCKERFILE: conf/docker/DockerfileSigver
+  after_script:
+    - docker-compose build sigver
+    - docker push "${SIGVER_IMAGE}"
+
+build_review_environment_docker_image:
+  extends:
+    - .build_docker_image
+    - .rules_deploy_to_review_environment
+  variables:
+    TAG: review-${CI_COMMIT_REF_SLUG}
+    BUILD_TARGET: ':review'
+    SIGVER_DOCKERFILE: conf/docker/DockerfileWebRTCStarSignalingServer
+  before_script:
+    - !reference [.prepare_review_variables_publish, before_script]
+    - !reference [.docker_registry_access, before_script]
+  after_script:
+    - docker-compose build sigver
+    - docker push "${SIGVER_IMAGE}"
+
+.prepare_review_variables_publish:
+  before_script:
+    # Preparing variables for building app
+    - json={\"reviewBranch\":\"${TAG}\"}
+    - echo $json > conf/gitlab-ci/reviewEnv.json

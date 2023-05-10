@@ -17,29 +17,17 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/assets"
-              ]
+              "includePaths": ["src/assets"]
             },
-            "assets": [
-              "src/assets/images",
-              "src/assets/fonts",
-              "src/manifest.json"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/assets/images", "src/assets/fonts", "src/manifest.json"],
+            "styles": ["src/styles.scss"],
             "scripts": [
               "src/assets/rsvp-2.0.4.min.js",
               "src/assets/jio-latest.js",
               "node_modules/loglevel/dist/loglevel.min.js",
               "node_modules/@multiavatar/multiavatar/multiavatar.min.js"
             ],
-            "allowedCommonJsDependencies": [
-              "codemirror/mode/javascript/javascript",
-              "codemirror/mode/gfm/gfm",
-              "@toast-ui/editor"
-            ],
+            "allowedCommonJsDependencies": ["codemirror/mode/javascript/javascript", "codemirror/mode/gfm/gfm", "@toast-ui/editor"],
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
@@ -89,7 +77,7 @@
                 }
               ]
             },
-            "libp2p": {
+            "main": {
               "outputHashing": "all",
               "namedChunks": false,
               "extractLicenses": true,
@@ -98,7 +86,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.libp2p.ts"
+                  "with": "src/environments/environment.main.ts"
                 }
               ]
             },
@@ -135,6 +123,19 @@
                   "with": "src/environments/environment.netflux.ts"
                 }
               ]
+            },
+            "review": {
+              "outputHashing": "all",
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "serviceWorker": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.review.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -150,6 +151,9 @@
             },
             "production": {
               "browserTarget": "mute:build:production"
+            },
+            "review": {
+              "browserTarget": "mute:build:review"
             }
           },
           "defaultConfiguration": "development"
@@ -161,28 +165,15 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-              "node_modules/loglevel/dist/loglevel.min.js",
-              "src/assets/rsvp-2.0.4.min.js",
-              "src/assets/jio-latest.js"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
-            "assets": [
-              "src/assets/images",
-              "src/assets/fonts",
-              "src/manifest.json"
-            ]
+            "scripts": ["node_modules/loglevel/dist/loglevel.min.js", "src/assets/rsvp-2.0.4.min.js", "src/assets/jio-latest.js"],
+            "styles": ["src/styles.scss"],
+            "assets": ["src/assets/images", "src/assets/fonts", "src/manifest.json"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }

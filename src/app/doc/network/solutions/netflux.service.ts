@@ -52,7 +52,6 @@ export class NetfluxService extends NetworkSolutionServiceFunctions implements I
         const status = state as unknown as SignalingServerConnectionStatus
         this.signalingServerConnectionStatusSubject.next(status)
       }
-      this.configureNetworkBehavior()
     })
     this.messageReceived = messageReceived
   }
@@ -65,6 +64,7 @@ export class NetfluxService extends NetworkSolutionServiceFunctions implements I
   setAndInitCryptoService(cryptoService: CryptoService) {
     this.cryptoService = cryptoService
     this.cryptoService.setNetworkSolutionService(this)
+    this.configureNetworkBehavior()
   }
 
   // Initializing connection to the webGroup

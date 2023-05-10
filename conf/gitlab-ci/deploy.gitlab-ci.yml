@@ -44,3 +44,59 @@ deploy_to_test:
   environment:
     name: test/main
     url: https://main.mute.loria.fr
+
+deploy_mute_with_netflux:
+  extends:
+    - .deploy_to
+    - .rules_deploy_to_test
+  needs:
+    - job: build_mute_with_netflux_and_sigver_docker_images
+  variables:
+    ENV_NAME: netflux
+    COMPOSE_ENV_FILE: conf/gitlab-ci/netflux.env
+  environment:
+    name: test/netflux
+    url: https://netflux.mute.loria.fr
+
+deploy_to_review_environment:
+  extends:
+    - .deploy_to
+    - .rules_deploy_to_review_environment
+    - .images
+  needs:
+    - job: build_review_environment_docker_image
+  variables:
+    TAG: review-${CI_COMMIT_REF_SLUG}
+    ENV_NAME: ${TAG}
+    COMPOSE_ENV_FILE: conf/gitlab-ci/review.env
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}
+    url: https://${TAG}.mute.loria.fr
+    on_stop: stop_review_environment
+  before_script:
+    - !reference [.prepare_review_variables_deploy, before_script]
+    - sh scripts/add-review-env-proxy.sh $TAG $MUTE_PORT
+    - !reference [.docker_registry_access, before_script]
+
+.prepare_review_variables_deploy:
+  before_script:
+    # Testing and setting ports to publish the review environment
+    - MUTE_PORT=$(sh scripts/find-available-review-ports.sh $MUTE_IMAGE)
+    - SIGVER_PORT=$((MUTE_PORT+1))
+    - echo MUTE_PORT=$MUTE_PORT > $COMPOSE_ENV_FILE
+    - echo SIGVER_PORT=$SIGVER_PORT >> $COMPOSE_ENV_FILE
+
+stop_review_environment:
+  stage: deploy
+  extends:
+    - .runner_mutehost
+  variables:
+    TAG: review-${CI_COMMIT_REF_SLUG}
+  environment:
+    name: review/${CI_COMMIT_REF_SLUG}
+    action: stop
+  script:
+    - sh scripts/remove-review-env.sh $TAG
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+  when: manual

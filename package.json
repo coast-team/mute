@@ -29,9 +29,10 @@
     "start": "ng serve --configuration development --host 0.0.0.0 --disable-host-check --watch",
     "sigver": "docker-compose --env-file conf/development.env up -d --no-recreate sigver",
     "build": "ng build --configuration production",
+    "build:main": "ng build --configuration main",
     "build:netflux": "ng build --configuration netflux",
-    "build:libp2p": "ng build --configuration libp2p",
     "build:dev": "ng build --configuration development",
+    "build:review": "ng build --configuration review",
     "build:stats": "ng build --stats-json",
     "postinstall": "run-script-os",
     "postinstall:win32": "cd scripts && get-assets.bat",
@@ -42,7 +43,6 @@
     "test:karma": "ng test --watch=false --browsers=ChromeHeadlessCI",
     "proto": "pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/network/message_proto.js src/app/doc/network/message.proto && pbts -o src/app/doc/network/message_proto.d.ts src/app/doc/network/message_proto.js && pbjs -t static-module -w commonjs --no-verify --no-delimited --no-convert -o src/app/doc/editor/cursor/cursor_proto.js src/app/doc/editor/cursor/cursor.proto && pbts -o src/app/doc/editor/cursor/cursor_proto.d.ts src/app/doc/editor/cursor/cursor_proto.js"
   },
-  "dependencies": {},
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.11",
     "@angular-eslint/builder": "14.4.0",
@@ -77,7 +77,7 @@
     "@toast-ui/editor": "^2.5.1",
     "@types/codemirror": "0.0.108",
     "@types/jasmine": "^3.6.11",
-    "@types/node": "^18.15.0",
+    "@types/node": "^18.15.11",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",

@@ -13,7 +13,6 @@ import { NetworkServiceAbstracted } from '@app/doc/network/network.service.abstr
 
 @Injectable()
 export class RichCollaboratorsService implements OnDestroy {
-
   public collaborators: RichCollaborator[]
   private joinSubject: Subject<RichCollaborator>
   private leaveSubject: Subject<number>
@@ -22,8 +21,6 @@ export class RichCollaboratorsService implements OnDestroy {
   private colors: Colors
   private subs: Subscription[]
   private network: NetworkServiceAbstracted
-
-  
 
   constructor(cd: ChangeDetectorRef, settings: SettingsService) {
     this.joinSubject = new Subject()
@@ -49,7 +46,6 @@ export class RichCollaboratorsService implements OnDestroy {
           this.updateSubject.next(me)
         })
     )
-
     this.subs[this.subs.length] = this.onChanges.subscribe(() => cd.detectChanges())
   }
 
@@ -73,11 +69,11 @@ export class RichCollaboratorsService implements OnDestroy {
     this.subs.forEach((s) => s.unsubscribe())
   }
 
-  setNetwork(network : NetworkServiceAbstracted){
+  setNetwork(network: NetworkServiceAbstracted) {
     this.network = network
-  } 
+  }
 
-  addCollaboratorToIdMap(muteCoreId : number){
+  addCollaboratorToIdMap(muteCoreId: number) {
     this.network.idMap.addIds(NetworkServiceAbstracted.tempNetworkId, muteCoreId)
   }
 

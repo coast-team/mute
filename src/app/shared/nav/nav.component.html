@@ -115,6 +115,11 @@
             <mat-icon *ngIf="environment.network === networkSolution.LIBP2P">check</mat-icon>
             libp2p
           </mat-chip>
+          <mat-chip matTooltip="feature is {{environment.network !== networkSolution.NETFLUX ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="environment.network !== networkSolution.NETFLUX">
+            <mat-icon *ngIf="environment.network === networkSolution.NETFLUX">check</mat-icon>
+            Netflux
+          </mat-chip>
           <span fxFill></span>
           <mat-chip matTooltip="feature is {{!environment.botStorage ? 'disabled' : 'enabled'}} on this version of Mute"
             [disabled]="!environment.botStorage">
