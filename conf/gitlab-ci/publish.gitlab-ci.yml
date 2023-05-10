@@ -21,6 +21,8 @@ build_latest_docker_image:
   extends:
     - .build_docker_image
     - .rules_latest
+  variables:
+    BUILD_TARGET: ':main'
   except:
     - schedules
 
