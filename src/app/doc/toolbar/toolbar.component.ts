@@ -15,6 +15,7 @@ import { UiService } from '@app/core/ui'
 import { DocService } from '@app/doc/doc.service'
 import { LogsService } from '@app/doc/logs/logs.service'
 import { NetworkServiceAbstracted, PeersGroupConnectionStatus } from '@app/doc/network/network.service.abstracted'
+import { networkSolution } from '../network/solutions/networkSolution'
 
 @Component({
   selector: 'mute-toolbar',
@@ -39,6 +40,7 @@ export class ToolbarComponent implements OnDestroy {
   public docLog: boolean
   public LogLevel = LogLevel
   public environment = environment
+  public networkSolution = networkSolution
   public isConnected: boolean
 
   private subs: Subscription[]
@@ -128,6 +130,9 @@ export class ToolbarComponent implements OnDestroy {
     event.stopPropagation()
   }
 
+  /**
+   * download the MUTE interaction logs
+   */
   async downloadMuteLog() {
     try {
       const lines = (await this.logs.getLogs()).map((e) => JSON.stringify(e) + ',\n')
@@ -139,8 +144,14 @@ export class ToolbarComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Download the document log
+   */
   async downloadDocLog() {
     try {
+      if (this.docService.doc.modified === undefined) {
+        throw new Error('The document has not been modified yet')
+      }
       const blob = (await this.docService.doc.fetchContent(true)) as Blob | undefined
       if (blob) {
         this.download('doclog', blob)
@@ -151,6 +162,9 @@ export class ToolbarComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Download the document tree
+   */
   downloadDocTree() {
     if (this.ui.docTree) {
       this.download('doctree', new Blob([this.ui.docTree], { type: 'text/json' }))

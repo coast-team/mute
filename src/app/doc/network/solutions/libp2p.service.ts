@@ -17,7 +17,7 @@ import { Multiaddr } from '@multiformats/multiaddr'
 import { Noise } from '@chainsafe/libp2p-noise'
 import { pipe } from 'it-pipe'
 import { fromString, toString } from 'uint8arrays'
-import { NetworkServiceAbstracted, PeersGroupConnectionStatus, SignalingServerConnectionStatus } from '..'
+import { PeersGroupConnectionStatus, SignalingServerConnectionStatus } from '..'
 
 const PROTOCOL = '/chat/1.0.0'
 export class Libp2pService extends NetworkSolutionServiceFunctions implements INetworkSolution {
@@ -98,6 +98,11 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
       connectionEncryption: [new Noise()],
       streamMuxers: [new Mplex()],
       peerDiscovery: [webRtcStar.discovery] as RecursivePartial<PeerDiscovery>[] as any,
+      connectionManager: {
+        minConnections: 0,
+        maxData: Infinity,
+        maxDialsPerPeer: 10,
+      },
       config: {
         transport: {
           [transportKey]: {
@@ -123,23 +128,8 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
    * @param libp2p
    */
   async configureAsyncNetworkBehavior(libp2p: Libp2p): Promise<void> {
-    // Receiving messages
-    libp2p.handle(PROTOCOL, ({ connection, stream }) => {
-      const me = this
-      pipe(stream, async (source: AsyncGenerator<any, any, any>) => {
-        for await (const msg of source) {
-          const remotePeerId = connection.remotePeer.toString()
-          if (me.isAPeerDocumentKeyMessage(msg)) {
-            me.handlePeerIdsDocumentKey(remotePeerId, msg)
-          } else if (me.isAPeerIdAsNumberMessage(msg)) {
-            me.handlePeerIdAsNumber(remotePeerId, msg)
-          } else {
-            me.handleIncomingMessage(msg, me.messageReceived, me.peerIdAsNumbers.get(remotePeerId), me.cryptoService)
-          }
-        }
-        stream.close() // We close the stream once we retreived the data to prevent mplex overloading and crashing
-      })
-    })
+    //Prepare receiving message
+    this.handleReceivingMessage(libp2p)
 
     // Handling peers joining or leaving
     libp2p.addEventListener('peer:discovery', (evt) => {
@@ -159,7 +149,6 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
           this.manageConnectionToPeer(remotePeerIdString) // Adds the peer to the Peers and updates the ui
         }
       }
-      this.purgePeersNotConnectedToUs()
     })
     libp2p.connectionManager.addEventListener('peer:connect', (evt) => {
       const peer = evt.detail
@@ -186,18 +175,33 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
   }
 
   /**
-   * Close connections to peers that are on another document
+   * Defines the behavior to adopt according to the type of message received
+   * Libp2p uses async iterable as streams, and the pipe read the buffer from the stream
+   * @param libp2p
    */
-  purgePeersNotConnectedToUs() {
-    const listOfConnections = this.libp2pInstance.connectionManager.getConnections()
-    for (const connection of listOfConnections) {
-      const isPeerOnTheSameDocument = this.peersOnTheSameDocument.includes(connection.remotePeer.toString())
-      const isPeerOnAnotherDocument = this.peersOnAnotherDocument.includes(connection.remotePeer.toString())
-      if (!isPeerOnTheSameDocument && isPeerOnAnotherDocument) {
-        const addrPeerHangUp = new Multiaddr(`${environment.p2p.signalingServer}p2p/${connection.remotePeer.toString()}`)
-        this.libp2pInstance.hangUp(addrPeerHangUp)
-      }
-    }
+  handleReceivingMessage(libp2p: Libp2p) {
+    libp2p.handle(PROTOCOL, ({ stream, connection }) => {
+      const me = this
+      pipe(
+        stream,
+        (source) =>
+          (async function* () {
+            for await (const msg of source) {
+              const messageReceived = msg.subarray()
+              const remotePeerId = connection.remotePeer.toString()
+              if (me.isAPeerDocumentKeyMessage(messageReceived)) {
+                me.handlePeerIdsDocumentKey(remotePeerId, messageReceived)
+              } else if (me.isAPeerIdAsNumberMessage(messageReceived)) {
+                me.handlePeerIdAsNumber(remotePeerId, messageReceived)
+              } else {
+                me.handleIncomingMessage(messageReceived, me.messageReceived, me.peerIdAsNumbers.get(remotePeerId), me.cryptoService)
+              }
+            }
+            return []
+          })(),
+        stream
+      )
+    })
   }
 
   /**
@@ -283,8 +287,10 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
    */
   sendTo(recipientNetworkId: number, message: Uint8Array): void {
     const peerId = this.peerIdAsNumbersReverse.get(recipientNetworkId)
-    const peerAddr = new Multiaddr(`${environment.p2p.signalingServer}p2p/${peerId}`)
-    this.sendMessage(message, peerAddr)
+    if (peerId) {
+      const peerAddr = new Multiaddr(`${environment.p2p.signalingServer}p2p/${peerId}`)
+      this.sendMessage(message, peerAddr)
+    }
   }
 
   /**
@@ -294,11 +300,31 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
    */
   async sendMessage(message: Uint8Array, peerMultiAddr: Multiaddr): Promise<void> {
     try {
-      const { stream } = await this.libp2pInstance.dialProtocol(peerMultiAddr, [PROTOCOL])
-      await pipe([message], await stream)
-      stream.close() // We close the stream once we have sent the data to prevent mplex overloading and crashing
+      const connections = this.libp2pInstance.connectionManager.getConnections()
+      const indexConnectionReceiverPeer = connections.findIndex(
+        (connection) => connection.remoteAddr.toString() === peerMultiAddr.toString()
+      )
+      const connectionReceiverPeer = connections[indexConnectionReceiverPeer]
+      //We can dial when connection is undefined (first contact) or when the connection is not undefined and opened
+      if (connectionReceiverPeer === undefined || (connectionReceiverPeer !== undefined && connectionReceiverPeer.stat.status === 'OPEN')) {
+        const { stream } = await this.libp2pInstance.dialProtocol(peerMultiAddr, PROTOCOL)
+        await pipe([message], stream)
+        stream.close()
+      }
     } catch (err) {
-      log.error('There was an error while sending the message : ', err)
+      if (err instanceof Error) {
+        switch (err.message) {
+          case 'stream ended before 1 bytes became available':
+            // Do nothing as the error stems from the fact that we are trying to send data to a peer that isn't connected anymore
+            break
+          case 'All promises were rejected':
+            // Do nothing as the error stems from trying to send our PeerIdAsANumber and documentKey to a peer that has no connection to us
+            break
+          default:
+            log.error('There was an unexpected error while sending data : ', err.message)
+            break
+        }
+      }
     }
   }
 
@@ -445,7 +471,6 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
     const sizemessagePeerIdAsNumberAsString = messagePeerIdAsNumberAsString.length
     const peerIdAsNumber = messagePeerIdAsNumberAsString.slice(18, sizemessagePeerIdAsNumberAsString)
     if (!this.peerIdAsNumbers.has(remotePeerId) && this.peersOnTheSameDocument.includes(remotePeerId)) {
-      NetworkServiceAbstracted.tempNetworkId = Number(peerIdAsNumber)
       this.addToPeerIdAsNumberMap(Number(peerIdAsNumber), remotePeerId)
     }
   }

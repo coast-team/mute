@@ -50,14 +50,14 @@ export class LogsService implements OnDestroy {
       })
       obj['context'] = tab
     }
-    if (environment.pulsar !== undefined){
-      if (environment.pulsar.anonymize) {
-        this.strategy.sendLogs(this.anonymize(obj), this.shareLogs)
-      } else {
-        this.strategy.sendLogs(obj, this.shareLogs)
-      }
-    }
-    
+    // Once pulsar is re-used again, uncomment the code
+    //if (environment.pulsar !== undefined) {
+    //  if (environment.pulsar.anonymize) {
+    //    this.strategy.sendLogs(this.anonymize(obj), this.shareLogs)
+    //} else {
+    this.strategy.sendLogs(obj, this.shareLogs)
+    //}
+    //}
   }
 
   anonymize(obj: object): object {

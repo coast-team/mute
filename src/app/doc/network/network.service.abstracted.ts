@@ -38,7 +38,6 @@ export enum SignalingServerConnectionStatus {
 
 @Injectable()
 export class NetworkServiceAbstracted implements OnDestroy {
-  public static tempNetworkId: number
   public server: Server
   public groupOfCollaborators: [RichCollaborator]
   public documentKey: string

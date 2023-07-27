@@ -24,11 +24,11 @@ export abstract class LogsStrategy {
     this.dbDistant = new Pulsar(this.docKey)
   }
 
-  setStreamLogsPulsar (pulsarService: PulsarService) {
-    (this.dbDistant as Pulsar).subscribeToWs(pulsarService)
+  setStreamLogsPulsar(pulsarService: PulsarService) {
+    ;(this.dbDistant as Pulsar).subscribeToWs(pulsarService)
   }
 
-  public setShareLogs (share: boolean, state: Map<number, number>) {
+  public setShareLogs(share: boolean, state: Map<number, number>) {
     const stateVector = {}
 
     state.forEach((v, k) => {
@@ -42,7 +42,7 @@ export abstract class LogsStrategy {
     }
   }
 
-  public getLocalLogs (): Promise<object[]> {
+  public getLocalLogs(): Promise<object[]> {
     return new Promise((resolve, reject) => {
       this.dbLocal
         .get()
@@ -53,11 +53,11 @@ export abstract class LogsStrategy {
     })
   }
 
-  protected useLogId (): number {
+  protected useLogId(): number {
     this.logId++
     window.localStorage.setItem('logid-' + this.docKey, this.logId + '')
     return this.logId - 1
   }
 
-  abstract sendLogs (obj: object, share: boolean): void
+  abstract sendLogs(obj: object, share: boolean): void
 }

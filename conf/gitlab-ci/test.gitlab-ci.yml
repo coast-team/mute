@@ -4,7 +4,7 @@ include:
 
 .e2e:
   stage: test
-  extends: .runner_inria
+  extends: .runner_workstation
   image: docker.io/docker:20.10.24-dind-alpine3.17
   only:
     - merge_requests
@@ -20,9 +20,11 @@ include:
         sleep 15
         docker exec -w /src/mute $NAME /bin/sh start-mute-sigver-containers.sh # run sigver
         docker exec -w /src/e2e/ $NAME npm run test chromium firefox $SCENARIO true # run test scenario
-        docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
       }
-      docker rm -f $NAME || true
+  after_script:
+    - docker cp $NAME:/src/e2e/e2e.xml e2e.xml # copy report from container to host
+    - docker stop $NAME
+    - docker rm -f $NAME || true
   artifacts:
     when: always
     reports:
@@ -63,8 +65,6 @@ e2e_full: # whole E2E scenario
     IMAGE: ci-full-scenario
     CONTAINER: ci-full-scenario-container
     SCENARIO: fullscenario
-  after_script:
-    - docker stop $NAME
   when: manual
 
 e2e_online: # two users meet up on the same document and modify its content
@@ -73,8 +73,6 @@ e2e_online: # two users meet up on the same document and modify its content
     IMAGE: ci-online-scenario
     CONTAINER: ci-online-scenario-container
     SCENARIO: online
-  after_script:
-    - docker stop $NAME
 
 e2e_offline: # two previously met users are disconnected from the signaling server but can still both modify the document
   extends: .e2e
@@ -82,8 +80,6 @@ e2e_offline: # two previously met users are disconnected from the signaling serv
     IMAGE: ci-offline-scenario
     CONTAINER: ci-offline-scenario-container
     SCENARIO: offline
-  after_script:
-    - docker stop $NAME
 
 e2e_offline-to-online: # the document at the end is a merge of their respective modifications
   extends:

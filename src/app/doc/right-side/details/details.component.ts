@@ -14,7 +14,7 @@ const defaultCollab = {
   avatar: '',
   displayName: '',
   login: '',
-  deviceID: ''
+  deviceID: '',
 }
 
 interface Card {
@@ -58,11 +58,7 @@ export class DetailsComponent implements OnInit {
   public pulsarWsLogsStateArray: string[] = ['', '']
   public environment = environment
 
-  constructor (
-    private cd: ChangeDetectorRef,
-    public ui: UiService,
-    private pulsarService: PulsarService
-  ) {
+  constructor(private cd: ChangeDetectorRef, public ui: UiService, private pulsarService: PulsarService) {
     this.card = defaultCollab
 
     switch (environment.cryptography.type) {
@@ -140,22 +136,22 @@ export class DetailsComponent implements OnInit {
     })
   }
 
-  showCard (collab: ICollaborator) {
+  showCard(collab: ICollaborator) {
     this.card = Object.assign({}, defaultCollab, collab)
     this.cardState = 'visible'
     this.cd.detectChanges()
   }
 
-  hideCard () {
+  hideCard() {
     this.cardState = 'void'
     this.cd.detectChanges()
   }
 
-  updateShareLogs (event) {
+  updateShareLogs(event) {
     this.doc.shareLogs = event.checked
   }
 
-  updatePulsar (event) {
+  updatePulsar(event) {
     this.doc.pulsar = event.checked
   }
 }

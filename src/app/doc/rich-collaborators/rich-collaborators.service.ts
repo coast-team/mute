@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Injectable, OnDestroy } from '@angular/core'
 import { merge, Observable, Subject, Subscription } from 'rxjs'
 import { filter, map } from 'rxjs/operators'
 
-import { ICollaborator } from '@coast-team/mute-core'
+import { ICollaborator, MuteCoreTypes } from '@coast-team/mute-core'
 
 import { EProperties } from '@app/core/settings/EProperties.enum'
 import { Profile, SettingsService } from '@app/core/settings'
@@ -21,6 +21,7 @@ export class RichCollaboratorsService implements OnDestroy {
   private colors: Colors
   private subs: Subscription[]
   private network: NetworkServiceAbstracted
+  private muteCore: MuteCoreTypes
 
   constructor(cd: ChangeDetectorRef, settings: SettingsService) {
     this.joinSubject = new Subject()
@@ -73,8 +74,12 @@ export class RichCollaboratorsService implements OnDestroy {
     this.network = network
   }
 
-  addCollaboratorToIdMap(muteCoreId: number) {
-    this.network.idMap.addIds(NetworkServiceAbstracted.tempNetworkId, muteCoreId)
+  setMuteCore(muteCore: MuteCoreTypes) {
+    this.muteCore = muteCore
+  }
+
+  addCollaboratorToIdMap(networkId: number, muteCoreId: number) {
+    this.network.idMap.addIds(networkId, muteCoreId)
   }
 
   removeCollaboratorFromIdMap(muteCoreId: number) {
@@ -85,7 +90,7 @@ export class RichCollaboratorsService implements OnDestroy {
     this.subs.push(
       source.subscribe((collab: ICollaborator) => {
         for (const c of this.collaborators) {
-          if (this.network.idMap.networkIdToMuteCoreIdMap.has(c.networkId)) {
+          if (c.deviceID === collab.deviceID && this.network.idMap.networkIdToMuteCoreIdMap.has(c.networkId)) {
             c.update(collab)
             this.updateSubject.next(c)
             break
@@ -98,8 +103,8 @@ export class RichCollaboratorsService implements OnDestroy {
   subscribeToJoinSource(source: Observable<ICollaborator>) {
     this.subs.push(
       source.subscribe((collab) => {
-        this.addCollaboratorToIdMap(collab.muteCoreId)
-        const collabNetworkId = this.network.idMap.getNetworkId(collab.muteCoreId)
+        const collabNetworkId = this.findACollaboratorsNetworkId(collab.muteCoreId)
+        this.addCollaboratorToIdMap(collabNetworkId, collab.muteCoreId)
         const rc = new RichCollaborator(collabNetworkId, collab, this.colors.pick())
         this.network.addCollaboratorToGroup(rc)
         this.collaborators[this.collaborators.length] = rc
@@ -121,6 +126,19 @@ export class RichCollaboratorsService implements OnDestroy {
         this.leaveSubject.next(collaboratorNetworkId)
       })
     )
+  }
+
+  /**
+   * Returns the networkId of a peer using mutecore collaborators service
+   * @param muteCoreId the muteCoreId of the collaborator
+   * @returns their networkId
+   */
+  findACollaboratorsNetworkId(muteCoreId: number): number {
+    for (const [collaboratorNetworkId, iCollaborator] of this.muteCore.getCollaborators()) {
+      if (iCollaborator.muteCoreId === muteCoreId) {
+        return collaboratorNetworkId
+      }
+    }
   }
 
   private createMe(profile: Profile): RichCollaborator {

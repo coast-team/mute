@@ -65,8 +65,8 @@
     <button mat-menu-item (click)="downloadMuteLog()">Download MUTE logs</button>
     <button mat-menu-item (click)="downloadDocLog()">Download doc logs</button>
     <button mat-menu-item (click)="downloadDocTree()">Download doc tree</button>
-    <mat-divider></mat-divider>
-    <div class="logs">
+    <div *ngIf="environment.network === networkSolution.NETFLUX" class="logs">
+      <mat-divider></mat-divider>
       <mat-form-field class="log-slider netflux-log">
         <mat-select (selectionChange)="updateNetfluxLog()" [(value)]="netfluxLog" placeholder="Netflux log levels"
           multiple>

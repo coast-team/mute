@@ -100,7 +100,6 @@ export class NetfluxService extends NetworkSolutionServiceFunctions implements I
     this.cryptoService.handleCryptographyProcess(this.route)
     this.wg.onMemberJoin = (networkId) => {
       this.peers.push(networkId)
-      NetworkServiceAbstracted.tempNetworkId = networkId
       this.memberJoinSubject.next(networkId)
     }
     this.wg.onMemberLeave = (networkId) => {

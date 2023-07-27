@@ -93,10 +93,10 @@
     </div>
   </div>
 
+  <!-- Card shown when hovering collaborator in the details component-->
   <mat-card class="profile-block" [@cardState]="cardState">
     <div fxLayoutAlign="start start" fxLayoutGap="10px">
       <mute-avatar *ngIf="card.deviceID" [profile]="card" [size]="64"></mute-avatar>
-
       <div class="info" fxLayout="column">
         <span class="mat-body-2 prop">{{ card.displayName }}</span>
         <span class="mat-caption prop">{{ card.login }}</span>

@@ -6,6 +6,7 @@ import { auditTime, filter, map } from 'rxjs/operators'
 import {
   ICollaborator,
   LocalOperation,
+  RemoteOperation,
   MetaDataType,
   MuteCoreFactory,
   MuteCoreTypes,
@@ -180,6 +181,7 @@ export class DocService implements OnDestroy {
 
     //Set up the network to be used in the collaboratorService
     this.collabs.setNetwork(this.network)
+    this.collabs.setMuteCore(this.muteCore)
 
     // Setup collaborators' subscriptions
     this.collabs.subscribeToUpdateSource(this.muteCore.remoteCollabUpdate$)
@@ -226,6 +228,9 @@ export class DocService implements OnDestroy {
       )
     )
     this.doc.setRemoteMetadataUpdateSource(this.muteCore.remoteMetadataUpdate$)
+
+    //Updating the digest in the UI whenever we open a document
+    this.ui.updateDocDigest(this.getDigest())
 
     // Subscribe to debugging information
     this.newSub = this.muteCore.digestUpdate$.subscribe((digest: number) => {
@@ -292,6 +297,10 @@ export class DocService implements OnDestroy {
 
   positionFromIndex(index: number): Position {
     return this.muteCore.positionFromIndex(index)
+  }
+
+  getDigest(): number {
+    return this.muteCore.getDigest()
   }
 
   private initLogs(): void {
@@ -381,9 +390,8 @@ export class DocService implements OnDestroy {
       })
     )
 
-    /*
     this.subs.push(
-      this.muteCore.remoteOperationForLog.subscribe((operation) => {
+      (this.muteCore.remoteOperationForLog as Observable<RemoteOperation<any>>).subscribe((operation) => {
         const opes = []
         operation.textOperation.forEach((ope) => {
           if (ope instanceof TextInsert) {
@@ -399,14 +407,14 @@ export class DocService implements OnDestroy {
         this.logs.log({
           ...reworkOpe,
           timestamp: Date.now(),
-          collaborators: this.network.members,
+          collaborators: this.network.groupOfCollaborators,
           neighbours: {
-            downstream: this.network.wg.neighbors,
-            upstream: this.network.wg.neighbors,
+            downstream: this.network.solution.neighbors,
+            upstream: this.network.solution.neighbors,
           },
         })
       })
-    )*/
+    )
   }
 
   private restartSyncInterval() {

@@ -66,11 +66,11 @@ export class LocalStorageService extends Storage implements IStorage {
     }
   }
 
-  get route () {
+  get route() {
     return this._route
   }
 
-  async init (settings: SettingsService): Promise<void> {
+  async init(settings: SettingsService): Promise<void> {
     // Check if available
     const indexedDBState = await getIndexedDBState()
 
@@ -81,17 +81,13 @@ export class LocalStorageService extends Storage implements IStorage {
     this.dbLogin = settings.profile.login
     this.openDB(this.dbLogin)
 
-    settings.onChange
-      .pipe(
-        filter((properties) => properties.includes(EProperties.profile))
-      )
-      .subscribe(() => {
-        const login = settings.profile.login
-        if (login && this.dbLogin !== login) {
-          this.dbLogin = login
-          this.openDB(login)
-        }
-      })
+    settings.onChange.pipe(filter((properties) => properties.includes(EProperties.profile))).subscribe(() => {
+      const login = settings.profile.login
+      if (login && this.dbLogin !== login) {
+        this.dbLogin = login
+        this.openDB(login)
+      }
+    })
   }
 
   async save(file: File): Promise<void> {
