@@ -36,7 +36,7 @@ include:
 #
 
 code_quality:
-  extends: .runner_workstation
+  extends: .runner_inria
   needs: []
   artifacts:
     paths:
