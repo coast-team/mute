@@ -16,7 +16,7 @@ export class Profile {
     provider: window.location.hostname,
     login: `anonymous`,
     name: 'Anonymous',
-    deviceID: '-1',
+    deviceID: nanoid(),
     avatar: 'assets/images/icons/account-circle.svg',
   }
 
@@ -44,13 +44,17 @@ export class Profile {
     let storedDeviceID = window.localStorage.getItem('deviceID')
     if (storedDeviceID === null) {
       storedDeviceID = nanoid()
-      window.localStorage.setItem('deviceID', storedDeviceID)
+      this.saveDeviceIdToLocalStorage(storedDeviceID)
     }
     profile._deviceID = storedDeviceID
     profile.activeAccount = accounts[0]
     profile.dbId = dbId
     profile._signingKeyPair = serialized.signingKeyPair
     return profile
+  }
+
+  static saveDeviceIdToLocalStorage(deviceId: string) {
+    window.localStorage.setItem('deviceID', deviceId)
   }
 
   get onChange(): Observable<EProperties[]> {

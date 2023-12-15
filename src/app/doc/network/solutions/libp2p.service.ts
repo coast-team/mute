@@ -137,6 +137,7 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
       const remotePeerId = peer.id
       const remotePeerIdString = remotePeerId.toString()
       const isPeerOnAnotherDocument = this.peersOnAnotherDocument.includes(remotePeerIdString)
+
       if (!isPeerOnAnotherDocument) {
         this.broadcastMyDocumentKey(remotePeerIdString)
         this.broadcastMyPeerIdAsNumber(remotePeerIdString)
@@ -183,7 +184,7 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
     libp2p.handle(PROTOCOL, ({ stream, connection }) => {
       const me = this
       pipe(
-        stream,
+        stream.source,
         (source) =>
           (async function* () {
             for await (const msg of source) {
@@ -199,7 +200,7 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
             }
             return []
           })(),
-        stream
+        stream.sink
       )
     })
   }
@@ -301,6 +302,7 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
   async sendMessage(message: Uint8Array, peerMultiAddr: Multiaddr): Promise<void> {
     try {
       const connections = this.libp2pInstance.connectionManager.getConnections()
+
       const indexConnectionReceiverPeer = connections.findIndex(
         (connection) => connection.remoteAddr.toString() === peerMultiAddr.toString()
       )
@@ -320,8 +322,11 @@ export class Libp2pService extends NetworkSolutionServiceFunctions implements IN
           case 'All promises were rejected':
             // Do nothing as the error stems from trying to send our PeerIdAsANumber and documentKey to a peer that has no connection to us
             break
+          case 'Too many streams open':
+            //Too many streams are open
+            break
           default:
-            log.error('There was an unexpected error while sending data : ', err.message)
+            console.error('There was an unexpected error while sending data : ', err.message)
             break
         }
       }
