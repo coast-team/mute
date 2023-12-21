@@ -1,160 +1,146 @@
-<div class="container" fxLayout="column" fxLayoutAlign="space-between">
-  <div fxLayout="column" fxLayoutAlign="start stretch" fxLayoutGap="1.3rem">
+<div class="container" >
+  <div class="flex flex-col justify-start items-stretch">
     <h1 class="logo">
       <a routerLink="/">MUTE</a>
     </h1>
 
-    <!-- Show new document button with options only if the options are available: -->
-    <ng-container *ngIf="environment.botStorage || environment.pulsar; then showMenu; else hideMenu"></ng-container>
-
+   <!-- Show new document button with options only if the options are available: -->
+   <ng-container *ngIf="environment.botStorage || environment.pulsar; then showMenu; else hideMenu"></ng-container>
     <ng-template #showMenu>
-      <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" [matMenuTriggerFor]="newDocMenu">
-        New Document
-      </button>
-      <mat-menu #newDocMenu="matMenu">
-        <button mat-menu-item>
-          <span class="new-doc-icons">
-            <mat-icon>devices</mat-icon>
-          </span>
-          <span>Without bot storage</span>
+      <div class="docs-menu self-center">
+        <button class="self-center btn font-medium " mat-raised-button color="accent" [matMenuTriggerFor]="newDocMenu">
+          New Document
         </button>
-        <button mat-menu-item (click)="createDocPulsar(true)" *ngIf="environment.pulsar">
-          <span class="new-doc-icons">
-            <mat-icon>devices</mat-icon>
-          </span>
-          <span>With Pulsar</span>
-        </button>
-        <button mat-menu-item (click)="createDoc(true)"
-          *ngIf="isRemoteExist && !this.remoteErrorMessage && environment.botStorage">
-          <span class="new-doc-icons">
-            <mat-icon>devices</mat-icon>
-            <mat-icon>cloud</mat-icon>
-          </span>
-          <span>With bot storage</span>
-        </button>
-        <button *ngIf="isStandalone" mat-menu-item (click)="openJoinDialog()">
-          <span class="new-doc-icons">
-            <mat-icon>group_work</mat-icon>
-          </span>
-          <span>Join</span>
-        </button>
-      </mat-menu>
+        <mat-menu #newDocMenu="matMenu">
+          <button mat-menu-item>
+            <span class="new-doc-icons">
+              <mat-icon mat-icon>devices</mat-icon>
+              <p>Without bot storage</p>
+            </span>
+          </button>
+          <button mat-menu-item (click)="createDocPulsar(true)" *ngIf="environment.pulsar">
+            <span class="new-doc-icons">
+              <mat-icon>devices</mat-icon>
+              <p>With Pulsar</p>
+            </span>
+          </button>
+          <button mat-menu-item (click)="createDoc(true)" *ngIf="isRemoteExist && !this.remoteErrorMessage && environment.botStorage">
+            <span class="new-doc-icons">
+              <mat-icon>devices</mat-icon>
+              <mat-icon>cloud</mat-icon>
+              <p>With bot storage</p>
+            </span>
+          </button>
+          <button *ngIf="isStandalone" mat-menu-item (click)="openJoinDialog()">
+            <span class="new-doc-icons">
+              <mat-icon>group_work</mat-icon>
+              <p>Join</p>
+            </span>
+          </button>
+        </mat-menu>
+        </div>
     </ng-template>
-    <ng-template #hideMenu>
-      <button fxFlexAlign="center" class='btn' mat-raised-button color="accent" (click)="createDoc()">
-        New Document
-      </button>
-    </ng-template>
-
-    <div fxLayout="column" fxLayoutAlign="start stretch" class="buttons">
-
-      <!-- Local storage -->
-      <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === local && !localErrorMessage}"
-        (click)="openFolder(local)">
-        <div fxLayoutAlign="start center">
-          <mat-icon
-            [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>{{local.title}}
-        </div>
-      </button>
-
-      <!-- Trash -->
-      <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === trash && !localErrorMessage}"
-        (click)="openFolder(trash)">
-        <div fxLayoutAlign="start center">
-          <mat-icon
-            [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>{{trash.title}}
-        </div>
-      </button>
-
-      <!-- Local storage quota -->
-      <ng-container *ngIf="!localErrorMessage else localDisabled">
-        <div *ngIf="isStorageManagerAvailable">
-          <div class="mat-caption hint">{{usage | muteSize}} of {{quota | muteSize:0}} used</div>
-        </div>
-      </ng-container>
-      <ng-template #localDisabled>
-        <span *ngIf="localErrorMessage" class="mat-caption hint">{{localErrorMessage}}</span>
-      </ng-template>
-      <mat-divider></mat-divider>
-
-      <!-- Remote storage -->
-      <ng-container *ngIf="isRemoteExist">
-        <button mat-button [ngClass]="{'active': selected === remote}" [disabled]="remoteErrorMessage"
-          (click)="openFolder(remote)" [matTooltip]="remoteErrorMessage">
-          <div fxLayoutAlign="start center">
-            <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>{{remote.title}}
-          </div>
+    <ng-template  #hideMenu>
+      <div class="docs-menu self-center">
+        <button class=" btn" mat-raised-button color="accent" (click)="createDoc()">
+          New Document
         </button>
-
-        <mat-divider></mat-divider>
-      </ng-container>
-
-      <!-- Settings -->
-      <button mat-button (click)="openSettingsDialog()">
-        <div fxLayoutAlign="start center">
-          <mat-icon>settings</mat-icon>Settings
-        </div>
-      </button>
-
-    </div>
+      </div>
+    </ng-template>
   </div>
 
+  <div class="buttons flex flex-col pt-4 justify-start items-stretch">
+    <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === local && !localErrorMessage}"
+        (click)="openFolder(local)">
+      <div class="flex flex-row items-center">
+        <mat-icon [color]="selected === local && !localErrorMessage ? 'primary' : ''">{{local.icon}}</mat-icon>
+        <p>{{local.title}}</p>
+      </div>
+    </button>
+    <button mat-button [disabled]="localErrorMessage" [ngClass]="{'active': selected === trash && !localErrorMessage}" (click)="openFolder(trash)">
+      <div class="flex flex-row justify-start items-center">
+        <mat-icon [color]="selected === trash && !localErrorMessage ? 'primary' : ''">{{trash.icon}}</mat-icon>
+        <p>{{trash.title}}</p>
+      </div>
+    </button>
+    <ng-container *ngIf="!localErrorMessage else localDisabled">
+      <div *ngIf="isStorageManagerAvailable">
+        <div class="mat-caption hint pb-1 pt-1">{{usage | muteSize}} of {{quota | muteSize:0}} used</div>
+      </div>
+    </ng-container>
+    <ng-template #localDisabled>
+      <span *ngIf="localErrorMessage" class="mat-caption hint">{{localErrorMessage}}</span>
+    </ng-template>
+    <mat-divider></mat-divider>
+    <ng-container *ngIf="isRemoteExist">
+      <button mat-button [ngClass]="{'active': selected === remote}" [disabled]="remoteErrorMessage"
+        (click)="openFolder(remote)" [matTooltip]="remoteErrorMessage">
+        <div class="flex flex-row items-center">
+          <mat-icon [color]="selected === remote ? 'primary' : ''">{{remote.icon}}</mat-icon>
+          <p>{{remote.title}}</p>
+        </div>
+      </button>
+      <mat-divider></mat-divider>
+    </ng-container>
+    <button mat-button (click)="openSettingsDialog()">
+      <div class="flex flex-row items-center">
+        <mat-icon>settings</mat-icon>
+        <p>Settings</p>
+      </div>
+    </button>
+  </div>
 
-  <div fxLayout="column" fxLayoutAlign="end stretch">
-    <button mat-raised-button class="install-update-btns" *ngIf="ui.appUpdate | async" color="warn"
+  <div class="app-info">
+
+    <div class="flex flex-col pb-[15px] gap-y-2">
+      <button mat-raised-button color="warn" *ngIf="ui.appUpdate | async" class="font-medium"
       (click)="update()">Update to v{{(ui.appUpdate | async).version}}</button>
-    <button mat-raised-button class="install-update-btns" *ngIf="ui.appInstall | async" color="accent"
+      <button mat-raised-button  color="accent" *ngIf="ui.appInstall | async" class="font-medium"
       (click)="install()">Add to home screen</button>
-
-    <div fxLayout="column" fxLayoutAlign="end stretch" class="app-info">
-
-      <p>
-        <mat-chip-list fxLayout="column">
-          <mat-chip matTooltip="feature is {{environment.network !== networkSolution.LIBP2P ? 'disabled' : 'enabled'}} on this version of Mute"
-            [disabled]="environment.network !== networkSolution.LIBP2P">
-            <mat-icon *ngIf="environment.network === networkSolution.LIBP2P">check</mat-icon>
-            libp2p
-          </mat-chip>
-          <mat-chip matTooltip="feature is {{environment.network !== networkSolution.NETFLUX ? 'disabled' : 'enabled'}} on this version of Mute"
-            [disabled]="environment.network !== networkSolution.NETFLUX">
-            <mat-icon *ngIf="environment.network === networkSolution.NETFLUX">check</mat-icon>
-            Netflux
-          </mat-chip>
-          <span fxFill></span>
-          <mat-chip matTooltip="feature is {{!environment.botStorage ? 'disabled' : 'enabled'}} on this version of Mute"
-            [disabled]="!environment.botStorage">
-            <mat-icon *ngIf="environment.botStorage">check</mat-icon>
-            bot storage
-          </mat-chip>
-          <mat-chip matTooltip="feature is {{!environment.pulsar ? 'disabled' : 'enabled'}} on this version of Mute"
-            [disabled]="!environment.pulsar">
-            <mat-icon *ngIf="environment.pulsar">check</mat-icon>
-            pulsar
-          </mat-chip>
-          <mat-chip
-            matTooltip="feature is {{!environment.authentication ? 'disabled' : 'enabled'}} on this version of Mute"
-            [disabled]="!environment.authentication">
-            <mat-icon *ngIf="environment.authentication">check</mat-icon>
-            auth
-          </mat-chip>
-        </mat-chip-list>
-      </p>
-      <ng-container *ngIf="environment.production; then versionInfo"></ng-container>
-      <ng-template #versionInfo>
-        <p class="mat-caption">Multi-User Text Editor
-          <span>
-            <a href="https://gitlab.inria.fr/coast-team/mute/mute/-/blob/main/CHANGELOG.md"
-              target="_blank">v{{version}}</a>,
-          </span>
-          <a href="https://gitlab.inria.fr/coast-team/mute/mute" target="_blank">
-            <mat-icon aria-label="GitLab repository" fontSet="icon-github-circled"></mat-icon>
-          </a>
-        </p>
-        <p class="mat-caption hint">by
-          <a href="https://team.inria.fr/coast/" target="_blank">COAST team</a> | INRIA | LORIA
-        </p>
-      </ng-template>
-
     </div>
+
+    <p class="pb-1">
+      <mat-chip-listbox>
+        <mat-chip-option matTooltip="feature is {{environment.network !== networkSolution.LIBP2P ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="environment.network !== networkSolution.LIBP2P" [selectable]="false">
+          <mat-icon *ngIf="environment.network === networkSolution.LIBP2P">check</mat-icon>
+          libp2p
+        </mat-chip-option>
+        <mat-chip-option matTooltip="feature is {{environment.network !== networkSolution.NETFLUX ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="environment.network !== networkSolution.NETFLUX" [selectable]="false">
+          <mat-icon *ngIf="environment.network === networkSolution.NETFLUX">check</mat-icon>
+          Netflux 
+        </mat-chip-option>
+        <mat-chip-option matTooltip="feature is {{!environment.botStorage ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.botStorage" [selectable]="false">
+          <mat-icon *ngIf="environment.botStorage">check</mat-icon>
+          bot storage
+        </mat-chip-option>
+        <mat-chip-option matTooltip="feature is {{!environment.pulsar ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.pulsar" [selectable]="false">
+          <mat-icon *ngIf="environment.pulsar">check</mat-icon>
+          pulsar
+        </mat-chip-option>
+        <mat-chip-option matTooltip="feature is {{!environment.authentication ? 'disabled' : 'enabled'}} on this version of Mute"
+            [disabled]="!environment.authentication" [selectable]="false">
+          <mat-icon *ngIf="environment.authentication">check</mat-icon>
+          auth
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </p>
+    <ng-container *ngIf="environment.production; then versionInfo"></ng-container>
+    <ng-template #versionInfo>
+      <p class="mat-caption ">
+        Multi-User Text Editor 
+          <a href="https://gitlab.inria.fr/coast-team/mute/mute/-/blob/main/CHANGELOG.md" class ="underline"  target="_blank">
+            v{{version}}</a>,
+        <a href="https://gitlab.inria.fr/coast-team/mute/mute" class="no-underline" target="_blank">
+          <mat-icon class="align-middle" aria-label="GitLab repository" fontSet="icon-github-circled"></mat-icon>
+        </a>
+      </p>
+      <p class="mat-caption hint">by
+        <a href="https://team.inria.fr/coast/" class ="underline" target="_blank">COAST team</a> | INRIA | LORIA
+      </p>
+    </ng-template>
   </div>
 </div>

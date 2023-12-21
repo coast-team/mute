@@ -25,10 +25,13 @@
 .sync-details {
   position: fixed;
   display: inline-block;
-  width: 220px;
+  width: 260px;
   top: 66px;
   right: 20px;
   z-index: 1000;
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2), //mat-elevation-z8 workaround for mat-card
+   0px 8px 10px 1px rgba(0, 0, 0, 0.14),
+   0px 3px 14px 2px rgba(0, 0, 0, 0.12); 
 
   .center {
     text-align: center;
@@ -41,7 +44,7 @@
     border-style: dashed dashed solid;
     border-width: 0 8.5px 8.5px;
     position: fixed;
-    right: 116px;
+    right: 8.4rem;
     top: 58px;
     z-index: 1000;
   }

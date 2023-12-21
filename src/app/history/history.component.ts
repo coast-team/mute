@@ -5,7 +5,7 @@ import 'codemirror/mode/gfm/gfm'
 import 'codemirror/mode/javascript/javascript'
 import { Subscription } from 'rxjs'
 
-import { MediaObserver } from '@angular/flex-layout'
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { Author } from '../core/Author'
 import { Doc } from '../core/Doc'
 import { UiService } from '../core/ui'
@@ -37,6 +37,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
   public step: number
   public rightSideNavMode = 'side'
   public docAuthors: Author[]
+  public breakpointsXS = Breakpoints.XSmall
 
   private operations: (IDelete | IInsert)[]
   private subscriptions: Subscription[]
@@ -46,7 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private history: HistoryService,
     public ui: UiService,
-    public media: MediaObserver
+    public breakpointObserver: BreakpointObserver
   ) {
     this.step = 1
     this.subscriptions = []

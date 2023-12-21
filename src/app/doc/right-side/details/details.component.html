@@ -1,64 +1,59 @@
-<div fxLayout="column" fxLayoutAlign="start stretch">
-  <div class="doc-block" fxLayout="column" fxLayoutAlign="start stretch">
-    <div fxLayoutAlign="start center" class="line">
-      <span class="mat-caption title">Created</span>
-      <span class="mat-body-2">{{doc.created | date:'MMMM d, y, HH:mm'}}</span>
+<div class="flex flex-col justify-start justify-stretch">
+
+  <!--Document details-->
+  <div class="details-block">
+    <div class="details-block-line">
+      <span class="mat-caption">Created</span>
+      <span class="mat-subtitle-2 font-semibold">{{doc.created | date:'MMMM d, y, HH:mm'}}</span>
     </div>
-    <div fxLayoutAlign="start center" class="line">
-      <span class="mat-caption title">Digest</span>
-      <span class="mat-body-2">{{ui.docDigest | async}}</span>
+    <div class="details-block-line">
+      <span class="mat-caption">Digest</span>
+      <span class="mat-subtitle-2 font-semibold">{{ui.docDigest | async}}</span>
     </div>
-    <div fxLayoutAlign="start center" class="line" [matTooltip]="crypto[1]">
-      <span class="mat-caption title">Encryption</span>
-      <span class="mat-body-2">{{crypto[0]}}</span>
+    <div class="details-block-line" [matTooltip]="crypto[1]">
+      <span class="mat-caption">Encryption</span>
+      <span class="mat-subtitle-2">{{crypto[0]}}</span>
     </div>
-    <div *ngIf="hasConiks" fxLayoutAlign="start center" class="line">
-      <span class="mat-caption title">Coniks</span>
-      <span class="mat-body-2">Yes</span>
+    <div *ngIf="hasConiks" class="details-block-line">
+        <span class="mat-caption">Coniks</span>
+        <span class="mat-subtitle-2">Yes</span>
     </div>
-    <div *ngIf="hasKeyserver" fxLayoutAlign="start center" class="line">
-      <span class="mat-caption title">Keyserver</span>
-      <span class="mat-body-2">Yes</span></div>
+    <div *ngIf="hasKeyserver" class="details-block-line" >
+      <span class="mat-caption">Keyserver</span>
+      <span class="mat-subtitle-2">Yes</span></div>
   </div>
 
   <ng-template *ngIf="environment.pulsar">
-    <!-- checkbox to share logs for experimentation (opt-in for explicit consent) -->
-    <div class="doc-block">
-      <div fxLayoutAlign="start center">
+  <!-- checkbox to share logs for experimentation (opt-in for explicit consent) -->
+    <div class="pulsar-block">
+      <div class="pulsar-block-line">
         <span class="mat-caption title">Share logs</span>
-        <span class="mat-body-2">
-          <mat-slide-toggle [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
+        <span class="mat-subtitle-2">
+          <mat-slide-toggle class="pb-1" [checked]="doc.shareLogs" (change)="updateShareLogs($event)"></mat-slide-toggle>
         </span>
         <mat-icon class="icon mat-primary" matTooltipClass="logs-info-tooltip" [matTooltip]="logsTooltip">info</mat-icon>
       </div>
-    </div>
-    <br>
-
-    <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <div id="pulsarWsBlock">
-        <div class="pulsarWs">
-          <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
-          <span class="spaceIconText">Logs Producer</span>
+      <mat-expansion-panel *ngIf="doc.shareLogs" id="pulsarWsPanel" >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>offline_share</mat-icon> <span class="spaceIconText">Websockets logs</span> 
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div id="pulsarWsBlock">
+          <div class="pulsarWs">
+            <mat-icon id = "ws1Logs" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsLogsStateArray[0]}" [inline]="true">arrow_upward</mat-icon>
+            <span class="spaceIconText">Logs Producer</span>
+          </div>
         </div>
-      </div>
-    </mat-expansion-panel>
-
-    <br>
-
+      </mat-expansion-panel>
+  
     <!-- enable pulsar on this document -->
-    <div class="doc-block">
-      <div fxLayoutAlign="start center">
+      <div class="pulsar-block-line">
         <span class="mat-caption title">Pulsar</span>
-        <span class="mat-body-2">
-          <mat-slide-toggle id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
+        <span class="mat-subtitle-2">
+          <mat-slide-toggle class="pb-1" id="pulsarButton" [checked]="doc.pulsar" (change)="updatePulsar($event)" [disabled]="doc.pulsar" ></mat-slide-toggle>
         </span>
       </div>
-      <br>
       <mat-expansion-panel *ngIf="doc.pulsar" id="pulsarWsPanel" >
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -70,7 +65,6 @@
             <mat-icon id = "ws1" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[0]}" [inline]="true">arrow_upward</mat-icon> <mat-icon id = "ws2" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[1]}" [inline]="true">arrow_downward</mat-icon>
             <span class="spaceIconText">Title</span>
           </div>
-
           <div class="pulsarWs">
             <mat-icon id = "ws3" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[2]}" [inline]="true">arrow_upward</mat-icon><mat-icon id = "ws4" [matTooltip]="wsStateInfoToolTip" [ngStyle]="{'color': pulsarWsStateArray[3]}" [inline]="true">arrow_downward</mat-icon>
             <span class="spaceIconText">Doc-content</span>
@@ -80,13 +74,13 @@
     </div>
   </ng-template>
 
-  <!-- list of collaborators -->
-  <div class="chips-block">
-    <div fxLayout="row wrap" fxLayoutAlign="start start" class="chips">
-      <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard()" class="chip mat-elevation-z2"
-        [@joinLeave]="active" [style.border-color]="collab.color" fxFlex="150px" fxLayoutAlign='start center'>
-        <mute-avatar [profile]="collab"></mute-avatar>
-        <span class="mat-body-2 displayName">
+  <!-- List of collaborators -->
+  <div class="collaborators-chips-block">
+    <div class="collaborators-chips">
+      <div *ngFor="let collab of collaborators" (mouseenter)="showCard(collab)" (mouseleave)="hideCard()" class="collaborator-chip mat-elevation-z2"
+        [@joinLeave]="active" [style.border-color]="collab.color">
+        <mute-avatar class="pl-[0.5rem]" [profile]="collab"></mute-avatar>
+        <span class="mat-subtitle-2 displayName">
           {{collab.displayName}}
         </span>
       </div>
@@ -94,15 +88,13 @@
   </div>
 
   <!-- Card shown when hovering collaborator in the details component-->
-  <mat-card class="profile-block" [@cardState]="cardState">
-    <div fxLayoutAlign="start start" fxLayoutGap="10px">
-      <mute-avatar *ngIf="card.deviceID" [profile]="card" [size]="64"></mute-avatar>
-      <div class="info" fxLayout="column">
-        <span class="mat-body-2 prop">{{ card.displayName }}</span>
+  <mat-card appearance="outlined" class="collaborator-profile-block" [@cardState]="cardState">
+      <mute-avatar class="avatar-collaborator" *ngIf="card.deviceID" [profile]="card" [size]="64"></mute-avatar>
+      <div class="info-collaborator">
+        <span class="mat-subtitle-2 prop">{{ card.displayName }}</span>
         <span class="mat-caption prop">{{ card.login }}</span>
         <span class="mat-caption prop">{{ card.deviceID }}</span>
       </div>
-    </div>
   </mat-card>
 
 </div>

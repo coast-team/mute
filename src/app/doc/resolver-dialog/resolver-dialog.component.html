@@ -1,31 +1,31 @@
 <h2 mat-dialog-title>Restore document from trash</h2>
-<div mat-dialog-content class="mat-typography">
-  <p>The following document is in the trash and must be restored before editing:</p>
-  <br />
-  <p fxLayoutAlign="start center">
-    <span class="mat-caption hint">Name</span> {{doc.title}}
+<div mat-dialog-content>
+  <p class="pb-[1.1rem]">The following document is in the trash and must be restored before editing:</p>
+
+  <p class="resolve-doc-info-line">
+    <span class="mat-caption">Name </span> {{doc.title}}
   </p>
-  <p fxLayoutAlign="start center">
-    <span class="mat-caption hint">Key</span> {{doc.signalingKey}}
+  <p class="resolve-doc-info-line">
+    <span class="mat-caption">Key</span> {{doc.signalingKey}}
   </p>
-  <p fxLayoutAlign="start center">
-    <span class="mat-caption hint">Created</span> {{doc.created | date:'medium'}}
+  <p class="resolve-doc-info-line">
+    <span class="mat-caption">Created</span> {{doc.created | date:'medium'}}
   </p>
-  <p fxLayoutAlign="start center">
-    <span class="mat-caption hint">Last opened by me</span> {{doc.opened | date:'medium'}}
+  <p class="resolve-doc-info-line">
+    <span class="mat-caption">Last opened by me</span> {{doc.opened | date:'medium'}}
   </p>
-  <p fxLayoutAlign="start center">
-    <span class="mat-caption hint">Last modified</span> {{doc.modified | date:'medium'}}
+  <p class="resolve-doc-info-line">
+    <span class="mat-caption">Last modified</span> {{doc.modified | date:'medium'}}
   </p>
-  <p *ngIf="remoteName" fxLayoutAlign="start center">
-    <span class="mat-caption hint synchro" fxLayoutAlign="start center">
-      <mat-icon [matTooltip]="remoteName" aria-label="remote storage" class="synchronized-icon">cloud</mat-icon>
+  <p *ngIf="remoteName" class="resolve-doc-info-line">
+    <span class="mat-caption flex items-center">
+      <mat-icon class="pr-[30px]" [matTooltip]="remoteName" aria-label="remote storage">cloud</mat-icon>
       Synchronized
     </span> {{doc | muteRemote }}
   </p>
 </div>
 
-<div mat-dialog-actions fxLayoutAlign="end center">
+<div mat-dialog-actions>
   <button mat-button mat-dialog-close>Cancel</button>
   <button mat-button color="primary" [mat-dialog-close]="true">Restore</button>
 </div>

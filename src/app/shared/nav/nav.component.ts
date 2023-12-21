@@ -8,16 +8,9 @@ import { environment } from '@environments/environment'
 import { appData } from '../../../app-data'
 import { Folder } from '@app/core/Folder'
 import { SettingsService } from '@app/core/settings'
-import {
-  BotStorageService,
-  BotStorageServiceStatus,
-  LocalStorageService
-} from '@app/core/storage'
+import { BotStorageService, BotStorageServiceStatus, LocalStorageService } from '@app/core/storage'
 import { UiService } from '@app/core/ui'
-import {
-  ConfigDialogComponent,
-  JoinDialogComponent
-} from '@app/shared/dialogs'
+import { ConfigDialogComponent, JoinDialogComponent } from '@app/shared/dialogs'
 import { networkSolution } from '@app/doc/network/solutions/networkSolution'
 
 @Component({

@@ -1,38 +1,38 @@
 <button mat-icon-button (mousedown)='toggleCard($event)'>
-  <mute-avatar [profile]="profile" size="40"></mute-avatar>
+  <mute-avatar [profile]="profile"></mute-avatar>
 </button>
 
-<mat-card class="profile-card mat-elevation-z8" [@cardState]="cardState" (mousedown)='mousedown($event)'>
+<mat-card class="profile-card pb-0" [@cardState]="cardState" (mousedown)='mousedown($event)'>
   <span class="arrow"></span>
-  <div class="content" fxLayoutAlign="start start" fxLayoutGap="20px">
-    <mute-avatar [profile]="profile" size="100"></mute-avatar>
-
-    <div fxLayout="column">
-      <span class="mat-body-2 name">{{ profile.displayName }}</span>
-      <span class="mat-caption secondary-text">{{ profile.login }}</span>
-      <span class="mat-caption secondary-text">{{ profile.deviceID }}</span>
-      <button mat-raised-button color="accent" class="my-account" (click)="openSettingsDialog()">
-        <mat-icon aria-label="open settings dialog" class="settings-btn">settings</mat-icon>Settings
-      </button>
-    </div>
-  </div>
-
-  <mat-card-actions *ngIf="environment.authentication">
-    <div fxLayoutAlign="end center" *ngIf="settings.isAuthenticated(); else signin">
-      <!-- <button mat-button disabled>Add account</button> -->
-      <button mat-button (click)="signout()">Sign Out</button>
-    </div>
-    <ng-template #signin>
-      <div fxLayoutAlign="end center">
-        <span class="mat-caption secondary-text">Sign in with</span>
-        <button mat-icon-button (click)="signinWith('github')" matTooltip="Github">
-          <mat-icon aria-label="Sign in with Github" fontSet="icon-github-circled"></mat-icon>
-        </button>
-        <button mat-icon-button (click)="signinWith('google')" matTooltip="Google">
-          <mat-icon aria-label="Sign in with Google" fontSet="icon-google"></mat-icon>
+  <mat-card-content class="flex px-3">
+    <div class="flex flex-row pt-3 pb-3">
+      <mute-avatar class="pr-4" [profile]="profile" size="100"></mute-avatar>
+      <div class="flex flex-col">
+        <span class="mat-caption hint">{{ profile.displayName }}</span>
+        <span class="mat-caption secondary-text">{{ profile.login }}</span>
+        <span class="mat-caption secondary-text">{{ profile.deviceID }}</span>
+        <button mat-raised-button color="accent" class="my-account" (click)="openSettingsDialog()">
+          <mat-icon aria-label="open settings dialog" class="settings-btn">settings</mat-icon>Settings
         </button>
       </div>
-
-    </ng-template>
-  </mat-card-actions>
+    </div>
+    <mat-card-actions class="justify-end" *ngIf="environment.authentication">
+      <div class="flex justify-center" *ngIf="settings.isAuthenticated(); else signin">
+        <button mat-button disabled>Add account</button>
+        <button mat-button color="primary" (click)="signout()">Sign Out</button>
+      </div>
+        
+      <ng-template #signin>
+        <div class="inline-block">
+          <span class="mat-caption secondary-text pr-3 relative bottom-2">Sign in with</span>
+          <button mat-icon-button (click)="signinWith('github')" matTooltip="Github">
+            <mat-icon class="text-sm" aria-label="Sign in with Github" fontSet="icon-github-circled"></mat-icon>
+          </button>
+          <button mat-icon-button (click)="signinWith('google')" matTooltip="Google">
+            <mat-icon class="text-sm" aria-label="Sign in with Google" fontSet="icon-google"></mat-icon>
+          </button>
+        </div>
+      </ng-template>
+    </mat-card-actions>
+  </mat-card-content>
 </mat-card>

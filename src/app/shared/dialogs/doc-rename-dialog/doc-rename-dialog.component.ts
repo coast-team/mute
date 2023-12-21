@@ -8,7 +8,7 @@ import { LocalStorageService } from '../../../core/storage/local/local-storage.s
 @Component({
   selector: 'mute-doc-rename-dialog',
   templateUrl: './doc-rename-dialog.component.html',
-  styleUrls: ['./doc-rename-dialog.component.css'],
+  styleUrls: ['./doc-rename-dialog.component.scss'],
 })
 export class DocRenameDialogComponent {
   public titleControl: FormControl

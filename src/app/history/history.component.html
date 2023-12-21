@@ -1,28 +1,30 @@
 <mute-toolbar [header]="doc.title" (menu)="leftSidenavElm.toggle()"></mute-toolbar>
 <mat-sidenav-container #sidenavElm>
 
-  <!-- Left Sidenav-->
-  <mat-sidenav #leftSidenavElm class="leftsidenav" mode="over">
+  <!-- Left Sidenav
+    TODO -> Once the history feature is working again, uncomment this code
+    This sidenav is the menu sidenav. However, It is currently not possible to hold two navs on the same page 
+  <mat-sidenav #leftSidenavElm mode="over" class="leftsidenav" >
     <mute-nav></mute-nav>
-  </mat-sidenav>
-
+  </mat-sidenav>-->
   <div class="content">
     <mat-card class="matContent">
       <div #editorElt></div>
 
       <mat-divider></mat-divider>
-      <mute-controls (controls)="onControlsChange($event)" (slide)="updateStep($event)"
+      <div class="w-full">
+        <mute-controls (controls)="onControlsChange($event)" (slide)="updateStep($event)"
         [nbOperations]="countOperations()" [currentOp]="currentOp" [max]="countMax()" [doc]="doc">
-      </mute-controls>
+        </mute-controls>
 
-      <mute-timeline [nbOperations]="countOperations()" [step]="step" [max]="countMax()" [currentOp]="currentOp"
+        <mute-timeline [nbOperations]="countOperations()" [step]="step" [max]="countMax()" [currentOp]="currentOp"
         (slide)="showVersion($event)" [delay]="300">
-      </mute-timeline>
+        </mute-timeline>
+      </div>
     </mat-card>
   </div>
 
-  <mat-sidenav #rightSidenavElm class="rightsidenav" align="end" [opened]="!this.media.isActive('xs')"
-    [mode]="rightSideNavMode">
+  <mat-sidenav #rightSidenavElm class="rightsidenav" align="end" [mode]="rightSideNavMode" [opened]="!this.breakpointObserver.isMatched(breakpointsXS)">
     <mute-collaborators [docAuthors]="docAuthors" (change)="onToggle()"></mute-collaborators>
   </mat-sidenav>
 

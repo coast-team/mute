@@ -155,7 +155,7 @@ export class SettingsService {
       this.updateThemeProperty(name, 'bg-card')
       this.updateThemeProperty(name, 'bg-disabled-list-option')
 
-      // Update forground colors
+      // Update foreground colors
       this.updateThemeProperty(name, 'fg-text')
       this.updateThemeProperty(name, 'fg-secondary-text')
       this.updateThemeProperty(name, 'fg-hint-text')

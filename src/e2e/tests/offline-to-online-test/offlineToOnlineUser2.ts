@@ -17,7 +17,7 @@ test('Additional user for the offline To Online scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   await t.wait(3000) //  Wait for the selector to be updated and get what's written in the editor
 

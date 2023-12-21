@@ -2,7 +2,6 @@ import { CommonModule, DatePipe } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { FlexLayoutModule } from '@angular/flex-layout'
 
 import { MatButtonModule } from '@angular/material/button'
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
@@ -28,12 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
 import { AvatarComponent } from './avatar/avatar.component'
-import {
-  ConfigDialogComponent,
-  DocRenameDialogComponent,
-  RemoteDeleteDialogComponent,
-  JoinDialogComponent
-} from './dialogs'
+import { ConfigDialogComponent, DocRenameDialogComponent, RemoteDeleteDialogComponent, JoinDialogComponent } from './dialogs'
 import { NavComponent } from './nav/nav.component'
 import { ProfileComponent } from './profile/profile.component'
 
@@ -47,7 +41,6 @@ import { SizePipe } from './pipes/size.pipe'
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
 
     MatButtonModule,
     MatButtonToggleModule,
@@ -70,11 +63,9 @@ import { SizePipe } from './pipes/size.pipe'
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
-  providers: [
-    DatePipe
-  ],
+  providers: [DatePipe],
   declarations: [
     ProfileComponent,
     NavComponent,
@@ -86,13 +77,12 @@ import { SizePipe } from './pipes/size.pipe'
 
     SizePipe,
     RemotePipe,
-    DateEnhancedPipe
+    DateEnhancedPipe,
   ],
   exports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    FlexLayoutModule,
 
     MatButtonModule,
     MatButtonToggleModule,

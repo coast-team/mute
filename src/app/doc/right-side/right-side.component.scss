@@ -7,9 +7,6 @@
   overflow: hidden;
 }
 
-mat-tab-group {
-  height: 100%;
-}
 
 .tab-header {
   display: inline-block;
@@ -18,6 +15,10 @@ mat-tab-group {
 
 .cheatsheet-tab {
   box-sizing: content-box;
-  padding: 20px 10px 0px 5px;
+  padding: 5px 10px 0px 5px;
   height: 100%;
+}
+
+.mat-mdc-tab-group {
+  max-height: 100%;
 }

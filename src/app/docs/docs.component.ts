@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/table'
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { MediaChange, MediaObserver } from '@angular/flex-layout'
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSidenav } from '@angular/material/sidenav'
 import { MatSnackBar } from '@angular/material/snack-bar'
@@ -15,15 +15,9 @@ import { Doc } from '@app/core/Doc'
 import { Folder } from '@app/core/Folder'
 import { EProperties } from '@app/core/settings/EProperties.enum'
 import { SettingsService } from '@app/core/settings'
-import {
-  BotStorageService,
-  LocalStorageService
-} from '@app/core/storage'
+import { BotStorageService, LocalStorageService } from '@app/core/storage'
 import { UiService } from '@app/core/ui'
-import {
-  DocRenameDialogComponent,
-  RemoteDeleteDialogComponent
-} from '../shared/dialogs'
+import { DocRenameDialogComponent, RemoteDeleteDialogComponent } from '../shared/dialogs'
 import { MatMenuTrigger } from '@angular/material/menu'
 
 class DocsSource extends DataSource<Doc> {
@@ -100,13 +94,13 @@ export class DocsComponent implements OnDestroy, OnInit {
   public docs: Doc[]
   public sideNavMode = 'side'
   public isFinishOpen: boolean
-  public isMobile: boolean
   public menuDoc: Doc
   public remoteName: string
   public remoteId: string
   public sortDefault: Sort = { active: 'modified', direction: 'desc' }
   public menuTopLeftPosition = { x: '0', y: '0' }
   public actions
+  public breakpointsXS = Breakpoints.XSmall
 
   private subs: Subscription[]
   private displayedColumnsMobile = ['title', 'more']
@@ -121,7 +115,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     private clipboard: Clipboard,
     public localStorage: LocalStorageService,
     public ui: UiService,
-    public media: MediaObserver,
+    public breakpointObserver: BreakpointObserver,
     public dialog: MatDialog
   ) {
     this.docsSubject = new BehaviorSubject([])
@@ -133,7 +127,6 @@ export class DocsComponent implements OnDestroy, OnInit {
       this.displayedColumnsLocal.push('synchronized')
       this.displayedColumnsRemote.push('synchronized')
     }
-    this.updateDisplayedColumns()
     this.openFolder(this.localStorage.getFolder(this.settings.openedFolder) || this.localStorage.local)
   }
 
@@ -142,15 +135,18 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.subs[this.subs.length] = this.settings.onChange.pipe(filter((props) => props.includes(EProperties.openedFolder))).subscribe(() => {
       this.openFolder(this.localStorage.getFolder(this.settings.openedFolder))
     })
-    this.subs[this.subs.length] = this.media.asObservable().subscribe((changes: MediaChange[]) => {
-      changes.forEach((change) => {
-        if (change.mqAlias === 'xs') {
-          this.sideNavMode = 'over'
-        } else {
-          this.sideNavMode = 'side'
-        }
-        this.isMobile = change.mqAlias === 'xs' || change.mqAlias === 'sm'
-      })
+    this.subs[this.subs.length] = this.breakpointObserver.observe([Breakpoints.XSmall, Breakpoints.Small]).subscribe((result) => {
+      if (result.breakpoints[Breakpoints.XSmall]) {
+        this.sideNavMode = 'over'
+      } else {
+        this.sideNavMode = 'side'
+      }
+      this.updateDisplayedColumns()
+    })
+    this.subs[this.subs.length] = this.leftSidenav.closedStart.subscribe(() => {
+      this.updateDisplayedColumns()
+    })
+    this.subs[this.subs.length] = this.leftSidenav.openedStart.subscribe(() => {
       this.updateDisplayedColumns()
     })
   }
@@ -213,9 +209,7 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   open(doc?: Doc, newTab?: boolean) {
-    const key = doc
-      ? doc.signalingKey
-      : this.localStorage.generateSignalingKey()
+    const key = doc ? doc.signalingKey : this.localStorage.generateSignalingKey()
 
     if (newTab) {
       window.open(`${window.location.origin}/${key}`, '_blank')
@@ -238,7 +232,6 @@ export class DocsComponent implements OnDestroy, OnInit {
 
   openFolder(folder: Folder) {
     this.folder = folder
-    this.updateDisplayedColumns()
     this.isFinishOpen = false
     folder.fetchDocs().then((docs) => {
       this.docs = docs
@@ -251,7 +244,7 @@ export class DocsComponent implements OnDestroy, OnInit {
     return this.localStorage.getFolder(doc.parentFolderId).icon
   }
 
-  /** 
+  /**
    * Method called when the user click with the right button
    * @param event MouseEvent, it contains the coordinates
    * @param item Our data contained in the row of the table
@@ -269,10 +262,9 @@ export class DocsComponent implements OnDestroy, OnInit {
     this.setMenuDoc(item)
 
     // we open the menu
-    this.rightClickTrigger.menu.focusFirstItem("mouse")
+    this.rightClickTrigger.menu.focusFirstItem('mouse')
     this.rightClickTrigger.openMenu()
   }
-
 
   private moveToTrash(doc: Doc) {
     this.docs = this.docs.filter((d: Doc) => d.signalingKey !== doc.signalingKey)
@@ -293,7 +285,11 @@ export class DocsComponent implements OnDestroy, OnInit {
   }
 
   private updateDisplayedColumns() {
-    if (this.isMobile) {
+    if (
+      this.breakpointObserver.isMatched(Breakpoints.XSmall) ||
+      ((this.breakpointObserver.isMatched(Breakpoints.XSmall) || this.breakpointObserver.isMatched(Breakpoints.Small)) &&
+        this.leftSidenav.opened)
+    ) {
       this.displayedColumns = this.displayedColumnsMobile
     } else {
       if (this.folder === this.localStorage.remote) {

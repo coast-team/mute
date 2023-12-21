@@ -1,8 +1,14 @@
 .controls-buttons {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.8rem;
   button {
     margin: 5px;
+  }
+  .mat-mdc-slider {
+    margin-left: 1.5rem;
   }
   mat-icon {
     cursor: pointer;

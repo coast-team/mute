@@ -1,17 +1,22 @@
-<mat-toolbar color="primary" class="mat-elevation-z6">
-  <div fxFill fxLayoutAlign="space-between">
-    <div fxLayoutAlign="start center">
-      <button mat-icon-button (click)="menu.emit()">
-        <mat-icon>menu</mat-icon>
+<mat-toolbar color="primary" class="mat-elevation-z6 h-16">
+  <div class="flex flex-row w-full h-full justify-between place-items-center">
+    <div class="flex flex-row">
+      
+      <!--
+        TODO -> Once the history feature is working again, uncomment this code
+        <button mat-icon-button (click)="menu.emit()">
+          -->
+      <button mat-icon-button>
+        <mat-icon class="inline-block align-text-top">menu</mat-icon>
       </button>
 
-      <h2 fxFlex class="header">
+      <h2 class="pl-2 pt-2">
         {{header}}
-        <mat-icon>chevron_right</mat-icon>
+        <mat-icon class="align-sub">chevron_right</mat-icon>
         History
       </h2>
     </div>
-    <div fxLayoutAlign="end center">
+    <div class="justify-end align-center">
       <mute-profile class="profile"></mute-profile>
     </div>
   </div>

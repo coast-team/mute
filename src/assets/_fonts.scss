@@ -1,3 +1,9 @@
+@use '@angular/material' as mat;
+
+// Do not let Angular material font override our configuration.
+$my-typography: mat.define-typography-config();
+@include mat.typography-hierarchy($my-typography);
+
 /* roboto-300 - latin */
 @font-face {
   font-family: 'Roboto';
@@ -71,11 +77,12 @@
 }
 
 // using https://marella.me/material-icons/demo/
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url('../../node_modules/material-icons/iconfont/MaterialIcons-Regular.woff2') format('woff2');
+  src: local('Material Icons'), local('material-icon'), url('../../node_modules/material-icons/iconfont/material-icons.woff2') format('woff2');
 }
 .material-icons {
   font-family: 'Material Icons';
@@ -158,3 +165,36 @@
 .icon-google:before {
   content: '\f1a0';
 } /* '' */
+
+.mat-subtitle-1, .mat-body-2, .mat-caption{
+  color: var(--theme-fg-text);
+}
+
+// Restore default grey color for icons
+.mat-mdc-menu-item .mat-icon-no-color, .mat-mdc-menu-submenu-icon {
+  color: var(--mdc-theme-text-primary-on-background, rgba(0, 0, 0, 0.54));
+}
+
+.mat-mdc-header-cell {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mdc-button .mdc-button__label {
+  font-weight: 500;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__title {
+  font: 500 20px / 32px Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+
+.mdc-list-item__primary-text {
+  font: 400 14px Roboto, "Helvetica Neue", sans-serif !important;
+}
+
+h2.mat-subheading-2 {
+  font: 500 16px / 28px Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+

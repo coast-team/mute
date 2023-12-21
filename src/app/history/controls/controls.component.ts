@@ -11,8 +11,6 @@ import { CONTROLS } from './controls'
   styleUrls: ['./controls.component.scss'],
 })
 export class ControlsComponent implements OnInit {
-  public isPlaying: boolean
-  public pausePlayBtn: string
   @Input()
   currentOp: number
   @Input()
@@ -25,9 +23,11 @@ export class ControlsComponent implements OnInit {
   controls: EventEmitter<number>
   @Output()
   slide: EventEmitter<number>
+  public isPlaying: boolean
+  public pausePlayBtn: string
 
   constructor(private router: Router, public ui: UiService) {
-    this.pausePlayBtn = 'play_arrow';
+    this.pausePlayBtn = 'play_arrow'
     this.controls = new EventEmitter<number>()
     this.slide = new EventEmitter<number>()
   }

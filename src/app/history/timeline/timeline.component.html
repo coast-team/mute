@@ -1,9 +1,8 @@
-<div id="mute-timeline">
+<div class="w-full flex flex-row">
   <mat-slider thumbLabel
-    class="mute-timeline-slider"
-    min="0" max="{{nbOperations}}" 
-    (input)="updateOperation($event.value)" 
-    value={{currentOp}}
-    step="{{step}}">
+  [min]="0" [max]="nbOperations" 
+  [step]="step" discrete>
+    <input matSliderThumb (valueChange)="updateOperation($event)"/>
   </mat-slider>
 </div>
+  

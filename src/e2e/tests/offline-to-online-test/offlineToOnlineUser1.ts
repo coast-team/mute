@@ -12,7 +12,7 @@ test('Main user for the offline To Online scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   //  3. Text is written on the document
   await t

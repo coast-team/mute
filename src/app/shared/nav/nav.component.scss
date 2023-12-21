@@ -6,6 +6,8 @@
 
 .container {
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .logo {
@@ -14,8 +16,8 @@
   font-weight: initial;
   font-size: 2.7rem;
   margin: 0;
-  padding: 2rem 0 0 0;
   text-align: center;
+  margin-top : 2rem;
 
   a {
     color: inherit;
@@ -24,13 +26,23 @@
   }
 }
 
+.docs-menu {
+  padding-top: 1rem;
+  align-self: center;
+}
+
+
 .new-doc-icons {
-  display: inline-block;
-  width: 60px;
+  display: inline-flex;
+  width: 100%;
   text-align: center;
 
   .mat-icon {
-    margin: 0;
+    margin:0;
+  }
+
+  p {
+    margin-left:0.5rem;
   }
 }
 
@@ -44,15 +56,6 @@
     margin: 7px 0;
   }
 
-  .mat-button {
-    height: 48px;
-    text-align: left;
-
-    mat-icon {
-      margin-right: 1.3rem;
-    }
-  }
-
   .hint {
     color: var(--theme-fg-secondary-text);
     text-align: center;
@@ -60,15 +63,32 @@
     width: 80%;
     word-wrap: normal;
   }
+
+  .mat-mdc-button{
+    height: 48px;
+    display: block;
+    
+    .mat-icon {
+      margin-right: 1.3rem;
+      margin-left: 0.3rem;
+      text-align: left;
+    }
+  }
+}
+
+p {
+  margin:0;
 }
 
 .app-info {
-  margin: 16px 0;
   color: var(--theme-fg-secondary-text);
   word-wrap: normal;
   text-align: left;
+  
   padding-left: 16px;
   padding-right: 16px;
+  padding-bottom: 12px;
+  margin-top: auto;
 
   a {
     color: var(--theme-fg-text);
@@ -79,6 +99,7 @@
   }
 
   p {
+    font-size: 12px;
     margin-bottom: 0;
 
     &:nth-child(1) {
@@ -87,20 +108,18 @@
   }
 }
 
-.install-update-btns {
-  margin: 16px 16px 0 16px;
-}
-
-mat-chip-list {
+.mat-mdc-chip-listbox{
   max-width: 249px;
-  display: inline-block;
+  display: inline-flex;
+  font-weight: 500;
+  cursor: default;
 
-  .mat-chip-list-wrapper {
+  .mat-mdc-chip-list-wrapper {
     flex-direction: row-reverse;
   }
 
-  mat-chip {
-    justify-content: space-between;
-    gap: 5px;
+  .mat-icon{
+    vertical-align: middle;
   }
 }
+

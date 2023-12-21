@@ -22,7 +22,6 @@ describe('NetworkServiceAbstracted', () => {
       'setAndInitCryptoServiceNetworkSolution' as never
     ).and.stub()
     const networkServiceAbstracted = TestBed.inject(NetworkServiceAbstracted)
-
     expect(networkServiceAbstracted).toBeTruthy('networkServiceAbstracted has not been initialized')
     expect(initNetworkSolution).toHaveBeenCalledTimes(1)
     expect(setAndInitCryptoServiceNetworkSolution).toHaveBeenCalledTimes(1)

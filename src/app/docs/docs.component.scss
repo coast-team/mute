@@ -1,12 +1,13 @@
 :host {
   flex: 1;
-  overflow: auto;
+  overflow:hidden;
 }
 
 .mat-subimage {
+  place-self: center;
   opacity: .6;
-  transform: scale(5);
-  margin-bottom: 3.6rem;
+  transform: scale(6);
+  margin-bottom:3.5rem;
   cursor: default;
 }
 
@@ -15,19 +16,47 @@
   cursor: default;
 }
 
-.mat-table {
-  overflow: auto;
+.mat-column-title {
+  flex: 1 1 auto;
+  padding-left: 1rem;
+  overflow:hidden;
+}
 
-  .mat-cell {
+.mat-column-created {
+  flex: 0 0 150px;
+  padding: 0 0;
+}
+
+.mat-column-opened {
+  flex: 0 0 150px;
+  padding: 0 0;
+}
+
+.mat-column-modified {
+  flex: 0 0 100px;
+  padding: 0 0;
+}
+
+.mat-column-more {
+  flex: 0 0 60px;
+  padding: 0 0;
+}
+
+mat-header-cell.mat-sort-header {
+  font-size: small;
+  font-weight: 500;
+}
+
+.mat-mdc-table {
+  overflow: hidden;
+
+  .mat-mdc-cell {
     text-overflow: ellipsis;
     overflow: hidden;
 
     &.title-cell {
       padding-left: 0;
-    }
-
-    .doc-in-trash {
-      padding: 0 16px;
+      font-weight: 500;
     }
 
     .key {
@@ -41,13 +70,11 @@
     }
   }
 
-  .mat-row {
-    padding-left: 5px;
+  .mat-mdc-row {
     cursor: pointer;
 
     &:hover {
       background-color: var(--theme-bg-hover);
-      border-radius: 25px;
     }
   }
 
@@ -57,13 +84,13 @@
   }
 
   .synchronized-icon {
-    vertical-align: bottom;
+    vertical-align: middle;
     margin-right: 5px;
   }
 }
 
 .mobile {
-  .mat-row {
+  .mat-mdc-row {
     padding: 0;
   }
 }
@@ -83,19 +110,15 @@
 }
 
 // hover on lines, not on buttons
-::ng-deep .mat-button:hover:not(.mat-button-disabled) > .mat-button-focus-overlay {
+/* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+::ng-deep .mat-mdc-button:hover:not(.mat-button-disabled) > .mat-button-focus-overlay {
 	opacity: 0 !important;
 }
 // end hover tweaks
 
 .table-container {
   height: 100%;
-  max-width: 920px;
   margin: auto;
-
-  @media screen and (min-width: 1400px) {
-    max-width: 1150px;
-  }
 }
 
 .info-values {
@@ -106,16 +129,14 @@
   height: 100%;
 }
 
-.title-button {
-  position: relative;
-  bottom: 1px;
-}
-
 .noDoc {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8rem;
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 120px;
+  overflow: hidden;
+  align-items: center;
+  height: max-content;
 }
 
 mat-sidenav-container {

@@ -4,9 +4,10 @@ $padding-left-right: 2%;
 
 :host {
   flex: 1;
-  overflow: auto;
+  overflow: none;
 }
 
+// TODO - Some changes needs to be done to these items once History is back as a working feature
 mat-card {
   @media screen and (max-width: $break-small) {
     width: 95%;

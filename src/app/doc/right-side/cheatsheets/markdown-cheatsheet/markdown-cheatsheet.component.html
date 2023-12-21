@@ -1,5 +1,5 @@
-<h2 class="mat-title">Headers</h2>
-<mat-card style="padding-left:19px;padding-right:6px;">
+<h2 class="mat-headline-6">Headers</h2>
+<mat-card appearance="outlined" class="pl-[19px] pr-[6px] py-[10px]">
   <mat-grid-list cols="2" rowHeight="35px">
     <span *ngFor="let elt of headers">
       <mat-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></mat-grid-tile>
@@ -7,8 +7,8 @@
     </span>
   </mat-grid-list>
 </mat-card>
-<h2 class="mat-title">Style</h2>
-<mat-card style="padding-left:12px;padding-right:12px;">
+<h2 class="mat-headline-6 pt-4">Style</h2>
+<mat-card appearance="outlined" class="pl-[12px] pr-[12px] py-[10px]">
   <mat-grid-list cols="2" rowHeight="35px">
     <span *ngFor="let elt of styles">
       <mat-grid-tile><span class={{elt.class}} innerHTML={{elt.md}}></span></mat-grid-tile>
@@ -16,8 +16,8 @@
     </span>
   </mat-grid-list>
 </mat-card>
-<h2 class="mat-title">Lists</h2>
-<mat-card  >
+<h2 class="mat-headline-6 pt-4">Lists</h2>
+<mat-card appearance="outlined" class="pl-[15px] py-[10px]">
   <h3>Numbered List</h3>
   <mat-grid-list cols="2" rowHeight="15px">
     <span *ngFor="let elt of numberedList">
@@ -40,8 +40,8 @@
     </span>
   </mat-grid-list>
 </mat-card>
-<h2 class="mat-title">Links</h2>
-<mat-card style="padding-left:20px;padding-right:20px;">
+<h2 class="mat-headline-6  pt-4">Links</h2>
+<mat-card appearance="outlined" class="pl-[20px] pr-[20px] py-[10px]">
   <h3>Inline</h3>
   <mat-grid-list cols="2" rowHeight="30px">
     <span *ngFor="let elt of inlineLinks">
@@ -57,16 +57,16 @@
     </span>
   </mat-grid-list>
 </mat-card>
-<h2 class="mat-title">Images</h2>
-<mat-card>
+<h2 class="mat-headline-6 pt-4">Images</h2>
+<mat-card appearance="outlined" class="pl-[15px] py-[10px]">
   <h3>Inline image</h3>
   ![alt text](imageLink "Text to show when hovered")
   <h3>Referenced image</h3>
   ![alt text][referenceName]
   <br><br><em>Potential text</em><br><br>[referenceName]: imageLink "Text to show when hovered"
 </mat-card>
-<h2 class="mat-title">Computer code</h2>
-<mat-card>
+<h2 class="mat-headline-6  pt-4">Computer code</h2>
+<mat-card appearance="outlined" class=" pl-[15px] py-[10px]">
   <h3>Inline-code</h3>
   <mat-grid-list cols="2" rowHeight="35px">
     <span *ngFor="let elt of inlineCode">

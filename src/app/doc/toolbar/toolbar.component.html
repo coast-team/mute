@@ -1,29 +1,25 @@
-<mat-toolbar color="primary" class="mat-elevation-z6">
-  <div fxFill fxLayoutAlign="space-between">
-    <div fxLayoutAlign="start center">
-      <button mat-icon-button (click)="menu.emit()" *ngIf="route.url === '/'">
-        <mat-icon>menu</mat-icon>
-      </button>
+<mat-toolbar color="primary" class="mat-elevation-z6 h-16">
 
-      <a routerLink="/" mat-icon-button>
-        <mat-icon>home</mat-icon>
-      </a>
+  <div class="flex flex-row w-full h-full justify-between align-center">
 
-      <div class="title">
-        <mat-form-field ngClass.gt-xs="gt-xs" color="accent">
+      <div class="flex flex-row items-center">
+          <button mat-icon-button routerLink="/">
+            <mat-icon class="align-top">home</mat-icon>
+          </button>
+        
+        <mat-form-field class="mat-mdc-form-field-override w-[250px] max-[640px]:w-[140px] ">
           <input #input matInput [value]="doc.title" (keydown)="updateTitle($event)" (blur)="updateTitle($event)"
             (focus)="selectTitle()" />
         </mat-form-field>
       </div>
-    </div>
 
-    <div fxLayoutAlign="end center">
-      <mute-sync class="sync action"></mute-sync>
-      <button mat-icon-button class="action" [matMenuTriggerFor]="docMenu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mute-profile class="action profile"></mute-profile>
-    </div>
+      <div class="flex flex-row justify-end items-center">
+        <mute-sync class="pr-[0.5rem]"></mute-sync>
+        <button mat-icon-button [matMenuTriggerFor]="docMenu">
+          <mat-icon class="align-top">more_vert</mat-icon>
+        </button>
+        <mute-profile class="pl-[0.5rem]"></mute-profile>
+      </div>
   </div>
 </mat-toolbar>
 

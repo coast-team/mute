@@ -11,17 +11,4 @@ mat-card {
   box-sizing: border-box;
   margin: 0 auto;
   flex-basis: 100%;
-  max-width: 800px;
-
-  &.card-lg {
-    margin: 0 auto;
-    flex-basis: 100%;
-    max-width: 800px;
-  }
-  &.card-gt-lg {
-    margin: 0 auto;
-    flex-basis: 950px;
-    min-width: 950px;
-    max-width: 950px;
-  }
 }

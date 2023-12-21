@@ -23,7 +23,7 @@ test('Additional user for the full scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   await tool.waitForPeersConnecting()
 

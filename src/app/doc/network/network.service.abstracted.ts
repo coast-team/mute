@@ -249,8 +249,10 @@ export class NetworkServiceAbstracted implements OnDestroy {
     this.memberLeaveSubject.complete()
     this.peersGroupConnectionStatusSubject.complete()
     this.signalingServerConnectionStatusSubject.complete()
-    this.solution.myNetworkId.complete()
-    this.solution.leaveNetwork()
+    if (this.solution !== undefined) {
+      this.solution.myNetworkId.complete()
+      this.solution.leaveNetwork()
+    }
   }
 
   inviteBot(url: string): void {

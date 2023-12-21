@@ -1,14 +1,14 @@
-<mat-toolbar color="primary" class="mat-elevation-z6">
-  <div fxFill fxLayoutAlign="space-between">
-    <div fxLayoutAlign="start center">
+<mat-toolbar color="primary" class="mat-elevation-z6 h-16">
+  <div class="flex flex-row w-full h-full justify-between place-items-center">
+    <div class="flex flex-row place-items-center">
       <button mat-icon-button (click)="menu.emit()">
-        <mat-icon>menu</mat-icon>
+        <mat-icon class="inline-block align-text-top">menu</mat-icon>
       </button>
-
-      <h2 fxFlex class="header">{{header}}</h2>
+      <h2>{{header}}</h2>
     </div>
-    <div fxLayoutAlign="end center">
-      <mute-profile class="profile"></mute-profile>
+    
+    <div class="justify-end align-center">
+      <mute-profile></mute-profile>
     </div>
   </div>
 </mat-toolbar>

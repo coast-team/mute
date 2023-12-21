@@ -12,7 +12,7 @@ test('Main user for the full scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   //  2. A document is opened.
   //      - a. The editor is accessible

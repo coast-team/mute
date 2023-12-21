@@ -9,14 +9,30 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "experimentalDecorators": true,
-    "target": "es2020",
-    "typeRoots": ["node_modules/@types", "src/typings.d.ts"],
-    "lib": ["es2017", "dom"],
-    "types": ["node", "jasmine"],
+    "target": "ES2022",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/typings.d.ts"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "types": [
+      "node",
+      "jasmine"
+    ],
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@shared/*": ["src/app/shared/*"],
-      "@environments/*": ["src/environments/*"]
-    }
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ]
+    },
+    "useDefineForClassFields": false
   }
 }

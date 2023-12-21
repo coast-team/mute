@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 @include mat-core();
 
 @mixin define-theme-css-variables($theme, $prefix: 'default') {
@@ -42,7 +42,7 @@
     // disabled-list-option
     --#{$prefix}-bg-disabled-list-option: #{map-get($bg, disabled-list-option)};
 
-    // FORGROUND
+    // FOREGROUND
     $fg: map-get($theme, foreground);
 
     // text
@@ -139,7 +139,7 @@ $prefix: 'indigo';
     // disabled-list-option
     --theme-bg-disabled-list-option: var(--#{$prefix}-bg-disabled-list-option);
 
-    // FORGROUND
+    // FOREGROUND
     // text
     --theme-fg-text: var(--#{$prefix}-fg-text);
     --theme-fg-secondary-text: var(--#{$prefix}-fg-secondary-text);

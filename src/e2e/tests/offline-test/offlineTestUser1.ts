@@ -12,7 +12,7 @@ test('Main user for the offline scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   //  Get the document at the same status as the final step of the offline scenario
   await t

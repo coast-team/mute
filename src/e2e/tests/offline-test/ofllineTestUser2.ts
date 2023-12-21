@@ -17,7 +17,7 @@ test('Additional user for the offline scenario', async (t) => {
 
   //  Components that will be tested
   const editorComponent = Selector('.CodeMirror')
-  const usersComponent = Selector('.chips-block')
+  const usersComponent = Selector('.collaborators-chips-block')
 
   //  The signaling server has been killed off by the user 1
 
