@@ -90,7 +90,7 @@ export class CollaboratorCursor {
 
   updateDisplayName(displayName: string) {
     this.displayName.innerHTML = `&nbsp;${displayName}`
-    this.displayNameWidth = `${15 + displayName.length * 5}px`
+    this.displayNameWidth = `${30 + displayName.length * 5}px`
   }
 
   updateCursor(nextPos: CodeMirror.Position, animated = true) {
