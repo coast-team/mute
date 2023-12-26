@@ -2,8 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.15.0"></a>
+
+# [0.15.0](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.14.0...v0.15.0) (2023-12-26)
+
+### Update
+
+* Angular @ v15
+* Node @ v18 
+* Typescript @ 4.8
+
+### Features
+
+* Dynamic review environments (!18)
+* Libp2p is more stable
+
+### Bug fixes
+* Collaborators now have a generated default deviceId value (!18)
+* Various fixes to UI following the update to Angular 15 (!21)
+
+
+<a name="0.14.0"></a>
+
+# [0.14.0](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.13.0...v0.14.0) (2023-03-24)
+### Features
+
+* The network service of the project is now abstracted (!11)
+  *  Possibility to use either Netflux or Libp2p 
+  *  Cryptography process is not linked to a specific network anymore
+* Created a map that link the network ID of the peer to its mute-core specific MuteCoreId (!6)
+* RabbitMQ adapter has been removed (!12)
+* Added a button in the UI to leave or join the network (accessible through the toolbar)
+* UI (!13) :  
+  * Modernize ui to simpler list
+  * Features of the application are now shown in the left hand corner 
+
+### Bug fixes
+* Fixed collaborator chip disappearing on tab switch in details/cheatsheet 
+* Fixed Synchronization of the document between peers that would sometimes not happen
+
 <a name="0.13.0"></a>
-# [0.13.0](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.12.2...v0.12.3) (2023-02-20)
+# [0.13.0](https://gitlab.inria.fr/coast-team/mute/mute/-/compare/v0.12.2...v0.13.0) (2023-02-20)
 
 ### Update
 
